@@ -5,7 +5,7 @@
 //
 //*************************************
 
-// 二十インクルード防止
+// 二重インクルード防止
 #ifndef _MANAGER_H_
 #define _MANAGER_H_
 
@@ -16,6 +16,8 @@
 #include "camera.h"
 #include "light.h"
 #include "object.h"
+#include "texturemanager.h"
+#include "modelmanager.h"
 
 // 前方宣言
 class CObject3D;

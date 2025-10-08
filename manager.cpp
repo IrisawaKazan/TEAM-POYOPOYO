@@ -95,6 +95,7 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, bool bWnd)
 	m_pLight->Init();
 
 	CObject3D::Create(VEC3_NULL, VEC3_NULL);
+	CObjectX::Create(VEC3_NULL, VEC3_NULL, "data\\Model\\ie.x");
 
 	return S_OK;
 }
@@ -157,6 +158,12 @@ void CManager::Uninit()
 		delete m_pLight;
 		m_pLight = NULL;
 	}
+
+	// テクスチャマネージャーの破棄
+	CTextureManager::Instance()->Unload();
+
+	// モデルマネージャーの破棄
+	CModelManager::Instance()->Unload();
 }
 
 //***************************************

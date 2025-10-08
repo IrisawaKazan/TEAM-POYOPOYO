@@ -59,64 +59,66 @@ void CObjectX::Update(void)
 //***************************************
 void CObjectX::Draw(void)
 {
-	//CRenderer* pRenderer;
-	//pRenderer = CManager::GetRenderer();
-	//LPDIRECT3DDEVICE9 pDevice = pRenderer->GetDevice();
+	CRenderer* pRenderer;
+	pRenderer = CManager::GetRenderer();
+	LPDIRECT3DDEVICE9 pDevice = pRenderer->GetDevice();
+	CTextureManager* pTexManager = CTextureManager::Instance();
+	CModelManager* pModelTexManager = CModelManager::Instance();
 
-	//D3DXMATRIX mtxRot, mtxTrans,mtxScale;		// 計算用マトリックス
-	//D3DMATERIAL9 matDef;						// 現在のマテリアルの保存用
-	//D3DXMATERIAL* pMat;							// マテリアルへのポインタ
+	D3DXMATRIX mtxRot, mtxTrans,mtxScale;	// 計算用マトリックス
+	D3DMATERIAL9 matDef;					// 現在のマテリアルの保存用
+	D3DXMATERIAL* pMat;						// マテリアルへのポインタ
 
-	//CModelManager::MapObject modelinfo = CModelManager::GetModelInfo(m_FilePath);
+	CModelManager::ModelInfo modelinfo = pModelTexManager->GetAddress(pModelTexManager->Register(m_FilePath));
 
-	//// ワールドマトリックスの初期化
-	//D3DXMatrixIdentity(&m_mtxWorld);
+	// ワールドマトリックスの初期化
+	D3DXMatrixIdentity(&m_mtxWorld);
 
-	//if (m_pMtxParent != NULL)
-	//{
-	//	m_mtxWorld = *m_pMtxParent * m_mtxWorld;
-	//}
+	if (m_pMtxParent != NULL)
+	{
+		m_mtxWorld = *m_pMtxParent * m_mtxWorld;
+	}
 
-	//if (m_mtxRot != NULL)
-	//{
-	//	m_mtxWorld = m_mtxRot * m_mtxWorld;
-	//}
+	if (m_mtxRot != NULL)
+	{
+		m_mtxWorld = m_mtxRot * m_mtxWorld;
+	}
 
-	//// 拡大率を反映
-	//D3DXMatrixScaling(&mtxScale, m_Scale.x, m_Scale.y, m_Scale.z);
-	//D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxScale);
+	// 拡大率を反映
+	D3DXMatrixScaling(&mtxScale, m_Scale.x, m_Scale.y, m_Scale.z);
+	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxScale);
 
-	//// 向きを反映
-	//D3DXMatrixRotationYawPitchRoll(&mtxRot, m_Rot.y, m_Rot.x, m_Rot.z);
-	//D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxRot);
+	// 向きを反映
+	D3DXMatrixRotationYawPitchRoll(&mtxRot, m_Rot.y, m_Rot.x, m_Rot.z);
+	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxRot);
 
-	//// 位置を反映
-	//D3DXMatrixTranslation(&mtxTrans, m_Pos.x, m_Pos.y, m_Pos.z);
-	//D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxTrans);
+	// 位置を反映
+	D3DXMatrixTranslation(&mtxTrans, m_Pos.x, m_Pos.y, m_Pos.z);
+	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxTrans);
 
-	//// ワールドマトリックスの設定
-	//pDevice->SetTransform(D3DTS_WORLD, &m_mtxWorld);
+	// ワールドマトリックスの設定
+	pDevice->SetTransform(D3DTS_WORLD, &m_mtxWorld);
 
-	//// 現在のマテリアルの取得
-	//pDevice->GetMaterial(&matDef);
+	// 現在のマテリアルの取得
+	pDevice->GetMaterial(&matDef);
 
-	//// マテリアルデータへのポインタ
-	//pMat = (D3DXMATERIAL*)modelinfo.modelinfo.pBuffMat->GetBufferPointer();
+	// マテリアルデータへのポインタ
+	pMat = (D3DXMATERIAL*)modelinfo.pBuffMat->GetBufferPointer();
 
-	//for (int nCntMat = 0; nCntMat < (int)modelinfo.modelinfo.TexPath.size(); nCntMat++)
-	//{
-	//	D3DXMATERIAL pCol = pMat[nCntMat];
-	//	pCol.MatD3D.Diffuse.a = m_fAlpha;
-	//	// マテリアルの設定
-	//	pDevice->SetMaterial(&pCol.MatD3D);
+	for (int nCntMat = 0; nCntMat < (int)modelinfo.dwNumMat; nCntMat++)
+	{
+		D3DXMATERIAL pCol = pMat[nCntMat];
+		pCol.MatD3D.Diffuse.a = m_fAlpha;
+		// マテリアルの設定
+		pDevice->SetMaterial(&pCol.MatD3D);
 
-	//	// テクスチャの設定
-	//	pDevice->SetTexture(0, CLoadTexture::GetTex(modelinfo.modelinfo.TexPath[nCntMat]));
+		// テクスチャの設定
+		pDevice->SetTexture(0, pTexManager->GetAddress(modelinfo.pTexture[nCntMat]));
 
-	//	// モデル(パーツ)の描画
-	//	modelinfo.modelinfo.pMesh->DrawSubset(nCntMat);
-	//}
-	//pDevice->SetMaterial(&matDef);
+		// モデル(パーツ)の描画
+		modelinfo.pMesh->DrawSubset(nCntMat);
+	}
+	pDevice->SetMaterial(&matDef);
 }
 
 //***************************************
@@ -127,9 +129,17 @@ CObjectX* CObjectX::Create(D3DXVECTOR3 Pos, D3DXVECTOR3 Rot, std::string Path)
 	CObjectX* pObjectX = NULL;
 	// メモリ確保
 	pObjectX = new CObjectX;
-	pObjectX->SetPosition(Pos);
-	pObjectX->SetRotasion(Rot);
-	pObjectX->m_FilePath = Path;
-	pObjectX->Init();
-	return pObjectX;
+
+	if (pObjectX != nullptr)
+	{
+		pObjectX->SetPosition(Pos);
+		pObjectX->SetRotasion(Rot);
+		pObjectX->m_FilePath = Path;
+		pObjectX->Init();
+		return pObjectX;
+	}
+	else
+	{
+		return nullptr;
+	}
 }

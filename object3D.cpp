@@ -138,6 +138,7 @@ void CObject3D::Update(void)
 //*********************************************
 void CObject3D::Draw(void)
 {
+	CTextureManager* pTexmanager = CTextureManager::Instance();
 	CRenderer* pRenderer;
 	pRenderer = CManager::GetRenderer();
 	LPDIRECT3DDEVICE9 pDevice = pRenderer->GetDevice();
@@ -160,8 +161,8 @@ void CObject3D::Draw(void)
 	pDevice->SetTransform(D3DTS_WORLD, &m_mtxWorld);
 	// 頂点バッファをデバイスからデータストリームに設定
 	pDevice->SetStreamSource(0, m_pVertex, 0, sizeof(VERTEX_3D));
-	// 	// テクスチャの設定
-	pDevice->SetTexture(0, NULL);
+	// テクスチャの設定
+	pDevice->SetTexture(0, pTexmanager->GetAddress(pTexmanager->Register("data\\TEXTURE\\MagicCircle.jpg")));
 	// 頂点フォーマットの設定
 	pDevice->SetFVF(FVF_VERTEX_3D);
 	// ポリゴンの描画
