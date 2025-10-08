@@ -38,7 +38,15 @@ void CModelManager::Unload(void)
 {
 	for (auto Models = m_vModel.begin(); Models != m_vModel.end(); Models++)	// 情報コンテナにアクセス
 	{
-		//テクスチャがNULLじゃなかったら
+		// テクスチャの破棄
+		if (Models->pTexture != nullptr)
+		{
+			delete[] Models->pTexture;
+
+			Models->pTexture = nullptr;
+		}
+
+		// バッファの破棄
 		if (Models->pBuffMat != nullptr)
 		{
 			//終了
@@ -46,6 +54,7 @@ void CModelManager::Unload(void)
 			Models->pBuffMat = nullptr;
 		}
 
+		// メッシュの破棄
 		if (Models->pMesh != nullptr)
 		{
 			//終了
@@ -53,6 +62,7 @@ void CModelManager::Unload(void)
 			Models->pMesh = nullptr;
 		}
 
+		
 	}
 
 	// ベクターのクリア
