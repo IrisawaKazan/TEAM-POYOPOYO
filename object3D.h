@@ -42,7 +42,6 @@ public:
 	D3DXVECTOR2 GetUvMin(void) { return m_UVMin; };
 	float GetWidth(void) { return m_fWidth; };
 	float GetVetical(void) { return m_fVertical; };
-	float GetHeight(void) { return m_fHeight; };
 
 	// 生成
 	static CObject3D* Create(D3DXVECTOR3 Pos, D3DXVECTOR3 Rot, const char* FilePath,D3DXVECTOR2 Size);
@@ -59,7 +58,6 @@ private:
 	const char* m_FilePath;				// ファイルパス
 	float m_fWidth;						// 横幅
 	float m_fVertical;					// 縦幅
-	float m_fHeight;					// 高さ
 	int m_nTexIndx;						// テクスチャへのインデックス
 };
 #endif // !

@@ -15,7 +15,6 @@ CObject3D::CObject3D(int Priority) : CObject(Priority)
 {
 	m_pVertex = NULL;
 	m_fWidth = NULL;
-	m_fHeight = NULL;
 	m_fVertical = NULL;
 	m_Pos = VEC3_NULL;
 	m_Rot = VEC3_NULL;
@@ -57,10 +56,10 @@ HRESULT CObject3D::Init(void)
 
 	if (pVtx != NULL)
 	{
-		pVtx[0].pos = D3DXVECTOR3(-m_fWidth,0.0f,m_fHeigth);
-		pVtx[1].pos = D3DXVECTOR3(m_fWidth, 0.0f, m_fHeigth);
-		pVtx[2].pos = D3DXVECTOR3(-m_fWidth, 0.0f, -m_fHeigth);
-		pVtx[3].pos = D3DXVECTOR3(m_fWidth, 0.0f, -m_fHeigth);
+		pVtx[0].pos = D3DXVECTOR3(-m_fWidth,0.0f,m_fVertical);
+		pVtx[1].pos = D3DXVECTOR3(m_fWidth, 0.0f, m_fVertical);
+		pVtx[2].pos = D3DXVECTOR3(-m_fWidth, 0.0f, -m_fVertical);
+		pVtx[3].pos = D3DXVECTOR3(m_fWidth, 0.0f, -m_fVertical);
 
 		pVtx[0].col = m_Col;
 		pVtx[1].col = m_Col;
@@ -109,10 +108,10 @@ void CObject3D::Update(void)
 
 	if (pVtx != NULL)
 	{
-		pVtx[0].pos = D3DXVECTOR3(-m_fWidth, 0.0f, m_fHeigth);
-		pVtx[1].pos = D3DXVECTOR3(m_fWidth, 0.0f, m_fHeigth);
-		pVtx[2].pos = D3DXVECTOR3(-m_fWidth, 0.0f, -m_fHeigth);
-		pVtx[3].pos = D3DXVECTOR3(m_fWidth, 0.0f, -m_fHeigth);
+		pVtx[0].pos = D3DXVECTOR3(-m_fWidth, 0.0f, m_fVertical);
+		pVtx[1].pos = D3DXVECTOR3(m_fWidth, 0.0f, m_fVertical);
+		pVtx[2].pos = D3DXVECTOR3(-m_fWidth, 0.0f, -m_fVertical);
+		pVtx[3].pos = D3DXVECTOR3(m_fWidth, 0.0f, -m_fVertical);
 
 		pVtx[0].col = m_Col;
 		pVtx[1].col = m_Col;
