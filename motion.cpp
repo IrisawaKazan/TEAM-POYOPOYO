@@ -60,18 +60,14 @@ void CMotion::Update(vector<CModel*>& pModel)
 
 		UpdateKey();
 
-		if ((*itr)->GetisWaist() == false)
+		if (isUpdateCurrentMotion() == true)
 		{
-			if (isUpdateCurrentMotion() == true)
-			{
-				UpdateCurrentMotion(*itr);
-			}
-			else
-			{
-				UpdateBlendMotion(*itr);
-			}
+			UpdateCurrentMotion(*itr);
 		}
-
+		else
+		{
+			UpdateBlendMotion(*itr);
+		}
 	}
 
 	if (m_bFirstBlend == false)
@@ -390,26 +386,6 @@ void CMotion::LoadCharactorInfo(ifstream& ifs, std::vector <CModel*> pModel)
 					if (nModelParent != -1)
 					{
 						pModel[nModelIndx]->SetParent(pModel[nModelParent]);
-
-						CModel* pLocalModel = pModel[nModelIndx];
-						for (int nCount = pLocalModel->GetIndx(); nCount > 0; nCount--)
-						{
-							int ParentIndx = pLocalModel->GetIndx();
-							if (ParentIndx != -1)
-							{
-								pLocalModel = pModel[ParentIndx]->GetParentModel();
-								if (ParentIndx == 0)
-								{
-									pModel[nModelIndx]->SetWaist(true);
-									break;
-								}
-								else if (ParentIndx == 1)
-								{
-									pModel[nModelIndx]->SetWaist(false);
-									break;
-								}
-							}
-						}
 					}
 					else
 					{

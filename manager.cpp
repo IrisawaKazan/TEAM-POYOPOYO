@@ -96,7 +96,7 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, bool bWnd)
 	m_pLight->Init();
 
 	CObject3D::Create(VEC3_NULL, VEC3_NULL);
-	CObjectX::Create(VEC3_NULL, VEC3_NULL, "data\\MODEL\\ie.x");
+	//CObjectX::Create(VEC3_NULL, VEC3_NULL, "data\\MODEL\\ie.x");
 	m_pPlayer->Create(VEC3_NULL, VEC3_NULL);
 	return S_OK;
 }

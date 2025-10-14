@@ -28,9 +28,11 @@ HRESULT CModelCharacter::Init(const char* MotionFilePath, float Speed)
 {
 	// î•ñ‚ğ‰Šú‰»
 	m_fSpeed = Speed;
+	m_Enable = true;
 
 	// ƒ‚[ƒVƒ‡ƒ“‚ğ¶¬
 	m_MotionInfo = CMotion::LoadMotionFile(MotionFilePath, m_apModel);
+	m_MotionInfo->SetMotion(1, false);
 	return S_OK;
 }
 //***************************************
@@ -62,7 +64,7 @@ void CModelCharacter::Update(void)
 {
 	// ˆÚ“®—Ê‚ğ0‚É‹ß‚Ã‚¯‚é
 	m_Move.x += (0.0f - m_Move.x) * 0.1f;
-	m_Move.y -= 0.5f;
+	//m_Move.y -= 0.5f;
 	m_Move.z += (0.0f - m_Move.z) * 0.1f;
 	// Ì‚ÌˆÊ’u‚ğ•Û‘¶
 	m_OldPos = m_Pos;
