@@ -24,6 +24,7 @@ CInputMouse* CManager::m_pInputMouse = NULL;
 CSound* CManager::m_pSound = NULL;
 CCamera* CManager::m_pCamera = NULL;
 CLight* CManager::m_pLight = NULL;
+CPlayer* CManager::m_pPlayer = NULL;
 bool CManager::m_isPause = false;
 bool CManager::m_isClear = false;
 
@@ -96,7 +97,7 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, bool bWnd)
 
 	CObject3D::Create(VEC3_NULL, VEC3_NULL);
 	CObjectX::Create(VEC3_NULL, VEC3_NULL, "data\\MODEL\\ie.x");
-
+	m_pPlayer->Create(VEC3_NULL, VEC3_NULL);
 	return S_OK;
 }
 
