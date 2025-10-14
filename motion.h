@@ -94,4 +94,3 @@ private:
 
 };
 #endif // !_MOTION_H_
-
