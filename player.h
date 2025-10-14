@@ -21,7 +21,6 @@ public:
 	void Update(void);
 	void Draw(void);
 	CPlayer* Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot);
-
 private:
 };
 #endif
