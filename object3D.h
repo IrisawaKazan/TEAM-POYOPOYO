@@ -30,21 +30,21 @@ public:
 	void SetPosition(D3DXVECTOR3 Pos) { m_Pos = Pos; };
 	void SetRotasion(D3DXVECTOR3 Rot) { m_Rot = Rot; };
 	void SetRotasionDest(D3DXVECTOR3 Rot) { m_RotDest = Rot; };
-	void SetSize(D3DXVECTOR2 Size) { m_fWidth = Size.x,m_fHeigth = Size.y; };
+	void SetSize(D3DXVECTOR2 Size) { m_fWidth = Size.x, m_fVertical = Size.y; };
 	void SetCol(D3DXCOLOR Col) { m_Col = Col; };
 	void SetUV(D3DXVECTOR2 UVMax, D3DXVECTOR2 UVMin) { m_UVMax = UVMax;m_UVMin = UVMin; };
 	void ResisterTexIndx(const int TexIndx) { m_nTexIndx = TexIndx; };
-
+	void SetFilePath(const char* FilePath) { m_FilePath = FilePath; };
 	// ゲッター
 	D3DXVECTOR3 GetPos(void) { return m_Pos; };
 	D3DXVECTOR3 GetRot(void) { return m_Rot; };
 	D3DXVECTOR2 GetUvMax(void) { return m_UVMax; };
 	D3DXVECTOR2 GetUvMin(void) { return m_UVMin; };
 	float GetWidth(void) { return m_fWidth; };
-	float GetHeight(void) { return m_fHeigth; };
+	float GetVetical(void) { return m_fVertical; };
 
 	// 生成
-	static CObject3D* Create(D3DXVECTOR3 Pos, D3DXVECTOR3 Rot);
+	static CObject3D* Create(D3DXVECTOR3 Pos, D3DXVECTOR3 Rot, const char* FilePath,D3DXVECTOR2 Size);
 private:
 	// メンバ変数
 	LPDIRECT3DVERTEXBUFFER9 m_pVertex;	// 頂点バッファ
@@ -55,8 +55,9 @@ private:
 	D3DXVECTOR2 m_UVMax;				// テクスチャ座標の最大値
 	D3DXVECTOR2 m_UVMin;				// テクスチャ座標の最小値
 	D3DXCOLOR m_Col;					// 色
+	const char* m_FilePath;				// ファイルパス
 	float m_fWidth;						// 横幅
-	float m_fHeigth;					// 高さ
+	float m_fVertical;					// 縦幅
 	int m_nTexIndx;						// テクスチャへのインデックス
 };
 #endif // !

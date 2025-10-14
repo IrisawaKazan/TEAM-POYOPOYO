@@ -24,6 +24,7 @@ CInputMouse* CManager::m_pInputMouse = NULL;
 CSound* CManager::m_pSound = NULL;
 CCamera* CManager::m_pCamera = NULL;
 CLight* CManager::m_pLight = NULL;
+CPlayerManager* CManager::m_pPlayerManager = NULL;
 bool CManager::m_isPause = false;
 bool CManager::m_isClear = false;
 
@@ -57,6 +58,7 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, bool bWnd)
 	m_pSound = new CSound;
 	m_pCamera = new CCamera;
 	m_pLight = new CLight;
+	m_pPlayerManager = new CPlayerManager;
 
 	// メモリ確保できたら
 	if (m_Renderer != NULL)
@@ -93,10 +95,14 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, bool bWnd)
 	// ３Dに必要なものを初期化
 	m_pCamera->Init();
 	m_pLight->Init();
+	m_pPlayerManager->Init();
 
-	CObject3D::Create(VEC3_NULL, VEC3_NULL);
-	CObjectX::Create(VEC3_NULL, VEC3_NULL, "data\\MODEL\\ie.x");
+	CObject3D::Create(VEC3_NULL, VEC3_NULL,"data\\TEXTURE\\floor.jpg", D3DXVECTOR2(2000.0f, 1000.0f));
+	CObject3D::Create(D3DXVECTOR3(0.0f,1000.0f,1000.0f), D3DXVECTOR3((-D3DX_PI * 0.5f),0.0f,0.0f),"data\\TEXTURE\\wall.jpg",D3DXVECTOR2(2000.0f,1000.0f));
+	CObject3D::Create(D3DXVECTOR3(-2000.0f,1000.0f,0.0f), D3DXVECTOR3((-D3DX_PI * 0.5f), (-D3DX_PI * 0.5f), 0.0f),"data\\TEXTURE\\wall.jpg",D3DXVECTOR2(1000.0f, 1000.0f));
+	CObject3D::Create(D3DXVECTOR3(2000.0f,1000.0f,0.0f), D3DXVECTOR3((-D3DX_PI * 0.5f), (D3DX_PI * 0.5f), 0.0f), "data\\TEXTURE\\wall.jpg", D3DXVECTOR2(1000.0f, 1000.0f));
 
+	//CObjectX::Create(VEC3_NULL, VEC3_NULL, "data\\MODEL\\ie.x");
 	return S_OK;
 }
 
@@ -157,6 +163,14 @@ void CManager::Uninit()
 		m_pLight->Uninit();
 		delete m_pLight;
 		m_pLight = NULL;
+	}
+
+	// プレイヤーマネージャーの破棄
+	if (m_pPlayerManager != NULL)
+	{
+		m_pPlayerManager->Uninit();
+		delete m_pPlayerManager;
+		m_pPlayerManager = NULL;
 	}
 
 	// テクスチャマネージャーの破棄

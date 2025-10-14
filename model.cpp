@@ -23,7 +23,6 @@ CModel::CModel()
 	m_Pos = VEC3_NULL;
 	m_OffSet = VEC3_NULL;
 	m_Rot = VEC3_NULL;
-	m_isWaist = false;
 }
 //***************************************
 // デストラクタ

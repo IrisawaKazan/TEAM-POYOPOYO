@@ -15,7 +15,7 @@ CObject3D::CObject3D(int Priority) : CObject(Priority)
 {
 	m_pVertex = NULL;
 	m_fWidth = NULL;
-	m_fHeigth = NULL;
+	m_fVertical = NULL;
 	m_Pos = VEC3_NULL;
 	m_Rot = VEC3_NULL;
 	m_RotDest = VEC3_NULL;
@@ -56,10 +56,10 @@ HRESULT CObject3D::Init(void)
 
 	if (pVtx != NULL)
 	{
-		pVtx[0].pos = D3DXVECTOR3(-m_fWidth,0.0f,m_fHeigth);
-		pVtx[1].pos = D3DXVECTOR3(m_fWidth, 0.0f, m_fHeigth);
-		pVtx[2].pos = D3DXVECTOR3(-m_fWidth, 0.0f, 0.0f);
-		pVtx[3].pos = D3DXVECTOR3(m_fWidth, 0.0f, 0.0f);
+		pVtx[0].pos = D3DXVECTOR3(-m_fWidth,0.0f,m_fVertical);
+		pVtx[1].pos = D3DXVECTOR3(m_fWidth, 0.0f, m_fVertical);
+		pVtx[2].pos = D3DXVECTOR3(-m_fWidth, 0.0f, -m_fVertical);
+		pVtx[3].pos = D3DXVECTOR3(m_fWidth, 0.0f, -m_fVertical);
 
 		pVtx[0].col = m_Col;
 		pVtx[1].col = m_Col;
@@ -108,20 +108,20 @@ void CObject3D::Update(void)
 
 	if (pVtx != NULL)
 	{
-		pVtx[0].pos = D3DXVECTOR3(-m_fWidth, 0.0f, m_fHeigth);
-		pVtx[1].pos = D3DXVECTOR3(m_fWidth, 0.0f, m_fHeigth);
-		pVtx[2].pos = D3DXVECTOR3(-m_fWidth, 0.0f, 0.0f);
-		pVtx[3].pos = D3DXVECTOR3(m_fWidth, 0.0f, 0.0f);
+		pVtx[0].pos = D3DXVECTOR3(-m_fWidth, 0.0f, m_fVertical);
+		pVtx[1].pos = D3DXVECTOR3(m_fWidth, 0.0f, m_fVertical);
+		pVtx[2].pos = D3DXVECTOR3(-m_fWidth, 0.0f, -m_fVertical);
+		pVtx[3].pos = D3DXVECTOR3(m_fWidth, 0.0f, -m_fVertical);
 
 		pVtx[0].col = m_Col;
 		pVtx[1].col = m_Col;
 		pVtx[2].col = m_Col;
 		pVtx[3].col = m_Col;
 
-		pVtx[0].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
-		pVtx[1].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
-		pVtx[2].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
-		pVtx[3].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
+		pVtx[0].nor = D3DXVECTOR3(m_mtxWorld._21, m_mtxWorld._22, m_mtxWorld._23);
+		pVtx[1].nor = D3DXVECTOR3(m_mtxWorld._21, m_mtxWorld._22, m_mtxWorld._23);
+		pVtx[2].nor = D3DXVECTOR3(m_mtxWorld._21, m_mtxWorld._22, m_mtxWorld._23);
+		pVtx[3].nor = D3DXVECTOR3(m_mtxWorld._21, m_mtxWorld._22, m_mtxWorld._23);
 
 		pVtx[0].tex = D3DXVECTOR2(m_UVMin.x, m_UVMin.y);
 		pVtx[1].tex = D3DXVECTOR2(m_UVMax.x, m_UVMin.y);
@@ -162,7 +162,7 @@ void CObject3D::Draw(void)
 	// 頂点バッファをデバイスからデータストリームに設定
 	pDevice->SetStreamSource(0, m_pVertex, 0, sizeof(VERTEX_3D));
 	// テクスチャの設定
-	pDevice->SetTexture(0, pTexmanager->GetAddress(pTexmanager->Register("data\\TEXTURE\\MagicCircle.jpg")));
+	pDevice->SetTexture(0, pTexmanager->GetAddress(pTexmanager->Register(m_FilePath)));
 	// 頂点フォーマットの設定
 	pDevice->SetFVF(FVF_VERTEX_3D);
 	// ポリゴンの描画
@@ -172,14 +172,15 @@ void CObject3D::Draw(void)
 //*********************************************
 // 生成
 //*********************************************
-CObject3D* CObject3D::Create(D3DXVECTOR3 Pos, D3DXVECTOR3 Rot)
+CObject3D* CObject3D::Create(D3DXVECTOR3 Pos, D3DXVECTOR3 Rot, const char* FilePath, D3DXVECTOR2 Size)
 {
 	CObject3D* pObject3D = NULL;
 	// メモリ確保
 	pObject3D = new CObject3D;
 	pObject3D->SetPosition(Pos);
 	pObject3D->SetRotasion(Rot);
-	pObject3D->SetSize(D3DXVECTOR2(1000.0f, 1000.0f));
+	pObject3D->SetFilePath(FilePath);
+	pObject3D->SetSize(D3DXVECTOR2(Size.x, Size.y));
 	pObject3D->Init();
 	return pObject3D;
 }

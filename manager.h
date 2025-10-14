@@ -18,6 +18,7 @@
 #include "object.h"
 #include "texturemanager.h"
 #include "modelmanager.h"
+#include "playermanager.h"
 
 // 前方宣言
 class CObject3D;
@@ -78,6 +79,7 @@ private:
 	static CCamera* m_pCamera;					// カメラのインスタンス
 	static CLight* m_pLight;					// ライトのインスタンス
 	static CShaderFade* m_pFadeShader;			// シェーダフェード
+	static CPlayerManager* m_pPlayerManager;	// プレイヤーマネージャー
 	static bool m_isPause;						// ポーズ中かどうか
 	static bool m_isClear;						// 敵を全滅させたかどうか
 };
