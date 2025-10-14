@@ -38,6 +38,8 @@ public:
 		static constexpr float MoveSpeedR = 0.03f;
 		static constexpr float MoveSpeedSide = 20.0f;       // sato Add
 		static constexpr float CatchSpeedSide = 0.1f;       // sato Add
+		static constexpr float SideMoveMin = -2000.0f;      // sato Add
+		static constexpr float SideMoveMax = 2000.0f;       // sato Add
 		static constexpr MODE startMode = MODE::BELTSCROLL; // sato Add
 		static const D3DXVECTOR3 OffSetR;
 		static const D3DXVECTOR3 OffSetRot;

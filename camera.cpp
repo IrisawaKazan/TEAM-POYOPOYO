@@ -9,6 +9,7 @@
 #include "camera.h"
 #include "manager.h"
 #include "math.h"
+#include "math_T.h"
 
 // 名前空間
 using namespace std;
@@ -35,12 +36,12 @@ CCamera::CCamera()
 	m_posRDest = VEC3_NULL;
 	m_vecU = VEC3_NULL;
 	m_rot = VEC3_NULL;
-	m_fDistance = NULL;
+	m_fDistance = 0.0f;
 
 	// 視野角、視界の広さの初期値を設定
-	m_fFov = NULL;
-	m_fZnear = NULL;
-	m_fZfar = NULL;
+	m_fFov = 0.0f;
+	m_fZnear = 0.0f;
+	m_fZfar = 0.0f;
 
 	// モード初期値 sato Add
 	m_mode = MODE::NORMAL;
@@ -58,9 +59,6 @@ CCamera::~CCamera()
 //***************************************
 HRESULT CCamera::Init(void)
 {
-	// 注視点までの距離
-	m_fDistance = Config::Default::Distance;
-
 	// 上方向のベクトルを初期化
 	m_vecU = VEC_UP;
 
@@ -193,12 +191,15 @@ void CCamera::SetCamera(void)
 //***************************************
 void CCamera::SetNormal(void)
 {
-	// 角度と距離で視点を算出
+	// 視点を初期化
 	m_posV = D3DXVECTOR3(0.0f,10.0f, -500.0f);
 	m_posVDest = m_posV;
 	m_posR = VEC3_NULL;
 	m_posRDest = VEC3_NULL;
 	m_rot = VEC3_NULL;
+
+	// 注視点までの距離
+	m_fDistance = Config::Default::Distance;
 }
 
 //***************************************
@@ -206,6 +207,9 @@ void CCamera::SetNormal(void)
 //***************************************
 void CCamera::SetBelt(void)
 {
+	// 注視点までの距離
+	m_fDistance = Config::Default::Distance;
+
 	// 角度を決めて
 	m_rot = Config::OffSetRot;
 
@@ -363,6 +367,9 @@ void CCamera::UpdateKeyboardMoveSide(void)
 	{
 		m_posRDest.x += Config::MoveSpeedSide;
 	}
+
+	// Clampで範囲内に収める
+	m_posRDest.x = Clamp(m_posRDest.x, Config::SideMoveMin, Config::SideMoveMax);
 
 	// 座標を更新
 	UpdateCameraPosition();
