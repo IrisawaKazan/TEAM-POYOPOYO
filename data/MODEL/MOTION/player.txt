@@ -24,7 +24,7 @@ MODEL_FILENAME = data/MODEL/player/06_player_legR.x			# [6]右腿
 MODEL_FILENAME = data/MODEL/player/07_player_footR.x		# [7]右足
 MODEL_FILENAME = data/MODEL/player/08_player_legL.x			# [8]左腿
 MODEL_FILENAME = data/MODEL/player/09_player_footL.x		# [9]左足
-MODEL_FILENAME = data/MODEL/player/shotgun.x				# [10]銃
+MODEL_FILENAME = data/MODEL/player/axe.x					# [10]ツルハシ
 
 #--------------------------------------------------------
 # キャラクター情報
