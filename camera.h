@@ -28,11 +28,14 @@ public:
 		static constexpr float DistanceFar = 200.0f;
 		static constexpr float MoveRDist = -8.0f;
 		static constexpr float MoveSpeedR = 0.03f;
+		static constexpr float MoveSpeedSide = 20.0f; // sato Add
+		static constexpr float CatchSpeedSide = 0.1f; // sato Add
 		static const D3DXVECTOR3 OffSetR;
+		static const D3DXVECTOR3 OffSetRot;
 		static const D3DXVECTOR3 CatchSpeedR;
 		// èâä˙âªéûÇÃíËêî
 		struct Defoult {
-			static constexpr float Distance = 200.0f;
+			static constexpr float Distance = 500.0f;
 			static constexpr float RDist = -10.0f;
 			static constexpr float Fov = 45.0f;
 			static constexpr float Near = 10.0f;
@@ -82,8 +85,11 @@ public:
 	void SetCamera(void);
 	void UpdateMouseMove(void);
 	void UpdateJoyPadMove(void);
+	void UpdateKeyboardMoveSide(void); // sato Add
 	void UpdateCameraPositionV(void);
 	void UpdateCameraPositionR(void);
+	void UpdateCameraPositionVSide(void); // sato Add
+	void UpdateCameraPositionRSide(void); // sato Add
 	void UpdateMotion(void);
 
 	void NormalizeCameraRot(void);

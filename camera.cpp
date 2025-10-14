@@ -15,6 +15,7 @@ using namespace std;
 
 // 規定値を設定
 const D3DXVECTOR3 CCamera::Config::OffSetR = { 0.0f, 50.0f, 0.0f };
+const D3DXVECTOR3 CCamera::Config::OffSetRot = { D3DX_PI * 0.1f, D3DX_PI, 0.0f }; // sato Add
 const D3DXVECTOR3 CCamera::Config::CatchSpeedR = { 0.3f, 0.3f, 0.3f };
 
 // 静的メンバ変数宣言
@@ -55,22 +56,26 @@ CCamera::~CCamera()
 HRESULT CCamera::Init(void)
 {
 	// カメラの初期化の値
-	m_posV = VEC3_NULL;
-	m_posVDest = VEC3_NULL;
-	m_posV.y += 100.0f;
-	m_posV.z -= 500.0f;
-	m_posVDest.y += 100.0f;
-	m_posVDest.z -= 500.0f;
+	m_rot = Config::OffSetRot;
 	m_posR = VEC3_NULL;
 	m_posRDest = VEC3_NULL;
-	m_vecU = VEC_UP;
-	m_rot = VEC3_NULL;
-
-	// 視点の補完速度を初期化
-	m_fSpeedV = CCamera::Config::Defoult::SpeedV;
 
 	// 注視点までの距離
 	m_fDistance = Config::Defoult::Distance;
+
+	// 視点、注視点の位置を計算
+	m_posV.x = m_posR.x + cosf(m_rot.x) * sinf(m_rot.y) * m_fDistance;
+	m_posV.y = m_posR.y + sinf(m_rot.x) * m_fDistance;
+	m_posV.z = m_posR.z + cosf(m_rot.x) * cosf(m_rot.y) * m_fDistance;
+	m_posVDest.x = m_posRDest.x + cosf(m_rot.x) * sinf(m_rot.y) * m_fDistance;
+	m_posVDest.y = m_posRDest.y + sinf(m_rot.x) * m_fDistance;
+	m_posVDest.z = m_posRDest.z + cosf(m_rot.x) * cosf(m_rot.y) * m_fDistance;
+
+	// 上方向のベクトルを初期化
+	m_vecU = VEC_UP;
+
+	// 視点の補完速度を初期化
+	m_fSpeedV = CCamera::Config::Defoult::SpeedV;
 
 	// 視野角、視界の広さの初期値を設定
 	m_fFov = Config::Defoult::Fov;
@@ -115,12 +120,18 @@ void CCamera::Update(void)
 		return;
 	}
 
+	// 横移動 sato Add
+	UpdateKeyboardMoveSide();
+
+	// sato 元のカメラ操作は一旦デバック専用にしました
+#ifdef _DEBUG
 	// それぞれの更新処理を呼ぶ
 	UpdateMouseMove();
 	//UpdateJoyPadMove();
 
 	// ホイールでカメラの距離を変える
 	SetMouseWheel(m_pInputMouse->GetMouseState().lZ);
+#endif // _DEBUG
 }
 
 //***************************************
@@ -263,6 +274,30 @@ void CCamera::UpdateJoyPadMove(void)
 
 	// 正規化
 	NormalizeCameraRot();
+}
+
+//***************************************
+// カメラのキーボード移動 sato Add
+//***************************************
+void CCamera::UpdateKeyboardMoveSide(void)
+{
+	// キーボードの入力を取得
+	bool Left = m_pInputKeyboard->GetPress(DIK_A);
+	bool Right = m_pInputKeyboard->GetPress(DIK_D);
+
+	// 左右に動かす
+	if (Left == true)
+	{
+		m_posRDest.x -= Config::MoveSpeedSide;
+	}
+	if (Right == true)
+	{
+		m_posRDest.x += Config::MoveSpeedSide;
+	}
+
+	// 座標を更新
+	UpdateCameraPositionRSide();
+	UpdateCameraPositionVSide();
 }
 
 //***************************************
@@ -525,6 +560,32 @@ void CCamera::UpdateCameraPositionR()
 	m_posR.x += (m_posRDest.x - m_posR.x) * Config::CatchSpeedR.x;
 	m_posR.y += (m_posRDest.y - m_posR.y) * Config::CatchSpeedR.y;
 	m_posR.z += (m_posRDest.z - m_posR.z) * Config::CatchSpeedR.z;
+}
+
+//***************************************
+// PosVの座標更新Side sato Add
+//***************************************
+void CCamera::UpdateCameraPositionVSide()
+{
+	// 視点の座標更新、高さだけより離す
+	m_posVDest.x = m_posRDest.x + cosf(m_rot.x) * sinf(m_rot.y) * m_fDistance;
+	//m_posVDest.y = m_posRDest.y + sinf(m_rot.x) * m_fDistance + 10.0f;
+	//m_posVDest.z = m_posRDest.z + cosf(m_rot.x) * cosf(m_rot.y) * m_fDistance;
+
+	m_posV.x += (m_posVDest.x - m_posV.x) * Config::CatchSpeedSide;
+	//m_posV.y += (m_posVDest.y - m_posV.y) * Config::CatchSpeedSide;
+	//m_posV.z += (m_posVDest.z - m_posV.z) * Config::CatchSpeedSide;
+}
+
+//***************************************
+// PosRの座標更新Side sato Add
+//***************************************
+void CCamera::UpdateCameraPositionRSide()
+{
+	// 注視点の更新
+	m_posR.x += (m_posRDest.x - m_posR.x) * Config::CatchSpeedSide;
+	//m_posR.y += (m_posRDest.y - m_posR.y) * Config::CatchSpeedSide;
+	//m_posR.z += (m_posRDest.z - m_posR.z) * Config::CatchSpeedSide;
 }
 
 //***************************************
