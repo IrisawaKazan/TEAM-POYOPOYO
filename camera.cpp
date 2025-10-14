@@ -41,6 +41,9 @@ CCamera::CCamera()
 	m_fFov = NULL;
 	m_fZnear = NULL;
 	m_fZfar = NULL;
+
+	// モード初期値 sato Add
+	m_mode = MODE::NORMAL;
 }
 
 //***************************************
@@ -55,32 +58,32 @@ CCamera::~CCamera()
 //***************************************
 HRESULT CCamera::Init(void)
 {
-	// カメラの初期化の値
-	m_rot = Config::OffSetRot;
-	m_posR = VEC3_NULL;
-	m_posRDest = VEC3_NULL;
-
 	// 注視点までの距離
-	m_fDistance = Config::Defoult::Distance;
-
-	// 視点、注視点の位置を計算
-	m_posV.x = m_posR.x + cosf(m_rot.x) * sinf(m_rot.y) * m_fDistance;
-	m_posV.y = m_posR.y + sinf(m_rot.x) * m_fDistance;
-	m_posV.z = m_posR.z + cosf(m_rot.x) * cosf(m_rot.y) * m_fDistance;
-	m_posVDest.x = m_posRDest.x + cosf(m_rot.x) * sinf(m_rot.y) * m_fDistance;
-	m_posVDest.y = m_posRDest.y + sinf(m_rot.x) * m_fDistance;
-	m_posVDest.z = m_posRDest.z + cosf(m_rot.x) * cosf(m_rot.y) * m_fDistance;
+	m_fDistance = Config::Default::Distance;
 
 	// 上方向のベクトルを初期化
 	m_vecU = VEC_UP;
 
 	// 視点の補完速度を初期化
-	m_fSpeedV = CCamera::Config::Defoult::SpeedV;
+	m_fSpeedV = CCamera::Config::Default::SpeedV;
 
 	// 視野角、視界の広さの初期値を設定
-	m_fFov = Config::Defoult::Fov;
-	m_fZnear = Config::Defoult::Near;
-	m_fZfar = Config::Defoult::Far;
+	m_fFov = Config::Default::Fov;
+	m_fZnear = Config::Default::Near;
+	m_fZfar = Config::Default::Far;
+
+	// ベルトスクロールモード
+	m_mode = Config::startMode;
+
+	switch (m_mode)
+	{
+	case CCamera::MODE::NORMAL:
+		SetNormal();
+		break;
+	case CCamera::MODE::BELTSCROLL:
+		SetBelt();
+		break;
+	}
 
 	// デバイスを取得
 	m_pInputKeyboard = CManager::GetInputKeyboard();
@@ -120,17 +123,26 @@ void CCamera::Update(void)
 		return;
 	}
 
-	// 横移動 sato Add
-	UpdateKeyboardMoveSide();
+	// 移動
+	UpdateMove();
 
-	// sato 元のカメラ操作は一旦デバック専用にしました
+	// デバック用 sato
 #ifdef _DEBUG
-	// それぞれの更新処理を呼ぶ
-	UpdateMouseMove();
-	//UpdateJoyPadMove();
-
-	// ホイールでカメラの距離を変える
-	SetMouseWheel(m_pInputMouse->GetMouseState().lZ);
+	// 通常のカメラに戻す(仮) sato
+	if (m_pInputKeyboard->GetTrigger(DIK_F2))
+	{
+		switch (m_mode)
+		{
+		case CCamera::MODE::NORMAL:
+			SetBelt();
+			m_mode = CCamera::MODE::BELTSCROLL;
+			break;
+		case CCamera::MODE::BELTSCROLL:
+			SetNormal();
+			m_mode = CCamera::MODE::NORMAL;
+			break;
+		}
+	}
 #endif // _DEBUG
 }
 
@@ -174,6 +186,63 @@ void CCamera::SetCamera(void)
 
 	//プロジェクションマトリックスの設定
 	pDevice->SetTransform(D3DTS_PROJECTION, &m_mtxProjection);
+}
+
+//***************************************
+// 通常カメラに戻す sato Add
+//***************************************
+void CCamera::SetNormal(void)
+{
+	// 角度と距離で視点を算出
+	m_posV = D3DXVECTOR3(0.0f,10.0f, -500.0f);
+	m_posVDest = m_posV;
+	m_posR = VEC3_NULL;
+	m_posRDest = VEC3_NULL;
+	m_rot = VEC3_NULL;
+}
+
+//***************************************
+// ベルトスクロール視点に戻す sato Add
+//***************************************
+void CCamera::SetBelt(void)
+{
+	// 角度を決めて
+	m_rot = Config::OffSetRot;
+
+	// 注視点は0
+	m_posR = VEC3_NULL;
+	m_posRDest = VEC3_NULL;
+
+	// 角度と距離で視点を算出
+	m_posV.x = m_posR.x + cosf(m_rot.x) * sinf(m_rot.y) * m_fDistance;
+	m_posV.y = m_posR.y + sinf(m_rot.x) * m_fDistance;
+	m_posV.z = m_posR.z + cosf(m_rot.x) * cosf(m_rot.y) * m_fDistance;
+	m_posVDest.x = m_posRDest.x + cosf(m_rot.x) * sinf(m_rot.y) * m_fDistance;
+	m_posVDest.y = m_posRDest.y + sinf(m_rot.x) * m_fDistance;
+	m_posVDest.z = m_posRDest.z + cosf(m_rot.x) * cosf(m_rot.y) * m_fDistance;
+}
+
+//***************************************
+// カメラの移動 sato Add
+//***************************************
+void CCamera::UpdateMove(void)
+{
+	// モードごとの更新
+	switch (m_mode)
+	{
+	case MODE::NORMAL:
+		// それぞれの更新処理を呼ぶ
+		UpdateMouseMove();
+		//UpdateJoyPadMove();
+
+		// ホイールでカメラの距離を変える
+		SetMouseWheel(m_pInputMouse->GetMouseState().lZ);
+		break;
+	case MODE::BELTSCROLL:
+		// 横移動 sato Add
+		UpdateKeyboardMoveSide();
+		break;
+	}
 }
 
 //***************************************
@@ -296,8 +365,7 @@ void CCamera::UpdateKeyboardMoveSide(void)
 	}
 
 	// 座標を更新
-	UpdateCameraPositionRSide();
-	UpdateCameraPositionVSide();
+	UpdateCameraPosition();
 }
 
 //***************************************
@@ -441,10 +509,10 @@ void CCamera::ResetProjectionMtx(void)
 
 	//プロジェクションマトリックスの作成
 	D3DXMatrixPerspectiveFovLH(&ProjectionMtx,			// マトリックス
-		D3DXToRadian(CCamera::Config::Defoult::Fov),	// 視野角
+		D3DXToRadian(CCamera::Config::Default::Fov),	// 視野角
 		fAspect,										// アスペクト比
-		CCamera::Config::Defoult::Near,					// ニア
-		CCamera::Config::Defoult::Far);					// ファー
+		CCamera::Config::Default::Near,					// ニア
+		CCamera::Config::Default::Far);					// ファー
 
 	//プロジェクションマトリックスの設定
 	pDevice->SetTransform(D3DTS_PROJECTION, &ProjectionMtx);
@@ -532,9 +600,53 @@ void CCamera::LoadMotion(std::string Path)
 }
 
 //***************************************
-// PosVの座標更新
+// 座標更新 sato Add
+//***************************************
+void CCamera::UpdateCameraPosition()
+{
+	// 両方更新
+	UpdateCameraPositionR();
+	UpdateCameraPositionV();
+}
+
+//***************************************
+// PosVの座標更新 sato Add
 //***************************************
 void CCamera::UpdateCameraPositionV()
+{
+	// モードごとの更新
+	switch (m_mode)
+	{
+	case MODE::NORMAL:
+		UpdateCameraPositionVNormal();
+		break;
+	case MODE::BELTSCROLL:
+		UpdateCameraPositionVSide();
+		break;
+	}
+}
+
+//***************************************
+// PosRの座標更新 sato Add
+//***************************************
+void CCamera::UpdateCameraPositionR()
+{
+	// モードごとの更新
+	switch (m_mode)
+	{
+	case MODE::NORMAL:
+		UpdateCameraPositionRNormal();
+		break;
+	case MODE::BELTSCROLL:
+		UpdateCameraPositionRSide();
+		break;
+	}
+}
+
+//***************************************
+// PosVの座標更新 sato 元のやつです 名前を変えました
+//***************************************
+void CCamera::UpdateCameraPositionVNormal()
 {
 	// 視点の座標更新、高さだけより離す
 	m_posVDest.x = m_posRDest.x + cosf(m_rot.x) * sinf(m_rot.y) * m_fDistance;
@@ -547,9 +659,9 @@ void CCamera::UpdateCameraPositionV()
 }
 
 //***************************************
-// PosRの座標更新
+// PosRの座標更新 sato 元のやつです 名前を変えました
 //***************************************
-void CCamera::UpdateCameraPositionR()
+void CCamera::UpdateCameraPositionRNormal()
 {
 	// 視点の座標更新、高さだけ高く設定する
 	m_posRDest.x = cosf(m_rot.x) * sinf(m_rot.y) * m_fDistance;
@@ -567,14 +679,10 @@ void CCamera::UpdateCameraPositionR()
 //***************************************
 void CCamera::UpdateCameraPositionVSide()
 {
-	// 視点の座標更新、高さだけより離す
+	// 視点の座標更新
 	m_posVDest.x = m_posRDest.x + cosf(m_rot.x) * sinf(m_rot.y) * m_fDistance;
-	//m_posVDest.y = m_posRDest.y + sinf(m_rot.x) * m_fDistance + 10.0f;
-	//m_posVDest.z = m_posRDest.z + cosf(m_rot.x) * cosf(m_rot.y) * m_fDistance;
 
 	m_posV.x += (m_posVDest.x - m_posV.x) * Config::CatchSpeedSide;
-	//m_posV.y += (m_posVDest.y - m_posV.y) * Config::CatchSpeedSide;
-	//m_posV.z += (m_posVDest.z - m_posV.z) * Config::CatchSpeedSide;
 }
 
 //***************************************
@@ -584,8 +692,6 @@ void CCamera::UpdateCameraPositionRSide()
 {
 	// 注視点の更新
 	m_posR.x += (m_posRDest.x - m_posR.x) * Config::CatchSpeedSide;
-	//m_posR.y += (m_posRDest.y - m_posR.y) * Config::CatchSpeedSide;
-	//m_posR.z += (m_posRDest.z - m_posR.z) * Config::CatchSpeedSide;
 }
 
 //***************************************

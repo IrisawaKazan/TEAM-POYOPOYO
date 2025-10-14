@@ -6,8 +6,8 @@
 //****************************************************************
 
 // 二重インクルード防止
-#ifndef _CAMER_H_
-#define _CAMER_H_
+#ifndef _CAMERA_H_
+#define _CAMERA_H_
 
 // インクルード
 #include "main.h"
@@ -17,6 +17,14 @@
 class CCamera
 {
 public:
+	// モード sato Add
+	enum class MODE : unsigned char
+	{
+		NORMAL,
+		BELTSCROLL,
+		MAX
+	};
+
 	// カメラの規定値を設定
 	struct Config {
 		static constexpr float MouseSpeedV = 0.005f;
@@ -28,13 +36,14 @@ public:
 		static constexpr float DistanceFar = 200.0f;
 		static constexpr float MoveRDist = -8.0f;
 		static constexpr float MoveSpeedR = 0.03f;
-		static constexpr float MoveSpeedSide = 20.0f; // sato Add
-		static constexpr float CatchSpeedSide = 0.1f; // sato Add
+		static constexpr float MoveSpeedSide = 20.0f;       // sato Add
+		static constexpr float CatchSpeedSide = 0.1f;       // sato Add
+		static constexpr MODE startMode = MODE::BELTSCROLL; // sato Add
 		static const D3DXVECTOR3 OffSetR;
 		static const D3DXVECTOR3 OffSetRot;
 		static const D3DXVECTOR3 CatchSpeedR;
 		// 初期化時の定数
-		struct Defoult {
+		struct Default {
 			static constexpr float Distance = 1000.0f;
 			static constexpr float RDist = -10.0f;
 			static constexpr float Fov = 45.0f;
@@ -83,13 +92,17 @@ public:
 	void Update(void);
 	void Uninit(void);
 	void SetCamera(void);
+	void UpdateMove(void);
 	void UpdateMouseMove(void);
 	void UpdateJoyPadMove(void);
-	void UpdateKeyboardMoveSide(void); // sato Add
+	void UpdateKeyboardMoveSide(void);      
+	void UpdateCameraPosition(void);
 	void UpdateCameraPositionV(void);
 	void UpdateCameraPositionR(void);
-	void UpdateCameraPositionVSide(void); // sato Add
-	void UpdateCameraPositionRSide(void); // sato Add
+	void UpdateCameraPositionVNormal(void);
+	void UpdateCameraPositionRNormal(void);
+	void UpdateCameraPositionVSide(void);
+	void UpdateCameraPositionRSide(void);
 	void UpdateMotion(void);
 
 	void NormalizeCameraRot(void);
@@ -108,6 +121,7 @@ public:
 	void SetSpeedV(const float Speed) { m_fSpeedV = Speed; };
 	void SetMovie(MOTIONTYPE Type);
 	static void ResetProjectionMtx(void);
+	void SetMode(MODE mode) { m_mode = mode; }
 
 	// ゲッター
 	D3DXVECTOR2 MouseMove(void) { return m_pInputMouse->GetVelocity(); };
@@ -116,10 +130,14 @@ public:
 	D3DXVECTOR3 GetPosR(void) { return m_posR; };
 	MOTIONTYPE GetMotion(void) { return m_nMotionType; };
 	float GetSpeedV(void) { return m_fSpeedV; };
+	MODE GetMode(void) { return m_mode; }
 
 	// ローダー
 	void LoadMotion(std::string Path);
 private:
+	void SetNormal(void);
+	void SetBelt(void);
+
 	// 静的メンバ変数
 	// 入力デバイスのメンバ変数
 	static CInputKeyboard* m_pInputKeyboard;
@@ -155,5 +173,6 @@ private:
 	int m_nAllFrame;										// 全体フレーム
 	int m_nKey, m_nCounterMotion, m_nNextKey;				// キーの情報とモーションカウンター
 	bool m_bFinishMotion;									// モーションが終わったかどうか
+	MODE m_mode;                                            // モード sato Add
 };
-#endif // !
+#endif // ! _CAMERA_H_
