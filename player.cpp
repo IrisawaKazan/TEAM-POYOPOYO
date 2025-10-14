@@ -51,6 +51,8 @@ CPlayer* CPlayer::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 
 	if (pPlayer != nullptr)
 	{
+		pPlayer->SetPos(pos);
+		pPlayer->SetRot(rot);
 		pPlayer->Init();
 		return pPlayer;
 	}
