@@ -24,7 +24,7 @@ CInputMouse* CManager::m_pInputMouse = NULL;
 CSound* CManager::m_pSound = NULL;
 CCamera* CManager::m_pCamera = NULL;
 CLight* CManager::m_pLight = NULL;
-CPlayer* CManager::m_pPlayer = NULL;
+CPlayerManager* CManager::m_pPlayerManager = NULL;
 bool CManager::m_isPause = false;
 bool CManager::m_isClear = false;
 
@@ -58,6 +58,7 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, bool bWnd)
 	m_pSound = new CSound;
 	m_pCamera = new CCamera;
 	m_pLight = new CLight;
+	m_pPlayerManager = new CPlayerManager;
 
 	// メモリ確保できたら
 	if (m_Renderer != NULL)
@@ -94,10 +95,11 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, bool bWnd)
 	// ３Dに必要なものを初期化
 	m_pCamera->Init();
 	m_pLight->Init();
+	m_pPlayerManager->Init();
 
 	CObject3D::Create(VEC3_NULL, VEC3_NULL);
 	//CObjectX::Create(VEC3_NULL, VEC3_NULL, "data\\MODEL\\ie.x");
-	m_pPlayer->Create(VEC3_NULL, VEC3_NULL);
+	//m_pPlayer->Create(VEC3_NULL, VEC3_NULL);
 	return S_OK;
 }
 
@@ -158,6 +160,14 @@ void CManager::Uninit()
 		m_pLight->Uninit();
 		delete m_pLight;
 		m_pLight = NULL;
+	}
+
+	// プレイヤーマネージャーの破棄
+	if (m_pPlayerManager != NULL)
+	{
+		m_pPlayerManager->Uninit();
+		delete m_pPlayerManager;
+		m_pPlayerManager = NULL;
 	}
 
 	// テクスチャマネージャーの破棄

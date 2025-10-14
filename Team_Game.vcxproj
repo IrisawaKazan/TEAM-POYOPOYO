@@ -170,6 +170,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="player.cpp" />
+    <ClCompile Include="playermanager.cpp" />
     <ClCompile Include="renderer.cpp" />
     <ClCompile Include="sound.cpp" />
     <ClCompile Include="texturemanager.cpp" />
@@ -193,6 +194,7 @@
     <ClInclude Include="objectX.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="player.h" />
+    <ClInclude Include="playermanager.h" />
     <ClInclude Include="renderer.h" />
     <ClInclude Include="sound.h" />
     <ClInclude Include="texturemanager.h" />

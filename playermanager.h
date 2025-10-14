@@ -1,26 +1,27 @@
 //************************************************************
 //
-//　プレイヤーの処理[player.h]
+//　プレイヤーの処理[playermanager.h]
 //　Author:chikada shouya
 //
 //************************************************************
 // 二重インクルード防止
-#ifndef _PLAYER_H_
-#define _PLAYER_H_
+#ifndef _PLAYERMANAGER_H_
+#define _PLAYERMANAGER_H_
 
 #include "main.h"
-#include "character.h"
+#include "player.h"
 
-class CPlayer : public CModelCharacter
+class CPlayerManager
 {
 public:
-	CPlayer();
-	~CPlayer();
+	CPlayerManager();
+	~CPlayerManager();
 	HRESULT Init(void);
 	void Uninit(void);
 	void Update(void);
 	void Draw(void);
-	static CPlayer* Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot);
+
 private:
+	std::vector<CPlayer*> m_pPlayer;
 };
 #endif
