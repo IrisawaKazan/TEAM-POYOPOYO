@@ -15,7 +15,7 @@ using namespace std;
 
 // ‹K’è’l‚ğİ’è
 const D3DXVECTOR3 CCamera::Config::OffSetR = { 0.0f, 50.0f, 0.0f };
-const D3DXVECTOR3 CCamera::Config::OffSetRot = { D3DX_PI * 0.1f, D3DX_PI, 0.0f }; // sato Add
+const D3DXVECTOR3 CCamera::Config::OffSetRot = { D3DX_PI * 0.05f, D3DX_PI, 0.0f }; // sato Add
 const D3DXVECTOR3 CCamera::Config::CatchSpeedR = { 0.3f, 0.3f, 0.3f };
 
 // Ã“Iƒƒ“ƒo•Ï”éŒ¾
