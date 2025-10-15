@@ -114,6 +114,7 @@ void CModelCharacter::Draw(void)
 	LPDIRECT3DDEVICE9 pDevice = pRenderer->GetDevice();
 	D3DXMATRIX mtxRot, mtxTrans;				// 計算用マトリックス
 	D3DMATERIAL9 matDef;						// 現在のマテリアルの保存用
+
 	// ワールドマトリックスの初期化
 	D3DXMatrixIdentity(&m_mtxWorld);
 	// 向きを反映
@@ -122,11 +123,14 @@ void CModelCharacter::Draw(void)
 	// 位置を反映
 	D3DXMatrixTranslation(&mtxTrans, m_Pos.x, m_Pos.y, m_Pos.z);
 	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxTrans);
+
 	// ワールドマトリックスの設定
 	pDevice->SetTransform(D3DTS_WORLD, &m_mtxWorld);
+
 	D3DXMATRIX mtxParent;	// 計算用マトリックス
 	// 現在のマテリアルの取得
 	pDevice->GetMaterial(&matDef);
+
 	// 有効だったらモデルを描画する
 	if (m_Enable == true)
 	{
