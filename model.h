@@ -43,7 +43,7 @@ private:
 	LPD3DXBUFFER m_pBuffMat;				// マテリアルへのポインタ
 	DWORD m_dwNumMat;						// マテリアルの数
 	int m_nTexNum;							// モデルのテクスチャの総数
-	int* m_nTexIndx;						// モデルのテクスチャのインデックス
+	std::vector<int> m_nTexIndx;			// モデルのテクスチャのインデックス
 	D3DXVECTOR3 m_OffSet;					// オフセット
 	D3DXVECTOR3 m_Pos;						// 位置
 	D3DXVECTOR3 m_Rot;						// 向き

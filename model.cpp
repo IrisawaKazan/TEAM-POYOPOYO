@@ -16,7 +16,6 @@ CModel::CModel()
 {
 	m_ParentModel = NULL;
 	m_dwNumMat = NULL;
-	m_nTexIndx = NULL;
 	m_nTexNum = NULL;
 	m_pBuffMat = NULL;
 	m_pMesh = NULL;
@@ -56,24 +55,16 @@ HRESULT CModel::Init(const char* ModelFileName)
 	D3DXMATERIAL* pMat;
 	// マテリアルデータへのポインタ
 	pMat = (D3DXMATERIAL*)m_pBuffMat->GetBufferPointer();
-	int TexCount = 0;
-	m_nTexIndx = new int[(int)m_dwNumMat];
-	memset(m_nTexIndx, -1, sizeof(m_nTexIndx));
+
 	for (int nCntMat = 0; nCntMat < (int)m_dwNumMat; nCntMat++)
 	{
-		if (m_nTexIndx[nCntMat] != NULL)
+		int TexIndx = -1;
+		if (pMat[nCntMat].pTextureFilename != NULL)
 		{
-			if (pMat[nCntMat].pTextureFilename != NULL)
-			{
-				TexCount++;
-				CTextureManager* pTexture = CTextureManager::Instance();
-				m_nTexIndx[nCntMat] = pTexture->Register(pMat[nCntMat].pTextureFilename);
-			}
-			else
-			{
-				m_nTexIndx[nCntMat] = -1;
-			}
+			CTextureManager* pTexture = CTextureManager::Instance();
+			TexIndx = pTexture->Register(pMat[nCntMat].pTextureFilename);
 		}
+		m_nTexIndx.push_back(TexIndx);
 	}
 	return S_OK;
 }
@@ -97,11 +88,6 @@ void CModel::Uninit(void)
 	{
 		m_pMesh->Release();
 		m_pMesh = NULL;
-	}
-	if (m_nTexIndx != NULL)
-	{
-		delete m_nTexIndx;
-		m_nTexIndx = NULL;
 	}
 	delete this;
 }
