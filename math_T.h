@@ -50,14 +50,26 @@ template <class T> void ShortCut(const T Condition, T* Out)
 template <class T> void Normalize(const T Condition, T* Out)
 {
 	// Šp“x‚Ì³‹K‰»
-	if (Condition > D3DX_PI)
+	//if (Condition > D3DX_PI)
+	//{
+	//	*Out = -D3DX_PI + (*Out - D3DX_PI);
+	//}
+	//else if (Condition < -D3DX_PI)
+	//{
+	//	*Out = D3DX_PI + (*Out + D3DX_PI);
+	//}
+
+	// ˆê‰ž•ÏX sato Add
+	float angle = fmodf(Condition, D3DX_PI * 2.0f);
+	if (angle > D3DX_PI)
 	{
-		*Out = -D3DX_PI + (*Out - D3DX_PI);
+		angle -= D3DX_PI * 2.0f;
 	}
-	else if (Condition < -D3DX_PI)
+	else if (angle < -D3DX_PI)
 	{
-		*Out = D3DX_PI + (*Out + D3DX_PI);
+		angle += D3DX_PI * 2.0f;
 	}
+	*Out = angle;
 }
 //***************************************
 // üŒ`•âŠÇ

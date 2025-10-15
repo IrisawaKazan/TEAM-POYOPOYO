@@ -14,6 +14,10 @@
 class CPlayer : public CModelCharacter
 {
 public:
+	static constexpr float TEST_MOVE_SPEED = 10.0f;           // プロト用移動スピード sato Add
+	static constexpr float TEST_MOVE_ANGLE = D3DX_PI * -0.5f; // プロト用移動角度 sato Add
+	static constexpr float TEST_MOVE_LIMIT = 1900.0f;         // プロト用移動制限 sato Add
+
 	CPlayer();
 	~CPlayer();
 	HRESULT Init(void);
@@ -22,5 +26,6 @@ public:
 	void Draw(void);
 	static CPlayer* Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot);
 private:
+	void TestMove(void); // プロト用移動処理 sato Add
 };
 #endif

@@ -14,6 +14,9 @@
 class CPlayerManager
 {
 public:
+	static constexpr int NUM_PLAYER = 5; // NPCÇÃêî       sato Add
+	static const D3DXVECTOR3 SPAWN_POS;  // NPCÇÃèoåªà íu sato Add
+
 	CPlayerManager();
 	~CPlayerManager();
 	HRESULT Init(void);
