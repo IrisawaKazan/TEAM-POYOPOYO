@@ -27,5 +27,7 @@ public:
 	static CPlayer* Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot);
 private:
 	void TestMove(void); // プロト用移動処理 sato Add
+	std::unique_ptr<btCollisionShape> m_CollisionShape;
+	std::unique_ptr<btRigidBody> m_RigitBody;		// リジットボディー
 };
 #endif

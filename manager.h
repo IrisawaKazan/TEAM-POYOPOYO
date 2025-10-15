@@ -67,6 +67,7 @@ public:
 	static CFade* GetFade(void) { return m_pFade; };
 	static CShaderFade* GetShaderFade(void) { return m_pFadeShader; };
 	static CLight* GetLight(void) { return m_pLight; };
+	static btDiscreteDynamicsWorld* GetDynamicsWorld(void) { return m_pDynamicsWorld.get(); }
 
 	// プレイヤーをリスポーンさせる
 	static void RespawPlayer(void);
@@ -88,7 +89,13 @@ private:
 	static CShaderFade* m_pFadeShader;			// シェーダフェード
 	static CScene* m_pScene;					// シーンのインスタンス
 	static CFade* m_pFade;						// 画面遷移用のフェードのインスタンス
+	static std::unique_ptr<btDiscreteDynamicsWorld> m_pDynamicsWorld;				// 物理世界
 	static bool m_isPause;						// ポーズ中かどうか
 	static bool m_isClear;						// 敵を全滅させたかどうか
+
+	std::unique_ptr<btDbvtBroadphase> m_pBroadPhase;					// 衝突判定のクラス
+	std::unique_ptr<btDefaultCollisionConfiguration> m_pConfiguration;	// 衝突判定を実行するクラス
+	std::unique_ptr<btSequentialImpulseConstraintSolver> m_pSolver;		// 制約ソルバー
+	std::unique_ptr<btCollisionDispatcher> m_pDispatcher;				// 衝突判定を検出するクラス
 };
 #endif // !_MANAGER_H_

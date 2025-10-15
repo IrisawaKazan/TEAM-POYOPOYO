@@ -106,7 +106,7 @@ CTitleLogo* CTitleLogo::Create(const D3DXVECTOR3 Pos, const D3DXVECTOR3 Rot, con
     pTitleLogo->SetRotasion(Rot);
     pTitleLogo->SetSize(Size);
     pTitleLogo->SetCol(WHITE);
-    //pTitleLogo->SetTexIndx(CLoadTexture::AddRegister(FilePath));
+    pTitleLogo->SetTexIndx(CTextureManager::Instance()->Register(FilePath));
     // •Ô‚·
     return pTitleLogo;
 }

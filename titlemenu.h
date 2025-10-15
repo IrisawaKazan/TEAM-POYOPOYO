@@ -53,7 +53,7 @@ class CStart : public CTitleMenu
 public:
 	// ポーズメニューの規定値を設定
 	struct Config {
-		static constexpr const char* FilePath = "data\\TEXTURE\\Title\\Start.png";	// パス
+		static constexpr const char* FilePath = "data\\TEXTURE\\Title\\start.png";	// パス
 	};
 
 	// コンストラクタ・デストラクタ
@@ -74,7 +74,7 @@ class CExit : public CTitleMenu
 public:
 	// ポーズメニューの規定値を設定
 	struct Config {
-		static constexpr const char* FilePath = "data\\TEXTURE\\Title\\Exit.png";	// パス
+		static constexpr const char* FilePath = "data\\TEXTURE\\Title\\quit01.png";	// パス
 	};
 
 	// コンストラクタ・デストラクタ

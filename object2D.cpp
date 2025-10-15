@@ -24,7 +24,7 @@ CObject2D::CObject2D(int Priority) : CObject(Priority)
 	m_fHeigth = NULL;
 	m_Pos = VEC3_NULL;
 	m_Rot = VEC3_NULL;
-	m_nTexIndx = NULL;
+	m_nTexIndx = -1;
 }
 
 //*********************************************
@@ -280,7 +280,7 @@ void CObject2D::Draw()
 	pDevice->SetStreamSource(0, m_pVertex, 0, sizeof(VERTEX_2D));
 
 	//テクスチャの設定
-	pDevice->SetTexture(0, NULL);
+	pDevice->SetTexture(0, CTextureManager::Instance()->GetAddress(m_nTexIndx));
 	//プレイヤーの描画
 	pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
 }
