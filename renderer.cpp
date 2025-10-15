@@ -26,7 +26,6 @@ CRenderer::CRenderer()
 	m_pD3D = NULL;
 	m_pD3DDevice = NULL;
 	m_d3dpp = {};
-	m_BackBufferCol = BLACK;
 }
 
 //************************************
@@ -196,7 +195,7 @@ void CRenderer::Draw()
 	//画面クリア
 	m_pD3DDevice->Clear(0, NULL,
 		(D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER | D3DCLEAR_STENCIL),
-		m_BackBufferCol, 1.0f, 0);
+		D3DCOLOR_RGBA(92, 64, 51, 0), 1.0f, 0);
 
 	//描画開始
 	if (SUCCEEDED(m_pD3DDevice->BeginScene()))

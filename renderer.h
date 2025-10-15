@@ -55,6 +55,5 @@ private:
 	D3DPRESENT_PARAMETERS m_d3dpp;						// プレゼンテーションパラメータ
 	UINT m_Width;										// Imgui用のWindowの大きさ(W)
 	UINT m_Height;										// Imgui用のWindowの大きさ(H)
-	D3DXCOLOR m_BackBufferCol;							// バックバッファの色
 };
 #endif // !_CRENDERER_H_
