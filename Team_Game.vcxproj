@@ -206,8 +206,15 @@
     <ClInclude Include="player.h" />
     <ClInclude Include="playermanager.h" />
     <ClInclude Include="renderer.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="sound.h" />
     <ClInclude Include="texturemanager.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Team_Game.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="data\ICON\Test.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

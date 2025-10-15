@@ -9,6 +9,7 @@
 #include "renderer.h"
 #include "manager.h"
 #include "debugproc.h"
+#include "resource.h"
 #include <crtdbg.h>
 
 //プロトタイプ宣言
@@ -33,12 +34,12 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hInstancePrev, _
 		0,
 		0,
 		hInstance,
-		LoadIcon(NULL,IDI_APPLICATION),
+		LoadIcon(hInstance, MAKEINTRESOURCE(IDI_ICON1)),
 		LoadCursor(NULL,IDC_ARROW),
 		(HBRUSH)(COLOR_WINDOW + 1),
 		NULL,
 		CLASS_NAME,
-		LoadIcon(NULL,IDI_APPLICATION)
+		LoadIcon(hInstance, MAKEINTRESOURCE(IDI_ICON1))
 	};
 
 	HWND hWnd;
