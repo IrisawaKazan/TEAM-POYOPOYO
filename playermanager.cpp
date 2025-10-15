@@ -29,7 +29,7 @@ HRESULT CPlayerManager::Init(void)
 
 	for (int nCnt = 0; nCnt < NUM_PLAYER; nCnt++)
 	{
-		Info = CPlayer::Create(SPAWN_POS + D3DXVECTOR3(50.0f * nCnt, 0.0f, 0.0f), VEC3_NULL);
+		Info = CPlayer::Create(SPAWN_POS + D3DXVECTOR3(SPAWN_RANGE * nCnt, 0.0f, 0.0f), VEC3_NULL);
 
 		// î•ñ‚ð‘O‚©‚ç’Ç‰Á‚µ‚Ä‚¢‚­
 		m_pPlayer.push_back(Info);
