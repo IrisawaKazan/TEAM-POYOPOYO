@@ -12,6 +12,9 @@
 #include "object3D.h"
 #include "object2D.h"
 #include "objectX.h"
+#include "scene.h"
+#include "fade.h"
+#include "title.h"
 
 // 名前空間
 using namespace std;
@@ -24,7 +27,8 @@ CInputMouse* CManager::m_pInputMouse = NULL;
 CSound* CManager::m_pSound = NULL;
 CCamera* CManager::m_pCamera = NULL;
 CLight* CManager::m_pLight = NULL;
-CPlayerManager* CManager::m_pPlayerManager = NULL;
+CScene* CManager::m_pScene = NULL;
+CFade* CManager::m_pFade = NULL;
 bool CManager::m_isPause = false;
 bool CManager::m_isClear = false;
 
@@ -58,7 +62,6 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, bool bWnd)
 	m_pSound = new CSound;
 	m_pCamera = new CCamera;
 	m_pLight = new CLight;
-	m_pPlayerManager = new CPlayerManager;
 
 	// メモリ確保できたら
 	if (m_Renderer != NULL)
@@ -92,17 +95,16 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, bool bWnd)
 		hr = m_pSound->Init(hWnd);
 	}
 
+	// 暗転係を生成
+	m_pFade = CFade::CreateSingle();
+
 	// ３Dに必要なものを初期化
 	m_pCamera->Init();
 	m_pLight->Init();
-	m_pPlayerManager->Init();
 
-	CObject3D::Create(VEC3_NULL, VEC3_NULL,"data\\TEXTURE\\floor.jpg", D3DXVECTOR2(2000.0f, 1000.0f));
-	CObject3D::Create(D3DXVECTOR3(0.0f,1000.0f,1000.0f), D3DXVECTOR3((-D3DX_PI * 0.5f),0.0f,0.0f),"data\\TEXTURE\\wall.jpg",D3DXVECTOR2(2000.0f,1000.0f));
-	CObject3D::Create(D3DXVECTOR3(-2000.0f,1000.0f,0.0f), D3DXVECTOR3((-D3DX_PI * 0.5f), (-D3DX_PI * 0.5f), 0.0f),"data\\TEXTURE\\wall.jpg",D3DXVECTOR2(1000.0f, 1000.0f));
-	CObject3D::Create(D3DXVECTOR3(2000.0f,1000.0f,0.0f), D3DXVECTOR3((-D3DX_PI * 0.5f), (D3DX_PI * 0.5f), 0.0f), "data\\TEXTURE\\wall.jpg", D3DXVECTOR2(1000.0f, 1000.0f));
+	// タイトル画面に設定
+	CFade::SetFade(new CTitle);
 
-	//CObjectX::Create(VEC3_NULL, VEC3_NULL, "data\\MODEL\\ie.x");
 	return S_OK;
 }
 
@@ -165,12 +167,16 @@ void CManager::Uninit()
 		m_pLight = NULL;
 	}
 
-	// プレイヤーマネージャーの破棄
-	if (m_pPlayerManager != NULL)
+	if (m_pScene != NULL)
 	{
-		m_pPlayerManager->Uninit();
-		delete m_pPlayerManager;
-		m_pPlayerManager = NULL;
+		m_pScene->Uninit();
+		m_pScene = NULL;
+	}
+
+	if (m_pFade != NULL)
+	{
+		m_pFade->Uninit();
+		m_pFade = NULL;
 	}
 
 	// テクスチャマネージャーの破棄
@@ -190,6 +196,16 @@ void CManager::Update()
 
 	// ライトのアップデート
 	m_pLight->Update();
+
+	if (m_pScene != NULL)
+	{
+		m_pScene->Update();
+	}
+
+	if (m_pFade != NULL)
+	{
+		m_pFade->Update();
+	}
 
 	if (m_isPause == false)
 	{
@@ -232,4 +248,20 @@ void CManager::Draw()
 //***************************************
 void CManager::RespawPlayer(void)
 {
+}
+
+//***************************************
+// シーンを切り替える
+//***************************************
+void CManager::SetScene(CScene* Scene)
+{
+	if (m_pScene != NULL)
+	{
+		m_pSound->Stop();
+		m_pScene->Uninit();
+		m_pScene = NULL;
+		CObject::ReleaseAll();
+	}
+	m_pScene = Scene;
+	m_pScene->Init();
 }

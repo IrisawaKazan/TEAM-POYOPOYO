@@ -11,6 +11,8 @@
 #include "Object2D.h"
 #include "debugproc.h"
 #include "manager.h"
+#include "scene.h"
+#include "fade.h"
 
 // 名前空間
 using namespace std;
@@ -207,6 +209,9 @@ void CRenderer::Draw()
 		// オブジェクトの描画
 		CObject::DrawAll();
 
+		CManager::GetScene()->Draw();
+		CManager::GetFade()->Draw();
+
 		CDebugProc::print("FPS[%d]\n", GetFPS());
 		CDebugProc::print("カメラの向きX.Y.Z	[%.2f] [%.2f] [%.2f]\n", CManager::GetCamera()->GetRot().x, CManager::GetCamera()->GetRot().y, CManager::GetCamera()->GetRot().z);
 
@@ -235,22 +240,6 @@ void CRenderer::onWireFrame()
 void CRenderer::offWireFrame()
 {
 	m_pD3DDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID);
-}
-
-//*************************************
-// フォグを有効にする
-//*************************************
-void CRenderer::onFog()
-{
-	SetupVertexFog(D3DCOLOR_XRGB(200, 200, 200), D3DFOG_LINEAR, TRUE, 0.01f);
-}
-
-//*************************************
-// フォグを無効にする
-//*************************************
-void CRenderer::offFog()
-{
-	m_pD3DDevice->SetRenderState(D3DRS_FOGENABLE, FALSE);
 }
 
 //*************************************

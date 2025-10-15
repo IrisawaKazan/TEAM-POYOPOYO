@@ -30,11 +30,8 @@ public:
 	// セッター
 	void onWireFrame();
 	void offWireFrame();
-	void onFog();
-	void offFog();
 	void ToggleFullscreen(HWND hWnd, bool* isFullScrean);
 	void SetupVertexFog(DWORD Color, DWORD Mode, BOOL UseRange, FLOAT Density);
-	void ResetDevice(void);
 	void SetSize(UINT W, UINT H) { m_Width = W, m_Height = H; }
 
 	// ゲッター

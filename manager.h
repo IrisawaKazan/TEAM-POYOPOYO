@@ -23,6 +23,8 @@
 // 前方宣言
 class CObject3D;
 class CShaderFade;
+class CScene;
+class CFade;
 
 // クラスを定義
 class CManager
@@ -61,11 +63,16 @@ public:
 	static CSound* GetSound(void) { return m_pSound; };
 	static CCamera* GetCamera(void) { return m_pCamera; };
 	static bool GetIsClear(void) { return m_isClear; };
+	static CScene* GetScene(void) { return m_pScene; };
+	static CFade* GetFade(void) { return m_pFade; };
 	static CShaderFade* GetShaderFade(void) { return m_pFadeShader; };
 	static CLight* GetLight(void) { return m_pLight; };
 
 	// プレイヤーをリスポーンさせる
 	static void RespawPlayer(void);
+
+	// セッター
+	static void SetScene(CScene* Scene);
 
 	// 条件式の関数か
 	static bool isPause(void) { return m_isPause; };
@@ -79,7 +86,8 @@ private:
 	static CCamera* m_pCamera;					// カメラのインスタンス
 	static CLight* m_pLight;					// ライトのインスタンス
 	static CShaderFade* m_pFadeShader;			// シェーダフェード
-	static CPlayerManager* m_pPlayerManager;	// プレイヤーマネージャー
+	static CScene* m_pScene;					// シーンのインスタンス
+	static CFade* m_pFade;						// 画面遷移用のフェードのインスタンス
 	static bool m_isPause;						// ポーズ中かどうか
 	static bool m_isClear;						// 敵を全滅させたかどうか
 };
