@@ -123,7 +123,7 @@ CStart::~CStart()
 HRESULT CStart::Init(void)
 {
 	CTitleMenu::Init();
-	//CTitleMenu::SetTexIndx(CLoadTexture::AddRegister(Config::FilePath));
+	CTitleMenu::SetTexIndx(CTextureManager::Instance()->Register(Config::FilePath));
 	return S_OK;
 }
 
@@ -221,7 +221,7 @@ CExit::~CExit()
 HRESULT CExit::Init(void)
 {
 	CTitleMenu::Init();
-	//CTitleMenu::SetTexIndx(CLoadTexture::AddRegister(Config::FilePath));
+	CTitleMenu::SetTexIndx(CTextureManager::Instance()->Register(Config::FilePath));
 	return S_OK;
 }
 

@@ -15,6 +15,7 @@
 #include "fade.h"
 #include "game.h"
 #include "title.h"
+#include "texturemanager.h"
 
 // ‹K’è’l‚ðÝ’è
 const D3DXCOLOR CPause::Config::DefoultColor = { 1.0f,1.0f,1.0f,0.5f };
@@ -120,6 +121,7 @@ CContinue::~CContinue()
 HRESULT CContinue::Init(void)
 {
 	CPause::Init();
+	CObject2D::SetTexIndx(CTextureManager::Instance()->Register(Config::FilePath));
 	return S_OK;
 }
 
@@ -208,6 +210,7 @@ CRetry::~CRetry()
 HRESULT CRetry::Init(void)
 {
 	CPause::Init();
+	CObject2D::SetTexIndx(CTextureManager::Instance()->Register(Config::FilePath));
 	return S_OK;
 }
 
@@ -300,6 +303,7 @@ CQuit::~CQuit()
 HRESULT CQuit::Init(void)
 {
 	CPause::Init();
+	CObject2D::SetTexIndx(CTextureManager::Instance()->Register(Config::FilePath));
 	return S_OK;
 }
 

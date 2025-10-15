@@ -36,7 +36,7 @@ public:
 			static const D3DXVECTOR3 Dest;													// 目標
 			static const D3DXVECTOR2 Size;													// 大きさ
 			static constexpr int AnimFrame = 60;											// アニメーションフレーム
-			static constexpr const char* FilePath = "data\\TEXTURE\\Title\\TitleLogo.png";	// テクスチャのパス
+			static constexpr const char* FilePath = "data\\TEXTURE\\Title\\title.png";	// テクスチャのパス
 		};
 	};
 
