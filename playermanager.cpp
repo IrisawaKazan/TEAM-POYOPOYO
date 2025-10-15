@@ -12,7 +12,7 @@ const D3DXVECTOR3 CPlayerManager::SPAWN_POS = D3DXVECTOR3(-1800.0f, 0.0f, 0.0f);
 // コンストラクタ
 CPlayerManager::CPlayerManager()
 {
-
+	
 }
 
 // デストラクタ

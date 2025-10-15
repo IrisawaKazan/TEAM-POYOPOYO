@@ -162,6 +162,7 @@
     <ClCompile Include="model.cpp" />
     <ClCompile Include="modelmanager.cpp" />
     <ClCompile Include="motion.cpp" />
+    <ClCompile Include="navi.cpp" />
     <ClCompile Include="object.cpp" />
     <ClCompile Include="object2D.cpp" />
     <ClCompile Include="object3D.cpp" />
@@ -204,6 +205,7 @@
     <ClInclude Include="model.h" />
     <ClInclude Include="modelmanager.h" />
     <ClInclude Include="motion.h" />
+    <ClInclude Include="navi.h" />
     <ClInclude Include="object.h" />
     <ClInclude Include="object2D.h" />
     <ClInclude Include="object3D.h" />
