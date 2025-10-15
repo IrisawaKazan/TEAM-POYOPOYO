@@ -273,9 +273,6 @@ void CObject2D::Draw()
 	pRenderer = CManager::GetRenderer();
 	LPDIRECT3DDEVICE9 pDevice = pRenderer->GetDevice();
 
-	// フォグを切る
-	pRenderer->offFog();
-
 	//頂点フォーマットの設定
 	pDevice->SetFVF(FVF_VERTEX_2D);
 
@@ -286,9 +283,6 @@ void CObject2D::Draw()
 	pDevice->SetTexture(0, NULL);
 	//プレイヤーの描画
 	pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
-
-	// フォグをつける
-	pRenderer->onFog();
 }
 
 //*********************************************

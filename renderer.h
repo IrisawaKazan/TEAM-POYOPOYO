@@ -30,11 +30,8 @@ public:
 	// セッター
 	void onWireFrame();
 	void offWireFrame();
-	void onFog();
-	void offFog();
 	void ToggleFullscreen(HWND hWnd, bool* isFullScrean);
 	void SetupVertexFog(DWORD Color, DWORD Mode, BOOL UseRange, FLOAT Density);
-	void ResetDevice(void);
 	void SetSize(UINT W, UINT H) { m_Width = W, m_Height = H; }
 
 	// ゲッター
@@ -55,6 +52,5 @@ private:
 	D3DPRESENT_PARAMETERS m_d3dpp;						// プレゼンテーションパラメータ
 	UINT m_Width;										// Imgui用のWindowの大きさ(W)
 	UINT m_Height;										// Imgui用のWindowの大きさ(H)
-	D3DXCOLOR m_BackBufferCol;							// バックバッファの色
 };
 #endif // !_CRENDERER_H_
