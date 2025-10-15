@@ -245,6 +245,7 @@ void CCamera::UpdateMove(void)
 	case MODE::BELTSCROLL:
 		// 横移動 sato Add
 		UpdateKeyboardMoveSide();
+		UpdateJoyPadMoveSide();
 		break;
 	}
 }
@@ -357,6 +358,32 @@ void CCamera::UpdateKeyboardMoveSide(void)
 	// キーボードの入力を取得
 	bool Left = m_pInputKeyboard->GetPress(DIK_A);
 	bool Right = m_pInputKeyboard->GetPress(DIK_D);
+
+	// 左右に動かす
+	if (Left == true)
+	{
+		m_posRDest.x -= Config::MoveSpeedSide;
+	}
+	if (Right == true)
+	{
+		m_posRDest.x += Config::MoveSpeedSide;
+	}
+
+	// Clampで範囲内に収める
+	m_posRDest.x = Clamp(m_posRDest.x, Config::SideMoveMin, Config::SideMoveMax);
+
+	// 座標を更新
+	UpdateCameraPosition();
+}
+
+//***************************************
+// カメラのキーボード移動 sato Add
+//***************************************
+void CCamera::UpdateJoyPadMoveSide(void)
+{
+	// コントローラーの入力を取得
+	bool Left = m_pInputJoypad->GetPress(CInputJoypad::JOYKEY_L2);
+	bool Right = m_pInputJoypad->GetPress(CInputJoypad::JOYKEY_R2);
 
 	// 左右に動かす
 	if (Left == true)

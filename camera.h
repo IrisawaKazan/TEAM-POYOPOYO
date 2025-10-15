@@ -97,7 +97,8 @@ public:
 	void UpdateMove(void);
 	void UpdateMouseMove(void);
 	void UpdateJoyPadMove(void);
-	void UpdateKeyboardMoveSide(void);      
+	void UpdateKeyboardMoveSide(void);
+	void UpdateJoyPadMoveSide(void);
 	void UpdateCameraPosition(void);
 	void UpdateCameraPositionV(void);
 	void UpdateCameraPositionR(void);
