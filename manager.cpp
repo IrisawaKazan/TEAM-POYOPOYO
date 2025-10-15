@@ -20,6 +20,7 @@
 using namespace std;
 
 // 静的メンバ変数宣言
+unique_ptr<btDiscreteDynamicsWorld> CManager::m_pDynamicsWorld = NULL;
 CRenderer* CManager::m_Renderer = NULL;
 CInputKeyboard* CManager::m_pInputKeyboard = NULL;
 CInputJoypad* CManager::m_pInputJoypad = NULL;
@@ -62,6 +63,18 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, bool bWnd)
 	m_pSound = new CSound;
 	m_pCamera = new CCamera;
 	m_pLight = new CLight;
+
+	// 物理世界に必要なポインタを生成
+	m_pBroadPhase = make_unique<btDbvtBroadphase>();
+	m_pConfiguration = make_unique<btDefaultCollisionConfiguration>();
+	m_pDispatcher = make_unique<btCollisionDispatcher>(m_pConfiguration.get());
+	m_pSolver = make_unique<btSequentialImpulseConstraintSolver>();
+
+	// 物理世界生成
+	m_pDynamicsWorld = make_unique<btDiscreteDynamicsWorld>(m_pDispatcher.get(), m_pBroadPhase.get(), m_pSolver.get(), m_pConfiguration.get());
+
+	// 重力を設定
+	m_pDynamicsWorld->setGravity({ 0.0f,-5.0f,0.0f });
 
 	// メモリ確保できたら
 	if (m_Renderer != NULL)
@@ -193,6 +206,9 @@ void CManager::Update()
 {
 	// カメラのアップデート
 	m_pCamera->Update();
+
+	// 物理世界でシュミレーションを実行
+	m_pDynamicsWorld->stepSimulation(btScalar(GetFPS()), 10, 0.016f);
 
 	// ライトのアップデート
 	m_pLight->Update();

@@ -38,6 +38,7 @@
 #include <sstream>
 #include <chrono>
 #include <ctime>
+#include <bullet/btBulletDynamicsCommon.h>
 
 //ƒ‰ƒCƒuƒ‰ƒŠ‚ÌƒŠƒ“ƒN
 #pragma comment(lib,"d3d9.lib")

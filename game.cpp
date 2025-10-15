@@ -37,6 +37,8 @@ CPlayerManager* CGame::m_pPlayerManager = NULL;
 D3DXVECTOR3 CGame::m_WildFirePos = { 143.0f,350.0f ,2500 };
 bool CGame::m_isPause = false;
 
+using namespace std;
+
 //***************************************
 // コンストラクタ
 //***************************************
@@ -70,6 +72,31 @@ HRESULT CGame::Init(void)
 #ifdef _DEBUG
 #else
 #endif // _DEBUG
+
+	{
+		m_GroundShape = make_unique<btBoxShape>(btVector3(btScalar(5000), btScalar(10), btScalar(5000)));
+
+		btTransform groundTransform;
+		groundTransform.setIdentity();
+		groundTransform.setOrigin(btVector3(0, -10, 0));
+
+		btScalar mass(0);
+
+		//rigidbody is dynamic if and only if mass is non zero, otherwise static
+		bool isDynamic = (mass != 0.f);
+
+		btVector3 localInertia(0, 0, 0);
+		if (isDynamic)
+			m_GroundShape->calculateLocalInertia(mass, localInertia);
+
+		//using motionstate is optional, it provides interpolation capabilities, and only synchronizes 'active' objects
+		btDefaultMotionState* motionState = new btDefaultMotionState(groundTransform);
+		btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, motionState, m_GroundShape.get(), localInertia);
+		m_RigitBody = make_unique<btRigidBody>(rbInfo);
+
+		//add the body to the dynamics world
+		CManager::GetDynamicsWorld()->addRigidBody(m_RigitBody.get());
+	}
 
 	return S_OK;
 }
@@ -114,6 +141,17 @@ void CGame::Uninit(void)
 	{
 		m_pPauseManager->Uninit();
 		m_pPauseManager = NULL;
+	}
+
+	// 剛体の削除
+	if (m_RigitBody)
+	{
+		CManager::GetDynamicsWorld()->removeRigidBody(m_RigitBody.get());
+		if (m_RigitBody->getMotionState())
+		{
+			delete m_RigitBody->getMotionState();
+		}
+		m_RigitBody.reset();
 	}
 
 	delete this;

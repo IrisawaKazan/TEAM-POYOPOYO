@@ -26,6 +26,27 @@ HRESULT CPlayer::Init(void)
 {
 	CModelCharacter::Init("data\\Model\\MOTION\\player.txt",5.0f);
 
+	m_CollisionShape = std::make_unique<btCapsuleShape>(btScalar(7.0f), btScalar(20.0f));
+
+	btScalar mass = 1.0f; // 質量を1以上にすることで動的剛体になる
+	btVector3 inertia(0, 0, 0);
+	m_CollisionShape->calculateLocalInertia(mass, inertia);
+
+	btTransform transform;
+	transform.setIdentity();
+	transform.setOrigin(btVector3(GetPos().x, GetPos().y + 20.0f, GetPos().z));
+
+	btDefaultMotionState* motionState = new btDefaultMotionState(transform);
+	btRigidBody::btRigidBodyConstructionInfo info(mass, motionState, m_CollisionShape.get());
+
+	m_RigitBody = std::make_unique<btRigidBody>(info);
+	m_RigitBody->setLinearFactor(btVector3(1, 1, 1));
+
+	m_RigitBody->setUserPointer(this);
+	m_RigitBody->setActivationState(DISABLE_DEACTIVATION);
+
+	CManager::GetDynamicsWorld()->addRigidBody(m_RigitBody.get());
+
 	// 移動処理 (プロト用) sato Add
 	CModelCharacter::SetRot(D3DXVECTOR3(0.0f, TEST_MOVE_ANGLE, 0.0f));
 	CModelCharacter::SetRotDest(D3DXVECTOR3(0.0f, TEST_MOVE_ANGLE, 0.0f));
@@ -35,13 +56,40 @@ HRESULT CPlayer::Init(void)
 // 破棄
 void CPlayer::Uninit(void)
 {
+	// 剛体の削除
+	if (m_RigitBody)
+	{
+		CManager::GetDynamicsWorld()->removeRigidBody(m_RigitBody.get());
+		if (m_RigitBody->getMotionState())
+		{
+			delete m_RigitBody->getMotionState();
+		}
+		m_RigitBody.reset();
+	}
+
+	// 衝突形状の削除
+	m_CollisionShape.reset();
+
 	CModelCharacter::Uninit();
 }
 
 // 更新
 void CPlayer::Update(void)
 {
-	TestMove(); // プロト用移動処理 sato Add
+	//TestMove(); // プロト用移動処理 sato Add
+	btVector3 moveDir(10, 0, 0);
+	btVector3 newPos;
+
+	btTransform trans;
+	m_RigitBody->getMotionState()->getWorldTransform(trans);
+
+	moveDir.setY(m_RigitBody->getLinearVelocity().y());
+	m_RigitBody->setLinearVelocity(moveDir);
+
+	newPos = trans.getOrigin();
+	//newPos.setY(0.0f);
+	SetPos(D3DXVECTOR3(newPos.x(), newPos.y() - 20.0f, newPos.z()));
+
 	CModelCharacter::Update();
 }
 
