@@ -32,6 +32,7 @@ const D3DXVECTOR3 CGame::Config::Camera::PosV = { 119.9f,60.0f,-1900.0f };
 const D3DXVECTOR3 CGame::Config::Sky::Pos = VEC3_NULL;
 
 // 静的メンバ変数
+CPauseManager* CGame::m_pPauseManager = NULL;
 CPlayerManager* CGame::m_pPlayerManager = NULL;
 D3DXVECTOR3 CGame::m_WildFirePos = { 143.0f,350.0f ,2500 };
 bool CGame::m_isPause = false;
@@ -58,6 +59,9 @@ HRESULT CGame::Init(void)
 	m_pPlayerManager = new CPlayerManager;
 
 	m_pPlayerManager->Init();
+
+	// シングルトンを生成
+	m_pPauseManager = CPauseManager::CreateSingleton();
 
 	CObject3D::Create(VEC3_NULL, VEC3_NULL,"data\\TEXTURE\\floor.jpg", D3DXVECTOR2(2000.0f, 1000.0f));
 	CObject3D::Create(D3DXVECTOR3(0.0f,1000.0f,1000.0f), D3DXVECTOR3((-D3DX_PI * 0.5f),0.0f,0.0f),"data\\TEXTURE\\wall.jpg",D3DXVECTOR2(2000.0f,1000.0f));
@@ -88,10 +92,10 @@ void CGame::Update(void)
 		}
 	}
 #endif // DEBUG
-	//if (m_pPauseManager != NULL)
-	//{
-	//	m_pPauseManager->Update();
-	//}
+	if (m_pPauseManager != NULL)
+	{
+		m_pPauseManager->Update();
+	}
 }
 
 //***************************************
@@ -102,9 +106,14 @@ void CGame::Uninit(void)
 	// プレイヤーマネージャーの破棄
 	if (m_pPlayerManager != NULL)
 	{
-		m_pPlayerManager->Uninit();
 		delete m_pPlayerManager;
 		m_pPlayerManager = NULL;
+	}
+
+	if (m_pPauseManager != NULL)
+	{
+		m_pPauseManager->Uninit();
+		m_pPauseManager = NULL;
 	}
 
 	delete this;

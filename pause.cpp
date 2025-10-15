@@ -8,10 +8,13 @@
 // インクルード
 #include "pause.h"
 #include "manager.h"
-#include "texmanager.h"
 #include "pausemanager.h"
 #include "math_T.h"
-#include "tutorial.h"
+#include "scene.h"
+#include "manager.h"
+#include "fade.h"
+#include "game.h"
+#include "title.h"
 
 // 規定値を設定
 const D3DXCOLOR CPause::Config::DefoultColor = { 1.0f,1.0f,1.0f,0.5f };
@@ -65,9 +68,7 @@ void CPause::Update(void)
 void CPause::Draw(void)
 {
 	if (CManager::isPause() == false) return;
-	CManager::GetRenderer()->offFog();
 	CObject2D::Draw();
-	CManager::GetRenderer()->onFog();
 }
 
 //***************************************
@@ -119,7 +120,6 @@ CContinue::~CContinue()
 HRESULT CContinue::Init(void)
 {
 	CPause::Init();
-	CObject2D::SetTexIndx(CLoadTexture::AddRegister(Config::FilePath));
 	return S_OK;
 }
 
@@ -163,7 +163,7 @@ void CContinue::Update(void)
 		CPause::SetCol(CPause::Config::SelectColor);
 		if (CManager::GetInputKeyboard()->GetTrigger(DIK_RETURN) == true || CManager::GetInputJoypad()->GetTrigger(CInputJoypad::JOYKEY_A) == true)
 		{
-			CManager::GetSound()->Play(CSound::LABEL_ENTER);
+			//CManager::GetSound()->Play(CSound::LABEL_ENTER);
 			CManager::OffPause();
 		}
 	}
@@ -208,7 +208,6 @@ CRetry::~CRetry()
 HRESULT CRetry::Init(void)
 {
 	CPause::Init();
-	CObject2D::SetTexIndx(CLoadTexture::AddRegister(Config::FilePath));
 	return S_OK;
 }
 
@@ -254,13 +253,8 @@ void CRetry::Update(void)
 		{
 			if (CManager::GetScene()->GetMode() == CScene::MODE::MODE_GAME)
 			{
-				CManager::GetSound()->Play(CSound::LABEL_ENTER);
+				//CManager::GetSound()->Play(CSound::LABEL_ENTER);
 				CFade::SetFade(new CGame);
-			}
-			else if (CManager::GetScene()->GetMode() == CScene::MODE::MODE_TUTORIAL)
-			{
-				CManager::GetSound()->Play(CSound::LABEL_ENTER);
-				CFade::SetFade(new CTutorial);
 			}
 			CManager::OffPause();
 		}
@@ -306,7 +300,6 @@ CQuit::~CQuit()
 HRESULT CQuit::Init(void)
 {
 	CPause::Init();
-	CObject2D::SetTexIndx(CLoadTexture::AddRegister(Config::FilePath));
 	return S_OK;
 }
 
@@ -350,7 +343,7 @@ void CQuit::Update(void)
 		CPause::SetCol(CPause::Config::SelectColor);
 		if (CManager::GetInputKeyboard()->GetTrigger(DIK_RETURN) == true || CManager::GetInputJoypad()->GetTrigger(CInputJoypad::JOYKEY_A) == true)
 		{
-			CManager::GetSound()->Play(CSound::LABEL_ENTER);
+			//CManager::GetSound()->Play(CSound::LABEL_ENTER);
 			CFade::SetFade(new CTitle);
 			CManager::OffPause();
 		}

@@ -90,6 +90,7 @@ public:
 	static bool GetPause(void) { return m_isPause; };
 private:
 	// 静的メンバ変数
+	static CPauseManager* m_pPauseManager;		// ポーズマネージャーへのポインタ
 	static CPlayerManager* m_pPlayerManager;	// プレイヤーマネージャー
 	static D3DXVECTOR3 m_WildFirePos;			// 山火事の位置の配列
 	static bool m_isPause;						// ポーズ中かどうか
