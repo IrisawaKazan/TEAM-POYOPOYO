@@ -93,15 +93,20 @@ void CPlayer::Update(void)
 	float length = D3DXVec3Length(&dir);
 	D3DXVec3Normalize(&dir, &dir);
 
-	if (length < 0.5f)
-	{
+	if (length < TEST_MOVE_STOP)
+	{// 停止
 		moveDir.setX(0.0f);
 		moveDir.setZ(0.0f);
 	}
 	else
-	{
+	{// 移動
 		moveDir.setX(dir.x * TEST_MOVE_SPEED);
 		moveDir.setZ(dir.z * TEST_MOVE_SPEED);
+
+		// クリック位置に向く
+		float targetRotY = atan2f(-dir.x, -dir.z);
+		D3DXVECTOR3 rot = D3DXVECTOR3(0.0f, targetRotY, 0.0f);
+		SetRotDest(rot);
 	}
 
 	moveDir.setY(m_RigitBody->getLinearVelocity().y());
