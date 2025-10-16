@@ -18,7 +18,7 @@
 //--------------------------------
 // 生成
 //--------------------------------
-CNavi* CNavi::Create(D3DXVECTOR2 size)
+CNavi* CNavi::Create(const char* filePath, D3DXVECTOR2 size)
 {
 	// インスタンスの生成
 	CNavi* pNavi = new CNavi;
@@ -27,6 +27,7 @@ CNavi* CNavi::Create(D3DXVECTOR2 size)
 		return nullptr;
 	}
 
+	pNavi->SetFilePath(filePath);
 	pNavi->SetSize(size);
 
 	// 初期化
@@ -45,14 +46,12 @@ HRESULT CNavi::Init(void)
 {
 	// 親クラスの初期化
 	CObject3D::Init();
-
-	SetFilePath("data/TEXTURE/MagicCircle.jpg");
 	
 	// レイを作成
 	CreateRay(CManager::GetInputMouse()->GetPos());
 
 	// 初期位置を設定
-	SetPosition(PlaneIntersect(0.1f));
+	SetPosition(PlaneIntersect(HEIGHT));
 	return S_OK;
 }
 
@@ -73,7 +72,7 @@ void CNavi::Update(void)
 	CreateRay(CManager::GetInputMouse()->GetPos());
 
 	// 位置を更新
-	SetPosition(PlaneIntersect(0.1f));
+	SetPosition(PlaneIntersect(HEIGHT));
 
 	// 親クラスの更新
 	CObject3D::Update();
