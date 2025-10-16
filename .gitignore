@@ -418,3 +418,11 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+
+# Executables
+*.exe
+*.out
+*.app
+/.vs
+/Debug
+/Release
