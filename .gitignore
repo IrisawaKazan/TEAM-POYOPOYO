@@ -426,3 +426,4 @@ FodyWeavers.xsd
 /.vs
 /Debug
 /Release
+/*.exe
