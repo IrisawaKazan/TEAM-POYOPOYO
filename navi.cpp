@@ -76,6 +76,11 @@ void CNavi::Update(void)
 
 	// 親クラスの更新
 	CObject3D::Update();
+
+	if (CManager::GetInputMouse()->OnDown(0))
+	{// 左クリックしたとき
+		m_clickPos = GetPos(); // クリックした位置を保存
+	}
 }
 
 //--------------------------------
