@@ -14,7 +14,7 @@
 class CNavi : public CObject3D
 {
 public:
-	CNavi() : CObject3D(4), m_RayPos{ 0.0f,0.0f,0.0f }, m_RayDir{ 0.0f,0.0f,0.0f } {};
+	CNavi() : CObject3D(4), m_RayPos{ 0.0f,0.0f,0.0f }, m_RayDir{ 0.0f,0.0f,0.0f }, m_clickPos{ 0.0f,0.0f,0.0f } {};
 	~CNavi() {};
 	static CNavi* Create(const char* filePath, D3DXVECTOR2 size);
 
@@ -22,6 +22,8 @@ public:
 	void Uninit(void) override;
 	void Update(void) override;
 	void Draw(void) override;
+
+	D3DXVECTOR3 GetClickPos(void) const { return m_clickPos; }
 
 private:
 	void CreateRay(D3DXVECTOR2 mousePos);
@@ -31,4 +33,6 @@ private:
 
 	D3DXVECTOR3 m_RayPos; // レイの始点
 	D3DXVECTOR3 m_RayDir; // レイの方向
+
+	D3DXVECTOR3 m_clickPos; // クリックした位置
 };
