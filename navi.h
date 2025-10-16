@@ -6,15 +6,15 @@
 //------------------------------------
 #pragma once
 
-#include "objectbillboard.h"
+#include "object3D.h"
 
 //--------------------------------
 // ナビゲーションマーカーのクラス
 //--------------------------------
-class CNavi : public CObjectBillBoard
+class CNavi : public CObject3D
 {
 public:
-	CNavi() : m_RayPos{ 0.0f,0.0f,0.0f }, m_RayDir{ 0.0f,0.0f,0.0f } {};
+	CNavi() : CObject3D(4), m_RayPos{ 0.0f,0.0f,0.0f }, m_RayDir{ 0.0f,0.0f,0.0f } {};
 	~CNavi() {};
 	static CNavi* Create(D3DXVECTOR2 size);
 

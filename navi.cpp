@@ -44,13 +44,15 @@ CNavi* CNavi::Create(D3DXVECTOR2 size)
 HRESULT CNavi::Init(void)
 {
 	// 親クラスの初期化
-	CObjectBillBoard::Init();
+	CObject3D::Init();
+
+	SetFilePath("data/TEXTURE/MagicCircle.jpg");
 	
 	// レイを作成
 	CreateRay(CManager::GetInputMouse()->GetPos());
 
 	// 初期位置を設定
-	SetPosition(PlaneIntersect(0.0f));
+	SetPosition(PlaneIntersect(0.1f));
 	return S_OK;
 }
 
@@ -59,7 +61,7 @@ HRESULT CNavi::Init(void)
 //--------------------------------
 void CNavi::Uninit(void)
 {
-	CObjectBillBoard::Uninit();
+	CObject3D::Uninit();
 }
 
 //--------------------------------
@@ -71,10 +73,10 @@ void CNavi::Update(void)
 	CreateRay(CManager::GetInputMouse()->GetPos());
 
 	// 位置を更新
-	SetPosition(PlaneIntersect(0.0f));
+	SetPosition(PlaneIntersect(0.1f));
 
 	// 親クラスの更新
-	CObjectBillBoard::Update();
+	CObject3D::Update();
 }
 
 //--------------------------------
@@ -82,7 +84,7 @@ void CNavi::Update(void)
 //--------------------------------
 void CNavi::Draw(void)
 {
-	CObjectBillBoard::Draw();
+	CObject3D::Draw();
 }
 
 //--------------------------------
