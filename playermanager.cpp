@@ -7,7 +7,7 @@
 #include "playermanager.h"
 
 // 静的メンバ変数の定義
-const D3DXVECTOR3 CPlayerManager::SPAWN_POS = D3DXVECTOR3(-1800.0f, 0.0f, 0.0f); // NPCの出現位置 sato Add
+const D3DXVECTOR3 CPlayerManager::SPAWN_POS = D3DXVECTOR3(-100.0f, 0.0f, 0.0f); // NPCの出現位置 sato Add
 
 // コンストラクタ
 CPlayerManager::CPlayerManager()

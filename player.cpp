@@ -77,7 +77,7 @@ void CPlayer::Uninit(void)
 void CPlayer::Update(void)
 {
 	//TestMove(); // ƒvƒƒg—pˆÚ“®ˆ— sato Add
-	btVector3 moveDir(10, 0, 0);
+	btVector3 moveDir(0, 0, 0);
 	btVector3 newPos;
 
 	btTransform trans;
@@ -116,7 +116,6 @@ CPlayer* CPlayer::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 	{
 		return nullptr;
 	}
-
 }
 
 //*******************************

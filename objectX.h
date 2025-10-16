@@ -43,6 +43,7 @@ public:
 	void SetAlpha(const float Alpha) { m_fAlpha = Alpha; };
 	void SetRotMtx(D3DXMATRIX mtxRot) { m_mtxRot = mtxRot; };
 	void SetParentMtx(D3DXMATRIX* mtxParent) { m_pMtxParent = mtxParent; };
+	void SetFilePath(std::string Path) { m_FilePath = Path; }
 
 	// ê∂ê¨
 	static CObjectX* Create(D3DXVECTOR3 Pos, D3DXVECTOR3 Rot, std::string Path);
