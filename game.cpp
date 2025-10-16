@@ -13,11 +13,8 @@
 #include "pausemanager.h"
 #include "math.h"
 #include "object3D.h"
-<<<<<<< HEAD
 #include "uplift.h"
-=======
 #include "navi.h"
->>>>>>> dd2e1673a5719847d7caeaf6438a82c0ef9b7fcb
 
 // 規定値を設定
 // プレイヤー
@@ -67,13 +64,11 @@ HRESULT CGame::Init(void)
 	CObject3D::Create(D3DXVECTOR3(0.0f,1000.0f,1000.0f), D3DXVECTOR3((-D3DX_PI * 0.5f),0.0f,0.0f),"data\\TEXTURE\\wall.jpg",D3DXVECTOR2(2000.0f,1000.0f));
 	CObject3D::Create(D3DXVECTOR3(-2000.0f,1000.0f,0.0f), D3DXVECTOR3((-D3DX_PI * 0.5f), (-D3DX_PI * 0.5f), 0.0f),"data\\TEXTURE\\wall.jpg",D3DXVECTOR2(1000.0f, 1000.0f));
 	CObject3D::Create(D3DXVECTOR3(2000.0f,1000.0f,0.0f), D3DXVECTOR3((-D3DX_PI * 0.5f), (D3DX_PI * 0.5f), 0.0f), "data\\TEXTURE\\wall.jpg", D3DXVECTOR2(1000.0f, 1000.0f));
-<<<<<<< HEAD
+
 	CUpLift::Create(VEC3_NULL, {0.0f,1.0f,0.0f},100.0f);
 
-=======
-
 	CNavi::Create(D3DXVECTOR2(100.0f, 100.0f)); // sato Add
->>>>>>> dd2e1673a5719847d7caeaf6438a82c0ef9b7fcb
+
 #ifdef _DEBUG
 #else
 #endif // _DEBUG
