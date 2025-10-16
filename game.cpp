@@ -15,12 +15,6 @@
 #include "object3D.h"
 
 // 規定値を設定
-// 山
-const D3DXVECTOR3 CGame::Config::MeshCylinder::Pos = {0.0f,700.0f,0.0f};
-const D3DXVECTOR3 CGame::Config::MeshCylinder::Rot = { 0.0f,0.0f,0.0f };
-// 川
-const D3DXVECTOR3 CGame::Config::River::Pos = { 0.0f, -20.0f, -2250.0f };
-const D3DXVECTOR2 CGame::Config::River::Size = { 2000.0f, 5000.0f };
 // プレイヤー
 const D3DXVECTOR3 CGame::Config::Player::Pos = { 120.0f,0.0f,-1700.0f };
 const D3DXVECTOR3 CGame::Config::Player::Rot = { 0.0f,D3DX_PI,0.0f };
@@ -34,7 +28,6 @@ const D3DXVECTOR3 CGame::Config::Sky::Pos = VEC3_NULL;
 // 静的メンバ変数
 CPauseManager* CGame::m_pPauseManager = NULL;
 CPlayerManager* CGame::m_pPlayerManager = NULL;
-D3DXVECTOR3 CGame::m_WildFirePos = { 143.0f,350.0f ,2500 };
 bool CGame::m_isPause = false;
 
 using namespace std;
