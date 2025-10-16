@@ -67,7 +67,7 @@ HRESULT CGame::Init(void)
 
 	CUpLift::Create(VEC3_NULL, {0.0f,1.0f,0.0f},100.0f);
 
-	CNavi::Create(D3DXVECTOR2(100.0f, 100.0f)); // sato Add
+	CNavi::Create("data/TEXTURE/MagicCircle.jpg", D3DXVECTOR2(100.0f, 100.0f)); // sato Add
 
 #ifdef _DEBUG
 #else

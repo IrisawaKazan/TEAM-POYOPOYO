@@ -24,7 +24,7 @@ CPlayer::~CPlayer()
 // èâä˙âª
 HRESULT CPlayer::Init(void)
 {
-	CModelCharacter::Init("data\\Model\\MOTION\\player.txt",5.0f);
+	CModelCharacter::Init("data\\Model\\MOTION\\player000.txt",5.0f);
 
 	m_CollisionShape = std::make_unique<btCapsuleShape>(btScalar(7.0f), btScalar(20.0f));
 
