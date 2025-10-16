@@ -15,7 +15,7 @@ class CPlayer : public CModelCharacter
 {
 public:
 	static constexpr float TEST_MOVE_SPEED = 10.0f;           // プロト用移動スピード sato Add
-	static constexpr float TEST_MOVE_STOP = 100.0f;           // プロト用移動停止距離 sato Add
+	static constexpr float TEST_MOVE_STOP = 10.0f;            // プロト用移動停止距離 sato Add
 	static constexpr float TEST_MOVE_ANGLE = D3DX_PI * -0.5f; // プロト用移動角度 sato Add
 	static constexpr float TEST_MOVE_LIMIT = 1900.0f;         // プロト用移動制限 sato Add
 

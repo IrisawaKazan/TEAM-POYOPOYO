@@ -46,7 +46,7 @@ public:
 		static const D3DXVECTOR3 CatchSpeedR;
 		// ‰Šú‰»‚Ì’è”
 		struct Default {
-			static constexpr float Distance = 1500.0f;
+			static constexpr float Distance = 800.0f;
 			static constexpr float RDist = -10.0f;
 			static constexpr float Fov = 45.0f;
 			static constexpr float Near = 10.0f;
