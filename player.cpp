@@ -8,6 +8,7 @@
 #include "math_T.h"
 #include "game.h"
 #include "navi.h"
+#include "arrow.h"
 
 // 静的メンバ変数の定義
 
@@ -84,29 +85,42 @@ void CPlayer::Update(void)
 
 	btTransform trans;
 	m_RigitBody->getMotionState()->getWorldTransform(trans);
-
-	CGame::GetNavi().GetClickPos(); // クリック位置 sato Add
 	
-	// クリック位置までのベクトルを求める sato Add
-	D3DXVECTOR3 dir = CGame::GetNavi().GetClickPos() - GetPos();
-	dir.y = 0.0f;
-	float length = D3DXVec3Length(&dir);
-	D3DXVec3Normalize(&dir, &dir);
+	//// クリック位置まで動く sato Add
+	//D3DXVECTOR3 dir = CGame::GetNavi().GetClickPos() - GetPos();
+	//dir.y = 0.0f;
+	//float length = D3DXVec3Length(&dir);
+	//D3DXVec3Normalize(&dir, &dir);
 
-	if (length < TEST_MOVE_STOP)
-	{// 停止
-		moveDir.setX(0.0f);
-		moveDir.setZ(0.0f);
-	}
-	else
-	{// 移動
-		moveDir.setX(dir.x * TEST_MOVE_SPEED);
-		moveDir.setZ(dir.z * TEST_MOVE_SPEED);
+	//if (length < TEST_MOVE_STOP)
+	//{// 停止
+	//	moveDir.setX(0.0f);
+	//	moveDir.setZ(0.0f);
+	//}
+	//else
+	//{// 移動
+	//	moveDir.setX(dir.x * TEST_MOVE_SPEED);
+	//	moveDir.setZ(dir.z * TEST_MOVE_SPEED);
 
-		// クリック位置に向く
-		float targetRotY = atan2f(-dir.x, -dir.z);
-		D3DXVECTOR3 rot = D3DXVECTOR3(0.0f, targetRotY, 0.0f);
+	//	// クリック位置に向く
+	//	float targetRotY = atan2f(-dir.x, -dir.z);
+	//	D3DXVECTOR3 rot = D3DXVECTOR3(0.0f, targetRotY, 0.0f);
+	//	SetRotDest(rot);
+	//}
+
+	// 矢印に触れたら向きを変える 仮実装(テスト実装) sato Add
+	std::vector<const CArrow*> apArrow = CGame::GetNavi().GetArrow();
+	for (const CArrow* pArrow : apArrow)
+	{
+		D3DXVECTOR3 pos = GetPos();
+		D3DXVECTOR3 rot = GetRot();
+		pArrow->ChengeAngle(&pos, &rot);
+
+		moveDir.setX(-sinf(rot.y) * TEST_MOVE_SPEED);
+		moveDir.setZ(-cosf(rot.y) * TEST_MOVE_SPEED);
+
 		SetRotDest(rot);
+		SetRot(rot);
 	}
 
 	moveDir.setY(m_RigitBody->getLinearVelocity().y());

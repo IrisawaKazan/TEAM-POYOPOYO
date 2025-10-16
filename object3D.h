@@ -36,8 +36,8 @@ public:
 	void ResisterTexIndx(const int TexIndx) { m_nTexIndx = TexIndx; };
 	void SetFilePath(const char* FilePath) { m_FilePath = FilePath; };
 	// ÉQÉbÉ^Å[
-	D3DXVECTOR3 GetPos(void) { return m_Pos; };
-	D3DXVECTOR3 GetRot(void) { return m_Rot; };
+	D3DXVECTOR3 GetPos(void) const { return m_Pos; };
+	D3DXVECTOR3 GetRot(void) const { return m_Rot; };
 	D3DXVECTOR2 GetUvMax(void) { return m_UVMax; };
 	D3DXVECTOR2 GetUvMin(void) { return m_UVMin; };
 	float GetWidth(void) { return m_fWidth; };

@@ -8,6 +8,7 @@
 #include "manager.h"
 #include "renderer.h"
 #include "input.h"
+#include "arrow.h"
 
 //--------------------------------
 //
@@ -77,9 +78,14 @@ void CNavi::Update(void)
 	// 親クラスの更新
 	CObject3D::Update();
 
+	m_arrowAngle += float(CManager::GetInputMouse()->GetMouseState().lZ);
+
 	if (CManager::GetInputMouse()->OnDown(0))
 	{// 左クリックしたとき
 		m_clickPos = GetPos(); // クリックした位置を保存
+
+		// 仮実装(テスト実装)
+		m_apArrow.push_back(CArrow::Create(m_clickPos, D3DXVECTOR3(0.0f, m_arrowAngle, 0.0f), "data/TEXTURE/Mark001.png", D3DXVECTOR2(30.0f, 30.0f)));
 	}
 }
 
