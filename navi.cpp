@@ -69,7 +69,7 @@ void CNavi::Draw(void)
 //--------------------------------
 // ƒŒƒC‚ğì¬
 //--------------------------------
-void CreateRay(D3DXVECTOR2 mousePos)
+void CNavi::CreateRay(D3DXVECTOR2 mousePos)
 {
 
 }
