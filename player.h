@@ -22,6 +22,11 @@ public:
 	void Uninit(void);
 	void Update(void);
 	void Draw(void);
+
+	// セッター
+	void SetPos(D3DXVECTOR3 Pos);
+
+	// 静的メンバ関数
 	static CPlayer* Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot);
 
 private:

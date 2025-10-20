@@ -104,7 +104,7 @@ void CPlayer::Update(void)
 
 	newPos = trans.getOrigin();
 	//newPos.setY(0.0f);
-	SetPos(D3DXVECTOR3(newPos.x(), newPos.y() - 20.0f, newPos.z()));
+	SetPos(D3DXVECTOR3(newPos.x(), newPos.y(), newPos.z()));
 
 	CModelCharacter::Update();
 }
@@ -115,6 +115,19 @@ void CPlayer::Draw(void)
 	CModelCharacter::Draw();
 }
 
+// ˆÊ’u‚ðÝ’è
+void CPlayer::SetPos(D3DXVECTOR3 Pos)
+{
+	btVector3 newPos;
+
+	btTransform trans;
+	m_RigitBody->getMotionState()->getWorldTransform(trans);
+	trans.setOrigin(btVector3(Pos.x, Pos.y, Pos.z));
+	m_RigitBody->setWorldTransform(trans);
+	m_RigitBody->getMotionState()->setWorldTransform(trans);
+	CModelCharacter::SetPos(D3DXVECTOR3(Pos.x, Pos.y - 20.0f, Pos.z));
+}
+
 // ¶¬
 CPlayer* CPlayer::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 {
@@ -123,9 +136,9 @@ CPlayer* CPlayer::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 
 	if (pPlayer != nullptr)
 	{
-		pPlayer->SetPos(pos);
 		pPlayer->SetRot(rot);
 		pPlayer->Init();
+		pPlayer->SetPos(pos);
 		return pPlayer;
 	}
 	else
