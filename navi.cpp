@@ -53,6 +53,8 @@ HRESULT CNavi::Init(void)
 
 	// 初期位置を設定
 	SetPosition(PlaneIntersect(HEIGHT));
+
+	m_direction = ARROW_DIRECTION::Left;
 	return S_OK;
 }
 
@@ -78,14 +80,48 @@ void CNavi::Update(void)
 	// 親クラスの更新
 	CObject3D::Update();
 
-	m_arrowAngle += float(CManager::GetInputMouse()->GetMouseState().lZ);
+	if (CManager::GetInputMouse()->GetMouseState().lZ > 0.0f)
+	{// ホイールアップで矢印の向きを変更
+		m_direction = static_cast<ARROW_DIRECTION>((static_cast<unsigned char>(m_direction) + static_cast<unsigned char>(ARROW_DIRECTION::Max) - 1) % static_cast<unsigned char>(ARROW_DIRECTION::Max));
+	}
+	else if (CManager::GetInputMouse()->GetMouseState().lZ < 0.0f)
+	{// ホイールダウンで矢印の向きを変更
+		m_direction = static_cast<ARROW_DIRECTION>((static_cast<unsigned char>(m_direction) + 1) % static_cast<unsigned char>(ARROW_DIRECTION::Max));
+	}
 
 	if (CManager::GetInputMouse()->OnDown(0))
 	{// 左クリックしたとき
 		m_clickPos = GetPos(); // クリックした位置を保存
 
-		// 仮実装(テスト実装)
-		m_apArrow.push_back(CArrow::Create(m_clickPos, D3DXVECTOR3(0.0f, m_arrowAngle, 0.0f), "data/TEXTURE/Mark001.png", D3DXVECTOR2(30.0f, 30.0f)));
+		// 矢印の角度を決定
+		float arrowAngle = 0.0f;
+		switch (m_direction)
+		{
+		case CNavi::ARROW_DIRECTION::Left:
+			arrowAngle = D3DXToRadian(-90.0f);
+			break;
+		case CNavi::ARROW_DIRECTION::Front:
+			arrowAngle = D3DXToRadian(0.0f);
+			break;
+		case CNavi::ARROW_DIRECTION::Back:
+			arrowAngle = D3DXToRadian(180.0f);
+			break;
+		}
+
+		// 矢印を作成
+		m_apArrow.push_back(CArrow::Create(m_clickPos, D3DXVECTOR3(0.0f, arrowAngle, 0.0f), "data/TEXTURE/UI/ArrowMark001.png", { GetWidth(),GetVetical() }, m_apArrow.size()));
+
+		auto pArrow = m_apArrow.back();
+		for (size_t cntArrow = 0; cntArrow < m_apArrow.size() - 1; cntArrow++)
+		{// 既にある矢印と新しく作成した矢印が重なっているか判定
+			if (pArrow->ReleaseHit(m_apArrow[cntArrow]->GetPos(), m_apArrow[cntArrow]->GetChengeLength()))
+			{// 重なっている場合
+				// 古い矢印を削除
+				m_apArrow[cntArrow]->RequestRelease();
+				SwapRemove(m_apArrow, cntArrow);
+				m_apArrow.shrink_to_fit();
+			}
+		}
 	}
 }
 
@@ -94,7 +130,26 @@ void CNavi::Update(void)
 //--------------------------------
 void CNavi::Draw(void)
 {
-	CObject3D::Draw();
+	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
+
+	// アルファテストを有効
+	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
+	pDevice->SetRenderState(D3DRS_ALPHAREF, 1);
+	pDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
+
+	// Depth Bias 設定 sato
+	float depthBias = -0.000001f;                                  //Zバッファをカメラ方向にオフセットする値
+	depthBias *= m_apArrow.size();                                 // オブジェクトID分だけオフセット
+	pDevice->SetRenderState(D3DRS_DEPTHBIAS, *(DWORD*)&depthBias); //Zバイアス設定
+
+	CObject3D::Draw(); // 親クラスの描画
+
+	// Depth Bias 設定を解除 sato
+	float resetBias = 0.0f;
+	pDevice->SetRenderState(D3DRS_DEPTHBIAS, *(DWORD*)&resetBias);
+
+	// アルファテストを無効に戻す
+	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
 }
 
 //--------------------------------
