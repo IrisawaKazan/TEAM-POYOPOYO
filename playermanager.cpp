@@ -26,6 +26,16 @@ CPlayerManager::~CPlayerManager()
 // 初期化
 HRESULT CPlayerManager::Init(void)
 {
+	m_pPlayer.resize(CAPACITY);
+	m_bUses.resize(CAPACITY);
+
+	for (int nCnt = 0; nCnt < CAPACITY; nCnt++)
+	{
+		// 情報を前から追加していく
+		m_pPlayer[nCnt] = CPlayer::Create({10000.0f,0.0f,0.0f}, VEC3_NULL);
+		m_bUses[nCnt] = false;
+	}
+
 	return S_OK;
 }
 
@@ -47,8 +57,19 @@ void CPlayerManager::Update(void)
 		// タイマーリセット
 		m_Timer = 0;
 
-		// 最大数以下なら
-		if (m_pPlayer.size() < CAPACITY)
+		bool IsCapacity = false;
+
+		for (int nCnt = 0; nCnt < m_pPlayer.size(); nCnt++)
+		{
+			if (m_bUses[nCnt] == false)
+			{
+				IsCapacity = true;
+				m_bUses[nCnt] = true;
+				m_pPlayer[nCnt]->SetPos(SPAWN_POS);
+				break;
+			}
+		}
+		if (IsCapacity == false)
 		{
 			// ローカル変数
 			CPlayer* Info = {};

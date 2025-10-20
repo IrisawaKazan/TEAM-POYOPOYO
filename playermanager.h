@@ -18,7 +18,7 @@ public:
 	static const D3DXVECTOR3 SPAWN_POS;         // NPCの出現位置 sato Add
 	static constexpr float SPAWN_RANGE = 50.0f; // NPCの出現間隔 sato Add
 	static constexpr int SPAWN_TIME = 120;		// NPCの出現時間
-	static constexpr int CAPACITY = 100;		// 最大数
+	static constexpr int CAPACITY = 10;		// 最大数
 
 	CPlayerManager();
 	~CPlayerManager();
@@ -29,6 +29,7 @@ public:
 
 private:
 	int m_Timer;						// タイマー
+	std::vector<bool> m_bUses;			// プールの使用状態
 	std::vector<CPlayer*> m_pPlayer;	// 可変長配列
 };
 #endif
