@@ -176,6 +176,7 @@
     <ClCompile Include="object2D.cpp" />
     <ClCompile Include="object3D.cpp" />
     <ClCompile Include="objectbillboard.cpp" />
+    <ClCompile Include="objectpool.cpp" />
     <ClCompile Include="objectX.cpp" />
     <ClCompile Include="pause.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
@@ -221,6 +222,7 @@
     <ClInclude Include="object2D.h" />
     <ClInclude Include="object3D.h" />
     <ClInclude Include="objectbillboard.h" />
+    <ClInclude Include="objectpool.h" />
     <ClInclude Include="objectX.h" />
     <ClInclude Include="pause.h" />
     <ClInclude Include="pausemanager.h" />
