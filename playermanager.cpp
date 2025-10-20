@@ -4,6 +4,8 @@
 //　Author:chikada shouya
 //
 //************************************************************
+
+// インクルード
 #include "playermanager.h"
 
 // 静的メンバ変数の定義
@@ -24,17 +26,6 @@ CPlayerManager::~CPlayerManager()
 // 初期化
 HRESULT CPlayerManager::Init(void)
 {
-	// ローカル変数
-	CPlayer* Info = {};
-
-	for (int nCnt = 0; nCnt < NUM_PLAYER; nCnt++)
-	{
-		Info = CPlayer::Create(SPAWN_POS + D3DXVECTOR3(SPAWN_RANGE * nCnt, 0.0f, 0.0f), VEC3_NULL);
-
-		// 情報を前から追加していく
-		m_pPlayer.push_back(Info);
-	}
-
 	return S_OK;
 }
 
@@ -47,7 +38,28 @@ void CPlayerManager::Uninit(void)
 // 更新
 void CPlayerManager::Update(void)
 {
+	// タイマーを進める
+	m_Timer++;
 
+	// スポーンさせる時間なら
+	if (m_Timer > SPAWN_TIME)
+	{
+		// タイマーリセット
+		m_Timer = 0;
+
+		// 最大数以下なら
+		if (m_pPlayer.size() < CAPACITY)
+		{
+			// ローカル変数
+			CPlayer* Info = {};
+
+			// 生成
+			Info = CPlayer::Create(SPAWN_POS, VEC3_NULL);
+
+			// 情報を前から追加していく
+			m_pPlayer.push_back(Info);
+		}
+	}
 }
 
 // 描画

@@ -124,6 +124,10 @@ void CGame::Update(void)
 	{
 		m_pPauseManager->Update();
 	}
+	if (m_pPlayerManager != NULL)
+	{
+		m_pPlayerManager->Update();
+	}
 }
 
 //***************************************
