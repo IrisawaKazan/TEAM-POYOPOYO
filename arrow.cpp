@@ -100,12 +100,22 @@ void CArrow::Draw(void)
 //--------------------------------
 // Šp“x‚ð•Ï‚¦‚é
 //--------------------------------
-void CArrow::ChengeAngle(D3DXVECTOR3* pos, D3DXVECTOR3* rot) const
+void CArrow::ChengeAngle(const D3DXVECTOR3& pos, D3DXVECTOR3* rot) const
 {
-	D3DXVECTOR3 space = *pos - GetPos();
+	D3DXVECTOR3 space = pos - GetPos();
 	float length = D3DXVec3Length(&space);
 	if (length < m_chengeLength)
 	{
 		*rot = GetRot();
 	}
+}
+
+//--------------------------------
+// –îˆó‚ª‹ß‚¢
+//--------------------------------
+bool CArrow::ReleaseHit(const D3DXVECTOR3& pos, float chengeLength) const
+{
+	D3DXVECTOR3 space = pos - GetPos();
+	float length = D3DXVec3Length(&space);
+	return (length < (m_chengeLength + chengeLength));
 }

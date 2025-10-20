@@ -25,7 +25,12 @@ public:
 
 	void SetChengeLength(float length) { m_chengeLength = length; }
 	void SetIdx(size_t idx) { m_idx = idx; }
-	void ChengeAngle(D3DXVECTOR3* pos, D3DXVECTOR3* rot) const;
+	void ChengeAngle(const D3DXVECTOR3& pos, D3DXVECTOR3* rot) const;
+	bool ReleaseHit(const D3DXVECTOR3& pos, float length) const;
+
+	float GetChengeLength() const { return m_chengeLength; }
+
+	void RequestRelease() { Release(); }
 
 private:
 	float m_chengeLength; // –îˆó‚Ì”ÍˆÍ

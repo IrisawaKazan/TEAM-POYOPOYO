@@ -35,7 +35,7 @@ public:
 
 	D3DXVECTOR3 GetClickPos(void) const { return m_clickPos; }
 
-	std::vector<const CArrow*> GetArrow(void) const { return m_apArrow; }
+	const std::vector<CArrow*>& GetArrow(void) const { return m_apArrow; }
 	ARROW_DIRECTION GetDirection(void) const { return m_direction; }
 
 private:
@@ -49,6 +49,19 @@ private:
 
 	D3DXVECTOR3 m_clickPos; // クリックした位置
 
-	std::vector<const CArrow*> m_apArrow; // 矢印の配列
-	ARROW_DIRECTION m_direction;          // 矢印の向き
+	std::vector<CArrow*> m_apArrow; // 矢印の配列
+	ARROW_DIRECTION m_direction;    // 矢印の向き
 };
+
+//-----------------------
+// Swapを使ったvectorの要素削除
+//-----------------------
+template<typename T>
+void SwapRemove(std::vector<T>& vec, size_t index)
+{
+	if (index < vec.size())
+	{
+		std::swap(vec[index], vec.back());
+		vec.pop_back();
+	}
+}

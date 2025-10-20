@@ -83,12 +83,12 @@ void CPlayer::Update(void)
 	m_RigitBody->getMotionState()->getWorldTransform(trans);
 
 	// –îˆó‚ÉG‚ê‚½‚çŒü‚«‚ğ•Ï‚¦‚é sato Add
-	std::vector<const CArrow*> apArrow = CGame::GetNavi().GetArrow();
+	std::vector<CArrow*> apArrow = CGame::GetNavi().GetArrow();
 	for (const CArrow* pArrow : apArrow)
 	{
 		D3DXVECTOR3 pos = GetPos();
 		D3DXVECTOR3 rot = GetRot();
-		pArrow->ChengeAngle(&pos, &rot);
+		pArrow->ChengeAngle(pos, &rot);
 
 		SetRotDest(rot);
 		SetRot(rot);

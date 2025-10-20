@@ -110,6 +110,18 @@ void CNavi::Update(void)
 
 		// ñÓàÛÇçÏê¨
 		m_apArrow.push_back(CArrow::Create(m_clickPos, D3DXVECTOR3(0.0f, arrowAngle, 0.0f), "data/TEXTURE/UI/ArrowMark001.png", { GetWidth(),GetVetical() }, m_apArrow.size()));
+
+		auto pArrow = m_apArrow.back();
+		for (size_t cntArrow = 0; cntArrow < m_apArrow.size() - 1; cntArrow++)
+		{// ä˘Ç…Ç†ÇÈñÓàÛÇ∆êVÇµÇ≠çÏê¨ÇµÇΩñÓàÛÇ™èdÇ»Ç¡ÇƒÇ¢ÇÈÇ©îªíË
+			if (pArrow->ReleaseHit(m_apArrow[cntArrow]->GetPos(), m_apArrow[cntArrow]->GetChengeLength()))
+			{// èdÇ»Ç¡ÇƒÇ¢ÇÈèÍçá
+				// å√Ç¢ñÓàÛÇçÌèú
+				m_apArrow[cntArrow]->RequestRelease();
+				SwapRemove(m_apArrow, cntArrow);
+				m_apArrow.shrink_to_fit();
+			}
+		}
 	}
 }
 
