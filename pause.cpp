@@ -147,10 +147,7 @@ void CContinue::Update(void)
 	if (CPauseManager::GetSingleton()->GetSelectMenu() == CONTINUE)
 	{
 		// アニメーションカウンターを進める
-		if (m_nAnimCounter < CPauseManager::Config::Frame)
-		{
-			m_nAnimCounter++;
-		}
+		m_nAnimCounter++;
 
 		// 設定する大きさの変数
 		D3DXVECTOR2 Size = {};
@@ -236,10 +233,7 @@ void CRetry::Update(void)
 	if (CPauseManager::GetSingleton()->GetSelectMenu() == RETRY)
 	{
 		// アニメーションカウンターを進める
-		if (m_nAnimCounter < CPauseManager::Config::Frame)
-		{
-			m_nAnimCounter++;
-		}
+		m_nAnimCounter++;
 
 		// 設定する大きさの変数
 		D3DXVECTOR2 Size = {};
@@ -329,10 +323,7 @@ void CQuit::Update(void)
 	if (CPauseManager::GetSingleton()->GetSelectMenu() == QUIT)
 	{
 		// アニメーションカウンターを進める
-		if (m_nAnimCounter < CPauseManager::Config::Frame)
-		{
-			m_nAnimCounter++;
-		}
+		m_nAnimCounter++;
 
 		// 設定する大きさの変数
 		D3DXVECTOR2 Size = {};

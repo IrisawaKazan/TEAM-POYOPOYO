@@ -34,7 +34,7 @@ HRESULT CUpLift::Init(void)
 	m_CollisionShape = std::make_unique<btBoxShape>(btVector3(5.0f,5.0f,5.0f));
 
 	// ¿—Ê‚ğİ’è
-	btScalar mass = 2.5f;
+	btScalar mass = 100.0f;
 
 	// ˆÚ“®•ûŒü‚ğİ’è
 	btVector3 inertia(0, 0, 0);
