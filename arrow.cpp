@@ -18,7 +18,7 @@
 //--------------------------------
 // 生成
 //--------------------------------
-CArrow* CArrow::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, const char* filePath, D3DXVECTOR2 size)
+CArrow* CArrow::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, const char* filePath, D3DXVECTOR2 size, size_t idx)
 {
 	// インスタンスの生成
 	CArrow* pArrow = new CArrow;
@@ -31,7 +31,8 @@ CArrow* CArrow::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, const char* filePath, D
 	pArrow->SetSize(size);
 	pArrow->SetPosition(pos);
 	pArrow->SetRotasion(rot);
-	pArrow->SetChengeSize(size.x);
+	pArrow->SetChengeLength(D3DXVec2Length(&size));
+	pArrow->SetIdx(idx);
 
 	// 初期化
 	if (FAILED(pArrow->Init()))
@@ -74,7 +75,26 @@ void CArrow::Update(void)
 //--------------------------------
 void CArrow::Draw(void)
 {
-	CObject3D::Draw();
+	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
+
+	// アルファテストを有効
+	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
+	pDevice->SetRenderState(D3DRS_ALPHAREF, 1);
+	pDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
+
+	// Depth Bias 設定 sato
+	float depthBias = -0.000001f;                                  //Zバッファをカメラ方向にオフセットする値
+	depthBias *= m_idx;                                            // オブジェクトID分だけオフセット
+	pDevice->SetRenderState(D3DRS_DEPTHBIAS, *(DWORD*)&depthBias); //Zバイアス設定
+
+	CObject3D::Draw(); // 親クラスの描画
+
+	// Depth Bias 設定を解除 sato
+	float resetBias = 0.0f;
+	pDevice->SetRenderState(D3DRS_DEPTHBIAS, *(DWORD*)&resetBias);
+
+	// アルファテストを無効に戻す
+	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
 }
 
 //--------------------------------
@@ -84,7 +104,7 @@ void CArrow::ChengeAngle(D3DXVECTOR3* pos, D3DXVECTOR3* rot) const
 {
 	D3DXVECTOR3 space = *pos - GetPos();
 	float length = D3DXVec3Length(&space);
-	if (length < m_chengeSize)
+	if (length < m_chengeLength)
 	{
 		*rot = GetRot();
 	}
