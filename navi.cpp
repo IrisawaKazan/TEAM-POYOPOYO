@@ -111,17 +111,34 @@ void CNavi::Update(void)
 		// 矢印を作成
 		m_apArrow.push_back(CArrow::Create(m_clickPos, D3DXVECTOR3(0.0f, arrowAngle, 0.0f), "data/TEXTURE/UI/ArrowMark001.png", { GetWidth(),GetVetical() }, m_apArrow.size()));
 
-		auto pArrow = m_apArrow.back();
-		for (size_t cntArrow = 0; cntArrow < m_apArrow.size() - 1; cntArrow++)
-		{// 既にある矢印と新しく作成した矢印が重なっているか判定
-			if (pArrow->ReleaseHit(m_apArrow[cntArrow]->GetPos(), m_apArrow[cntArrow]->GetChengeLength()))
-			{// 重なっている場合
-				// 古い矢印を削除
-				m_apArrow[cntArrow]->RequestRelease();
-				SwapRemove(m_apArrow, cntArrow);
-				m_apArrow.shrink_to_fit();
+		auto pNewArrow = m_apArrow.back(); // 新しく作成した矢印のポインタ
+
+		bool isRepeat = false; // 矢印が重なっているか判定用フラグ
+		do
+		{// 矢印が重なっているか判定
+			isRepeat = false;
+			for (auto pArrow : m_apArrow)
+			{// 既にある矢印と新しく作成した矢印が重なっているか判定
+				if (pArrow == pNewArrow) continue; // 自分自身はスキップ
+
+				if (pNewArrow->ReleaseHit(pArrow->GetPos(), pArrow->GetChengeLength()))
+				{// 重なっている場合
+					// 古い矢印を削除
+					pArrow->RequestRelease();
+					SwapRemove(m_apArrow, pArrow);
+
+					isRepeat = true;
+					break; // 内側のループを抜けて再度判定を行う
+				}
 			}
+		} while (isRepeat);
+
+		for (size_t cntArrow = 0; cntArrow < m_apArrow.size(); cntArrow++)
+		{// インデックス再設定
+			m_apArrow[cntArrow]->SetIdx(cntArrow);
 		}
+
+		m_apArrow.shrink_to_fit(); // メモリの無駄を削減
 	}
 }
 
