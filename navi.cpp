@@ -109,7 +109,7 @@ void CNavi::Update(void)
 		}
 
 		// ñÓàÛÇçÏê¨
-		m_apArrow.push_back(CArrow::Create(m_clickPos, D3DXVECTOR3(0.0f, arrowAngle, 0.0f), "data/TEXTURE/Mark001.png", { GetWidth(),GetVetical() }, m_apArrow.size()));
+		m_apArrow.push_back(CArrow::Create(m_clickPos, D3DXVECTOR3(0.0f, arrowAngle, 0.0f), "data/TEXTURE/UI/ArrowMark001.png", { GetWidth(),GetVetical() }, m_apArrow.size()));
 	}
 }
 
