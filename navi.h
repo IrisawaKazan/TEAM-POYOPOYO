@@ -65,3 +65,17 @@ void SwapRemove(std::vector<T>& vec, size_t index)
 		vec.pop_back();
 	}
 }
+
+//-----------------------
+// Swap‚ğg‚Á‚½vector‚Ì—v‘fíœ
+//-----------------------
+template<typename T>
+void SwapRemove(std::vector<T>& vec, T element)
+{
+	auto it = std::find(vec.begin(), vec.end(), element);
+	if (it != vec.end())
+	{
+		std::swap(*it, vec.back());
+		vec.pop_back();
+	}
+}

@@ -29,10 +29,11 @@ public:
 	bool ReleaseHit(const D3DXVECTOR3& pos, float length) const;
 
 	float GetChengeLength() const { return m_chengeLength; }
+	size_t GetIdx() const { return m_idx; }
 
 	void RequestRelease() { Release(); }
 
 private:
 	float m_chengeLength; // 矢印の範囲
-	size_t m_idx;         // 矢印インデックス
+	size_t m_idx;         // 矢印インデックス (Zバイアス用)
 };
