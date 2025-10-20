@@ -19,7 +19,7 @@ public:
 	static const D3DXVECTOR3 SPAWN_ROT;         // NPC‚ÌoŒ»‰ñ“] sato Add
 	static constexpr float SPAWN_RANGE = 50.0f; // NPC‚ÌoŒ»ŠÔŠu sato Add
 	static constexpr int SPAWN_TIME = 120;		// NPC‚ÌoŒ»ŠÔ
-	static constexpr int CAPACITY = 100;		// Å‘å”
+	static constexpr int CAPACITY = 10;			// Å‘å”
 
 	CPlayerManager();
 	~CPlayerManager();

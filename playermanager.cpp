@@ -66,20 +66,18 @@ void CPlayerManager::Update(void)
 				IsCapacity = true;
 				m_bUses[nCnt] = true;
 				m_pPlayer[nCnt]->SetPos(SPAWN_POS);
-				break;
+				return;
 			}
 		}
-		if (IsCapacity == false)
-		{
-			// ローカル変数
-			CPlayer* Info = {};
 
-			// 生成
-			Info = CPlayer::Create(SPAWN_POS, VEC3_NULL);
+		// ローカル変数
+		CPlayer* Info = {};
 
-			// 情報を前から追加していく
-			m_pPlayer.push_back(Info);
-		}
+		// 生成
+		Info = CPlayer::Create(SPAWN_POS, VEC3_NULL);
+
+		// 情報を前から追加していく
+		m_pPlayer.push_back(Info);
 	}
 }
 
