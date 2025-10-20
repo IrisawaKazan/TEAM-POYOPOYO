@@ -15,6 +15,7 @@
 #include "object3D.h"
 #include "uplift.h"
 #include "navi.h"
+#include "naviUi.h"
 
 // 規定値を設定
 // プレイヤー
@@ -69,6 +70,7 @@ HRESULT CGame::Init(void)
 	CUpLift::Create(VEC3_NULL, {0.0f,1.0f,0.0f},100.0f);
 
 	m_pNavi = CNavi::Create("data/TEXTURE/MagicCircle.png", D3DXVECTOR2(60.0f, 60.0f)); // sato Add
+	CNaviUI::Create("data/TEXTURE/UI/ArrowMark000.png", D3DXVECTOR3(SCREEN_WIDTH * 0.05f, SCREEN_HEIGHT * 0.9f, 0.0f), D3DXVECTOR2(60.0f, 60.0f)); // sato Add
 
 #ifdef _DEBUG
 #else
