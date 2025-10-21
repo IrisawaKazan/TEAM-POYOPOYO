@@ -7,6 +7,7 @@
 
 // インクルード
 #include "playermanager.h"
+#include "manager.h"
 
 // 静的メンバ変数の定義
 const D3DXVECTOR3 CPlayerManager::SPAWN_POS = D3DXVECTOR3(-100.0f, 0.0f, 0.0f);              // NPCの出現位置 sato Add
@@ -39,26 +40,32 @@ void CPlayerManager::Uninit(void)
 // 更新
 void CPlayerManager::Update(void)
 {
-	// タイマーを進める
-	m_Timer++;
+	bool bPause = CManager::isPause();
 
-	// スポーンさせる時間なら
-	if (m_Timer > SPAWN_TIME)
+	// ポーズ中だったら
+	if (bPause != true)
 	{
-		// タイマーリセット
-		m_Timer = 0;
+		// タイマーを進める
+		m_Timer++;
 
-		// 最大数以下なら
-		if (m_pPlayer.size() < CAPACITY)
+		// スポーンさせる時間なら
+		if (m_Timer > SPAWN_TIME)
 		{
-			// ローカル変数
-			CPlayer* Info = {};
+			// タイマーリセット
+			m_Timer = 0;
 
-			// 生成
-			Info = CPlayer::Create(SPAWN_POS, SPAWN_ROT);
+			// 最大数以下なら
+			if (m_pPlayer.size() < CAPACITY)
+			{
+				// ローカル変数
+				CPlayer* Info = {};
 
-			// 情報を前から追加していく
-			m_pPlayer.push_back(Info);
+				// 生成
+				Info = CPlayer::Create(SPAWN_POS, SPAWN_ROT);
+
+				// 情報を前から追加していく
+				m_pPlayer.push_back(Info);
+			}
 		}
 	}
 }
