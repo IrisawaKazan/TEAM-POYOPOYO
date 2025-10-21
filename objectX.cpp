@@ -19,6 +19,8 @@ CObjectX::CObjectX(const int Priority) : CObject(Priority)
 	m_Scale = VEC3_NULL;
 	m_pMtxParent = NULL;
 	m_fAlpha = 1.0f;
+	// 拡大率を初期化
+	m_Scale = { 1.0f,1.0f,1.0f };
 	// ワールドマトリックスの初期化
 	D3DXMatrixIdentity(&m_mtxRot);
 }
@@ -35,7 +37,33 @@ CObjectX::~CObjectX()
 //***************************************
 HRESULT CObjectX::Init(void)
 {
-	m_Scale = { 1.0f,1.0f,1.0f };
+	// それぞれの軸のクォータニオン
+	btQuaternion XQuad, YQuad, ZQuad;
+
+	// それぞれの軸の方向ベクトル
+	btVector3 XAxis, YAxis, ZAxis;
+
+	// 軸を設定
+	XAxis.setX(1.0f);
+	XAxis.setY(0.0f);
+	XAxis.setZ(0.0f);
+
+	YAxis.setX(0.0f);
+	YAxis.setY(1.0f);
+	YAxis.setZ(0.0f);
+
+	ZAxis.setX(0.0f);
+	ZAxis.setY(0.0f);
+	ZAxis.setZ(1.0f);
+
+	// クォータニオンを設定
+	XQuad.setRotation(XAxis, m_Rot.x);
+	YQuad.setRotation(YAxis, m_Rot.y);
+	ZQuad.setRotation(ZAxis, m_Rot.z);
+
+	// 各軸の合成結果を代入
+	m_Quad = ConvertQuad(XQuad * YQuad * ZQuad);
+
 	return S_OK;
 }
 
@@ -89,7 +117,7 @@ void CObjectX::Draw(void)
 	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxScale);
 
 	// 向きを反映
-	D3DXMatrixRotationYawPitchRoll(&mtxRot, m_Rot.y, m_Rot.x, m_Rot.z);
+	D3DXMatrixRotationQuaternion(&mtxRot, &m_Quad);
 	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxRot);
 
 	// 位置を反映
@@ -119,6 +147,19 @@ void CObjectX::Draw(void)
 		modelinfo.pMesh->DrawSubset(nCntMat);
 	}
 	pDevice->SetMaterial(&matDef);
+}
+
+//***************************************
+// クォータニオンを変換
+//***************************************
+btQuaternion CObjectX::ConvertQuad(D3DXQUATERNION Set)
+{
+	return btQuaternion(Set.x, Set.y, Set.z, Set.w);
+}
+
+D3DXQUATERNION CObjectX::ConvertQuad(btQuaternion Set)
+{
+	return D3DXQUATERNION((float)Set.x(), (float)Set.y(), (float)Set.z(), (float)Set.w());
 }
 
 //***************************************

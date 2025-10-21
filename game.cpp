@@ -67,18 +67,18 @@ HRESULT CGame::Init(void)
 	CObject3D::Create(D3DXVECTOR3(-2000.0f,1000.0f,0.0f), D3DXVECTOR3((-D3DX_PI * 0.5f), (-D3DX_PI * 0.5f), 0.0f),"data\\TEXTURE\\wall.jpg",D3DXVECTOR2(1000.0f, 1000.0f));
 	CObject3D::Create(D3DXVECTOR3(2000.0f,1000.0f,0.0f), D3DXVECTOR3((-D3DX_PI * 0.5f), (D3DX_PI * 0.5f), 0.0f), "data\\TEXTURE\\wall.jpg", D3DXVECTOR2(1000.0f, 1000.0f));
 
-	CUpLift::Create(VEC3_NULL, {0.0f,1.0f,0.0f},100.0f);
-
 	// ƒiƒr‚Ì‰Šú‰» sato Add
 	CNavi::GetInstance()->Init();
 	CNaviUI::Create("data/TEXTURE/UI/ArrowMark000.png", D3DXVECTOR3(SCREEN_WIDTH * 0.05f, SCREEN_HEIGHT * 0.9f, 0.0f), D3DXVECTOR2(60.0f, 60.0f));
+	
+	CBlock::Create("data\\Model\\ie.x", { 500.0f,0.0f,0.0f }, VEC3_NULL, { 1.0f,1.0f,1.0f });
 
 #ifdef _DEBUG
 #else
 #endif // _DEBUG
 
 	{
-		m_GroundShape = make_unique<btBoxShape>(btVector3(btScalar(5000), btScalar(10), btScalar(5000)));
+		m_GroundShape = make_unique<btBoxShape>(btVector3(btScalar(2000.0f), btScalar(10), btScalar(2000.0f)));
 
 		btTransform groundTransform;
 		groundTransform.setIdentity();
