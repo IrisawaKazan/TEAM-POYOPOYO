@@ -178,6 +178,7 @@
     <ClCompile Include="motion.cpp" />
     <ClCompile Include="navi.cpp" />
     <ClCompile Include="naviUi.cpp" />
+    <ClCompile Include="number.cpp" />
     <ClCompile Include="object.cpp" />
     <ClCompile Include="object2D.cpp" />
     <ClCompile Include="object3D.cpp" />
@@ -203,6 +204,7 @@
     <ClCompile Include="scene.cpp" />
     <ClCompile Include="sound.cpp" />
     <ClCompile Include="texturemanager.cpp" />
+    <ClCompile Include="timer.cpp" />
     <ClCompile Include="title.cpp" />
     <ClCompile Include="titleLogo.cpp" />
     <ClCompile Include="titlemanager.cpp" />
@@ -227,6 +229,7 @@
     <ClInclude Include="motion.h" />
     <ClInclude Include="navi.h" />
     <ClInclude Include="naviUi.h" />
+    <ClInclude Include="number.h" />
     <ClInclude Include="object.h" />
     <ClInclude Include="object2D.h" />
     <ClInclude Include="object3D.h" />
@@ -243,6 +246,7 @@
     <ClInclude Include="scene.h" />
     <ClInclude Include="sound.h" />
     <ClInclude Include="texturemanager.h" />
+    <ClInclude Include="timer.h" />
     <ClInclude Include="title.h" />
     <ClInclude Include="titlelogo.h" />
     <ClInclude Include="titlemanager.h" />
