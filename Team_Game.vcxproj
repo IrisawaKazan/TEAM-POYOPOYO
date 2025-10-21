@@ -177,6 +177,7 @@
     <ClCompile Include="modelmanager.cpp" />
     <ClCompile Include="motion.cpp" />
     <ClCompile Include="navi.cpp" />
+    <ClCompile Include="naviMarker.cpp" />
     <ClCompile Include="naviUi.cpp" />
     <ClCompile Include="object.cpp" />
     <ClCompile Include="object2D.cpp" />
@@ -226,6 +227,7 @@
     <ClInclude Include="modelmanager.h" />
     <ClInclude Include="motion.h" />
     <ClInclude Include="navi.h" />
+    <ClInclude Include="naviMarker.h" />
     <ClInclude Include="naviUi.h" />
     <ClInclude Include="object.h" />
     <ClInclude Include="object2D.h" />

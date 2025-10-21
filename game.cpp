@@ -32,7 +32,6 @@ const D3DXVECTOR3 CGame::Config::Sky::Pos = VEC3_NULL;
 // 静的メンバ変数
 CPauseManager* CGame::m_pPauseManager = NULL;
 CPlayerManager* CGame::m_pPlayerManager = NULL;
-CNavi* CGame::m_pNavi = NULL; // ナビゲーション sato Add
 bool CGame::m_isPause = false;
 
 using namespace std;
@@ -70,8 +69,9 @@ HRESULT CGame::Init(void)
 
 	CUpLift::Create(VEC3_NULL, {0.0f,1.0f,0.0f},100.0f);
 
-	m_pNavi = CNavi::Create("data/TEXTURE/MagicCircle.png", D3DXVECTOR2(60.0f, 60.0f)); // sato Add
-	CNaviUI::Create("data/TEXTURE/UI/ArrowMark000.png", D3DXVECTOR3(SCREEN_WIDTH * 0.05f, SCREEN_HEIGHT * 0.9f, 0.0f), D3DXVECTOR2(60.0f, 60.0f)); // sato Add
+	// ナビの初期化 sato Add
+	CNavi::GetInstance()->Init();
+	CNaviUI::Create("data/TEXTURE/UI/ArrowMark000.png", D3DXVECTOR3(SCREEN_WIDTH * 0.05f, SCREEN_HEIGHT * 0.9f, 0.0f), D3DXVECTOR2(60.0f, 60.0f));
 
 #ifdef _DEBUG
 #else
@@ -123,6 +123,9 @@ void CGame::Update(void)
 		}
 	}
 #endif // DEBUG
+
+	CNavi::GetInstance()->Update(); // ナビの更新 sato Add
+
 	if (m_pPauseManager != NULL)
 	{
 		m_pPauseManager->Update();
@@ -138,6 +141,8 @@ void CGame::Update(void)
 //***************************************
 void CGame::Uninit(void)
 {
+	CNavi::GetInstance()->Uninit(); // ナビの終了処理 sato Add
+
 	// プレイヤーマネージャーの破棄
 	if (m_pPlayerManager != NULL)
 	{

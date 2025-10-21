@@ -83,7 +83,7 @@ void CPlayer::Update(void)
 	m_RigitBody->getMotionState()->getWorldTransform(trans);
 
 	// –îˆó‚ÉG‚ê‚½‚çŒü‚«‚ğ•Ï‚¦‚é sato Add
-	std::vector<CArrow*> apArrow = CGame::GetNavi().GetArrow();
+	std::vector<CArrow*> apArrow = CNavi::GetInstance()->GetArrow();
 	for (const CArrow* pArrow : apArrow)
 	{
 		D3DXVECTOR3 pos = GetPos();

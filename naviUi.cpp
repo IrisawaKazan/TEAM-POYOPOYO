@@ -67,7 +67,7 @@ void CNaviUI::Update(void)
 	// 親クラスの更新
 	CObject2D::Update();
 
-	switch (CGame::GetNavi().GetDirection())
+	switch (CNavi::GetInstance()->GetDirection())
 	{
 	case CNavi::ARROW_DIRECTION::Left:
 		SetTexIndx(CTextureManager::Instance()->Register("data/TEXTURE/UI/ArrowMark002.png"));
