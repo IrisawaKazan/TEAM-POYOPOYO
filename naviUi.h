@@ -1,18 +1,18 @@
 //------------------------------------
 //
-// ナビゲーションマーカー [navi.h]
+// ナビゲーションUI [naviUi.h]
 // Author : Fuma Sato
 //
 //------------------------------------
 #pragma once
 
-#include "object3D.h"
+#include "object2D.h"
 
 class CArrow;
 //--------------------------------
-// ナビゲーションマーカーのクラス
+// ナビゲーションUIのクラス
 //--------------------------------
-class CNavi : public CObject3D
+class CNaviUI : public CObject2D
 {
 public:
 	// 矢印の向き
@@ -24,9 +24,9 @@ public:
 		Max
 	};
 
-	CNavi() : CObject3D(4), m_RayPos{ 0.0f,0.0f,0.0f }, m_RayDir{ 0.0f,0.0f,0.0f }, m_clickPos{ 0.0f,0.0f,0.0f }, m_apArrow{}, m_direction{} {};
-	~CNavi() {};
-	static CNavi* Create(const char* filePath, D3DXVECTOR2 size);
+	CNaviUI() : CObject2D(7), m_RayPos{ 0.0f,0.0f,0.0f }, m_RayDir{ 0.0f,0.0f,0.0f }, m_clickPos{ 0.0f,0.0f,0.0f }, m_apArrow{}, m_direction{} {};
+	~CNaviUI() {};
+	static CNaviUI* Create(const char* filePath, D3DXVECTOR3 pos, D3DXVECTOR2 size);
 
 	HRESULT Init(void) override;
 	void Uninit(void) override;
@@ -39,7 +39,6 @@ public:
 	ARROW_DIRECTION GetDirection(void) const { return m_direction; }
 
 private:
-	D3DXVECTOR2 ConvertMouseToScreen(D3DXVECTOR2 mousePos);
 	void CreateRay(D3DXVECTOR2 mousePos);
 	D3DXVECTOR3 PlaneIntersect(float fHeight);
 
@@ -53,30 +52,3 @@ private:
 	std::vector<CArrow*> m_apArrow; // 矢印の配列
 	ARROW_DIRECTION m_direction;    // 矢印の向き
 };
-
-//-----------------------
-// Swapを使ったvectorの要素削除
-//-----------------------
-template<typename T>
-void SwapRemove(std::vector<T>& vec, size_t index)
-{
-	if (index < vec.size())
-	{
-		std::swap(vec[index], vec.back());
-		vec.pop_back();
-	}
-}
-
-//-----------------------
-// Swapを使ったvectorの要素削除
-//-----------------------
-template<typename T>
-void SwapRemove(std::vector<T>& vec, T element)
-{
-	auto it = std::find(vec.begin(), vec.end(), element);
-	if (it != vec.end())
-	{
-		std::swap(*it, vec.back());
-		vec.pop_back();
-	}
-}
