@@ -63,43 +63,51 @@ HRESULT CGame::Init(void)
 	// ÉVÉìÉOÉãÉgÉìÇê∂ê¨
 	m_pPauseManager = CPauseManager::CreateSingleton();
 
-	CObject3D::Create(VEC3_NULL, VEC3_NULL,"data\\TEXTURE\\floor.jpg", D3DXVECTOR2(2000.0f, 1000.0f));
+	//CObject3D::Create(VEC3_NULL, VEC3_NULL,"data\\TEXTURE\\floor.jpg", D3DXVECTOR2(2000.0f, 1000.0f));
 	CObject3D::Create(D3DXVECTOR3(0.0f,1000.0f,1000.0f), D3DXVECTOR3((-D3DX_PI * 0.5f),0.0f,0.0f),"data\\TEXTURE\\wall.jpg",D3DXVECTOR2(2000.0f,1000.0f));
 	CObject3D::Create(D3DXVECTOR3(-2000.0f,1000.0f,0.0f), D3DXVECTOR3((-D3DX_PI * 0.5f), (-D3DX_PI * 0.5f), 0.0f),"data\\TEXTURE\\wall.jpg",D3DXVECTOR2(1000.0f, 1000.0f));
 	CObject3D::Create(D3DXVECTOR3(2000.0f,1000.0f,0.0f), D3DXVECTOR3((-D3DX_PI * 0.5f), (D3DX_PI * 0.5f), 0.0f), "data\\TEXTURE\\wall.jpg", D3DXVECTOR2(1000.0f, 1000.0f));
 
 	m_pNavi = CNavi::Create("data/TEXTURE/MagicCircle.png", D3DXVECTOR2(60.0f, 60.0f)); // sato Add
 	CNaviUI::Create("data/TEXTURE/UI/ArrowMark000.png", D3DXVECTOR3(SCREEN_WIDTH * 0.05f, SCREEN_HEIGHT * 0.9f, 0.0f), D3DXVECTOR2(60.0f, 60.0f)); // sato Add
-	CBlock::Create("data\\Model\\ie.x", { 500.0f,0.0f,0.0f }, VEC3_NULL, { 1.0f,1.0f,1.0f });
+
+	for (int nCnt = 0; nCnt < 10; nCnt++)
+	{
+		CBlock::Create("data\\Model\\floor_block.x", { -1800.0f + (400.0f * nCnt),-20.0f,0.0f }, VEC3_NULL, { 20.0f,1.0f,100.0f });
+	}
+
+	CBlock::Create("data\\Model\\floor_block.x", { 400.0f,-20.0f,0.0f }, { 0.0f,0.0f,-D3DX_PI * 0.75f }, { 20.0f,1.0f,20.0f });
+	CBlock::Create("data\\Model\\floor_block.x", { 600.0f,0.0f,0.0f }, VEC3_NULL, { 6.0f,6.0f,20.0f });
+	CBlock::Create("data\\Model\\floor_block.x", { 800.0f,-20.0f,0.0f }, { 0.0f,0.0f,D3DX_PI * 0.75f }, { 20.0f,1.0f,20.0f });
 
 #ifdef _DEBUG
 #else
 #endif // _DEBUG
 
-	{
-		m_GroundShape = make_unique<btBoxShape>(btVector3(btScalar(2000.0f), btScalar(10), btScalar(2000.0f)));
+	//{
+	//	m_GroundShape = make_unique<btBoxShape>(btVector3(btScalar(2000.0f), btScalar(10), btScalar(1000.0f)));
 
-		btTransform groundTransform;
-		groundTransform.setIdentity();
-		groundTransform.setOrigin(btVector3(0, -10, 0));
+	//	btTransform groundTransform;
+	//	groundTransform.setIdentity();
+	//	groundTransform.setOrigin(btVector3(0, -10, 0));
 
-		btScalar mass(0);
+	//	btScalar mass(0);
 
-		//rigidbody is dynamic if and only if mass is non zero, otherwise static
-		bool isDynamic = (mass != 0.f);
+	//	//rigidbody is dynamic if and only if mass is non zero, otherwise static
+	//	bool isDynamic = (mass != 0.f);
 
-		btVector3 localInertia(0, 0, 0);
-		if (isDynamic)
-			m_GroundShape->calculateLocalInertia(mass, localInertia);
+	//	btVector3 localInertia(0, 0, 0);
+	//	if (isDynamic)
+	//		m_GroundShape->calculateLocalInertia(mass, localInertia);
 
-		//using motionstate is optional, it provides interpolation capabilities, and only synchronizes 'active' objects
-		btDefaultMotionState* motionState = new btDefaultMotionState(groundTransform);
-		btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, motionState, m_GroundShape.get(), localInertia);
-		m_RigitBody = make_unique<btRigidBody>(rbInfo);
+	//	//using motionstate is optional, it provides interpolation capabilities, and only synchronizes 'active' objects
+	//	btDefaultMotionState* motionState = new btDefaultMotionState(groundTransform);
+	//	btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, motionState, m_GroundShape.get(), localInertia);
+	//	m_RigitBody = make_unique<btRigidBody>(rbInfo);
 
-		//add the body to the dynamics world
-		CManager::GetDynamicsWorld()->addRigidBody(m_RigitBody.get());
-	}
+	//	//add the body to the dynamics world
+	//	CManager::GetDynamicsWorld()->addRigidBody(m_RigitBody.get());
+	//}
 
 	return S_OK;
 }
