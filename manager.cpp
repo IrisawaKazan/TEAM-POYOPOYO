@@ -74,7 +74,7 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, bool bWnd)
 	m_pDynamicsWorld = make_unique<btDiscreteDynamicsWorld>(m_pDispatcher.get(), m_pBroadPhase.get(), m_pSolver.get(), m_pConfiguration.get());
 
 	// d—Í‚ğİ’è
-	m_pDynamicsWorld->setGravity({ 0.0f,-5.0f,0.0f });
+	m_pDynamicsWorld->setGravity({ 0.0f,-9.81f,0.0f });
 
 	// ƒƒ‚ƒŠŠm•Û‚Å‚«‚½‚ç
 	if (m_Renderer != NULL)

@@ -35,6 +35,9 @@ public:
 	D3DXVECTOR3* GetpRotasion(void) { return &m_Rot; };
 	D3DXMATRIX* GetMtxParent(void) { return m_pMtxParent; };
 	D3DXMATRIX GetMtxRot(void) { return m_mtxRot; };
+	D3DXQUATERNION GetQuad(void) { return m_Quad; }
+	btQuaternion ConvertQuad(D3DXQUATERNION Set);
+	D3DXQUATERNION ConvertQuad(btQuaternion Set);
 
 	// セッター
 	void SetPosition(D3DXVECTOR3 Pos) { m_Pos = Pos; };
@@ -42,6 +45,7 @@ public:
 	void SetScale(D3DXVECTOR3 Scale) { m_Scale = Scale; };
 	void SetAlpha(const float Alpha) { m_fAlpha = Alpha; };
 	void SetRotMtx(D3DXMATRIX mtxRot) { m_mtxRot = mtxRot; };
+	void SetQuad(D3DXQUATERNION Quad) { m_Quad = Quad; }
 	void SetParentMtx(D3DXMATRIX* mtxParent) { m_pMtxParent = mtxParent; };
 	void SetFilePath(std::string Path) { m_FilePath = Path; }
 
@@ -54,6 +58,7 @@ private:
 	D3DXMATRIX* m_pMtxParent;	// 親のマトリックス
 	D3DXMATRIX m_mtxWorld;		// ワールドマトリックス
 	D3DXMATRIX m_mtxRot;		// 回転行列
+	D3DXQUATERNION m_Quad;	// クォータニオン
 	std::string m_FilePath;		// モデルへのパス
 	float m_fAlpha;				// 透明度
 };

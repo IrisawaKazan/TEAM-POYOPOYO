@@ -128,6 +128,7 @@ void CModelCharacter::Draw(void)
 	pDevice->SetTransform(D3DTS_WORLD, &m_mtxWorld);
 
 	D3DXMATRIX mtxParent;	// 計算用マトリックス
+
 	// 現在のマテリアルの取得
 	pDevice->GetMaterial(&matDef);
 
