@@ -31,6 +31,7 @@ public:
 	float GetAlpha(void) { return m_fAlpha; };
 	D3DXVECTOR3 GetPosition(void) { return m_Pos; };
 	D3DXVECTOR3 GetRotasion(void) { return m_Rot; };
+	D3DXVECTOR3 GetScale(void) { return m_Scale; }
 	D3DXVECTOR3* GetpPosition(void) { return &m_Pos; };
 	D3DXVECTOR3* GetpRotasion(void) { return &m_Rot; };
 	D3DXMATRIX* GetMtxParent(void) { return m_pMtxParent; };

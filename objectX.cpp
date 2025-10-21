@@ -19,6 +19,8 @@ CObjectX::CObjectX(const int Priority) : CObject(Priority)
 	m_Scale = VEC3_NULL;
 	m_pMtxParent = NULL;
 	m_fAlpha = 1.0f;
+	// 拡大率を初期化
+	m_Scale = { 1.0f,1.0f,1.0f };
 	// ワールドマトリックスの初期化
 	D3DXMatrixIdentity(&m_mtxRot);
 }
@@ -61,9 +63,6 @@ HRESULT CObjectX::Init(void)
 
 	// 各軸の合成結果を代入
 	m_Quad = ConvertQuad(XQuad * YQuad * ZQuad);
-
-	// 拡大率を初期化
-	m_Scale = { 1.0f,1.0f,1.0f };
 
 	return S_OK;
 }

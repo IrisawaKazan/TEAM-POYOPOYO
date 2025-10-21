@@ -40,7 +40,7 @@ CBlock::~CBlock()
 //***************************************
 // ブロックの生成
 //***************************************
-CBlock* CBlock::Create(std::string sName,D3DXVECTOR3 pos, D3DXVECTOR3 rot)
+CBlock* CBlock::Create(std::string sName,D3DXVECTOR3 pos, D3DXVECTOR3 rot,D3DXVECTOR3 Scale)
 {
 	CBlock* pBlock = nullptr;
 	pBlock = new CBlock;
@@ -52,6 +52,7 @@ CBlock* CBlock::Create(std::string sName,D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 		pBlock->sNamePath = sName;
 		pBlock->SetPosition(pos);
 		pBlock->SetRotasion(rot);
+		pBlock->SetScale(Scale);
 		pBlock->Init();
 		return pBlock;
 	}
@@ -137,7 +138,7 @@ HRESULT CBlock::Init(void)
 	m_size.z = m_VtxMax.z;			// sizeのz
 
 	// リジットボディーのオフセットを設定
-	m_RBOffset.y = m_size.y;
+	m_RBOffset.y = m_size.y * GetScale().y;
 
 	// アンロック
 	pMesh->UnlockVertexBuffer();
@@ -153,7 +154,7 @@ HRESULT CBlock::Init(void)
 void CBlock::InitRB(void)
 {
 	// メモリ確保OBBの大きさを設定
-	m_CollisionShape = std::make_unique<btBoxShape>(btVector3(m_size.x, m_size.y, m_size.z));
+	m_CollisionShape = std::make_unique<btBoxShape>(btVector3(m_size.x * GetScale().x, m_size.y * GetScale().y, m_size.z * GetScale().z));
 
 	// 質量
 	btScalar mass = 0.0f;

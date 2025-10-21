@@ -70,6 +70,7 @@ HRESULT CGame::Init(void)
 
 	m_pNavi = CNavi::Create("data/TEXTURE/MagicCircle.png", D3DXVECTOR2(60.0f, 60.0f)); // sato Add
 	CNaviUI::Create("data/TEXTURE/UI/ArrowMark000.png", D3DXVECTOR3(SCREEN_WIDTH * 0.05f, SCREEN_HEIGHT * 0.9f, 0.0f), D3DXVECTOR2(60.0f, 60.0f)); // sato Add
+	CBlock::Create("data\\Model\\ie.x", { 500.0f,0.0f,0.0f }, VEC3_NULL, { 1.0f,1.0f,1.0f });
 
 #ifdef _DEBUG
 #else

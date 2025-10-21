@@ -39,7 +39,7 @@ public:
 	void Update(void);
 	void Draw(void);
 
-	static CBlock* Create(std::string sName,D3DXVECTOR3 pos, D3DXVECTOR3 rot);
+	static CBlock* Create(std::string sName, D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 Scale = { 1.0f,1.0f,1.0f });
 
 private:
 	D3DXVECTOR3 m_pos;		// ˆÊ’u
