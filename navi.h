@@ -39,6 +39,7 @@ public:
 	ARROW_DIRECTION GetDirection(void) const { return m_direction; }
 
 private:
+	D3DXVECTOR2 ConvertMouseToScreen(D3DXVECTOR2 mousePos);
 	void CreateRay(D3DXVECTOR2 mousePos);
 	D3DXVECTOR3 PlaneIntersect(float fHeight);
 

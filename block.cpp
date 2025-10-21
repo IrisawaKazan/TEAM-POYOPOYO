@@ -83,6 +83,54 @@ HRESULT CBlock::Init(void)
 	// 頂点バッファをロック
 	pMesh->LockVertexBuffer(D3DLOCK_READONLY, (void**)&pVtxBuff);
 
+	// 頂点数分回す
+	for (int nCntBlock = 0; nCntBlock < nNumVtx; nCntBlock++)
+	{
+		// 頂点座標の代入
+		D3DXVECTOR3 Vtx = *(D3DXVECTOR3*)pVtxBuff;
+
+		// 頂点座標の比較
+		if (Vtx.x > m_VtxMax.x)
+		{// xが最大値より大きかったら
+			// 代入
+			m_VtxMax.x = Vtx.x;
+		}
+		if (Vtx.y > m_VtxMax.y)
+		{// yが最大値より大きかったら
+			// 代入
+			m_VtxMax.y = Vtx.y;
+		}
+		if (Vtx.z > m_VtxMax.z)
+		{// zが最大値より大きかったら
+			// 代入
+			m_VtxMax.z = Vtx.z;
+		}
+
+		if (Vtx.x < m_VtxMin.x)
+		{// xが最小値より小さかったら
+			// 代入
+			m_VtxMin.x = Vtx.x;
+		}
+		if (Vtx.y < m_VtxMin.y)
+		{// yが最小値より小さかったら
+			// 代入
+			m_VtxMin.y = Vtx.y;
+		}
+		if (Vtx.z < m_VtxMin.z)
+		{// zが最小値より小さかったら
+			// 代入
+			m_VtxMin.z = Vtx.z;
+		}
+
+		// 頂点フォーマットのサイズ分進める
+		pVtxBuff += sizeFVF;
+	}
+
+	// サイズを代入する
+	m_size.x = m_VtxMax.x - m_VtxMin.x;	// sizeのx
+	m_size.y = m_VtxMax.y - m_VtxMin.y;	// sizeのy
+	m_size.z = m_VtxMax.z - m_VtxMin.z;	// sizeのz
+
 	// アンロック
 	pMesh->UnlockVertexBuffer();
 
