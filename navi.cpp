@@ -47,9 +47,15 @@ HRESULT CNavi::Init(void)
 {
 	// 親クラスの初期化
 	CObject3D::Init();
-	
+
+	// ウインドウのクライアント内でのマウス座標を取得
+	D3DXVECTOR2 mousePos = CManager::GetInputMouse()->GetPos();
+
+	// マウス座標をDirectXの画面座標に変換
+	mousePos = ConvertMouseToScreen(mousePos);
+
 	// レイを作成
-	CreateRay(CManager::GetInputMouse()->GetPos());
+	CreateRay(mousePos);
 
 	// 初期位置を設定
 	SetPosition(PlaneIntersect(HEIGHT));
@@ -71,8 +77,14 @@ void CNavi::Uninit(void)
 //--------------------------------
 void CNavi::Update(void)
 {
+	// ウインドウのクライアント内でのマウス座標を取得
+	D3DXVECTOR2 mousePos = CManager::GetInputMouse()->GetPos();
+
+	// マウス座標をDirectXの画面座標に変換
+	mousePos = ConvertMouseToScreen(mousePos);
+
 	// レイを作成
-	CreateRay(CManager::GetInputMouse()->GetPos());
+	CreateRay(mousePos);
 
 	// 位置を更新
 	SetPosition(PlaneIntersect(HEIGHT));
@@ -167,6 +179,39 @@ void CNavi::Draw(void)
 
 	// アルファテストを無効に戻す
 	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
+}
+
+//--------------------------------
+// マウス座標をDirectXの画面サイズに変換
+//--------------------------------
+D3DXVECTOR2 CNavi::ConvertMouseToScreen(D3DXVECTOR2 mousePos)
+{
+	// ウインドウのクライアント内でのマウス座標
+	D3DXVECTOR2 windowClientPos = mousePos;
+
+	// DirectXの画面サイズを取得
+	D3DXVECTOR2 directXScreenSize = { SCREEN_WIDTH,SCREEN_HEIGHT };
+
+	// DirectXデバイスに登録されているウインドウのサイズを取得
+	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
+	D3DDEVICE_CREATION_PARAMETERS creationParams{};
+	D3DXVECTOR2 clientSize{ SCREEN_WIDTH,SCREEN_HEIGHT };
+	if (SUCCEEDED(pDevice->GetCreationParameters(&creationParams)))
+	{
+		RECT rect{};
+		if (creationParams.hFocusWindow != nullptr)
+		{
+			GetClientRect(creationParams.hFocusWindow, &rect);
+			clientSize = { static_cast<float>(rect.right - rect.left),static_cast<float>(rect.bottom - rect.top) };
+		}
+	}
+
+	// マウス座標をDirectXの画面サイズに変換
+	D3DXVECTOR2 resultMousePos{};
+	resultMousePos.x = (windowClientPos.x / clientSize.x) * directXScreenSize.x;
+	resultMousePos.y = (windowClientPos.y / clientSize.y) * directXScreenSize.y;
+
+	return resultMousePos;
 }
 
 //--------------------------------
