@@ -32,7 +32,6 @@ const D3DXVECTOR3 CGame::Config::Sky::Pos = VEC3_NULL;
 // 静的メンバ変数
 CPauseManager* CGame::m_pPauseManager = NULL;
 CPlayerManager* CGame::m_pPlayerManager = NULL;
-CNavi* CGame::m_pNavi = NULL; // ナビゲーション sato Add
 bool CGame::m_isPause = false;
 
 using namespace std;
