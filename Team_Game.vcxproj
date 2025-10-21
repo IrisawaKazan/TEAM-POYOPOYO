@@ -206,6 +206,7 @@
     <ClCompile Include="titleLogo.cpp" />
     <ClCompile Include="titlemanager.cpp" />
     <ClCompile Include="titlemenu.cpp" />
+    <ClCompile Include="tutorial.cpp" />
     <ClCompile Include="uplift.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -245,6 +246,7 @@
     <ClInclude Include="titlelogo.h" />
     <ClInclude Include="titlemanager.h" />
     <ClInclude Include="titlemenu.h" />
+    <ClInclude Include="tutorial.h" />
     <ClInclude Include="uplift.h" />
   </ItemGroup>
   <ItemGroup>
