@@ -5,6 +5,7 @@
 //
 //--------------------------------
 #include "navi.h"
+#include "naviMarker.h"
 #include "manager.h"
 #include "renderer.h"
 #include "input.h"
@@ -16,38 +17,15 @@
 // 
 //--------------------------------
 
-//--------------------------------
-// 生成
-//--------------------------------
-CNavi* CNavi::Create(const char* filePath, D3DXVECTOR2 size)
-{
-	// インスタンスの生成
-	CNavi* pNavi = new CNavi;
-	if (pNavi == nullptr)
-	{
-		return nullptr;
-	}
-
-	pNavi->SetFilePath(filePath);
-	pNavi->SetSize(size);
-
-	// 初期化
-	if (FAILED(pNavi->Init()))
-	{
-		delete pNavi;
-		return nullptr;
-	}
-	return pNavi;
-}
+// 静的メンバ変数の定義
+const D3DXVECTOR3 CNavi::MARKER_OFFSET = D3DXVECTOR3(0.0f, -1000.0f, 0.0f); // ナビマーカーのオフセット位置
+const D3DXVECTOR2 CNavi::MARKER_SIZE = D3DXVECTOR2(60.0f, 60.0f);           // ナビマーカーのサイズ
 
 //--------------------------------
 // 初期化処理
 //--------------------------------
 HRESULT CNavi::Init(void)
 {
-	// 親クラスの初期化
-	CObject3D::Init();
-
 	// ウインドウのクライアント内でのマウス座標を取得
 	D3DXVECTOR2 mousePos = CManager::GetInputMouse()->GetPos();
 
@@ -58,9 +36,14 @@ HRESULT CNavi::Init(void)
 	CreateRay(mousePos);
 
 	// 初期位置を設定
-	SetPosition(PlaneIntersect(HEIGHT));
+	m_pos = MARKER_OFFSET;
+	//m_pos = PlaneIntersect(HEIGHT);
 
+	// 矢印の向きを初期化
 	m_direction = ARROW_DIRECTION::Left;
+
+	// ナビマーカーの生成
+	m_pMarker = CNaviMarker::Create(MARKER_TEXTURE_PATH, MARKER_SIZE);
 	return S_OK;
 }
 
@@ -69,7 +52,7 @@ HRESULT CNavi::Init(void)
 //--------------------------------
 void CNavi::Uninit(void)
 {
-	CObject3D::Uninit();
+
 }
 
 //--------------------------------
@@ -87,10 +70,8 @@ void CNavi::Update(void)
 	CreateRay(mousePos);
 
 	// 位置を更新
-	SetPosition(PlaneIntersect(HEIGHT));
-
-	// 親クラスの更新
-	CObject3D::Update();
+	//m_pos = PlaneIntersect(HEIGHT); // 平面との交差点を取得
+	m_pMarker->SetPosition(m_pos);
 
 	if (CManager::GetInputMouse()->GetMouseState().lZ > 0.0f)
 	{// ホイールアップで矢印の向きを変更
@@ -101,9 +82,9 @@ void CNavi::Update(void)
 		m_direction = static_cast<ARROW_DIRECTION>((static_cast<unsigned char>(m_direction) + 1) % static_cast<unsigned char>(ARROW_DIRECTION::Max));
 	}
 
-	if (CManager::GetInputMouse()->OnDown(0))
+	if (m_pos.y > (MARKER_OFFSET.y + 1.0f) && CManager::GetInputMouse()->OnDown(0))
 	{// 左クリックしたとき
-		m_clickPos = GetPos(); // クリックした位置を保存
+		m_clickPos = m_pos; // クリックした位置を保存
 
 		// 矢印の角度を決定
 		float arrowAngle = 0.0f;
@@ -121,7 +102,7 @@ void CNavi::Update(void)
 		}
 
 		// 矢印を作成
-		m_apArrow.push_back(CArrow::Create(m_clickPos, D3DXVECTOR3(0.0f, arrowAngle, 0.0f), "data/TEXTURE/UI/ArrowMark001.png", { GetWidth(),GetVetical() }, m_apArrow.size()));
+		m_apArrow.push_back(CArrow::Create(m_clickPos, D3DXVECTOR3(0.0f, arrowAngle, 0.0f), "data/TEXTURE/UI/ArrowMark001.png", { m_pMarker->GetWidth(),m_pMarker->GetVetical() }, m_apArrow.size()));
 
 		auto pNewArrow = m_apArrow.back(); // 新しく作成した矢印のポインタ
 
@@ -151,34 +132,11 @@ void CNavi::Update(void)
 		}
 
 		m_apArrow.shrink_to_fit(); // メモリの無駄を削減
+
+		m_pMarker->SetBiasID(m_apArrow.size()); // ナビマーカーのバイアスIDを更新
 	}
-}
 
-//--------------------------------
-// 描画処理
-//--------------------------------
-void CNavi::Draw(void)
-{
-	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
-
-	// アルファテストを有効
-	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
-	pDevice->SetRenderState(D3DRS_ALPHAREF, 1);
-	pDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
-
-	// Depth Bias 設定 sato
-	float depthBias = -0.000001f;                                  //Zバッファをカメラ方向にオフセットする値
-	depthBias *= m_apArrow.size();                                 // オブジェクトID分だけオフセット
-	pDevice->SetRenderState(D3DRS_DEPTHBIAS, *(DWORD*)&depthBias); //Zバイアス設定
-
-	CObject3D::Draw(); // 親クラスの描画
-
-	// Depth Bias 設定を解除 sato
-	float resetBias = 0.0f;
-	pDevice->SetRenderState(D3DRS_DEPTHBIAS, *(DWORD*)&resetBias);
-
-	// アルファテストを無効に戻す
-	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
+	m_aRayCastTarget.clear(); // レイキャスト対象オブジェクト配列をクリア
 }
 
 //--------------------------------
@@ -265,6 +223,54 @@ void CNavi::CreateRay(D3DXVECTOR2 mousePos)
 }
 
 //--------------------------------
+// レイキャストの対象オブジェクトを登録
+//--------------------------------
+void CNavi::RegisterRayCastObject(LPD3DXMESH pMesh, const D3DXMATRIX& mtxWorld)
+{
+	// メッシュがNULLなら登録しない
+	if (pMesh == nullptr) return;
+
+	// オブジェクトを登録
+	RayCastTarget target;
+	target.pMesh = pMesh;
+	target.mtxWorld = mtxWorld;
+	m_aRayCastTarget.push_back(target);
+}
+
+//--------------------------------
+// 交点を計算
+//--------------------------------
+void CNavi::CalculateIntersection(void)
+{
+	D3DXVECTOR3 closestHitPos = MARKER_OFFSET; // 無効なヒット位置で初期化
+	float closestDistSq = -1.0f;               // 最も近い距離の「2乗」
+
+	// 登録されたオブジェクトをループ
+	for (const RayCastTarget& target : m_aRayCastTarget)
+	{
+		// オブジェクトのメッシュと交差判定
+		D3DXVECTOR3 hitPos = MeshIntersect(target.pMesh, target.mtxWorld);
+
+		if (hitPos.y > (MARKER_OFFSET.y + 1.0f))
+		{// ヒットしたか？ (MeshIntersect が MARKER_OFFSET 以外を返したか)
+			// レイの始点から交点までの距離の2乗を計算
+			D3DXVECTOR3 vecToHit = hitPos - m_RayPos;
+			float distSq = D3DXVec3LengthSq(&vecToHit);
+
+			// 「初めてのヒット」または「既に見つけた点より近い」場合
+			if (closestDistSq < 0.0f || distSq < closestDistSq)
+			{
+				closestDistSq = distSq; // 距離を更新
+				closestHitPos = hitPos; // 交点を更新
+			}
+		}
+	}
+
+	// 最終的に最も近かった座標を登録
+	m_pos = closestHitPos;
+}
+
+//--------------------------------
 // 平面との交点を求める
 //--------------------------------
 D3DXVECTOR3 CNavi::PlaneIntersect(float fHeight)
@@ -293,4 +299,84 @@ D3DXVECTOR3 CNavi::PlaneIntersect(float fHeight)
 
 	// 交点が無効なときは非常に低い位置を返す
 	return D3DXVECTOR3(0.0f, -1000.0f, 0.0f);
+}
+
+//--------------------------------
+// メッシュとの交点を求める
+//--------------------------------
+D3DXVECTOR3 CNavi::MeshIntersect(const LPD3DXMESH& pMesh, const D3DXMATRIX& mtxWorld)
+{
+	// ワールド行列の逆行列を計算
+	D3DXMATRIX mtxInvWorld;
+	D3DXMatrixInverse(&mtxInvWorld, nullptr, &mtxWorld);
+
+	// レイの始点と方向をワールド座標系からローカル座標系に変換
+	D3DXVECTOR3 localRayPos, localRayDir;
+	D3DXVec3TransformCoord(&localRayPos, &m_RayPos, &mtxInvWorld);
+	D3DXVec3TransformNormal(&localRayDir, &m_RayDir, &mtxInvWorld);
+	D3DXVec3Normalize(&localRayDir, &localRayDir);
+
+	// メッシュの情報を取得
+	DWORD numFaces = pMesh->GetNumFaces();
+	DWORD vertexSize = pMesh->GetNumBytesPerVertex();
+
+	// 頂点バッファとインデックスバッファのポインタ
+	void* pVertices = nullptr;
+	void* pIndices = nullptr;
+
+	// バッファをロック
+	pMesh->LockVertexBuffer(D3DLOCK_READONLY, &pVertices);
+	pMesh->LockIndexBuffer(D3DLOCK_READONLY, &pIndices);
+
+	float closestDist = -1.0f;                           // 最も近い交点までの距離
+
+	// 全ての面（三角形）をループしてチェック
+	for (DWORD i = 0; i < numFaces; ++i)
+	{
+		// インデックスバッファから3頂点のインデックスを取得
+		WORD* pIndex = (WORD*)pIndices + i * 3;
+		WORD i0 = pIndex[0];
+		WORD i1 = pIndex[1];
+		WORD i2 = pIndex[2];
+
+		// 頂点バッファから3頂点の座標を取得
+		D3DXVECTOR3* v0 = (D3DXVECTOR3*)((BYTE*)pVertices + i0 * vertexSize);
+		D3DXVECTOR3* v1 = (D3DXVECTOR3*)((BYTE*)pVertices + i1 * vertexSize);
+		D3DXVECTOR3* v2 = (D3DXVECTOR3*)((BYTE*)pVertices + i2 * vertexSize);
+
+		float dist;
+		BOOL hit = D3DXIntersectTri(
+			v0, v1, v2,             // 三角形の3頂点
+			&localRayPos,           // レイの始点 (ローカル)
+			&localRayDir,           // レイの方向 (ローカル)
+			nullptr, nullptr,       // U, V座標 (重心座標系)
+			&dist                   // 交点までの距離
+		);
+
+		if (hit)
+		{
+			// 初めてのヒット、またはより近い点でヒットした場合
+			if (closestDist < 0.0f || dist < closestDist)
+			{
+				closestDist = dist;
+			}
+		}
+	}
+
+	// バッファをアンロック
+	pMesh->UnlockVertexBuffer();
+	pMesh->UnlockIndexBuffer();
+
+	// 交点座標を格納する変数 (無効値で初期化)
+	D3DXVECTOR3 intersectionPoint = MARKER_OFFSET;
+
+	// ヒットがあった場合、交点を計算
+	if (closestDist >= 0.0f)
+	{
+		// ローカル座標系での交点をワールド座標系に変換
+		D3DXVECTOR3 localIntersectionPoint = localRayPos + localRayDir * closestDist;
+		D3DXVec3TransformCoord(&intersectionPoint, &localIntersectionPoint, &mtxWorld);
+	}
+
+	return intersectionPoint;
 }

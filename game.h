@@ -19,7 +19,6 @@ class CTimer;
 class CMapEditer;
 class CPauseManager;
 class CPlayerManager;
-class CNavi;           // ナビゲーション sato Add
 
 // ゲームシーンクラスを定義
 class CGame : public CScene
@@ -62,13 +61,11 @@ public:
 
 	// ゲッター
 	static bool GetPause(void) { return m_isPause; };
-	static const CNavi& GetNavi(void) { return *m_pNavi; }; // ナビゲーション sato Add
 
 private:
 	// 静的メンバ変数
 	static CPauseManager* m_pPauseManager;				// ポーズマネージャーへのポインタ
 	static CPlayerManager* m_pPlayerManager;			// プレイヤーマネージャー
-	static CNavi* m_pNavi;                              // ナビゲーション sato Add
 	static bool m_isPause;								// ポーズ中かどうか
 	std::unique_ptr<btCollisionShape> m_GroundShape;	// 当たり判定
 	std::unique_ptr<btRigidBody> m_RigitBody;			// リジットボディー
