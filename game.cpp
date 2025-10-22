@@ -18,6 +18,8 @@
 #include "naviUi.h"
 #include "block.h"
 #include "timer.h"
+#include "result.h"
+#include "fade.h"
 
 // 規定値を設定
 // プレイヤー
@@ -135,7 +137,7 @@ void CGame::Update(void)
 		{
 			if (CManager::GetScene()->GetMode() == MODE_GAME)
 			{
-				//CFade::SetFade(new CResult);
+				CFade::SetFade(new CResult);
 			}
 		}
 	}
