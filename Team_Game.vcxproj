@@ -201,6 +201,7 @@
     </ClCompile>
     <ClCompile Include="player.cpp" />
     <ClCompile Include="playermanager.cpp" />
+    <ClCompile Include="ranking.cpp" />
     <ClCompile Include="renderer.cpp" />
     <ClCompile Include="scene.cpp" />
     <ClCompile Include="sound.cpp" />
@@ -244,6 +245,7 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="playermanager.h" />
+    <ClInclude Include="ranking.h" />
     <ClInclude Include="renderer.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="scene.h" />
