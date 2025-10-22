@@ -73,11 +73,20 @@ HRESULT CGame::Init(void)
 	
 	CBlock::Create("data\\Model\\floor_block.x", { -1400.0f,-20.0f,0.0f }, VEC3_NULL, { 60.0f,1.0f,100.0f });
 	CBlock::Create("data\\Model\\floor_block.x", { -1200.0f,0.0f,0.0f }, VEC3_NULL, { 10.0f,5.0f,10.0f });
-	CBlock::Create("data\\Model\\floor_block.x", { -900.0f,0.0f,200.0f }, VEC3_NULL, { 5.0f,5.0f,20.0f });
+	CBlock::Create("data\\Model\\floor_block.x", { -950.0f,0.0f,200.0f }, VEC3_NULL, { 5.0f,5.0f,20.0f });
+	CBlock::Create("data\\Model\\floor_block.x", { -700.0f,-20.0f,500.0f }, VEC3_NULL, { 10.0f,1.0f,50.0f });
+	CBlock::Create("data\\Model\\floor_block.x", { -500.0f,-20.0f,0.0f }, VEC3_NULL, { 10.0f,1.0f,100.0f });
+	CBlock::Create("data\\Model\\floor_block.x", { -300.0f,-20.0f,-500.0f }, VEC3_NULL, { 10.0f,1.0f,50.0f });
+	CBlock::Create("data\\Model\\floor_block.x", { -100.0f,-20.0f,0.0f }, VEC3_NULL, { 10.0f,1.0f,100.0f });
+	CBlock::Create("data\\Model\\floor_block.x", { 100.0f,-20.0f,0.0f }, VEC3_NULL, { 10.0f,1.0f,25.0f });
+	CBlock::Create("data\\Model\\floor_block.x", { 300.0f,-20.0f,0.0f }, VEC3_NULL, { 10.0f,1.0f,100.0f });
 
-	CBlock::Create("data\\Model\\floor_block.x", { 400.0f,-20.0f,0.0f }, { 0.0f,0.0f,-D3DX_PI * 0.75f }, { 20.0f,1.0f,20.0f });
-	CBlock::Create("data\\Model\\floor_block.x", { 600.0f,0.0f,0.0f }, VEC3_NULL, { 6.0f,6.0f,20.0f });
-	CBlock::Create("data\\Model\\floor_block.x", { 800.0f,-20.0f,0.0f }, { 0.0f,0.0f,D3DX_PI * 0.75f }, { 20.0f,1.0f,20.0f });
+	CBlock::Create("data\\Model\\floor_block.x", { 465.0f,65.0f,500.0f }, { 0.0f,0.0f,-D3DX_PI * 0.75f }, { 10.0f,1.0f,50.0f });
+	CBlock::Create("data\\Model\\floor_block.x", { 635.0f,-5.0f,500.0f }, VEC3_NULL, { 10.0f,7.0f,50.0f });
+	CBlock::Create("data\\Model\\floor_block.x", { 805.0f,65.0f,500.0f }, { 0.0f,0.0f,D3DX_PI * 0.75f }, { 10.0f,1.0f,50.0f });
+
+	CBlock::Create("data\\Model\\floor_block.x", { 1200.0f,-20.0f,-500.0f }, VEC3_NULL, { 80.0f,1.0f,20.0f });
+	CBlock::Create("data\\Model\\floor_block.x", { 1435.5f,-20.0f,350.0f }, VEC3_NULL, { 56.5f,1.0f,65.0f });
 
 #ifdef _DEBUG
 #else
