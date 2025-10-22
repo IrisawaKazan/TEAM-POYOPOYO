@@ -84,7 +84,7 @@ HRESULT CTimer::Init(void)
 
 	if (m_pNumber3 != nullptr)
 	{
-		m_pNumber3->Init(150.0f, 200.0f, 0, 1.0f, 0.0f, 1, 0, "data\\TEXTURE\\koron.png", 1.0f);
+		m_pNumber3->Init(150.0f, 200.0f, 0, 1.0f, 0.0f, 1, 0, "data\\TEXTURE\\coron.png", 1.0f);
 	}
 
 	return S_OK;
@@ -241,7 +241,7 @@ void CTimer::SubNs(int nValue)
 	int nData = 100;
 	int nData1 = 10;
 
-	m_nTime = nValue;
+	m_nTime += nValue;
 
 	for (int nCnt = 0; nCnt < MAX_TIMER; nCnt++)
 	{
@@ -263,7 +263,7 @@ void CTimer::SubMin(int nValue)
 	int nData = 100;
 	int nData1 = 10;
 
-	m_nMin = nValue;
+	m_nMin += nValue;
 
 	for (int nCnt = 0; nCnt < MAX_TIMER; nCnt++)
 	{

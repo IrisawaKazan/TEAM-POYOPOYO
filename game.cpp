@@ -17,6 +17,9 @@
 #include "navi.h"
 #include "naviUi.h"
 #include "block.h"
+#include "timer.h"
+#include "result.h"
+#include "fade.h"
 
 // 規定値を設定
 // プレイヤー
@@ -88,6 +91,7 @@ HRESULT CGame::Init(void)
 	CBlock::Create("data\\Model\\floor_block.x", { 1200.0f,-20.0f,-500.0f }, VEC3_NULL, { 80.0f,1.0f,20.0f });
 	CBlock::Create("data\\Model\\floor_block.x", { 1435.5f,-20.0f,350.0f }, VEC3_NULL, { 56.5f,1.0f,65.0f });
 
+	CTimer::Create(D3DXVECTOR3(640.0f,360.0f,0.0f));
 #ifdef _DEBUG
 #else
 #endif // _DEBUG
@@ -133,7 +137,7 @@ void CGame::Update(void)
 		{
 			if (CManager::GetScene()->GetMode() == MODE_GAME)
 			{
-				//CFade::SetFade(new CResult);
+				CFade::SetFade(new CResult);
 			}
 		}
 	}
