@@ -84,7 +84,7 @@ HRESULT CTimer::Init(void)
 
 	if (m_pNumber3 != nullptr)
 	{
-		m_pNumber3->Init(150.0f, 200.0f, 0, 1.0f, 0.0f, 1, 0, "data\\TEXTURE\\koron.png", 1.0f);
+		m_pNumber3->Init(150.0f, 200.0f, 0, 1.0f, 0.0f, 1, 0, "data\\TEXTURE\\coron.png", 1.0f);
 	}
 
 	return S_OK;
