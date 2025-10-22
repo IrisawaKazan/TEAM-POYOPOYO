@@ -4,42 +4,37 @@
 //// Author: Irisawa Kazan
 ////
 ////==============================================================
-//#ifndef _NUMBER_H_ // このマクロ定義がされてなかったら
-//#define _NUMBER_H_ // 2重インクルード防止のマクロ定義
-//
-//#include"main.h"
-//
-//// マクロ定義
-//#define MAX_NUM (64)
-//
-//// ナンバークラス
-//class CNumber
-//{
-//public:
-//    CNumber();
-//    virtual ~CNumber();
-//
-//    HRESULT Init(D3DXVECTOR3 pos, float sizeX, float sizeY);
-//    void Uninit(void);
-//    void Draw(void);
-//    
-//    void SetPosition(D3DXVECTOR3 pos);
-//    void SetUV(float aUV, float zUV);
-//    void SetSize(float sizeX, float sizeY);
-//    void SetDigit(int digit);
-//
-//    void Timer(int timer);
-//
-//    void BindTexture(const LPDIRECT3DTEXTURE9 pTexture);
-//
-//private:
-//    LPDIRECT3DTEXTURE9 m_pTexture;
-//    LPDIRECT3DVERTEXBUFFER9 m_pVtxBuff;
-//    D3DXVECTOR3 m_pos;
-//    float m_faUV;
-//    float m_fzUV;
-//    float m_fSizeX;
-//    float m_fSizeY;
-//};
-//
-//#endif
+#ifndef _NUMBER_H_
+#define _NUMBER_H_
+
+#include "main.h"
+
+class CNumber
+{
+public:
+	typedef struct
+	{
+		D3DXVECTOR3 pos;//頂点座標
+		float rhw;		//座用変換用係数(1.0fで固定)
+		D3DCOLOR col;	//頂点カラー
+		D3DXVECTOR2 tex;//テクスチャ座標
+
+	}VERTEX_2D;
+
+	CNumber();
+	~CNumber();
+	HRESULT Init(float fX1, float fX2, int nCnt, float fNum1, float fNum2, int nNum, int nAdd, const char* FileName, float fx);
+	void Uninit(void);
+	void Update(void);
+	void Draw(void);
+	static CNumber* Create(D3DXVECTOR3 pos);
+	void SetNumber(int nNumber, int nAdd);
+
+
+private:
+	LPDIRECT3DVERTEXBUFFER9 m_pVtxBuff;
+	D3DXVECTOR3 m_pos;						// 弾の位置
+	int m_nIdx;								// インデックス番号
+
+};
+#endif
