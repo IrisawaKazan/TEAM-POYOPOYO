@@ -73,25 +73,7 @@ void CTutorial::Update(void)
 
 			break;
 
-			// ジャンプする指示の場合
-		case TUTORIAL_JUMP:
-
-
-			break;
-
-			// 壊す指示の場合
-		case TUTORIAL_BREAK:
-
-
-			break;
-
-			// 止まる指示の場合
-		case TUTORIAL_STOP:
-
-
-			break;
 		}
-
 	}
 
 }
