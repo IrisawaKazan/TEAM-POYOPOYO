@@ -1,10 +1,9 @@
-//=================================================
+//==============================================================
 //
 //	modelmanager.cpp
-// 
-//	Author:近田尚也
+//	Author:chikada shouya
 //
-//=================================================
+//==============================================================
 #include "modelmanager.h"
 #include "manager.h"
 #include <assert.h>
@@ -12,7 +11,9 @@
 // 静的メンバ変数
 std::unique_ptr<CModelManager> CModelManager::m_Instance = NULL;
 
+//==============================================================
 // コンストラクタ
+//==============================================================
 CModelManager::CModelManager()
 {
 	// ベクターのクリア
@@ -22,19 +23,25 @@ CModelManager::CModelManager()
 	//m_nNumAll = NULL;
 }
 
+//==============================================================
 // デストラクタ
+//==============================================================
 CModelManager::~CModelManager()
 {
 
 }
 
+//==============================================================
 // 読み込み
+//==============================================================
 HRESULT CModelManager::Load(std::string sName)
 {
 	return S_OK;
 }
 
+//==============================================================
 // モデルの法線再設定
+//==============================================================
 void CModelManager::ReCalcNormalize(const int Indx)
 {
 	// 法線のスムース化
@@ -51,7 +58,9 @@ void CModelManager::ReCalcNormalize(const int Indx)
 	}
 }
 
+//==============================================================
 // 破棄
+//==============================================================
 void CModelManager::Unload(void)
 {
 	for (auto Models = m_vModel.begin(); Models != m_vModel.end(); Models++)	// 情報コンテナにアクセス
@@ -87,6 +96,9 @@ void CModelManager::Unload(void)
 	m_vModel.clear();
 }
 
+//==============================================================
+// 追加
+//==============================================================
 int CModelManager::Register(std::string sName)
 {
 	//デバイス取得
@@ -156,14 +168,18 @@ int CModelManager::Register(std::string sName)
 	return nIdx;
 }
 
+//==============================================================
 // アドレスを取得
+//==============================================================
 CModelManager::ModelInfo CModelManager::GetAddress(int nIdx)
 {
 	if (static_cast<int>(m_vModel.size()) <= nIdx || nIdx < 0)return {};
 	return m_vModel[nIdx];
 }
 
-// インスタンス
+//==============================================================
+// インスタンスの生成
+//==============================================================
 CModelManager* CModelManager::Instance(void)
 {
 	if (m_Instance != NULL) return m_Instance.get();
