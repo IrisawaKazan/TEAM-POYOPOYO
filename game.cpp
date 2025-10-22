@@ -71,11 +71,9 @@ HRESULT CGame::Init(void)
 	CNavi::GetInstance()->Init();
 	CNaviUI::Create("data/TEXTURE/UI/ArrowMark000.png", D3DXVECTOR3(SCREEN_WIDTH * 0.05f, SCREEN_HEIGHT * 0.9f, 0.0f), D3DXVECTOR2(60.0f, 60.0f));
 	
-
-	for (int nCnt = 0; nCnt < 10; nCnt++)
-	{
-		CBlock::Create("data\\Model\\floor_block.x", { -1800.0f + (400.0f * nCnt),-20.0f,0.0f }, VEC3_NULL, { 20.0f,1.0f,100.0f });
-	}
+	CBlock::Create("data\\Model\\floor_block.x", { -1400.0f,-20.0f,0.0f }, VEC3_NULL, { 60.0f,1.0f,100.0f });
+	CBlock::Create("data\\Model\\floor_block.x", { -1200.0f,0.0f,0.0f }, VEC3_NULL, { 10.0f,5.0f,10.0f });
+	CBlock::Create("data\\Model\\floor_block.x", { -900.0f,0.0f,200.0f }, VEC3_NULL, { 5.0f,5.0f,20.0f });
 
 	CBlock::Create("data\\Model\\floor_block.x", { 400.0f,-20.0f,0.0f }, { 0.0f,0.0f,-D3DX_PI * 0.75f }, { 20.0f,1.0f,20.0f });
 	CBlock::Create("data\\Model\\floor_block.x", { 600.0f,0.0f,0.0f }, VEC3_NULL, { 6.0f,6.0f,20.0f });

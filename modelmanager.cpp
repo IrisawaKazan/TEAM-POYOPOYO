@@ -7,6 +7,7 @@
 //=================================================
 #include "modelmanager.h"
 #include "manager.h"
+#include <assert.h>
 
 // 静的メンバ変数
 std::unique_ptr<CModelManager> CModelManager::m_Instance = NULL;
@@ -31,6 +32,23 @@ CModelManager::~CModelManager()
 HRESULT CModelManager::Load(std::string sName)
 {
 	return S_OK;
+}
+
+// モデルの法線再設定
+void CModelManager::ReCalcNormalize(const int Indx)
+{
+	// 法線のスムース化
+	const float Epsilon = 1e-6f;
+	std::vector<DWORD> adjacency(m_vModel[Indx].pMesh->GetNumFaces() * 3);
+	m_vModel[Indx].pMesh->GenerateAdjacency(Epsilon, adjacency.data());
+
+	HRESULT hr = D3DXComputeNormals(m_vModel[Indx].pMesh, adjacency.data());
+
+	if (FAILED(hr))
+	{
+		// 失敗したら
+		assert(0 && "モデルのスムース化に失敗しました");
+	}
 }
 
 // 破棄
