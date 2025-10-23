@@ -2,14 +2,14 @@
 //
 //	block.cpp
 // 
-// Author:近田 尚也
+// Author:chikada shouya
 //
 //=================================================
 
 //***************************************
 // インクルードファイル宣言
 //***************************************
-#include "block.h"
+#include "gimmick.h"
 #include "manager.h"
 #include "game.h"
 #include "model.h"
@@ -18,7 +18,7 @@
 //***************************************
 // コンストラクタ
 //***************************************
-CBlock::CBlock(int nPriority):CObjectX(nPriority)
+CGimmick::CGimmick(int nPriority) :CBlock(nPriority)
 {
 	m_type = TYPE_NONE;
 	m_pos = VEC3_NULL;
@@ -41,7 +41,7 @@ CBlock::~CBlock()
 //***************************************
 // ブロックの生成
 //***************************************
-CBlock* CBlock::Create(std::string sName,D3DXVECTOR3 pos, D3DXVECTOR3 rot,D3DXVECTOR3 Scale)
+CBlock* CBlock::Create(std::string sName, D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 Scale)
 {
 	CBlock* pBlock = nullptr;
 	pBlock = new CBlock;
@@ -167,7 +167,7 @@ void CBlock::InitRB(void)
 	m_CollisionShape->calculateLocalInertia(mass, inertia);
 
 	// 最終的な計算結果、位置、位置からのオフセット
-	btTransform transform,Origin,Offset;
+	btTransform transform, Origin, Offset;
 
 	// 初期化
 	transform.setIdentity();
@@ -241,10 +241,10 @@ void CBlock::Update(void)
 	// 更新W
 	CObjectX::Update();
 
-	// ナビにレイキャストオブジェクトを登録 sato 仮
-	CModelManager* pModelTexManager = CModelManager::Instance();
-	CModelManager::ModelInfo modelinfo = pModelTexManager->GetAddress(pModelTexManager->Register(sNamePath));
-	CNavi::GetInstance()->RegisterRayCastObject(modelinfo.pMesh, GetWorldMtx());
+	//// ナビにレイキャストオブジェクトを登録 sato 仮
+	//CModelManager* pModelTexManager = CModelManager::Instance();
+	//CModelManager::ModelInfo modelinfo = pModelTexManager->GetAddress(pModelTexManager->Register(sNamePath));
+	//CNavi::GetInstance()->RegisterRayCastObject(modelinfo.pMesh, GetWorldMtx());
 }
 
 //***************************************
