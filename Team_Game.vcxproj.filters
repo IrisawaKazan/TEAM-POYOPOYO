@@ -133,6 +133,8 @@
     <ClCompile Include="uplift.cpp">
       <Filter>ソース</Filter>
     </ClCompile>
+    <ClCompile Include="gimmick.cpp" />
+    <ClCompile Include="switch.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="arrow.h">
@@ -273,6 +275,8 @@
     <ClInclude Include="uplift.h">
       <Filter>ヘッター</Filter>
     </ClInclude>
+    <ClInclude Include="gimmick.h" />
+    <ClInclude Include="switch.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Team_Game.rc" />

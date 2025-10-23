@@ -38,6 +38,5 @@ private:
 	D3DXVECTOR3 m_pos;		// 位置
 	D3DXVECTOR3 m_rot;		// 向き
 	TYPE m_type;			// ブロックのタイプ
-	std::string sNamePath;	// ファイルパス
 };
 #endif

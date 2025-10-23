@@ -209,6 +209,7 @@
     <ClCompile Include="result.cpp" />
     <ClCompile Include="scene.cpp" />
     <ClCompile Include="sound.cpp" />
+    <ClCompile Include="switch.cpp" />
     <ClCompile Include="texturemanager.cpp" />
     <ClCompile Include="timer.cpp" />
     <ClCompile Include="title.cpp" />
@@ -258,6 +259,7 @@
     <ClInclude Include="result.h" />
     <ClInclude Include="scene.h" />
     <ClInclude Include="sound.h" />
+    <ClInclude Include="switch.h" />
     <ClInclude Include="texturemanager.h" />
     <ClInclude Include="timer.h" />
     <ClInclude Include="title.h" />

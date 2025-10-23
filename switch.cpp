@@ -1,6 +1,6 @@
 //=================================================
 //
-//	gimmick.cpp
+//	switch.cpp
 //
 // Author:chikada shouya
 //
@@ -9,7 +9,7 @@
 //***************************************
 // インクルードファイル宣言
 //***************************************
-#include "gimmick.h"
+#include "switch.h"
 #include "manager.h"
 #include "game.h"
 #include "model.h"
@@ -18,36 +18,36 @@
 //***************************************
 // コンストラクタ
 //***************************************
-CGimmick::CGimmick(int nPriority) :CBlock(nPriority)
+CSwitch::CSwitch(int nPriority) :CBlock(nPriority)
 {
-	m_type = TYPE_NONE;
 	m_pos = VEC3_NULL;
 	m_rot = VEC3_NULL;
+	sNamePath = {};
 }
 
 //***************************************
 // デストラクタ
 //***************************************
-CGimmick::~CGimmick()
+CSwitch::~CSwitch()
 {
 }
 
 //***************************************
-// ギミックの生成
+// スイッチ生成
 //***************************************
-CGimmick* CGimmick::Create(std::string sName, D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 Scale)
+CSwitch* CSwitch::Create(std::string sName, D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 Scale)
 {
-	CGimmick* pGimmick = nullptr;
-	pGimmick = new CGimmick;
-	if (pGimmick != nullptr)
+	CSwitch* pSwitch = nullptr;
+	pSwitch = new CSwitch;
+	if (pSwitch != nullptr)
 	{
 		// オブジェクト設定
-		pGimmick->SetFilepath(sName);
-		pGimmick->SetPosition(pos);
-		pGimmick->SetRotasion(rot);
-		pGimmick->SetScale(Scale);
-		pGimmick->Init();
-		return pGimmick;
+		pSwitch->SetFilepath(sName);
+		pSwitch->SetPosition(pos);
+		pSwitch->SetRotasion(rot);
+		pSwitch->SetScale(Scale);
+		pSwitch->Init();
+		return pSwitch;
 	}
 	else
 	{
@@ -56,9 +56,9 @@ CGimmick* CGimmick::Create(std::string sName, D3DXVECTOR3 pos, D3DXVECTOR3 rot, 
 }
 
 //***************************************
-//　ギミック初期化処理
+//　スイッチ初期化処理
 //***************************************
-HRESULT CGimmick::Init(void)
+HRESULT CSwitch::Init(void)
 {
 	// 初期化
 	CBlock::Init();
@@ -67,26 +67,22 @@ HRESULT CGimmick::Init(void)
 }
 
 //***************************************
-//　ギミック終了処理
+//　スイッチ終了処理
 //***************************************
-void CGimmick::Uninit(void)
+void CSwitch::Uninit(void)
 {
 	// 破棄
 	CBlock::Uninit();
 }
 
 //***************************************
-//　ギミック更新処理
+//　スイッチ更新処理
 //***************************************
-void CGimmick::Update(void)
+void CSwitch::Update(void)
 {
 	// 更新
 	CBlock::Update();
 
-	if (m_type == TYPE_SWITCH)
-	{
-
-	}
 	//// ナビにレイキャストオブジェクトを登録 sato 仮
 	//CModelManager* pModelTexManager = CModelManager::Instance();
 	//CModelManager::ModelInfo modelinfo = pModelTexManager->GetAddress(pModelTexManager->Register(sNamePath));
@@ -94,9 +90,9 @@ void CGimmick::Update(void)
 }
 
 //***************************************
-//　ギミック描画処理
+//　スイッチ描画処理
 //***************************************
-void CGimmick::Draw(void)
+void CSwitch::Draw(void)
 {
 	// 描画
 	CBlock::Draw();
