@@ -2,7 +2,7 @@
 //
 //	block.h
 // 
-// Author:ãﬂìc èÆñÁ
+// Author:chikada shouya
 //
 //=================================================
 #ifndef _BLOCK_H_
