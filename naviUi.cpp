@@ -95,6 +95,6 @@ void CNaviUI::Draw(void)
 
 	CObject2D::Draw(); // 親クラスの描画
 
-		// アルファテストを無効に戻す
+	// アルファテストを無効に戻す
 	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
 }

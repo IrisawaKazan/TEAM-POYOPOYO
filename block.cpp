@@ -241,10 +241,10 @@ void CBlock::Update(void)
 	// 更新W
 	CObjectX::Update();
 
-	//// ナビにレイキャストオブジェクトを登録 sato 仮
-	//CModelManager* pModelTexManager = CModelManager::Instance();
-	//CModelManager::ModelInfo modelinfo = pModelTexManager->GetAddress(pModelTexManager->Register(sNamePath));
-	//CNavi::GetInstance()->RegisterRayCastObject(modelinfo.pMesh, GetWorldMtx());
+	// ナビにレイキャストオブジェクトを登録 sato 仮
+	CModelManager* pModelTexManager = CModelManager::Instance();
+	CModelManager::ModelInfo modelinfo = pModelTexManager->GetAddress(pModelTexManager->Register(sNamePath));
+	CNavi::GetInstance()->RegisterRayCastObject(modelinfo.pMesh, GetWorldMtx());
 }
 
 //***************************************
