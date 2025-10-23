@@ -169,7 +169,7 @@ CUpLift* CUpLift::Create(D3DXVECTOR3 Pos, D3DXVECTOR3 Velocity, float Limit)
 		pInstance->m_Limit = Limit;
 		pInstance->m_ApperPos = Pos;
 		pInstance->m_Switch = false;
-		pInstance->SetFilePath("data\\MODEL\\test.x");
+		pInstance->SetIdx("data\\MODEL\\test.x");
 
 		// ‰Šú‰»ˆ—
 		pInstance->Init();

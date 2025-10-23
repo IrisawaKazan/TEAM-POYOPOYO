@@ -23,7 +23,6 @@ CGimmick::CGimmick(int nPriority) :CBlock(nPriority)
 	m_type = TYPE_NONE;
 	m_pos = VEC3_NULL;
 	m_rot = VEC3_NULL;
-	sNamePath = {};
 }
 
 //***************************************

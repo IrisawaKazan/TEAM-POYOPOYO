@@ -28,6 +28,7 @@ public:
 	void Draw(void);
 
 	// ゲッター
+	int GetIndx(void) { return m_nIdx; }
 	float GetAlpha(void) { return m_fAlpha; };
 	D3DXVECTOR3 GetPosition(void) { return m_Pos; };
 	D3DXVECTOR3 GetRotasion(void) { return m_Rot; };
@@ -50,7 +51,7 @@ public:
 	void SetRotMtx(D3DXMATRIX mtxRot) { m_mtxRot = mtxRot; };
 	void SetQuad(D3DXQUATERNION Quad) { m_Quad = Quad; }
 	void SetParentMtx(D3DXMATRIX* mtxParent) { m_pMtxParent = mtxParent; };
-	void SetFilePath(std::string Path) { m_FilePath = Path; }
+	void SetIdx(std::string Path);
 
 	// 生成
 	static CObjectX* Create(D3DXVECTOR3 Pos, D3DXVECTOR3 Rot, std::string Path);
@@ -61,8 +62,8 @@ private:
 	D3DXMATRIX* m_pMtxParent;	// 親のマトリックス
 	D3DXMATRIX m_mtxWorld;		// ワールドマトリックス
 	D3DXMATRIX m_mtxRot;		// 回転行列
-	D3DXQUATERNION m_Quad;	// クォータニオン
-	std::string m_FilePath;		// モデルへのパス
+	D3DXQUATERNION m_Quad;		// クォータニオン
 	float m_fAlpha;				// 透明度
+	int m_nIdx;					// モデルへのインデックス
 };
 #endif // !_OBJECTX_H_
