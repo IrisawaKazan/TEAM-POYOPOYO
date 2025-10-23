@@ -82,27 +82,27 @@ void CPlayer::Update(void)
 	btTransform trans;
 	m_RigitBody->getMotionState()->getWorldTransform(trans);
 
-	//// –îˆó‚ÉG‚ê‚½‚çŒü‚«‚ğ•Ï‚¦‚é sato Add
-	//std::vector<CArrow*> apArrow = CNavi::GetInstance()->GetArrow();
-	//for (const CArrow* pArrow : apArrow)
-	//{
-	//	D3DXVECTOR3 pos = GetPos();
-	//	D3DXVECTOR3 rot = GetRot();
-	//	pArrow->ChengeAngle(pos, &rot);
+	// –îˆó‚ÉG‚ê‚½‚çŒü‚«‚ğ•Ï‚¦‚é sato Add
+	std::vector<CArrow*> apArrow = CNavi::GetInstance()->GetArrow();
+	for (const CArrow* pArrow : apArrow)
+	{
+		D3DXVECTOR3 pos = GetPos();
+		D3DXVECTOR3 rot = GetRot();
+		pArrow->ChengeAngle(pos, &rot);
 
-	//	SetRotDest(rot);
-	//	SetRot(rot);
-	//}
+		SetRotDest(rot);
+		SetRot(rot);
+	}
 
 	// ˆÚ“®ˆ— sato Add
-	//D3DXVECTOR3 rot = GetRot();
-	//moveDir.setX(-sinf(rot.y) * MOVE_SPEED);
-	//moveDir.setZ(-cosf(rot.y) * MOVE_SPEED);
+	D3DXVECTOR3 rot = GetRot();
+	moveDir.setX(-sinf(rot.y) * MOVE_SPEED);
+	moveDir.setZ(-cosf(rot.y) * MOVE_SPEED);
 
-	//moveDir.setY(m_RigitBody->getLinearVelocity().y());
-	//m_RigitBody->setLinearVelocity(moveDir);
+	moveDir.setY(m_RigitBody->getLinearVelocity().y());
+	m_RigitBody->setLinearVelocity(moveDir);
 
-	//m_RigitBody->setLinearVelocity(btVector3(1 * MOVE_SPEED, m_RigitBody->getLinearVelocity().y(), 0));
+	m_RigitBody->setLinearVelocity(btVector3(1 * MOVE_SPEED, m_RigitBody->getLinearVelocity().y(), 0));
 
 	newPos = trans.getOrigin();
 	//newPos.setY(0.0f);
