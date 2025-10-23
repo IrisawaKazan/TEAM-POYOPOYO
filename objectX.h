@@ -40,6 +40,8 @@ public:
 	btQuaternion ConvertQuad(D3DXQUATERNION Set);
 	D3DXQUATERNION ConvertQuad(btQuaternion Set);
 
+	D3DXMATRIX GetWorldMtx(void) { return m_mtxWorld; } // sato add 仮
+
 	// セッター
 	void SetPosition(D3DXVECTOR3 Pos) { m_Pos = Pos; };
 	void SetRotasion(D3DXVECTOR3 Rot) { m_Rot = Rot; };

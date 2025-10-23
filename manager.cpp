@@ -15,6 +15,7 @@
 #include "scene.h"
 #include "fade.h"
 #include "title.h"
+#include "navi.h"
 
 // 名前空間
 using namespace std;
@@ -115,6 +116,9 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, bool bWnd)
 	m_pCamera->Init();
 	m_pLight->Init();
 
+	// ナビの初期化 sato Add
+	CNavi::GetInstance()->Init();
+
 	// タイトル画面に設定
 	CFade::SetFade(new CTitle);
 
@@ -192,6 +196,8 @@ void CManager::Uninit()
 		m_pFade = NULL;
 	}
 
+	CNavi::GetInstance()->Uninit(); // ナビの終了処理 sato Add
+
 	// テクスチャマネージャーの破棄
 	CTextureManager::Instance()->Unload();
 
@@ -213,6 +219,9 @@ void CManager::Update()
 	// ライトのアップデート
 	m_pLight->Update();
 
+	// ナビの更新 sato Add
+	CNavi::GetInstance()->Update();
+
 	if (m_pScene != NULL)
 	{
 		m_pScene->Update();
@@ -230,6 +239,9 @@ void CManager::Update()
 			m_Renderer->Update();
 		}
 	}
+
+	// ナビの交差計算 sato Add
+	CNavi::GetInstance()->CalculateIntersection();
 
 	// キーボードが使われていたら更新
 	if (m_pInputKeyboard != NULL)

@@ -14,7 +14,6 @@
 #include "math.h"
 #include "object3D.h"
 #include "uplift.h"
-#include "navi.h"
 #include "naviUi.h"
 #include "block.h"
 
@@ -67,8 +66,6 @@ HRESULT CGame::Init(void)
 	CObject3D::Create(D3DXVECTOR3(-2000.0f,1000.0f,0.0f), D3DXVECTOR3((-D3DX_PI * 0.5f), (-D3DX_PI * 0.5f), 0.0f),"data\\TEXTURE\\wall.jpg",D3DXVECTOR2(1000.0f, 1000.0f));
 	CObject3D::Create(D3DXVECTOR3(2000.0f,1000.0f,0.0f), D3DXVECTOR3((-D3DX_PI * 0.5f), (D3DX_PI * 0.5f), 0.0f), "data\\TEXTURE\\wall.jpg", D3DXVECTOR2(1000.0f, 1000.0f));
 
-	// ナビの初期化 sato Add
-	CNavi::GetInstance()->Init();
 	CNaviUI::Create("data/TEXTURE/UI/ArrowMark000.png", D3DXVECTOR3(SCREEN_WIDTH * 0.05f, SCREEN_HEIGHT * 0.9f, 0.0f), D3DXVECTOR2(60.0f, 60.0f));
 	
 
@@ -131,9 +128,6 @@ void CGame::Update(void)
 		}
 	}
 #endif // DEBUG
-
-	CNavi::GetInstance()->Update(); // ナビの更新 sato Add
-
 	if (m_pPauseManager != NULL)
 	{
 		m_pPauseManager->Update();
@@ -149,8 +143,6 @@ void CGame::Update(void)
 //***************************************
 void CGame::Uninit(void)
 {
-	CNavi::GetInstance()->Uninit(); // ナビの終了処理 sato Add
-
 	// プレイヤーマネージャーの破棄
 	if (m_pPlayerManager != NULL)
 	{

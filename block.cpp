@@ -13,6 +13,7 @@
 #include "manager.h"
 #include "game.h"
 #include "model.h"
+#include "navi.h"
 
 //***************************************
 // コンストラクタ
@@ -237,8 +238,13 @@ void CBlock::Uninit(void)
 //***************************************
 void CBlock::Update(void)
 {
-	// 更新
+	// 更新W
 	CObjectX::Update();
+
+	//// ナビにレイキャストオブジェクトを登録 sato 仮
+	//CModelManager* pModelTexManager = CModelManager::Instance();
+	//CModelManager::ModelInfo modelinfo = pModelTexManager->GetAddress(pModelTexManager->Register(sNamePath));
+	//CNavi::GetInstance()->RegisterRayCastObject(modelinfo.pMesh, GetWorldMtx());
 }
 
 //***************************************
