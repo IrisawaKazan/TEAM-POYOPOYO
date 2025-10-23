@@ -37,7 +37,6 @@ HRESULT CNavi::Init(void)
 
 	// 初期位置を設定
 	m_pos = MARKER_OFFSET;
-	//m_pos = PlaneIntersect(HEIGHT);
 
 	// 矢印の向きを初期化
 	m_direction = ARROW_DIRECTION::Left;
@@ -69,7 +68,6 @@ void CNavi::Update(void)
 	CreateRay(mousePos);
 
 	// 位置を更新
-	//m_pos = PlaneIntersect(HEIGHT); // 平面との交差点を取得
 	if (m_pMarker != nullptr)
 	{
 		m_pMarker->SetPosition(m_pos);
@@ -388,10 +386,9 @@ D3DXVECTOR3 CNavi::MeshIntersect(const LPD3DXMESH& pMesh, const D3DXMATRIX& mtxW
 }
 
 //--------------------------------
-// ナビマーカーのリセット
+// ナビゲーションマーカーの作成
 //--------------------------------
-void CNavi::ResetMarker(void)
+void CNavi::SetMarker(void)
 {
-	// ナビマーカーの生成
 	m_pMarker = CNaviMarker::Create(MARKER_TEXTURE_PATH, MARKER_SIZE);
 }
