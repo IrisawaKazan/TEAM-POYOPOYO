@@ -70,9 +70,6 @@ HRESULT CGimmick::Init(void)
 	// 初期化
 	CBlock::Init();
 	
-	// リジットボディの初期化
-	CBlock::InitRB();
-
 	return S_OK;
 }
 

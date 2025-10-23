@@ -101,6 +101,9 @@ void CModelManager::Unload(void)
 //==============================================================
 int CModelManager::Register(std::string sName)
 {
+	// 不正な文字列なら
+	if (sName.size() <= 0) return -1;
+
 	//デバイス取得
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
 

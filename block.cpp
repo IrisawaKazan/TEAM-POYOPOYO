@@ -146,6 +146,8 @@ HRESULT CBlock::Init(void)
 
 	InitRB();
 
+	SetFilePath(m_sNamePath);
+
 	return S_OK;
 }
 
