@@ -49,7 +49,7 @@ CBlock* CBlock::Create(std::string sName,D3DXVECTOR3 pos, D3DXVECTOR3 rot,D3DXVE
 	if (pBlock != nullptr)
 	{
 		// オブジェクト設定
-		pBlock->SetFilePath(sName);
+		pBlock->SetIdx(sName);
 		pBlock->m_sNamePath = sName;
 		pBlock->SetPosition(pos);
 		pBlock->SetRotasion(rot);
@@ -146,7 +146,7 @@ HRESULT CBlock::Init(void)
 
 	InitRB();
 
-	SetFilePath(m_sNamePath);
+	SetIdx(m_sNamePath);
 
 	return S_OK;
 }
@@ -245,7 +245,7 @@ void CBlock::Update(void)
 
 	// ナビにレイキャストオブジェクトを登録 sato 仮
 	CModelManager* pModelTexManager = CModelManager::Instance();
-	CModelManager::ModelInfo modelinfo = pModelTexManager->GetAddress(pModelTexManager->Register(m_sNamePath));
+	CModelManager::ModelInfo modelinfo = pModelTexManager->GetAddress(GetIndx());
 	CNavi::GetInstance()->RegisterRayCastObject(modelinfo.pMesh, GetWorldMtx());
 }
 

@@ -87,6 +87,8 @@ void CObjectX::Update(void)
 //***************************************
 void CObjectX::Draw(void)
 {
+	if (m_nIdx == -1) return;
+
 	CRenderer* pRenderer;
 	pRenderer = CManager::GetRenderer();
 	LPDIRECT3DDEVICE9 pDevice = pRenderer->GetDevice();
@@ -97,7 +99,7 @@ void CObjectX::Draw(void)
 	D3DMATERIAL9 matDef;					// 現在のマテリアルの保存用
 	D3DXMATERIAL* pMat;						// マテリアルへのポインタ
 
-	CModelManager::ModelInfo modelinfo = pModelTexManager->GetAddress(pModelTexManager->Register(m_FilePath));
+	CModelManager::ModelInfo modelinfo = pModelTexManager->GetAddress(m_nIdx);
 
 	// ワールドマトリックスの初期化
 	D3DXMatrixIdentity(&m_mtxWorld);
@@ -163,6 +165,14 @@ D3DXQUATERNION CObjectX::ConvertQuad(btQuaternion Set)
 }
 
 //***************************************
+// インデックスを設定
+//***************************************
+void CObjectX::SetIdx(std::string Path)
+{
+	m_nIdx = CModelManager::Instance()->Register(Path);
+}
+
+//***************************************
 // 生成
 //***************************************
 CObjectX* CObjectX::Create(D3DXVECTOR3 Pos, D3DXVECTOR3 Rot, std::string Path)
@@ -175,7 +185,7 @@ CObjectX* CObjectX::Create(D3DXVECTOR3 Pos, D3DXVECTOR3 Rot, std::string Path)
 	{
 		pObjectX->SetPosition(Pos);
 		pObjectX->SetRotasion(Rot);
-		pObjectX->m_FilePath = Path;
+		pObjectX->SetIdx(Path);
 		pObjectX->Init();
 		return pObjectX;
 	}
