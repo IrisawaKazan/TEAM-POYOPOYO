@@ -10,7 +10,6 @@
 
 #include "main.h"
 #include "objectx.h"
-#include "object.h"
 
 //É}ÉNÉç
 #define HALF (0.5f)					// îºï™ÇÃíl
@@ -23,11 +22,11 @@ public:
 	//***************************
 	typedef enum
 	{
-		TYPE_0 = 0,	//
+		TYPE_NONE = 0,	//
+		TYPE_0,		//
 		TYPE_1,		//
 		TYPE_2,		//
 		TYPE_3,		//
-		TYPE_4,		//
 		TYPE_MAX,
 	}TYPE;
 

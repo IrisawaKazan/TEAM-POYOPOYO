@@ -20,7 +20,7 @@
 //***************************************
 CBlock::CBlock(int nPriority):CObjectX(nPriority)
 {
-	m_type = TYPE_0;
+	m_type = TYPE_NONE;
 	m_pos = VEC3_NULL;
 	m_rot = VEC3_NULL;
 	m_VtxMax = { -10000.0f,-10000.0f,-10000.0f };
