@@ -20,6 +20,7 @@
 #include "timer.h"
 #include "result.h"
 #include "fade.h"
+#include "gimmick.h"
 
 // 規定値を設定
 // プレイヤー
@@ -58,15 +59,15 @@ CGame::~CGame()
 //***************************************
 HRESULT CGame::Init(void)
 {
-	m_pPlayerManager = new CPlayerManager;
-
-	m_pPlayerManager->Init();
-
 	// シングルトンを生成
 	m_pPauseManager = CPauseManager::CreateSingleton();
 
+<<<<<<< HEAD
 	// ナビゲーションマーカー生成
 	CNavi::GetInstance()->ResetMarker();
+=======
+	m_pPlayerManager->Init();
+>>>>>>> d7534d6bce56381ba0311b55647ee00247ad3f52
 
 	//CObject3D::Create(VEC3_NULL, VEC3_NULL,"data\\TEXTURE\\floor.jpg", D3DXVECTOR2(2000.0f, 1000.0f));
 	CObject3D::Create(D3DXVECTOR3(0.0f,1000.0f,1000.0f), D3DXVECTOR3((-D3DX_PI * 0.5f),0.0f,0.0f),"data\\TEXTURE\\wall.jpg",D3DXVECTOR2(2000.0f,1000.0f));
@@ -92,6 +93,7 @@ HRESULT CGame::Init(void)
 	CBlock::Create("data\\Model\\floor_block.x", { 1200.0f,-20.0f,-500.0f }, VEC3_NULL, { 80.0f,1.0f,20.0f });
 	CBlock::Create("data\\Model\\floor_block.x", { 1435.5f,-20.0f,350.0f }, VEC3_NULL, { 56.5f,1.0f,65.0f });
 
+	CGimmick::Create("data\\Model\\switch.x", { 1200.0f,-20.0f,-500.0f }, VEC3_NULL, { 1.0f,1.0f,1.0f });
 	CTimer::Create(D3DXVECTOR3(640.0f,360.0f,0.0f));
 #ifdef _DEBUG
 #else

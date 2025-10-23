@@ -27,7 +27,7 @@ CBlock::CBlock(int nPriority):CObjectX(nPriority)
 	m_VtxMin = { 10000.0f,10000.0f,10000.0f };
 	m_size = VEC3_NULL;
 	m_RBOffset = VEC3_NULL;
-	sNamePath = {};
+	m_sNamePath = {};
 }
 
 //***************************************
@@ -50,7 +50,7 @@ CBlock* CBlock::Create(std::string sName,D3DXVECTOR3 pos, D3DXVECTOR3 rot,D3DXVE
 	{
 		// オブジェクト設定
 		pBlock->SetFilePath(sName);
-		pBlock->sNamePath = sName;
+		pBlock->m_sNamePath = sName;
 		pBlock->SetPosition(pos);
 		pBlock->SetRotasion(rot);
 		pBlock->SetScale(Scale);
@@ -71,7 +71,7 @@ HRESULT CBlock::Init(void)
 	CObjectX::Init();
 
 	CModelManager* pModelTexManager = CModelManager::Instance();
-	CModelManager::ModelInfo modelinfo = pModelTexManager->GetAddress(pModelTexManager->Register(sNamePath));
+	CModelManager::ModelInfo modelinfo = pModelTexManager->GetAddress(pModelTexManager->Register(m_sNamePath));
 
 	LPD3DXMESH pMesh = modelinfo.pMesh;
 
@@ -238,12 +238,12 @@ void CBlock::Uninit(void)
 //***************************************
 void CBlock::Update(void)
 {
-	// 更新W
+	// 更新
 	CObjectX::Update();
 
 	// ナビにレイキャストオブジェクトを登録 sato 仮
 	CModelManager* pModelTexManager = CModelManager::Instance();
-	CModelManager::ModelInfo modelinfo = pModelTexManager->GetAddress(pModelTexManager->Register(sNamePath));
+	CModelManager::ModelInfo modelinfo = pModelTexManager->GetAddress(pModelTexManager->Register(m_sNamePath));
 	CNavi::GetInstance()->RegisterRayCastObject(modelinfo.pMesh, GetWorldMtx());
 }
 
