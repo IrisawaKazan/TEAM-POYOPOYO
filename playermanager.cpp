@@ -78,6 +78,19 @@ void CPlayerManager::Update(void)
 			}
 		}
 	}
+
+	// プレイヤーの配列にアクセス
+	for (auto Players = m_pPlayer.begin(); Players != m_pPlayer.end(); Players++)
+	{
+		// 落ちていたら
+		if ((*Players)->GetPos().y < Fall)
+		{
+			// 破棄
+			(*Players)->Uninit();
+			Players = m_pPlayer.erase(Players);
+			if (Players == m_pPlayer.end()) break;
+		}
+	}
 }
 
 //************************************************************

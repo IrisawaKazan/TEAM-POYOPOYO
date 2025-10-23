@@ -80,6 +80,9 @@ void CPlayer::Update(void)
 	btVector3 newPos;
 
 	btTransform trans;
+
+	if (m_RigitBody == nullptr) return;
+
 	m_RigitBody->getMotionState()->getWorldTransform(trans);
 
 	// –îˆó‚ÉG‚ê‚½‚çŒü‚«‚ğ•Ï‚¦‚é sato Add
