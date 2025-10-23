@@ -1,6 +1,6 @@
 //=================================================
 //
-//	block.cpp
+//	gimmick.cpp
 //
 // Author:chikada shouya
 //
@@ -34,7 +34,7 @@ CGimmick::~CGimmick()
 }
 
 //***************************************
-// ブロックの生成
+// ギミックの生成
 //***************************************
 CGimmick* CGimmick::Create(std::string sName, D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 Scale)
 {
@@ -57,7 +57,7 @@ CGimmick* CGimmick::Create(std::string sName, D3DXVECTOR3 pos, D3DXVECTOR3 rot, 
 }
 
 //***************************************
-//　ブロック初期化処理
+//　ギミック初期化処理
 //***************************************
 HRESULT CGimmick::Init(void)
 {
@@ -68,7 +68,7 @@ HRESULT CGimmick::Init(void)
 }
 
 //***************************************
-//　ブロック終了処理
+//　ギミック終了処理
 //***************************************
 void CGimmick::Uninit(void)
 {
@@ -77,7 +77,7 @@ void CGimmick::Uninit(void)
 }
 
 //***************************************
-//　ブロック更新処理
+//　ギミック更新処理
 //***************************************
 void CGimmick::Update(void)
 {
@@ -90,7 +90,7 @@ void CGimmick::Update(void)
 }
 
 //***************************************
-//　ブロック描画処理
+//　ギミック描画処理
 //***************************************
 void CGimmick::Draw(void)
 {
