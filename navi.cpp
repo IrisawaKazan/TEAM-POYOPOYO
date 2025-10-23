@@ -42,8 +42,7 @@ HRESULT CNavi::Init(void)
 	// 矢印の向きを初期化
 	m_direction = ARROW_DIRECTION::Left;
 
-	// ナビマーカーの生成
-	m_pMarker = CNaviMarker::Create(MARKER_TEXTURE_PATH, MARKER_SIZE);
+	m_pMarker = nullptr;
 	return S_OK;
 }
 
@@ -71,7 +70,10 @@ void CNavi::Update(void)
 
 	// 位置を更新
 	//m_pos = PlaneIntersect(HEIGHT); // 平面との交差点を取得
-	m_pMarker->SetPosition(m_pos);
+	if (m_pMarker != nullptr)
+	{
+		m_pMarker->SetPosition(m_pos);
+	}
 
 	if (CManager::GetInputMouse()->GetMouseState().lZ > 0.0f)
 	{// ホイールアップで矢印の向きを変更
@@ -133,7 +135,10 @@ void CNavi::Update(void)
 
 		m_apArrow.shrink_to_fit(); // メモリの無駄を削減
 
-		m_pMarker->SetBiasID(m_apArrow.size()); // ナビマーカーのバイアスIDを更新
+		if (m_pMarker != nullptr)
+		{
+			m_pMarker->SetBiasID(m_apArrow.size()); // ナビマーカーのバイアスIDを更新
+		}
 	}
 
 	m_aRayCastTarget.clear(); // レイキャスト対象オブジェクト配列をクリア
@@ -267,6 +272,7 @@ void CNavi::CalculateIntersection(void)
 	}
 
 	// 最終的に最も近かった座標を登録
+	closestHitPos.y += HEIGHT; // 少し上にオフセット
 	m_pos = closestHitPos;
 }
 
@@ -379,4 +385,13 @@ D3DXVECTOR3 CNavi::MeshIntersect(const LPD3DXMESH& pMesh, const D3DXMATRIX& mtxW
 	}
 
 	return intersectionPoint;
+}
+
+//--------------------------------
+// ナビマーカーのリセット
+//--------------------------------
+void CNavi::ResetMarker(void)
+{
+	// ナビマーカーの生成
+	m_pMarker = CNaviMarker::Create(MARKER_TEXTURE_PATH, MARKER_SIZE);
 }
