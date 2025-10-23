@@ -40,6 +40,8 @@ public:
 
 	static CBlock* Create(std::string sName, D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 Scale = { 1.0f,1.0f,1.0f });
 
+	// セッター
+	void SetFilepath(std::string sName) { m_sNamePath = sName; };
 private:
 	D3DXVECTOR3 m_pos;		// 位置
 	D3DXVECTOR3 m_rot;		// 向き
@@ -48,7 +50,7 @@ private:
 	D3DXVECTOR3 m_VtxMax;	// 頂点最大値
 	D3DXVECTOR3 m_VtxMin;	// 頂点最小値
 	D3DXVECTOR3 m_RBOffset;	// オフセット
-	std::string sNamePath;	// ファイルパス
+	std::string m_sNamePath;	// ファイルパス
 	int m_nIdx;				// インデックス
 	std::unique_ptr<btCollisionShape> m_CollisionShape;	// 当たり判定の形状
 	std::unique_ptr<btRigidBody> m_RigitBody;			// リジットボディー
