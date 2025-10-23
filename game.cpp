@@ -14,6 +14,7 @@
 #include "math.h"
 #include "object3D.h"
 #include "uplift.h"
+#include "navi.h"
 #include "naviUi.h"
 #include "block.h"
 #include "timer.h"
@@ -61,7 +62,12 @@ HRESULT CGame::Init(void)
 	// シングルトンを生成
 	m_pPauseManager = CPauseManager::CreateSingleton();
 
+<<<<<<< HEAD
+	// ナビゲーションマーカー生成
+	CNavi::GetInstance()->ResetMarker();
+=======
 	m_pPlayerManager->Init();
+>>>>>>> d7534d6bce56381ba0311b55647ee00247ad3f52
 
 	//CObject3D::Create(VEC3_NULL, VEC3_NULL,"data\\TEXTURE\\floor.jpg", D3DXVECTOR2(2000.0f, 1000.0f));
 	CObject3D::Create(D3DXVECTOR3(0.0f,1000.0f,1000.0f), D3DXVECTOR3((-D3DX_PI * 0.5f),0.0f,0.0f),"data\\TEXTURE\\wall.jpg",D3DXVECTOR2(2000.0f,1000.0f));
