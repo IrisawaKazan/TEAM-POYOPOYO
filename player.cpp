@@ -102,8 +102,6 @@ void CPlayer::Update(void)
 	moveDir.setY(m_RigitBody->getLinearVelocity().y());
 	m_RigitBody->setLinearVelocity(moveDir);
 
-	m_RigitBody->setLinearVelocity(btVector3(1 * MOVE_SPEED, m_RigitBody->getLinearVelocity().y(), 0));
-
 	newPos = trans.getOrigin();
 	//newPos.setY(0.0f);
 	SetPos(D3DXVECTOR3(newPos.x(), newPos.y(), newPos.z()));
