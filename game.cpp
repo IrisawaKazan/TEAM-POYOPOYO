@@ -59,13 +59,16 @@ CGame::~CGame()
 //***************************************
 HRESULT CGame::Init(void)
 {
+	// プレイヤーマネジャー
+	m_pPlayerManager = new CPlayerManager;
+
+	m_pPlayerManager->Init();
+
 	// シングルトンを生成
 	m_pPauseManager = CPauseManager::CreateSingleton();
 
 	// ナビゲーションマーカー生成
 	CNavi::GetInstance()->ResetMarker();
-
-	m_pPlayerManager->Init();
 
 	//CObject3D::Create(VEC3_NULL, VEC3_NULL,"data\\TEXTURE\\floor.jpg", D3DXVECTOR2(2000.0f, 1000.0f));
 	CObject3D::Create(D3DXVECTOR3(0.0f,1000.0f,1000.0f), D3DXVECTOR3((-D3DX_PI * 0.5f),0.0f,0.0f),"data\\TEXTURE\\wall.jpg",D3DXVECTOR2(2000.0f,1000.0f));
