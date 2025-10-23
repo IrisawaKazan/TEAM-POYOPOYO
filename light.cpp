@@ -147,7 +147,7 @@ void CLight::ResetCol(void)
 
 		// ライトの拡散光を設定
 		// ライトの色
-		m_Light[nCnt].Diffuse = D3DXCOLOR(0.5f, 0.5f, 0.5f, 1.0f);
+		m_Light[nCnt].Diffuse = D3DXCOLOR(2.5f, 2.5f, 2.5f, 1.0f);
 
 		// ライトの方向を設定
 		vecDir[0] = D3DXVECTOR3(0.2f, -0.8f, -0.4f);

@@ -10,34 +10,44 @@
 #include "manager.h"
 
 // 静的メンバ変数の定義
-const D3DXVECTOR3 CPlayerManager::SPAWN_POS = D3DXVECTOR3(-100.0f, 0.0f, 0.0f);              // NPCの出現位置 sato Add
+const D3DXVECTOR3 CPlayerManager::SPAWN_POS = D3DXVECTOR3(-1900.0f, 0.0f, 0.0f);              // NPCの出現位置 sato Add
 const D3DXVECTOR3 CPlayerManager::SPAWN_ROT = D3DXVECTOR3(0.0f, D3DXToRadian(-90.0f), 0.0f); // NPCの出現回転 sato Add
 
+//************************************************************
 // コンストラクタ
+//************************************************************
 CPlayerManager::CPlayerManager()
 {
 
 }
 
+//************************************************************
 // デストラクタ
+//************************************************************
 CPlayerManager::~CPlayerManager()
 {
 
 }
 
+//************************************************************
 // 初期化
+//************************************************************
 HRESULT CPlayerManager::Init(void)
 {
 	return S_OK;
 }
 
+//************************************************************
 // 破棄
+//************************************************************
 void CPlayerManager::Uninit(void)
 {
 
 }
 
+//************************************************************
 // 更新
+//************************************************************
 void CPlayerManager::Update(void)
 {
 	bool bPause = CManager::isPause();
@@ -70,7 +80,9 @@ void CPlayerManager::Update(void)
 	}
 }
 
+//************************************************************
 // 描画
+//************************************************************
 void CPlayerManager::Draw(void)
 {
 

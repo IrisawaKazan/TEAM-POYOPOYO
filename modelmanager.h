@@ -28,6 +28,7 @@ public:
 
 	~CModelManager();
 	HRESULT Load(std::string sName);
+	void ReCalcNormalize(const int Indx);
 	void Unload(void);
 	int Register(std::string sName);
 	ModelInfo GetAddress(int nIdx);

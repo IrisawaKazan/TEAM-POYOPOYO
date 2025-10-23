@@ -11,7 +11,9 @@
 // 静的メンバ変数
 std::unique_ptr<CTextureManager> CTextureManager::m_Instance = NULL;
 
+//==============================================================
 // コンストラクタ
+//==============================================================
 CTextureManager::CTextureManager()
 {
 	// ベクターのクリア
@@ -21,13 +23,17 @@ CTextureManager::CTextureManager()
 	m_nNumAll = NULL;
 }
 
+//==============================================================
 // デストラクタ
+//==============================================================
 CTextureManager::~CTextureManager()
 {
 
 }
 
+//==============================================================
 // 読み込み
+//==============================================================
 HRESULT CTextureManager::Load()
 {
 	//デバイス取得
@@ -99,7 +105,9 @@ HRESULT CTextureManager::Load()
 	return S_OK;
 }
 
+//==============================================================
 // 破棄
+//==============================================================
 void CTextureManager::Unload(void)
 {
 	for (auto Texs = m_vTex.begin(); Texs != m_vTex.end(); Texs++)	// 情報コンテナにアクセス
@@ -123,6 +131,9 @@ void CTextureManager::Unload(void)
 	m_vTex.clear();
 }
 
+//==============================================================
+// 追加
+//==============================================================
 int CTextureManager::Register(std::string sName)
 {
 	//デバイス取得
@@ -158,12 +169,18 @@ int CTextureManager::Register(std::string sName)
 	return nIdx;
 }
 
+//==============================================================
+// アドレスの取得
+//==============================================================
 LPDIRECT3DTEXTURE9 CTextureManager::GetAddress(int nIdx)
 {
 	if (static_cast<int>(m_vTex.size()) <= nIdx || nIdx < 0)return NULL;
 	return m_vTex[nIdx].Tex;
 }
 
+//==============================================================
+// インスタンスの生成
+//==============================================================
 CTextureManager* CTextureManager::Instance(void)
 {
 	if (m_Instance != NULL) return m_Instance.get();

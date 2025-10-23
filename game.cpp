@@ -16,6 +16,9 @@
 #include "uplift.h"
 #include "naviUi.h"
 #include "block.h"
+#include "timer.h"
+#include "result.h"
+#include "fade.h"
 
 // 規定値を設定
 // プレイヤー
@@ -68,16 +71,24 @@ HRESULT CGame::Init(void)
 
 	CNaviUI::Create("data/TEXTURE/UI/ArrowMark000.png", D3DXVECTOR3(SCREEN_WIDTH * 0.05f, SCREEN_HEIGHT * 0.9f, 0.0f), D3DXVECTOR2(60.0f, 60.0f));
 	
+	CBlock::Create("data\\Model\\floor_block.x", { -1400.0f,-20.0f,0.0f }, VEC3_NULL, { 60.0f,1.0f,100.0f });
+	CBlock::Create("data\\Model\\floor_block.x", { -1200.0f,0.0f,0.0f }, VEC3_NULL, { 10.0f,5.0f,10.0f });
+	CBlock::Create("data\\Model\\floor_block.x", { -950.0f,0.0f,200.0f }, VEC3_NULL, { 5.0f,5.0f,20.0f });
+	CBlock::Create("data\\Model\\floor_block.x", { -700.0f,-20.0f,500.0f }, VEC3_NULL, { 10.0f,1.0f,50.0f });
+	CBlock::Create("data\\Model\\floor_block.x", { -500.0f,-20.0f,0.0f }, VEC3_NULL, { 10.0f,1.0f,100.0f });
+	CBlock::Create("data\\Model\\floor_block.x", { -300.0f,-20.0f,-500.0f }, VEC3_NULL, { 10.0f,1.0f,50.0f });
+	CBlock::Create("data\\Model\\floor_block.x", { -100.0f,-20.0f,0.0f }, VEC3_NULL, { 10.0f,1.0f,100.0f });
+	CBlock::Create("data\\Model\\floor_block.x", { 100.0f,-20.0f,0.0f }, VEC3_NULL, { 10.0f,1.0f,25.0f });
+	CBlock::Create("data\\Model\\floor_block.x", { 300.0f,-20.0f,0.0f }, VEC3_NULL, { 10.0f,1.0f,100.0f });
 
-	for (int nCnt = 0; nCnt < 10; nCnt++)
-	{
-		CBlock::Create("data\\Model\\floor_block.x", { -1800.0f + (400.0f * nCnt),-20.0f,0.0f }, VEC3_NULL, { 20.0f,1.0f,100.0f });
-	}
+	CBlock::Create("data\\Model\\floor_block.x", { 465.0f,65.0f,500.0f }, { 0.0f,0.0f,-D3DX_PI * 0.75f }, { 10.0f,1.0f,50.0f });
+	CBlock::Create("data\\Model\\floor_block.x", { 635.0f,-5.0f,500.0f }, VEC3_NULL, { 10.0f,7.0f,50.0f });
+	CBlock::Create("data\\Model\\floor_block.x", { 805.0f,65.0f,500.0f }, { 0.0f,0.0f,D3DX_PI * 0.75f }, { 10.0f,1.0f,50.0f });
 
-	CBlock::Create("data\\Model\\floor_block.x", { 400.0f,-20.0f,0.0f }, { 0.0f,0.0f,-D3DX_PI * 0.75f }, { 20.0f,1.0f,20.0f });
-	CBlock::Create("data\\Model\\floor_block.x", { 600.0f,0.0f,0.0f }, VEC3_NULL, { 6.0f,6.0f,20.0f });
-	CBlock::Create("data\\Model\\floor_block.x", { 800.0f,-20.0f,0.0f }, { 0.0f,0.0f,D3DX_PI * 0.75f }, { 20.0f,1.0f,20.0f });
+	CBlock::Create("data\\Model\\floor_block.x", { 1200.0f,-20.0f,-500.0f }, VEC3_NULL, { 80.0f,1.0f,20.0f });
+	CBlock::Create("data\\Model\\floor_block.x", { 1435.5f,-20.0f,350.0f }, VEC3_NULL, { 56.5f,1.0f,65.0f });
 
+	CTimer::Create(D3DXVECTOR3(640.0f,360.0f,0.0f));
 #ifdef _DEBUG
 #else
 #endif // _DEBUG
@@ -123,7 +134,7 @@ void CGame::Update(void)
 		{
 			if (CManager::GetScene()->GetMode() == MODE_GAME)
 			{
-				//CFade::SetFade(new CResult);
+				CFade::SetFade(new CResult);
 			}
 		}
 	}
