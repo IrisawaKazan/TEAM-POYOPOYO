@@ -39,7 +39,8 @@ public:
 	void RegisterRayCastObject(LPD3DXMESH pMesh, const D3DXMATRIX& mtxWorld);
 	void CalculateIntersection(void);
 
-	void ResetMarker(void);
+	void SetMarker(void);
+	void RemoveMarker(void) { m_pMarker = nullptr; }
 
 	const std::vector<CArrow*>& GetArrow(void) const { return m_apArrow; }
 	ARROW_DIRECTION GetDirection(void) const { return m_direction; }

@@ -62,8 +62,8 @@ HRESULT CGame::Init(void)
 	// シングルトンを生成
 	m_pPauseManager = CPauseManager::CreateSingleton();
 
-	// ナビゲーションマーカー生成
-	CNavi::GetInstance()->ResetMarker();
+	// ナビゲーションマーカーをセット
+	CNavi::GetInstance()->SetMarker();
 
 	m_pPlayerManager->Init();
 
@@ -158,6 +158,9 @@ void CGame::Update(void)
 //***************************************
 void CGame::Uninit(void)
 {
+	// ナビゲーションマーカーを破棄
+	CNavi::GetInstance()->RemoveMarker();
+
 	// プレイヤーマネージャーの破棄
 	if (m_pPlayerManager != NULL)
 	{
