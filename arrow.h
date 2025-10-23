@@ -14,7 +14,7 @@
 class CArrow : public CObject3D
 {
 public:
-	CArrow() : CObject3D(4), m_chengeLength{}, m_idx{} {};
+	CArrow() : CObject3D(4), m_length{}, m_chengeLength{}, m_idx{} {};
 	~CArrow() {};
 	static CArrow* Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, const char* filePath, D3DXVECTOR2 size, size_t idx);
 
@@ -23,6 +23,7 @@ public:
 	void Update(void) override;
 	void Draw(void) override;
 
+	void SetLength(float length) { m_length = length; }
 	void SetChengeLength(float length) { m_chengeLength = length; }
 	void SetIdx(size_t idx) { m_idx = idx; }
 	void ChengeAngle(const D3DXVECTOR3& pos, D3DXVECTOR3* rot) const;
@@ -34,6 +35,9 @@ public:
 	void RequestRelease() { Release(); }
 
 private:
-	float m_chengeLength; // 矢印の範囲
+	static constexpr float CHENGE_LENGTH_MAGNIFICATION = 0.5f; // 矢印の範囲の倍率
+
+	float m_length;       // 矢印の範囲
+	float m_chengeLength; // 矢印の角度を変える範囲
 	size_t m_idx;         // 矢印インデックス (Zバイアス用)
 };

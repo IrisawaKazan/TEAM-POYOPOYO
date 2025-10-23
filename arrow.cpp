@@ -31,7 +31,8 @@ CArrow* CArrow::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, const char* filePath, D
 	pArrow->SetSize(size);
 	pArrow->SetPosition(pos);
 	pArrow->SetRotasion(rot);
-	pArrow->SetChengeLength(D3DXVec2Length(&size));
+	pArrow->SetLength(D3DXVec2Length(&size));
+	pArrow->SetChengeLength(D3DXVec2Length(&size) * CHENGE_LENGTH_MAGNIFICATION);
 	pArrow->SetIdx(idx);
 
 	// èâä˙âª
@@ -113,9 +114,9 @@ void CArrow::ChengeAngle(const D3DXVECTOR3& pos, D3DXVECTOR3* rot) const
 //--------------------------------
 // ñÓàÛÇ™ãﬂÇ¢
 //--------------------------------
-bool CArrow::ReleaseHit(const D3DXVECTOR3& pos, float chengeLength) const
+bool CArrow::ReleaseHit(const D3DXVECTOR3& pos, float length) const
 {
 	D3DXVECTOR3 space = pos - GetPos();
-	float length = D3DXVec3Length(&space);
-	return (length < (m_chengeLength + chengeLength));
+	float spaceLength = D3DXVec3Length(&space);
+	return (spaceLength < (m_length + length));
 }
