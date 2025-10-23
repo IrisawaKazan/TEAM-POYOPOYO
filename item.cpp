@@ -95,7 +95,10 @@ void CItem::Draw(void)
 CItem* CItem::Create(const ITEM type, const D3DXVECTOR3 pos, const float fWidth, const float fDepth)
 {
 	// アイテムのポインタ
-	CItem* pItem;
+	CItem* pItem = nullptr;
+
+	// 生成
+	pItem = new CItem;
 
 	// 引数の値をそれぞれの変数に代入 
 	pItem->m_type = type;		// アイテムの種類
@@ -127,36 +130,18 @@ bool CItem::CollisionItem(const D3DXVECTOR3 pos, const float fWidth, const float
 	float ItemZF = m_pos.z - m_fDepth;	// Z軸での手前側の当たり判定
 	float ItemZB = m_pos.z + m_fDepth;	// Z軸での奥側の当たり判定
 
-	// 当たったかどうかの判定
-	bool bCollX = false;	// X軸での判定
-	bool bCollZ = false;	// Z軸での判定
-
 	// X軸での当たり判定
-	if (SubjectXR >= ItemXL || SubjectXL <= ItemXR)
-	{// 当たった場合
-		// X軸で当たっているとする
-		bCollX = true;
-	}
-	else
-	{
+	if (SubjectXR <= ItemXL || SubjectXL >= ItemXR)
+	{// 当たってない場合
 		return false;
 	}
 
 	// Z軸での当たり判定
-	if (SubjectZB >= ItemZF || SubjectZF <= ItemZB)
-	{// 当たった場合
-		// Z軸で当たっているとする
-		bCollZ = true;
-	}
-	else
-	{
+	if (SubjectZB <= ItemZF || SubjectZF >= ItemZB)
+	{// 当たってない場合
 		return false;
 	}
 
-	//  X軸とZ軸で当たっている場合
-	if (bCollX == true && bCollZ == true)
-	{
-		// 当たっていると判定する
-		return true;
-	}
+	// 当たっていると判定する
+	return true;
 }
