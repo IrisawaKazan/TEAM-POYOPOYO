@@ -8,6 +8,7 @@
 #ifndef _PLAYER_H_
 #define _PLAYER_H_
 
+#include <unordered_map>
 #include "main.h"
 #include "character.h"
 
@@ -32,5 +33,8 @@ public:
 private:
 	std::unique_ptr<btCollisionShape> m_CollisionShape;
 	std::unique_ptr<btRigidBody> m_RigitBody;		// リジットボディー
+
+	std::unordered_map<size_t, unsigned short> m_naviObjectCountMap; // ナビゲーションオブジェクトの接触回数管理用マップ
+	std::vector<size_t> m_naviObjectIdxListOld;                      // 前のフレームで触れていたナビゲーションオブジェクトのインデックスリスト
 };
 #endif

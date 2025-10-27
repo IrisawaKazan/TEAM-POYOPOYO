@@ -61,6 +61,7 @@ public:
 
 	// ゲッター
 	static bool GetPause(void) { return m_isPause; };
+	static CPlayerManager* GetPlayerManager(void) { return m_pPlayerManager; }; // sato Add
 
 private:
 	// 静的メンバ変数

@@ -29,6 +29,8 @@ public:
 	void Update(void);
 	void Draw(void);
 
+	void DethMessage(CPlayer* pPlayer);
+
 private:
 	int m_Timer;						// タイマー
 	CPlayer* m_pOrigin;					// オリジナル
