@@ -95,6 +95,8 @@ HRESULT CGame::Init(void)
 	CBlock::Create("data\\Model\\floor_block.x", { 1200.0f,-20.0f,-500.0f }, VEC3_NULL, { 80.0f,1.0f,20.0f });
 	CBlock::Create("data\\Model\\floor_block.x", { 1435.5f,-20.0f,350.0f }, VEC3_NULL, { 56.5f,1.0f,65.0f });
 
+	CBlock::Create("data\\Model\\mine_shaft.x", { -2000.0f,0.0f,0.0f }, {0.0f, 0.0f,0.0f}, { 1.0f,1.0f,1.0f });
+
 	CSwitch::Create("data\\Model\\Switch.x", { 630.0f,-0.5f,-350.0f }, VEC3_NULL, { 1.0f,1.0f,1.0f });
 	CSwitch::Create("data\\Model\\Switch.x", { 630.0f,134.5f,400.0f }, VEC3_NULL, { 1.0f,1.0f,1.0f });
 
