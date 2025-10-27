@@ -48,6 +48,8 @@ HRESULT CPlayer::Init(void)
 	m_RigitBody->setUserPointer(this);
 	m_RigitBody->setActivationState(DISABLE_DEACTIVATION);
 
+	m_RigitBody->setFriction(btScalar(0.02f));
+
 	CManager::GetDynamicsWorld()->addRigidBody(m_RigitBody.get());
 
 	return S_OK;
@@ -103,6 +105,12 @@ void CPlayer::Update(void)
 	moveDir.setZ(-cosf(rot.y) * MOVE_SPEED);
 
 	moveDir.setY(m_RigitBody->getLinearVelocity().y());
+
+	if (CManager::GetInputKeyboard()->GetTrigger(DIK_SPACE) == true)
+	{
+		moveDir.setY(moveDir.y() + 50.0f);
+	}
+
 	m_RigitBody->setLinearVelocity(moveDir);
 
 	newPos = trans.getOrigin();

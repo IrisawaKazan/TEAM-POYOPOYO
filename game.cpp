@@ -139,17 +139,16 @@ HRESULT CGame::Init(void)
 void CGame::Update(void)
 {
 #ifdef _DEBUG
-
-	if (CManager::GetInputKeyboard() != NULL)
-	{
-		if (CManager::GetInputKeyboard()->GetTrigger(DIK_SPACE) == true)
-		{
-			if (CManager::GetScene()->GetMode() == MODE_GAME)
-			{
-				CFade::SetFade(new CResult);
-			}
-		}
-	}
+	//if (CManager::GetInputKeyboard() != NULL)
+	//{
+	//	if (CManager::GetInputKeyboard()->GetTrigger(DIK_SPACE) == true)
+	//	{
+	//		if (CManager::GetScene()->GetMode() == MODE_GAME)
+	//		{
+	//			CFade::SetFade(new CResult);
+	//		}
+	//	}
+	//}
 #endif // DEBUG
 	if (m_pPauseManager != NULL)
 	{
