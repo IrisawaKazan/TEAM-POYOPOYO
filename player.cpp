@@ -52,6 +52,10 @@ HRESULT CPlayer::Init(void)
 
 	CManager::GetDynamicsWorld()->addRigidBody(m_RigitBody.get());
 
+	// ナビゲーションオブジェクトの接触回数管理用マップの初期化 sato Add
+	m_naviObjectCountMap = std::unordered_map<size_t, unsigned short>();
+	m_naviObjectIdxListOld = std::vector<size_t>();
+
 	return S_OK;
 }
 
@@ -87,17 +91,52 @@ void CPlayer::Update(void)
 
 	m_RigitBody->getMotionState()->getWorldTransform(trans);
 
-	// 矢印に触れたら向きを変える sato Add
-	std::vector<CArrow*> apArrow = CNavi::GetInstance()->GetArrow();
-	for (const CArrow* pArrow : apArrow)
+	// ナビゲーションオブジェクトに触れる処理 sato Add
+	std::vector<size_t> naviObjectIdxListNew{}; // 今フレームで触れたナビゲーションオブジェクトのインデックスリスト
+	std::vector<CNaviObject*> pObjects = CNavi::GetInstance()->GetObjects();
+	for (const CNaviObject* pObject : pObjects)
 	{
 		D3DXVECTOR3 pos = GetPos();
 		D3DXVECTOR3 rot = GetRot();
-		pArrow->ChengeAngle(pos, &rot);
+		size_t idx = 0;
+		CNavi::Type naviType = pObject->ActivateTrigger(pos, &rot, &idx);
 
-		SetRotDest(rot);
-		SetRot(rot);
+		// 触れたナビゲーションタイプによって処理を分岐
+		switch (naviType)
+		{
+		case CNavi::Type::Arrow:
+			SetRotDest(rot);
+			SetRot(rot);
+			break;
+		case CNavi::Type::Climb:
+			break;
+		case CNavi::Type::Attack:
+			break;
+		}
+
+		if (naviType != CNavi::Type::None && naviType != CNavi::Type::Max)
+		{
+			// 初めての接触の場合はマップに登録
+			m_naviObjectCountMap.try_emplace(idx, short(0));
+
+			// 前のフレームで触れていなかった場合は接触回数をカウントアップ
+			if (std::find(m_naviObjectIdxListOld.begin(), m_naviObjectIdxListOld.end(), idx) == m_naviObjectIdxListOld.end())
+			{
+				m_naviObjectCountMap[idx]++;
+			}
+
+			// 5回以上になったら死んでしまう
+			if (m_naviObjectCountMap[idx] >= 5)
+			{
+				CGame::GetPlayerManager()->DethMessage(this);
+				Uninit();
+				Release();
+				return;
+			}
+			naviObjectIdxListNew.push_back(idx); // リストに追加
+		}
 	}
+	m_naviObjectIdxListOld = naviObjectIdxListNew; // 今フレームで触れたナビゲーションオブジェクトリストを保存
 
 	// 移動処理 sato Add
 	D3DXVECTOR3 rot = GetRot();

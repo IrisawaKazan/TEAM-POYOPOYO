@@ -133,163 +133,184 @@
     <ClCompile Include="uplift.cpp">
       <Filter>ソース</Filter>
     </ClCompile>
-    <ClCompile Include="gimmick.cpp" />
-    <ClCompile Include="switch.cpp" />
+    <ClCompile Include="gimmick.cpp">
+      <Filter>ソース</Filter>
+    </ClCompile>
+    <ClCompile Include="naviobject.cpp">
+      <Filter>ソース</Filter>
+    </ClCompile>
+    <ClCompile Include="switch.cpp">
+      <Filter>ヘッダー</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="arrow.h">
-      <Filter>ヘッター</Filter>
+      <Filter>ヘッダー</Filter>
     </ClInclude>
     <ClInclude Include="block.h">
-      <Filter>ヘッター</Filter>
+      <Filter>ヘッダー</Filter>
     </ClInclude>
     <ClInclude Include="camera.h">
-      <Filter>ヘッター</Filter>
+      <Filter>ヘッダー</Filter>
     </ClInclude>
     <ClInclude Include="character.h">
-      <Filter>ヘッター</Filter>
+      <Filter>ヘッダー</Filter>
     </ClInclude>
     <ClInclude Include="debugproc.h">
-      <Filter>ヘッター</Filter>
+      <Filter>ヘッダー</Filter>
     </ClInclude>
     <ClInclude Include="fade.h">
-      <Filter>ヘッター</Filter>
+      <Filter>ヘッダー</Filter>
     </ClInclude>
     <ClInclude Include="game.h">
-      <Filter>ヘッター</Filter>
+      <Filter>ヘッダー</Filter>
     </ClInclude>
     <ClInclude Include="input.h">
-      <Filter>ヘッター</Filter>
+      <Filter>ヘッダー</Filter>
     </ClInclude>
     <ClInclude Include="item.h">
-      <Filter>ヘッター</Filter>
+      <Filter>ヘッダー</Filter>
     </ClInclude>
     <ClInclude Include="light.h">
-      <Filter>ヘッター</Filter>
+      <Filter>ヘッダー</Filter>
     </ClInclude>
     <ClInclude Include="main.h">
-      <Filter>ヘッター</Filter>
+      <Filter>ヘッダー</Filter>
     </ClInclude>
     <ClInclude Include="manager.h">
-      <Filter>ヘッター</Filter>
+      <Filter>ヘッダー</Filter>
     </ClInclude>
     <ClInclude Include="math_T.h">
-      <Filter>ヘッター</Filter>
+      <Filter>ヘッダー</Filter>
     </ClInclude>
     <ClInclude Include="model.h">
-      <Filter>ヘッター</Filter>
+      <Filter>ヘッダー</Filter>
     </ClInclude>
     <ClInclude Include="modelmanager.h">
-      <Filter>ヘッター</Filter>
+      <Filter>ヘッダー</Filter>
     </ClInclude>
     <ClInclude Include="motion.h">
-      <Filter>ヘッター</Filter>
+      <Filter>ヘッダー</Filter>
     </ClInclude>
     <ClInclude Include="navi.h">
-      <Filter>ヘッター</Filter>
+      <Filter>ヘッダー</Filter>
     </ClInclude>
     <ClInclude Include="naviMarker.h">
-      <Filter>ヘッター</Filter>
+      <Filter>ヘッダー</Filter>
     </ClInclude>
     <ClInclude Include="naviUi.h">
-      <Filter>ヘッター</Filter>
+      <Filter>ヘッダー</Filter>
     </ClInclude>
     <ClInclude Include="number.h">
-      <Filter>ヘッター</Filter>
+      <Filter>ヘッダー</Filter>
     </ClInclude>
     <ClInclude Include="object.h">
-      <Filter>ヘッター</Filter>
+      <Filter>ヘッダー</Filter>
     </ClInclude>
     <ClInclude Include="object2D.h">
-      <Filter>ヘッター</Filter>
+      <Filter>ヘッダー</Filter>
     </ClInclude>
     <ClInclude Include="object3D.h">
-      <Filter>ヘッター</Filter>
+      <Filter>ヘッダー</Filter>
     </ClInclude>
     <ClInclude Include="objectbillboard.h">
-      <Filter>ヘッター</Filter>
+      <Filter>ヘッダー</Filter>
     </ClInclude>
     <ClInclude Include="objectpool.h">
-      <Filter>ヘッター</Filter>
+      <Filter>ヘッダー</Filter>
     </ClInclude>
     <ClInclude Include="objectX.h">
-      <Filter>ヘッター</Filter>
+      <Filter>ヘッダー</Filter>
     </ClInclude>
     <ClInclude Include="sound.h">
-      <Filter>ヘッター</Filter>
+      <Filter>ヘッダー</Filter>
     </ClInclude>
     <ClInclude Include="pause.h">
-      <Filter>ヘッター</Filter>
+      <Filter>ヘッダー</Filter>
     </ClInclude>
     <ClInclude Include="pausemanager.h">
-      <Filter>ヘッター</Filter>
+      <Filter>ヘッダー</Filter>
     </ClInclude>
     <ClInclude Include="pch.h">
-      <Filter>ヘッター</Filter>
+      <Filter>ヘッダー</Filter>
     </ClInclude>
     <ClInclude Include="player.h">
-      <Filter>ヘッター</Filter>
+      <Filter>ヘッダー</Filter>
     </ClInclude>
     <ClInclude Include="playermanager.h">
-      <Filter>ヘッター</Filter>
+      <Filter>ヘッダー</Filter>
     </ClInclude>
     <ClInclude Include="ranking.h">
-      <Filter>ヘッター</Filter>
+      <Filter>ヘッダー</Filter>
     </ClInclude>
     <ClInclude Include="rankingmanager.h">
-      <Filter>ヘッター</Filter>
+      <Filter>ヘッダー</Filter>
     </ClInclude>
     <ClInclude Include="renderer.h">
-      <Filter>ヘッター</Filter>
+      <Filter>ヘッダー</Filter>
     </ClInclude>
     <ClInclude Include="resource.h">
-      <Filter>ヘッター</Filter>
+      <Filter>ヘッダー</Filter>
     </ClInclude>
     <ClInclude Include="result.h">
-      <Filter>ヘッター</Filter>
+      <Filter>ヘッダー</Filter>
     </ClInclude>
     <ClInclude Include="scene.h">
-      <Filter>ヘッター</Filter>
+      <Filter>ヘッダー</Filter>
     </ClInclude>
     <ClInclude Include="texturemanager.h">
-      <Filter>ヘッター</Filter>
+      <Filter>ヘッダー</Filter>
     </ClInclude>
     <ClInclude Include="timer.h">
-      <Filter>ヘッター</Filter>
+      <Filter>ヘッダー</Filter>
     </ClInclude>
     <ClInclude Include="title.h">
-      <Filter>ヘッター</Filter>
+      <Filter>ヘッダー</Filter>
     </ClInclude>
     <ClInclude Include="titlelogo.h">
-      <Filter>ヘッター</Filter>
+      <Filter>ヘッダー</Filter>
     </ClInclude>
     <ClInclude Include="titlemanager.h">
-      <Filter>ヘッター</Filter>
+      <Filter>ヘッダー</Filter>
     </ClInclude>
     <ClInclude Include="titlemenu.h">
-      <Filter>ヘッター</Filter>
+      <Filter>ヘッダー</Filter>
     </ClInclude>
     <ClInclude Include="tutorial.h">
-      <Filter>ヘッター</Filter>
+      <Filter>ヘッダー</Filter>
     </ClInclude>
     <ClInclude Include="uplift.h">
-      <Filter>ヘッター</Filter>
+      <Filter>ヘッダー</Filter>
     </ClInclude>
-    <ClInclude Include="gimmick.h" />
-    <ClInclude Include="switch.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="Team_Game.rc" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="data\ICON\Test.ico" />
+    <ClInclude Include="gimmick.h">
+      <Filter>ヘッダー</Filter>
+    </ClInclude>
+    <ClInclude Include="naviobject.h">
+      <Filter>ヘッダー</Filter>
+    </ClInclude>
+    <ClInclude Include="switch.h">
+      <Filter>ヘッダー</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ソース">
       <UniqueIdentifier>{326a9cdc-5bdd-444d-af37-5c0211b5a70b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ヘッター">
+    <Filter Include="ヘッダー">
       <UniqueIdentifier>{aea9aec0-16b9-4d1e-aeca-167b362fe205}</UniqueIdentifier>
     </Filter>
+    <Filter Include="リソース">
+      <UniqueIdentifier>{c519aa7f-79ae-4e5d-97f7-d90ff01564b2}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Team_Game.rc">
+      <Filter>リソース</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="data\ICON\Test.ico">
+      <Filter>リソース</Filter>
+    </Image>
   </ItemGroup>
 </Project>

@@ -27,13 +27,14 @@ CArrow* CArrow::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, const char* filePath, D
 		return nullptr;
 	}
 
+	pArrow->SetType(CNavi::Type::Arrow);
 	pArrow->SetFilePath(filePath);
 	pArrow->SetSize(size);
 	pArrow->SetPosition(pos);
 	pArrow->SetRotasion(rot);
 	pArrow->SetLength(D3DXVec2Length(&size));
 	pArrow->SetChengeLength(D3DXVec2Length(&size) * CHENGE_LENGTH_MAGNIFICATION);
-	pArrow->SetIdx(idx);
+	pArrow->SetBiasIdx(idx);
 
 	// 初期化
 	if (FAILED(pArrow->Init()))
@@ -50,7 +51,7 @@ CArrow* CArrow::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, const char* filePath, D
 HRESULT CArrow::Init(void)
 {
 	// 親クラスの初期化
-	CObject3D::Init();
+	CNaviObject::Init();
 	return S_OK;
 }
 
@@ -59,7 +60,7 @@ HRESULT CArrow::Init(void)
 //--------------------------------
 void CArrow::Uninit(void)
 {
-	CObject3D::Uninit();
+	CNaviObject::Uninit();
 }
 
 //--------------------------------
@@ -68,7 +69,7 @@ void CArrow::Uninit(void)
 void CArrow::Update(void)
 {
 	// 親クラスの更新
-	CObject3D::Update();
+	CNaviObject::Update();
 }
 
 //--------------------------------
@@ -76,47 +77,16 @@ void CArrow::Update(void)
 //--------------------------------
 void CArrow::Draw(void)
 {
-	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
-
-	// アルファテストを有効
-	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
-	pDevice->SetRenderState(D3DRS_ALPHAREF, 1);
-	pDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
-
-	// Depth Bias 設定 sato
-	float depthBias = -0.000001f;                                  //Zバッファをカメラ方向にオフセットする値
-	depthBias *= m_idx;                                            // オブジェクトID分だけオフセット
-	pDevice->SetRenderState(D3DRS_DEPTHBIAS, *(DWORD*)&depthBias); //Zバイアス設定
-
-	CObject3D::Draw(); // 親クラスの描画
-
-	// Depth Bias 設定を解除 sato
-	float resetBias = 0.0f;
-	pDevice->SetRenderState(D3DRS_DEPTHBIAS, *(DWORD*)&resetBias);
-
-	// アルファテストを無効に戻す
-	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
+	CNaviObject::Draw(); // 親クラスの描画
 }
 
 //--------------------------------
-// 角度を変える
+// ナビゲーションアクション
 //--------------------------------
-void CArrow::ChengeAngle(const D3DXVECTOR3& pos, D3DXVECTOR3* rot) const
+void CArrow::Activate(D3DXVECTOR3* rot) const
 {
-	D3DXVECTOR3 space = pos - GetPos();
-	float length = D3DXVec3Length(&space);
-	if (length < m_chengeLength)
-	{
-		*rot = GetRot();
+	if (rot != nullptr)
+	{// nullでなければ
+		*rot = GetRot(); // 角度を渡す
 	}
-}
-
-//--------------------------------
-// 矢印が近い
-//--------------------------------
-bool CArrow::ReleaseHit(const D3DXVECTOR3& pos, float length) const
-{
-	D3DXVECTOR3 space = pos - GetPos();
-	float spaceLength = D3DXVec3Length(&space);
-	return (spaceLength < (m_length + length));
 }

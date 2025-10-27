@@ -75,6 +75,9 @@ void CNaviUI::Update(void)
 	case CNavi::ARROW_DIRECTION::Front:
 		SetTexIndx(CTextureManager::Instance()->Register("data/TEXTURE/UI/ArrowMark001.png"));
 		break;
+	case CNavi::ARROW_DIRECTION::Right:
+		SetTexIndx(CTextureManager::Instance()->Register("data/TEXTURE/UI/ArrowMark003.png"));
+		break;
 	case CNavi::ARROW_DIRECTION::Back:
 		SetTexIndx(CTextureManager::Instance()->Register("data/TEXTURE/UI/ArrowMark000.png"));
 		break;

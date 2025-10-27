@@ -100,3 +100,16 @@ void CPlayerManager::Draw(void)
 {
 
 }
+
+//************************************************************
+// プレイヤーが死亡したときのメッセージ
+//************************************************************
+void CPlayerManager::DethMessage(CPlayer* pPlayer)
+{
+	auto it = std::find(m_pPlayer.begin(), m_pPlayer.end(), pPlayer);
+	if (it != m_pPlayer.end())
+	{
+		std::swap(*it, m_pPlayer.back());
+		m_pPlayer.pop_back();
+	}
+}

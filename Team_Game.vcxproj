@@ -180,6 +180,7 @@
     <ClCompile Include="motion.cpp" />
     <ClCompile Include="navi.cpp" />
     <ClCompile Include="naviMarker.cpp" />
+    <ClCompile Include="naviobject.cpp" />
     <ClCompile Include="naviUi.cpp" />
     <ClCompile Include="number.cpp" />
     <ClCompile Include="object.cpp" />
@@ -239,6 +240,7 @@
     <ClInclude Include="motion.h" />
     <ClInclude Include="navi.h" />
     <ClInclude Include="naviMarker.h" />
+    <ClInclude Include="naviobject.h" />
     <ClInclude Include="naviUi.h" />
     <ClInclude Include="number.h" />
     <ClInclude Include="object.h" />
