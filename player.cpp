@@ -99,22 +99,22 @@ void CPlayer::Update(void)
 		D3DXVECTOR3 pos = GetPos();
 		D3DXVECTOR3 rot = GetRot();
 		size_t idx = 0;
-		CNavi::Type naviType = pObject->ActivateTrigger(pos, &rot, &idx);
+		CNavi::TYPE naviType = pObject->ActivateTrigger(pos, &rot, &idx);
 
 		// 触れたナビゲーションタイプによって処理を分岐
 		switch (naviType)
 		{
-		case CNavi::Type::Arrow:
+		case CNavi::TYPE::Arrow:
 			SetRotDest(rot);
 			SetRot(rot);
 			break;
-		case CNavi::Type::Climb:
+		case CNavi::TYPE::Climb:
 			break;
-		case CNavi::Type::Attack:
+		case CNavi::TYPE::Attack:
 			break;
 		}
 
-		if (naviType != CNavi::Type::None && naviType != CNavi::Type::Max)
+		if (naviType != CNavi::TYPE::None && naviType != CNavi::TYPE::Max)
 		{
 			// 初めての接触の場合はマップに登録
 			m_naviObjectCountMap.try_emplace(idx, short(0));

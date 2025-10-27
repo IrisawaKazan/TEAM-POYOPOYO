@@ -38,11 +38,8 @@ HRESULT CNavi::Init(void)
 	// 初期位置を設定
 	m_pos = MARKER_OFFSET;
 
-	// ナビタイプを初期化
-	m_type = Type::Arrow;
-
-	// 矢印の向きを初期化
-	m_direction = ARROW_DIRECTION::Left;
+	// 選ばれているオブジェクト
+	m_list = LIST::RightArrow;
 
 	// ナビマーカーを初期化
 	m_pMarker = nullptr;
@@ -77,59 +74,44 @@ void CNavi::Update(void)
 		m_pMarker->SetPosition(m_pos);
 	}
 
-	if (CManager::GetInputKeyboard()->GetTrigger(DIK_1))
-	{// 1キーでナビタイプを変更
-		m_type = static_cast<Type>((static_cast<unsigned char>(m_type) + static_cast<unsigned char>(Type::Max) - 1) % static_cast<unsigned char>(Type::Max));
-	}
-	else if (CManager::GetInputKeyboard()->GetTrigger(DIK_3))
-	{// 3キーでナビタイプを変更
-		m_type = static_cast<Type>((static_cast<unsigned char>(m_type) + 1) % static_cast<unsigned char>(Type::Max));
-	}
-
 	if (CManager::GetInputKeyboard()->GetTrigger(DIK_Q))
-	{// Qキーで矢印の向きを変更
-		m_direction = static_cast<ARROW_DIRECTION>((static_cast<unsigned char>(m_direction) + static_cast<unsigned char>(ARROW_DIRECTION::Max) - 1) % static_cast<unsigned char>(ARROW_DIRECTION::Max));
+	{// Qキーでオブジェクトを変更
+		m_list = static_cast<LIST>((static_cast<unsigned char>(m_list) + static_cast<unsigned char>(LIST::Max) - 1) % static_cast<unsigned char>(LIST::Max));
 	}
 	else if (CManager::GetInputKeyboard()->GetTrigger(DIK_E))
-	{// Eキーで矢印の向きを変更
-		m_direction = static_cast<ARROW_DIRECTION>((static_cast<unsigned char>(m_direction) + 1) % static_cast<unsigned char>(ARROW_DIRECTION::Max));
+	{// Eキーでオブジェクトを変更
+		m_list = static_cast<LIST>((static_cast<unsigned char>(m_list) + 1) % static_cast<unsigned char>(LIST::Max));
 	}
 
 	if (m_pos.y > (MARKER_OFFSET.y + 1.0f) && CManager::GetInputMouse()->OnDown(0))
 	{// 左クリックしたとき
 		m_clickPos = m_pos; // クリックした位置を保存
 
-		switch (m_type)
+		// オブジェクトごとの分岐
+		switch (m_list)
 		{
-		case CNavi::Type::Arrow:
-		{
-			// 矢印の角度を決定
-			float arrowAngle = 0.0f;
-			switch (m_direction)
-			{
-			case CNavi::ARROW_DIRECTION::Left:
-				arrowAngle = D3DXToRadian(-90.0f);
-				break;
-			case CNavi::ARROW_DIRECTION::Front:
-				arrowAngle = D3DXToRadian(0.0f);
-				break;
-			case CNavi::ARROW_DIRECTION::Right:
-				arrowAngle = D3DXToRadian(90.0f);
-				break;
-			case CNavi::ARROW_DIRECTION::Back:
-				arrowAngle = D3DXToRadian(180.0f);
-				break;
-			}
-
+		case CNavi::LIST::RightArrow:
 			// 矢印を作成
-			m_apObject.push_back(CArrow::Create(m_clickPos, D3DXVECTOR3(0.0f, arrowAngle, 0.0f), "data/TEXTURE/UI/ArrowMark001.png", { m_pMarker->GetWidth(),m_pMarker->GetVetical() }, m_apObject.size()));
+			m_apObject.push_back(CArrow::Create(m_clickPos, D3DXVECTOR3(0.0f, D3DXToRadian(90.0f), 0.0f), "data/TEXTURE/UI/ArrowMark001.png", { m_pMarker->GetWidth(),m_pMarker->GetVetical() }, m_apObject.size()));
+			break;
+		case CNavi::LIST::FrontArrow:
+			// 矢印を作成
+			m_apObject.push_back(CArrow::Create(m_clickPos, D3DXVECTOR3(0.0f, D3DXToRadian(0.0f), 0.0f), "data/TEXTURE/UI/ArrowMark001.png", { m_pMarker->GetWidth(),m_pMarker->GetVetical() }, m_apObject.size()));
+			break;
+		case CNavi::LIST::LeftArrow:
+			// 矢印を作成
+			m_apObject.push_back(CArrow::Create(m_clickPos, D3DXVECTOR3(0.0f, D3DXToRadian(-90.0f), 0.0f), "data/TEXTURE/UI/ArrowMark001.png", { m_pMarker->GetWidth(),m_pMarker->GetVetical() }, m_apObject.size()));
+			break;
+		case CNavi::LIST::BackArrow:
+			// 矢印を作成
+			m_apObject.push_back(CArrow::Create(m_clickPos, D3DXVECTOR3(0.0f, D3DXToRadian(180.0f), 0.0f), "data/TEXTURE/UI/ArrowMark001.png", { m_pMarker->GetWidth(),m_pMarker->GetVetical() }, m_apObject.size()));
+			break;
+		case CNavi::LIST::Climb:
+			break;
+		case CNavi::LIST::Attack:
 			break;
 		}
-		case CNavi::Type::Climb:
-			break;
-		case CNavi::Type::Attack:
-			break;
-		}
+		if (m_apObject.empty()) return;
 
 		auto pNewObject = m_apObject.back(); // 新しく作成したオブジェクトのポインタ
 
