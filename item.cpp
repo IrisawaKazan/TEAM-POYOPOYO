@@ -100,6 +100,11 @@ CItem* CItem::Create(const ITEM type, const D3DXVECTOR3 pos, const float fWidth,
 	// 生成
 	pItem = new CItem;
 
+	if (pItem == nullptr)
+	{// ポインタがnullptrだったら
+		return nullptr;
+	}
+
 	// 引数の値をそれぞれの変数に代入 
 	pItem->m_type = type;		// アイテムの種類
 	pItem->m_pos = pos;			// 位置
