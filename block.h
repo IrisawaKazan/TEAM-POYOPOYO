@@ -30,12 +30,13 @@ public:
 		TYPE_MAX,
 	}TYPE;
 
-	CBlock(int nPriority = 7);
+	CBlock(int nPriority = 3);
 	~CBlock();
 	HRESULT Init(void);
 	void InitRB(void);
 	void Uninit(void);
 	void Update(void);
+	void UpdateRB(void);
 	void Draw(void);
 
 	static CBlock* Create(std::string sName, D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 Scale = { 1.0f,1.0f,1.0f });
