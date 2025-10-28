@@ -92,7 +92,7 @@ void CNavi::Update(void)
 		{
 		case CNavi::LIST::RightArrow:
 			// –îˆó‚ðì¬
-			m_apObject.push_back(CArrow::Create(m_clickPos, D3DXVECTOR3(0.0f, D3DXToRadian(90.0f), 0.0f), "data/TEXTURE/UI/ArrowMark001.png", { m_pMarker->GetWidth(),m_pMarker->GetVetical() }, m_apObject.size()));
+			m_apObject.push_back(CArrow::Create(m_clickPos, D3DXVECTOR3(0.0f, D3DXToRadian(-90.0f), 0.0f), "data/TEXTURE/UI/ArrowMark001.png", { m_pMarker->GetWidth(),m_pMarker->GetVetical() }, m_apObject.size()));
 			break;
 		case CNavi::LIST::FrontArrow:
 			// –îˆó‚ðì¬
@@ -100,16 +100,16 @@ void CNavi::Update(void)
 			break;
 		case CNavi::LIST::LeftArrow:
 			// –îˆó‚ðì¬
-			m_apObject.push_back(CArrow::Create(m_clickPos, D3DXVECTOR3(0.0f, D3DXToRadian(-90.0f), 0.0f), "data/TEXTURE/UI/ArrowMark001.png", { m_pMarker->GetWidth(),m_pMarker->GetVetical() }, m_apObject.size()));
+			m_apObject.push_back(CArrow::Create(m_clickPos, D3DXVECTOR3(0.0f, D3DXToRadian(90.0f), 0.0f), "data/TEXTURE/UI/ArrowMark001.png", { m_pMarker->GetWidth(),m_pMarker->GetVetical() }, m_apObject.size()));
 			break;
 		case CNavi::LIST::BackArrow:
 			// –îˆó‚ðì¬
 			m_apObject.push_back(CArrow::Create(m_clickPos, D3DXVECTOR3(0.0f, D3DXToRadian(180.0f), 0.0f), "data/TEXTURE/UI/ArrowMark001.png", { m_pMarker->GetWidth(),m_pMarker->GetVetical() }, m_apObject.size()));
 			break;
-		case CNavi::LIST::Climb:
-			break;
-		case CNavi::LIST::Attack:
-			break;
+		//case CNavi::LIST::Climb:
+		//	break;
+		//case CNavi::LIST::Attack:
+		//	break;
 		}
 		if (m_apObject.empty()) return;
 

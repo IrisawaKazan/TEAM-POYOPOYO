@@ -108,9 +108,9 @@ void CPlayer::Update(void)
 			SetRotDest(rot);
 			SetRot(rot);
 			break;
-		case CNavi::TYPE::Climb:
-			break;
-		case CNavi::TYPE::Attack:
+		//case CNavi::TYPE::Climb:
+		//	break;
+		//case CNavi::TYPE::Attack:
 			break;
 		}
 
