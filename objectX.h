@@ -38,14 +38,12 @@ public:
 	D3DXMATRIX* GetMtxParent(void) { return m_pMtxParent; };
 	D3DXMATRIX GetMtxRot(void) { return m_mtxRot; };
 	D3DXQUATERNION GetQuad(void) { return m_Quad; }
-	btQuaternion ConvertQuad(D3DXQUATERNION Set);
-	D3DXQUATERNION ConvertQuad(btQuaternion Set);
 
 	D3DXMATRIX GetWorldMtx(void) { return m_mtxWorld; } // sato add 仮
 
 	// セッター
 	void SetPosition(D3DXVECTOR3 Pos) { m_Pos = Pos; };
-	void SetRotasion(D3DXVECTOR3 Rot) { m_Rot = Rot; };
+	void SetRotasion(D3DXVECTOR3 Rot);
 	void SetScale(D3DXVECTOR3 Scale) { m_Scale = Scale; };
 	void SetAlpha(const float Alpha) { m_fAlpha = Alpha; };
 	void SetRotMtx(D3DXMATRIX mtxRot) { m_mtxRot = mtxRot; };

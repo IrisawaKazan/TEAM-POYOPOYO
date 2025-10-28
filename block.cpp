@@ -54,6 +54,7 @@ CBlock* CBlock::Create(std::string sName,D3DXVECTOR3 pos, D3DXVECTOR3 rot,D3DXVE
 		pBlock->m_sNamePath = sName;
 		pBlock->SetPosition(pos);
 		pBlock->m_pos = pos;
+		pBlock->SetRotasion(rot);
 		pBlock->SetScale(Scale);
 		pBlock->Init();
 		return pBlock;
@@ -191,7 +192,7 @@ void CBlock::InitRB(void)
 	btQuaternion rotation;
 
 	// ‘ã“ü
-	rotation = CObjectX::ConvertQuad(GetQuad());
+	rotation = CMath::ConvertQuat(GetQuad());
 
 	// ˆÊ’u‚ÆŒü‚«‚ğİ’è
 	Origin.setRotation(rotation);

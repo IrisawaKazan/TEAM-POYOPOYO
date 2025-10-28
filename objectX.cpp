@@ -62,7 +62,7 @@ HRESULT CObjectX::Init(void)
 	ZQuad.setRotation(ZAxis, m_Rot.z);
 
 	// 各軸の合成結果を代入
-	m_Quad = ConvertQuad(XQuad * YQuad * ZQuad);
+	m_Quad = CMath::ConvertQuat(XQuad * YQuad * ZQuad);
 
 	return S_OK;
 }
@@ -152,16 +152,12 @@ void CObjectX::Draw(void)
 }
 
 //***************************************
-// クォータニオンを変換
+// むきを設定
 //***************************************
-btQuaternion CObjectX::ConvertQuad(D3DXQUATERNION Set)
+void CObjectX::SetRotasion(D3DXVECTOR3 Rot)
 {
-	return btQuaternion(Set.x, Set.y, Set.z, Set.w);
-}
-
-D3DXQUATERNION CObjectX::ConvertQuad(btQuaternion Set)
-{
-	return D3DXQUATERNION((float)Set.x(), (float)Set.y(), (float)Set.z(), (float)Set.w());
+	m_Rot = Rot;
+	D3DXQuaternionRotationYawPitchRoll(&m_Quad, m_Rot.z, m_Rot.y, m_Rot.z);
 }
 
 //***************************************

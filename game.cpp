@@ -76,10 +76,11 @@ HRESULT CGame::Init(void)
 	// ナビゲーションマーカーをセット
 	CNavi::GetInstance()->SetMarker();
 
-	//CObject3D::Create(VEC3_NULL, VEC3_NULL,"data\\TEXTURE\\floor.jpg", D3DXVECTOR2(2000.0f, 1000.0f));
-	//CObject3D::Create(D3DXVECTOR3(0.0f,1000.0f,1000.0f), D3DXVECTOR3((-D3DX_PI * 0.5f),0.0f,0.0f),"data\\TEXTURE\\wall.jpg",D3DXVECTOR2(2000.0f,1000.0f));
+	CObject3D::Create(D3DXVECTOR3(0.0f,1000.0f,-1000.0f), D3DXVECTOR3((D3DX_PI * 0.5f),0.0f,0.0f),"data\\TEXTURE\\wall.jpg",D3DXVECTOR2(2000.0f,1000.0f));
 	CObject3D::Create(D3DXVECTOR3(-2000.0f,1000.0f,0.0f), D3DXVECTOR3((-D3DX_PI * 0.5f), (-D3DX_PI * 0.5f), 0.0f),"data\\TEXTURE\\wall.jpg",D3DXVECTOR2(1000.0f, 1000.0f));
 	CObject3D::Create(D3DXVECTOR3(2000.0f,1000.0f,0.0f), D3DXVECTOR3((-D3DX_PI * 0.5f), (D3DX_PI * 0.5f), 0.0f), "data\\TEXTURE\\wall.jpg", D3DXVECTOR2(1000.0f, 1000.0f));
+
+	CBlock::Create("data\\Model\\mine_shaft.x", { 2000.0f,0.0f,0.0f }, {0.0f, D3DX_PI,0.0f}, { 1.0f,1.0f,1.0f });
 
 	std::vector<const char*> uiTextures =
 	{// ナビゲーションオブジェクトUIのテクスチャリスト
@@ -91,17 +92,6 @@ HRESULT CGame::Init(void)
 		"data/TEXTURE/UI/AttackMark000.png"
 	};
 	CNaviUI::Create("data/TEXTURE/UI/Frame000.png", uiTextures, D3DXVECTOR3(SCREEN_WIDTH * 0.1f, SCREEN_HEIGHT * 0.82f, 0.0f), D3DXVECTOR2(100.0f, 100.0f));
-	//CBlock::Create("data\\Model\\floor_block.x", { 465.0f,65.0f,500.0f }, { 0.0f,0.0f,-D3DX_PI * 0.75f }, { 10.0f,1.0f,50.0f });
-	//CBlock::Create("data\\Model\\floor_block.x", { 635.0f,-5.0f,500.0f }, VEC3_NULL, { 10.0f,7.0f,50.0f });
-	//CBlock::Create("data\\Model\\floor_block.x", { 805.0f,65.0f,500.0f }, { 0.0f,0.0f,D3DX_PI * 0.75f }, { 10.0f,1.0f,50.0f });
-
-	//CBlock::Create("data\\Model\\floor_block.x", { 1200.0f,-20.0f,-500.0f }, VEC3_NULL, { 80.0f,1.0f,20.0f });
-	//CBlock::Create("data\\Model\\floor_block.x", { 1435.5f,-20.0f,350.0f }, VEC3_NULL, { 56.5f,1.0f,65.0f });
-
-	//CBlock::Create("data\\Model\\mine_shaft.x", { -2000.0f,0.0f,0.0f }, {0.0f, 0.0f,0.0f}, { 1.0f,1.0f,1.0f });
-
-	//CSwitch::Create("data\\Model\\Switch.x", { 630.0f,-0.5f,-350.0f }, VEC3_NULL, { 1.0f,1.0f,1.0f });
-	//CSwitch::Create("data\\Model\\Switch.x", { 630.0f,134.5f,400.0f }, VEC3_NULL, { 1.0f,1.0f,1.0f });
 
 	CTimer::Create(D3DXVECTOR3(640.0f,360.0f,0.0f));
 #ifdef _DEBUG
