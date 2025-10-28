@@ -21,8 +21,8 @@ public:
 		FrontArrow,
 		LeftArrow,
 		BackArrow,
-		Climb,
-		Attack,
+		//Climb,
+		//Attack,
 		Max
 	};
 
@@ -31,18 +31,8 @@ public:
 	{
 		None,
 		Arrow,
-		Climb,
-		Attack,
-		Max
-	};
-
-	// –îˆó‚ÌŒü‚«
-	enum class ARROW_DIRECTION : unsigned char
-	{
-		Right,
-		Front,
-		Left,
-		Back,
+		//Climb,
+		//Attack,
 		Max
 	};
 

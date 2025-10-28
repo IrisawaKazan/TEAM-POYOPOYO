@@ -34,13 +34,16 @@ public:
 	void SetSize(const D3DXVECTOR2 Size);
 	void SetUv(const D3DXVECTOR2 Uv, const float SizeU, const float SizeV);
 	void SetCol(const D3DXCOLOR Col);
-	void SetTexIndx(const int Indx) { m_nTexIndx = Indx; };
+	void SetTexIndx(const int Indx) { m_nTexIndx = Indx; }
+	void SetAlphaTest(bool isAlphaTest) { m_isAlphaText = isAlphaTest; }
 
 	// ゲッター
 	D3DXVECTOR3 GetPosition(void) {return m_Pos; };
 	D3DXVECTOR3 GetRotasion(void) { return m_Rot; };
 	D3DXVECTOR2 GetSize(void) { return D3DXVECTOR2(m_fWidth, m_fHeigth); };
 	int GetTexIndx(void) { return m_nTexIndx; };
+	bool IsAlphaTest(void) { return m_isAlphaText; }
+
 private:
 	// メンバ変数
 	LPDIRECT3DVERTEXBUFFER9 m_pVertex;	// 頂点バッファ
@@ -51,5 +54,6 @@ private:
 	float m_fWidth;						// 横幅
 	float m_fHeigth;					// 高さ
 	int m_nTexIndx;						// テクスチャへのインデックス
+	bool m_isAlphaText;                 // アルファテストフラグ sato Add
 };
 #endif // !_OBJECT2D_H_

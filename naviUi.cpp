@@ -5,10 +5,12 @@
 //
 //--------------------------------
 #include "naviUi.h"
+#include "object2D.h"
 #include "manager.h"
 #include "game.h"
 #include "renderer.h"
 #include "navi.h"
+#include "math_T.h"
 
 //--------------------------------
 //
@@ -19,7 +21,7 @@
 //--------------------------------
 // 生成
 //--------------------------------
-CNaviUI* CNaviUI::Create(const char* filePath, D3DXVECTOR3 pos, D3DXVECTOR2 size)
+CNaviUI* CNaviUI::Create(const char* frameTexturePath, std::vector<const char*> objectTexturePaths, D3DXVECTOR3 pos, D3DXVECTOR2 size)
 {
 	// インスタンスの生成
 	CNaviUI* pNaviUI = new CNaviUI;
@@ -27,10 +29,11 @@ CNaviUI* CNaviUI::Create(const char* filePath, D3DXVECTOR3 pos, D3DXVECTOR2 size
 	{
 		return nullptr;
 	}
-	CTextureManager* pTexmanager = CTextureManager::Instance();
-	pNaviUI->SetTexIndx(pTexmanager->Register(filePath));
+
+	pNaviUI->SetFrameTexturePath(frameTexturePath);
+	pNaviUI->SetObjectTexturePaths(objectTexturePaths);
+	pNaviUI->SetPos(pos);
 	pNaviUI->SetSize(size);
-	pNaviUI->SetPosition(pos);
 
 	// 初期化
 	if (FAILED(pNaviUI->Init()))
@@ -46,8 +49,22 @@ CNaviUI* CNaviUI::Create(const char* filePath, D3DXVECTOR3 pos, D3DXVECTOR2 size
 //--------------------------------
 HRESULT CNaviUI::Init(void)
 {
-	// 親クラスの初期化
-	CObject2D::Init();
+	// フレームのセット
+	CTextureManager* textureManager = CTextureManager::Instance();
+	m_pFrame = CObject2D::Create(m_pos, VEC3_NULL, m_size);
+	m_pFrame->SetTexIndx(textureManager->Register(m_frameTexturePath));
+	m_pFrame->SetAlphaTest(true);
+
+	m_pObjects[0] = CObject2D::Create(m_pos, VEC3_NULL, m_size * 0.7f);
+	m_pObjects[1] = CObject2D::Create(m_pos + D3DXVECTOR3(-m_size.x * 0.7f, m_size.y * 0.7f, 0.0f), VEC3_NULL, m_size * 0.2f);
+	m_pObjects[2] = CObject2D::Create(m_pos + D3DXVECTOR3(m_size.x * 0.7f, m_size.y * 0.7f, 0.0f), VEC3_NULL, m_size * 0.2f);
+	for (auto pObject : m_pObjects)
+	{
+		pObject->SetAlphaTest(true);
+	}
+
+	SetObjectUI(); // オブジェクトUIのセット
+
 	return S_OK;
 }
 
@@ -56,7 +73,7 @@ HRESULT CNaviUI::Init(void)
 //--------------------------------
 void CNaviUI::Uninit(void)
 {
-	CObject2D::Uninit();
+
 }
 
 //--------------------------------
@@ -64,31 +81,7 @@ void CNaviUI::Uninit(void)
 //--------------------------------
 void CNaviUI::Update(void)
 {
-	// 親クラスの更新
-	CObject2D::Update();
-
-	// テクスチャ切り替え
-	switch (CNavi::GetInstance()->GetList())
-	{
-	case CNavi::LIST::RightArrow:
-		SetTexIndx(CTextureManager::Instance()->Register("data/TEXTURE/UI/ArrowMark003.png"));
-		break;
-	case CNavi::LIST::FrontArrow:
-		SetTexIndx(CTextureManager::Instance()->Register("data/TEXTURE/UI/ArrowMark001.png"));
-		break;
-	case CNavi::LIST::LeftArrow:
-		SetTexIndx(CTextureManager::Instance()->Register("data/TEXTURE/UI/ArrowMark002.png"));
-		break;
-	case CNavi::LIST::BackArrow:
-		SetTexIndx(CTextureManager::Instance()->Register("data/TEXTURE/UI/ArrowMark000.png"));
-		break;
-	case CNavi::LIST::Climb:
-		SetTexIndx(CTextureManager::Instance()->Register("data/TEXTURE/UI/ClimbMark000.png"));
-		break;
-	case CNavi::LIST::Attack:
-		SetTexIndx(CTextureManager::Instance()->Register("data/TEXTURE/UI/AttackMark000.png"));
-		break;
-	}
+	SetObjectUI(); // オブジェクトUIのセット
 }
 
 //--------------------------------
@@ -96,15 +89,34 @@ void CNaviUI::Update(void)
 //--------------------------------
 void CNaviUI::Draw(void)
 {
-	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
 
-	// アルファテストを有効
-	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
-	pDevice->SetRenderState(D3DRS_ALPHAREF, 1);
-	pDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
+}
 
-	CObject2D::Draw(); // 親クラスの描画
+//--------------------------------
+// オブジェクトUIのセット
+//--------------------------------
+void CNaviUI::SetObjectUI(void)
+{
+	CTextureManager* textureManager = CTextureManager::Instance();
 
-	// アルファテストを無効に戻す
-	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
+	// 今のオブジェクト
+	unsigned char listID = static_cast<char>(CNavi::GetInstance()->GetList());
+	if (!m_objectTexturePaths.empty() && m_objectTexturePaths.size() > listID)
+	{// テクスチャがあればセット
+		m_pObjects[0]->SetTexIndx(textureManager->Register(m_objectTexturePaths[listID]));
+	}
+
+	// 前のオブジェクト
+	unsigned char lastListID = Wrap(char(listID - 1), char(0), char(int(CNavi::LIST::Max) - 1));
+	if (!m_objectTexturePaths.empty() && m_objectTexturePaths.size() > lastListID)
+	{// テクスチャがあればセット
+		m_pObjects[1]->SetTexIndx(textureManager->Register(m_objectTexturePaths[lastListID]));
+	}
+
+	// 次のオブジェクト
+	unsigned char nextListID = Wrap(char(listID + 1), char(0), char(int(CNavi::LIST::Max) - 1));
+	if (!m_objectTexturePaths.empty() && m_objectTexturePaths.size() > nextListID)
+	{// テクスチャがあればセット
+		m_pObjects[2]->SetTexIndx(textureManager->Register(m_objectTexturePaths[nextListID]));
+	}
 }

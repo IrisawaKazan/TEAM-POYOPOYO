@@ -25,6 +25,7 @@ CObject2D::CObject2D(int Priority) : CObject(Priority)
 	m_Pos = VEC3_NULL;
 	m_Rot = VEC3_NULL;
 	m_nTexIndx = -1;
+	m_isAlphaText = false;
 }
 
 //*********************************************
@@ -273,6 +274,14 @@ void CObject2D::Draw()
 	pRenderer = CManager::GetRenderer();
 	LPDIRECT3DDEVICE9 pDevice = pRenderer->GetDevice();
 
+	if (m_isAlphaText)
+	{
+		// アルファテストを有効
+		pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
+		pDevice->SetRenderState(D3DRS_ALPHAREF, 1);
+		pDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
+	}
+
 	//頂点フォーマットの設定
 	pDevice->SetFVF(FVF_VERTEX_2D);
 
@@ -283,6 +292,12 @@ void CObject2D::Draw()
 	pDevice->SetTexture(0, CTextureManager::Instance()->GetAddress(m_nTexIndx));
 	//プレイヤーの描画
 	pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
+
+	if (m_isAlphaText)
+	{
+		// アルファテストを無効に戻す
+		pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
+	}
 }
 
 //*********************************************

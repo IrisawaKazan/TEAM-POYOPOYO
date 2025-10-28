@@ -81,18 +81,16 @@ HRESULT CGame::Init(void)
 	CObject3D::Create(D3DXVECTOR3(-2000.0f,1000.0f,0.0f), D3DXVECTOR3((-D3DX_PI * 0.5f), (-D3DX_PI * 0.5f), 0.0f),"data\\TEXTURE\\wall.jpg",D3DXVECTOR2(1000.0f, 1000.0f));
 	CObject3D::Create(D3DXVECTOR3(2000.0f,1000.0f,0.0f), D3DXVECTOR3((-D3DX_PI * 0.5f), (D3DX_PI * 0.5f), 0.0f), "data\\TEXTURE\\wall.jpg", D3DXVECTOR2(1000.0f, 1000.0f));
 
-	CNaviUI::Create("data/TEXTURE/UI/ArrowMark000.png", D3DXVECTOR3(SCREEN_WIDTH * 0.05f, SCREEN_HEIGHT * 0.9f, 0.0f), D3DXVECTOR2(60.0f, 60.0f));
-	//
-	//CBlock::Create("data\\Model\\floor_block.x", { -1400.0f,-20.0f,0.0f }, VEC3_NULL, { 60.0f,1.0f,100.0f });
-	//CBlock::Create("data\\Model\\floor_block.x", { -1200.0f,0.0f,0.0f }, VEC3_NULL, { 10.0f,5.0f,10.0f });
-	//CBlock::Create("data\\Model\\floor_block.x", { -950.0f,0.0f,200.0f }, VEC3_NULL, { 5.0f,5.0f,20.0f });
-	//CBlock::Create("data\\Model\\floor_block.x", { -700.0f,-20.0f,500.0f }, VEC3_NULL, { 10.0f,1.0f,50.0f });
-	//CBlock::Create("data\\Model\\floor_block.x", { -500.0f,-20.0f,0.0f }, VEC3_NULL, { 10.0f,1.0f,100.0f });
-	//CBlock::Create("data\\Model\\floor_block.x", { -300.0f,-20.0f,-500.0f }, VEC3_NULL, { 10.0f,1.0f,50.0f });
-	//CBlock::Create("data\\Model\\floor_block.x", { -100.0f,-20.0f,0.0f }, VEC3_NULL, { 10.0f,1.0f,100.0f });
-	//CBlock::Create("data\\Model\\floor_block.x", { 100.0f,-20.0f,0.0f }, VEC3_NULL, { 10.0f,1.0f,25.0f });
-	//CBlock::Create("data\\Model\\floor_block.x", { 300.0f,-20.0f,0.0f }, VEC3_NULL, { 10.0f,1.0f,100.0f });
-
+	std::vector<const char*> uiTextures =
+	{// ナビゲーションオブジェクトUIのテクスチャリスト
+		"data/TEXTURE/UI/ArrowMark002.png",
+		"data/TEXTURE/UI/ArrowMark001.png",
+		"data/TEXTURE/UI/ArrowMark003.png",
+		"data/TEXTURE/UI/ArrowMark000.png",
+		"data/TEXTURE/UI/ClimbMark000.png"
+		"data/TEXTURE/UI/AttackMark000.png"
+	};
+	CNaviUI::Create("data/TEXTURE/UI/Frame000.png", uiTextures, D3DXVECTOR3(SCREEN_WIDTH * 0.1f, SCREEN_HEIGHT * 0.82f, 0.0f), D3DXVECTOR2(100.0f, 100.0f));
 	//CBlock::Create("data\\Model\\floor_block.x", { 465.0f,65.0f,500.0f }, { 0.0f,0.0f,-D3DX_PI * 0.75f }, { 10.0f,1.0f,50.0f });
 	//CBlock::Create("data\\Model\\floor_block.x", { 635.0f,-5.0f,500.0f }, VEC3_NULL, { 10.0f,7.0f,50.0f });
 	//CBlock::Create("data\\Model\\floor_block.x", { 805.0f,65.0f,500.0f }, { 0.0f,0.0f,D3DX_PI * 0.75f }, { 10.0f,1.0f,50.0f });
