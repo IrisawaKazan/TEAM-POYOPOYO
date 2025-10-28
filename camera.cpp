@@ -16,7 +16,7 @@ using namespace std;
 
 // 規定値を設定
 const D3DXVECTOR3 CCamera::Config::OffSetR = { 0.0f, 50.0f, 0.0f };
-const D3DXVECTOR3 CCamera::Config::OffSetRot = { D3DX_PI * 0.15f, D3DX_PI, 0.0f }; // sato Add
+const D3DXVECTOR3 CCamera::Config::OffSetRot = { D3DX_PI * 0.15f, 0.0f, 0.0f }; // sato Add
 const D3DXVECTOR3 CCamera::Config::CatchSpeedR = { 0.3f, 0.3f, 0.3f };
 
 // 静的メンバ変数宣言
@@ -362,11 +362,11 @@ void CCamera::UpdateKeyboardMoveSide(void)
 	// 左右に動かす
 	if (Left == true)
 	{
-		m_posRDest.x -= Config::MoveSpeedSide;
+		m_posRDest.x += Config::MoveSpeedSide;
 	}
 	if (Right == true)
 	{
-		m_posRDest.x += Config::MoveSpeedSide;
+		m_posRDest.x -= Config::MoveSpeedSide;
 	}
 
 	// Clampで範囲内に収める

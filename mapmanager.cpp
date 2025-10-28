@@ -130,7 +130,7 @@ void CMapManager::Load(std::string Path)
 		CBlock* LocalObject = NULL;
 		LocalObject = CBlock::Create(LocalPath, Pos, VEC3_NULL);
 		LocalObject->SetScale(Scale);
-		LocalObject->SetQuad(Quad);
+		LocalObject->SetQuat(CMath::ConvertQuat(Quad));
 		LocalObject->SetIdx(LocalPath);
 
 		// ˜AŒ‹

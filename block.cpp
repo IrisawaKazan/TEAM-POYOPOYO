@@ -27,6 +27,7 @@ CBlock::CBlock(int nPriority):CObjectX(nPriority)
 	m_VtxMin = { 10000.0f,10000.0f,10000.0f };
 	m_size = VEC3_NULL;
 	m_RBOffset = VEC3_NULL;
+	D3DXQuaternionIdentity(&m_Quad);
 	m_sNamePath = {};
 }
 
@@ -52,6 +53,7 @@ CBlock* CBlock::Create(std::string sName,D3DXVECTOR3 pos, D3DXVECTOR3 rot,D3DXVE
 		pBlock->SetIdx(sName);
 		pBlock->m_sNamePath = sName;
 		pBlock->SetPosition(pos);
+		pBlock->m_pos = pos;
 		pBlock->SetRotasion(rot);
 		pBlock->SetScale(Scale);
 		pBlock->Init();
@@ -70,6 +72,7 @@ void CBlock::SetQuat(btQuaternion Quad)
 {
 	if (m_RigitBody == nullptr) return;
 	m_Quad = CMath::ConvertQuat(Quad);
+	SetQuad(m_Quad);
 }
 
 //***************************************
@@ -189,7 +192,7 @@ void CBlock::InitRB(void)
 	btQuaternion rotation;
 
 	// 代入
-	rotation = CObjectX::ConvertQuad(GetQuad());
+	rotation = CMath::ConvertQuat(GetQuad());
 
 	// 位置と向きを設定
 	Origin.setRotation(rotation);
@@ -249,13 +252,105 @@ void CBlock::Uninit(void)
 //***************************************
 void CBlock::Update(void)
 {
-	// 更新
-	CObjectX::Update();
+	if (m_RigitBody == nullptr) return;
+
+	// リジットボディーの更新
+	UpdateRB();
+
+	// トランス*フォーム
+	btTransform trans;
+
+	// ゲット
+	m_RigitBody->getMotionState()->getWorldTransform(trans);
+
+	// 回転行列を取得オフセット分掛ける
+	// 物理世界での位置からオフセット分ずらした現実世界での位置を計算する用の変数
+	btVector3 worldoffet = trans.getBasis() * btVector3(m_RBOffset.x, m_RBOffset.y, m_RBOffset.z);
+
+	// 物理世界の位置から回転行列をかけ合わせたオフセットを引く
+	btVector3 pos = trans.getOrigin() - worldoffet;
+
+	// 位置に代入
+	m_pos.x = pos.x();
+	m_pos.y = pos.y();
+	m_pos.z = pos.z();
 
 	// ナビにレイキャストオブジェクトを登録 sato 仮
 	CModelManager* pModelTexManager = CModelManager::Instance();
 	CModelManager::ModelInfo modelinfo = pModelTexManager->GetAddress(GetIndx());
 	CNavi::GetInstance()->RegisterRayCastObject(modelinfo.pMesh, GetWorldMtx());
+}
+
+//***************************************
+// リジットボディーの更新処理
+//***************************************
+void CBlock::UpdateRB(void)
+{
+	// 剛体の削除
+	if (m_RigitBody)
+	{
+		// 物理世界から削除
+		CManager::GetDynamicsWorld()->removeRigidBody(m_RigitBody.get());
+
+		// モーションステートを取得nullチェック
+		if (m_RigitBody->getMotionState())
+		{
+			// モーションステートを削除
+			delete m_RigitBody->getMotionState();
+		}
+		// リジットボディをクリア
+		m_RigitBody.reset();
+	}
+
+	D3DXVECTOR3 Scale = GetScale();
+
+	// 当たり判定を再生成
+	m_CollisionShape.reset(new btBoxShape(btVector3(m_size.x * Scale.x, m_size.y * Scale.y, m_size.z * Scale.z)));
+	m_RBOffset.y = m_size.y * Scale.y;
+
+	// 質量を宣言
+	btScalar Mass = 0;
+
+	// 抗力を代入
+	btVector3 Inertia = { 0.0f,0.0f,0.0f };
+
+	// 抗力を設定
+	m_CollisionShape->calculateLocalInertia(Mass, Inertia);
+
+	// 物理世界の位置などを取得
+	btTransform transform, origin, offset;
+
+	// 初期化
+	transform.setIdentity();
+	origin.setIdentity();
+	offset.setIdentity();
+
+	// OBBの回転（例：Y軸まわりに45度回転）
+	btQuaternion rotation;
+	rotation = CMath::ConvertQuat(m_Quad);
+	origin.setRotation(rotation);
+	origin.setOrigin(btVector3(m_pos.x, m_pos.y, m_pos.z));
+	offset.setOrigin(btVector3(m_RBOffset.x, m_RBOffset.y, m_RBOffset.z));
+	transform.mult(origin, offset);
+
+	// インターフェイスを設定
+	btDefaultMotionState* motionState = new btDefaultMotionState(transform);
+	btRigidBody::btRigidBodyConstructionInfo info(Mass, motionState, m_CollisionShape.get());
+
+	// リジットボディーを再生成
+	m_RigitBody.reset(new btRigidBody(info));
+
+	// 移動方向を制限
+	m_RigitBody->setLinearFactor(btVector3(1, 1, 1));
+
+	// ユーザーポインタを設定
+	m_RigitBody->setUserPointer(this);
+
+	// スリープ状態を設定
+	m_RigitBody->setActivationState(DISABLE_DEACTIVATION);
+
+	// 物理世界にリジットボディーを追加
+	CManager::GetDynamicsWorld()->addRigidBody(m_RigitBody.get());
 }
 
 //***************************************
