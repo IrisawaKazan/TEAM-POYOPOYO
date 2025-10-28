@@ -67,19 +67,26 @@ void CNaviUI::Update(void)
 	// 親クラスの更新
 	CObject2D::Update();
 
-	switch (CNavi::GetInstance()->GetDirection())
+	// テクスチャ切り替え
+	switch (CNavi::GetInstance()->GetList())
 	{
-	case CNavi::ARROW_DIRECTION::Left:
-		SetTexIndx(CTextureManager::Instance()->Register("data/TEXTURE/UI/ArrowMark002.png"));
-		break;
-	case CNavi::ARROW_DIRECTION::Front:
-		SetTexIndx(CTextureManager::Instance()->Register("data/TEXTURE/UI/ArrowMark001.png"));
-		break;
-	case CNavi::ARROW_DIRECTION::Right:
+	case CNavi::LIST::RightArrow:
 		SetTexIndx(CTextureManager::Instance()->Register("data/TEXTURE/UI/ArrowMark003.png"));
 		break;
-	case CNavi::ARROW_DIRECTION::Back:
+	case CNavi::LIST::FrontArrow:
+		SetTexIndx(CTextureManager::Instance()->Register("data/TEXTURE/UI/ArrowMark001.png"));
+		break;
+	case CNavi::LIST::LeftArrow:
+		SetTexIndx(CTextureManager::Instance()->Register("data/TEXTURE/UI/ArrowMark002.png"));
+		break;
+	case CNavi::LIST::BackArrow:
 		SetTexIndx(CTextureManager::Instance()->Register("data/TEXTURE/UI/ArrowMark000.png"));
+		break;
+	case CNavi::LIST::Climb:
+		SetTexIndx(CTextureManager::Instance()->Register("data/TEXTURE/UI/ClimbMark000.png"));
+		break;
+	case CNavi::LIST::Attack:
+		SetTexIndx(CTextureManager::Instance()->Register("data/TEXTURE/UI/AttackMark000.png"));
 		break;
 	}
 }

@@ -14,8 +14,20 @@ class CNaviObject;
 class CNavi
 {
 public:
+	// ナビゲーションオブジェクトリスト
+	enum class LIST : unsigned char
+	{
+		RightArrow,
+		FrontArrow,
+		LeftArrow,
+		BackArrow,
+		Climb,
+		Attack,
+		Max
+	};
+
 	// ナビゲーションオブジェクトのタイプ
-	enum class Type : unsigned char
+	enum class TYPE : unsigned char
 	{
 		None,
 		Arrow,
@@ -27,9 +39,9 @@ public:
 	// 矢印の向き
 	enum class ARROW_DIRECTION : unsigned char
 	{
-		Left,
-		Front,
 		Right,
+		Front,
+		Left,
 		Back,
 		Max
 	};
@@ -54,8 +66,7 @@ public:
 	void RemoveMarker(void) { m_pMarker = nullptr; }
 
 	const std::vector<CNaviObject*>& GetObjects(void) const { return m_apObject; }
-	Type GetType(void) { return m_type; }
-	ARROW_DIRECTION GetDirection(void) const { return m_direction; }
+	LIST GetList(void) const { return m_list; }
 
 	static CNavi* GetInstance()
 	{
@@ -64,7 +75,7 @@ public:
 	}
 
 private:
-	CNavi() : m_RayPos{ 0.0f,0.0f,0.0f }, m_RayDir{ 0.0f,0.0f,0.0f }, m_pos{ 0.0f,0.0f,0.0f }, m_clickPos{ 0.0f,0.0f,0.0f }, m_aRayCastTarget{}, m_pMarker{}, m_apObject{}, m_type{}, m_direction{} {};
+	CNavi() : m_RayPos{ 0.0f,0.0f,0.0f }, m_RayDir{ 0.0f,0.0f,0.0f }, m_pos{ 0.0f,0.0f,0.0f }, m_clickPos{ 0.0f,0.0f,0.0f }, m_aRayCastTarget{}, m_pMarker{}, m_apObject{}, m_list{} {};
 	~CNavi() {};
 
 	D3DXVECTOR2 ConvertMouseToScreen(D3DXVECTOR2 mousePos);
@@ -89,8 +100,7 @@ private:
 
 	std::vector<CNaviObject*> m_apObject; // オブジェクトの配列
 
-	Type m_type;                 // ナビゲーションのタイプ
-	ARROW_DIRECTION m_direction; // 矢印の向き
+	LIST m_list;                 // 今選ばれているオブジェクト
 };
 
 //-----------------------

@@ -23,15 +23,14 @@ public:
 	void Update(void) override;
 	void Draw(void) override;
 
-	void SetType(CNavi::Type type) { m_type = type; }
+	void SetType(CNavi::TYPE type) { m_type = type; }
 	void SetLength(float length) { m_length = length; }
 	void SetChengeLength(float length) { m_chengeLength = length; }
-	void SetIdx(size_t idx) { m_idx = idx; }
 	void SetBiasIdx(size_t biasIdx) { m_biasIdx = biasIdx; }
-	CNavi::Type ActivateTrigger(const D3DXVECTOR3& pos, D3DXVECTOR3* rot, size_t* pIdx) const;
+	CNavi::TYPE ActivateTrigger(const D3DXVECTOR3& pos, D3DXVECTOR3* rot, size_t* pIdx) const;
 	bool ReleaseTrigger(const D3DXVECTOR3& pos, float length) const;
 
-	CNavi::Type GetType() const { return m_type; }
+	CNavi::TYPE GetType() const { return m_type; }
 	float GetChengeLength() const { return m_chengeLength; }
 	size_t GetIdx() const { return m_idx; }
 	size_t GetBiasIdx() const { return m_biasIdx; }
@@ -46,7 +45,7 @@ protected:
 private:
 	static size_t m_nextIdx; // 次のインデックス (Trigger渡し用)
 
-	CNavi::Type m_type;   // ナビゲーションオブジェクトのタイプ
+	CNavi::TYPE m_type;   // ナビゲーションオブジェクトのタイプ
 	float m_length;       // 見た目の範囲
 	float m_chengeLength; // 反応する範囲
 	size_t m_idx;         // インデックス (Trigger渡し用)

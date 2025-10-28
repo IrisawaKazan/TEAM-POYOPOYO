@@ -27,7 +27,7 @@ CArrow* CArrow::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, const char* filePath, D
 		return nullptr;
 	}
 
-	pArrow->SetType(CNavi::Type::Arrow);
+	pArrow->SetType(CNavi::TYPE::Arrow);
 	pArrow->SetFilePath(filePath);
 	pArrow->SetSize(size);
 	pArrow->SetPosition(pos);

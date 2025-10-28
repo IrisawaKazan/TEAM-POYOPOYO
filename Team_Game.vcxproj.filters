@@ -140,7 +140,7 @@
       <Filter>ソース</Filter>
     </ClCompile>
     <ClCompile Include="switch.cpp">
-      <Filter>ヘッダー</Filter>
+      <Filter>ソース</Filter>
     </ClCompile>
     <ClCompile Include="mapmanager.cpp" />
     <ClCompile Include="math.cpp" />

@@ -73,7 +73,7 @@ void CNaviObject::Draw(void)
 //--------------------------------
 // êGÇÍÇΩÇÁãNìÆÇ∑ÇÈ
 //--------------------------------
-CNavi::Type CNaviObject::ActivateTrigger(const D3DXVECTOR3& pos, D3DXVECTOR3* rot, size_t* pIdx) const
+CNavi::TYPE CNaviObject::ActivateTrigger(const D3DXVECTOR3& pos, D3DXVECTOR3* rot, size_t* pIdx) const
 {
 	D3DXVECTOR3 space = pos - GetPos();
 	float length = D3DXVec3Length(&space);
@@ -88,7 +88,7 @@ CNavi::Type CNaviObject::ActivateTrigger(const D3DXVECTOR3& pos, D3DXVECTOR3* ro
 	}
 	else
 	{
-		return CNavi::Type::None;
+		return CNavi::TYPE::None;
 	}
 }
 
