@@ -98,6 +98,7 @@ void CPlayer::Update(void)
 	{
 		D3DXVECTOR3 pos = GetPos();
 		D3DXVECTOR3 rot = GetRot();
+
 		size_t idx = 0;
 		CNavi::TYPE naviType = pObject->ActivateTrigger(pos, &rot, &idx);
 
