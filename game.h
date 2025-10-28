@@ -65,6 +65,15 @@ public:
 	static CPlayerManager* GetPlayerManager(void) { return m_pPlayerManager; }; // sato Add
 
 private:
+	// ナビゲーションオブジェクトUIのテクスチャリスト
+	static constexpr std::array<const char*, 4u> NAVI_UI_TEXTURES =
+	{
+		"data/TEXTURE/UI/ArrowMark002.png",
+		"data/TEXTURE/UI/ArrowMark001.png",
+		"data/TEXTURE/UI/ArrowMark003.png",
+		"data/TEXTURE/UI/ArrowMark000.png"
+	};
+
 	// 静的メンバ変数
 	static CPauseManager* m_pPauseManager;				// ポーズマネージャーへのポインタ
 	static CPlayerManager* m_pPlayerManager;			// プレイヤーマネージャー

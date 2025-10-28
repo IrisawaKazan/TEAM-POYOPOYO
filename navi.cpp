@@ -74,11 +74,11 @@ void CNavi::Update(void)
 		m_pMarker->SetPosition(m_pos);
 	}
 
-	if (CManager::GetInputKeyboard()->GetTrigger(DIK_Q))
+	if (CManager::GetInputKeyboard()->GetTrigger(DIK_Q) || CManager::GetInputMouse()->GetMouseState().lZ > 0)
 	{// Qキーでオブジェクトを変更
 		m_list = static_cast<LIST>((static_cast<unsigned char>(m_list) + static_cast<unsigned char>(LIST::Max) - 1) % static_cast<unsigned char>(LIST::Max));
 	}
-	else if (CManager::GetInputKeyboard()->GetTrigger(DIK_E))
+	else if (CManager::GetInputKeyboard()->GetTrigger(DIK_E) || CManager::GetInputMouse()->GetMouseState().lZ < 0)
 	{// Eキーでオブジェクトを変更
 		m_list = static_cast<LIST>((static_cast<unsigned char>(m_list) + 1) % static_cast<unsigned char>(LIST::Max));
 	}
