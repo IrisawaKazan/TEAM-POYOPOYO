@@ -12,6 +12,9 @@
 // インクルード
 #include "main.h"
 
+// 前方宣言
+class CDebugProc;
+
 // レンダーの基本クラスと定義
 class CRenderer
 {

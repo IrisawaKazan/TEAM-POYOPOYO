@@ -175,6 +175,8 @@
     <ClCompile Include="light.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="manager.cpp" />
+    <ClCompile Include="mapmanager.cpp" />
+    <ClCompile Include="math.cpp" />
     <ClCompile Include="model.cpp" />
     <ClCompile Include="modelmanager.cpp" />
     <ClCompile Include="motion.cpp" />
@@ -231,9 +233,12 @@
     <ClInclude Include="gimmick.h" />
     <ClInclude Include="input.h" />
     <ClInclude Include="item.h" />
+    <ClInclude Include="json.hpp" />
     <ClInclude Include="light.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="manager.h" />
+    <ClInclude Include="mapmanager.h" />
+    <ClInclude Include="math.h" />
     <ClInclude Include="math_T.h" />
     <ClInclude Include="model.h" />
     <ClInclude Include="modelmanager.h" />

@@ -22,6 +22,7 @@
 #include "fade.h"
 #include "gimmick.h"
 #include "switch.h"
+#include "mapmanager.h"
 
 // 規定値を設定
 // プレイヤー
@@ -37,6 +38,7 @@ const D3DXVECTOR3 CGame::Config::Sky::Pos = VEC3_NULL;
 // 静的メンバ変数
 CPauseManager* CGame::m_pPauseManager = NULL;
 CPlayerManager* CGame::m_pPlayerManager = NULL;
+CMapManager* CGame::m_pMapManager = NULL;
 bool CGame::m_isPause = false;
 
 using namespace std;
@@ -67,6 +69,9 @@ HRESULT CGame::Init(void)
 
 	// シングルトンを生成
 	m_pPauseManager = CPauseManager::CreateSingleton();
+
+	m_pMapManager = CMapManager::Instance();
+	m_pMapManager->Load("data\\TEXT\\StageInfo.json");
 
 	// ナビゲーションマーカーをセット
 	CNavi::GetInstance()->SetMarker();

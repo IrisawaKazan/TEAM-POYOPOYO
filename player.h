@@ -9,7 +9,6 @@
 #define _PLAYER_H_
 
 #include <unordered_map>
-#include "main.h"
 #include "character.h"
 
 class CPlayer : public CModelCharacter

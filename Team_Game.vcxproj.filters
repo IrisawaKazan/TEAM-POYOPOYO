@@ -142,6 +142,8 @@
     <ClCompile Include="switch.cpp">
       <Filter>ヘッダー</Filter>
     </ClCompile>
+    <ClCompile Include="mapmanager.cpp" />
+    <ClCompile Include="math.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="arrow.h">
@@ -291,6 +293,9 @@
     <ClInclude Include="switch.h">
       <Filter>ヘッダー</Filter>
     </ClInclude>
+    <ClInclude Include="mapmanager.h" />
+    <ClInclude Include="json.hpp" />
+    <ClInclude Include="math.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ソース">

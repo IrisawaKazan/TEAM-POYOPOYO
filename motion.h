@@ -9,8 +9,6 @@
 #define _MOTION_H_
 // インクルード
 #include "model.h"
-#include "main.h"
-//#include "collision.h"
 
 // モーションクラスを定義
 class CMotion

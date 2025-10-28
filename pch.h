@@ -28,6 +28,10 @@
 
 #include "string.h"
 #include "stdlib.h"
+#include <bullet/btBulletDynamicsCommon.h>
+#include "json.hpp"
+#include "math.h"
+#include "math_T.h"
 #include "debugproc.h"
 #include <iostream>
 #include <fstream>
@@ -38,7 +42,6 @@
 #include <sstream>
 #include <chrono>
 #include <ctime>
-#include <bullet/btBulletDynamicsCommon.h>
 
 //ƒ‰ƒCƒuƒ‰ƒŠ‚ÌƒŠƒ“ƒN
 #pragma comment(lib,"d3d9.lib")

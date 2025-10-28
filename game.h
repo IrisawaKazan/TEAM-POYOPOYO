@@ -19,6 +19,7 @@ class CTimer;
 class CMapEditer;
 class CPauseManager;
 class CPlayerManager;
+class CMapManager;
 
 // ゲームシーンクラスを定義
 class CGame : public CScene
@@ -67,6 +68,7 @@ private:
 	// 静的メンバ変数
 	static CPauseManager* m_pPauseManager;				// ポーズマネージャーへのポインタ
 	static CPlayerManager* m_pPlayerManager;			// プレイヤーマネージャー
+	static CMapManager* m_pMapManager;			// プレイヤーマネージャー
 	static bool m_isPause;								// ポーズ中かどうか
 	std::unique_ptr<btCollisionShape> m_GroundShape;	// 当たり判定
 	std::unique_ptr<btRigidBody> m_RigitBody;			// リジットボディー

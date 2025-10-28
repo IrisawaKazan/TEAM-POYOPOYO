@@ -64,6 +64,15 @@ CBlock* CBlock::Create(std::string sName,D3DXVECTOR3 pos, D3DXVECTOR3 rot,D3DXVE
 }
 
 //***************************************
+// クォータニオンを設定
+//***************************************
+void CBlock::SetQuat(btQuaternion Quad)
+{
+	if (m_RigitBody == nullptr) return;
+	m_Quad = CMath::ConvertQuat(Quad);
+}
+
+//***************************************
 //　ブロック初期化処理
 //***************************************
 HRESULT CBlock::Init(void)
