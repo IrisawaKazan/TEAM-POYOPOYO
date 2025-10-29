@@ -7,6 +7,7 @@
 
 // インクルード
 #include "item.h"
+#include "modelmanager.h"
 
 //***************************************
 // コンストラクタ
@@ -37,6 +38,81 @@ HRESULT CItem::Init(void)
 	// オブジェクトXの初期化処理
 	CObjectX::Init();
 
+	// モデルマネージャーのポインタ
+	CModelManager* pModelManager;
+
+	// インスタンス生成
+	pModelManager = CModelManager::Instance();
+
+	// モデルの詳細情報
+	CModelManager::ModelInfo ModelInfo = pModelManager->GetAddress(m_nModelIdx);
+
+	// メッシュ情報
+	LPD3DXMESH pMesh = ModelInfo.pMesh;
+
+	// ローカル変数
+	int nNumVtx;				// 頂点の総数
+	DWORD sizeFVF;				// 頂点のサイズ
+	BYTE* pVtxBuff;				// 頂点のポインタ
+	D3DXVECTOR3 max, min;		// 頂点の最大値と最小値
+	D3DXVECTOR3 Vtx;			// 頂点座標
+
+	// 最大値と最小値の初期化
+	max = VEC3_NULL;
+	min = VEC3_NULL;
+
+	// 頂点の最大数を取得
+	nNumVtx = pMesh->GetNumVertices();
+
+	// 頂点のサイズを取得
+	sizeFVF = D3DXGetFVFVertexSize(pMesh->GetFVF());
+
+	// 頂点バッファの取得
+	pMesh->LockVertexBuffer(D3DLOCK_READONLY, (void**)&pVtxBuff);
+
+	// 頂点の数だけ回す
+	for (int nCount = 0; nCount < nNumVtx; nCount++)
+	{
+		// 頂点座標を代入する
+		Vtx = *(D3DXVECTOR3*)pVtxBuff;
+
+		// ***  頂点座標（X軸）の比較  ***
+
+		if (Vtx.x > max.x)
+		{// 最大値より大きい場合
+			// 最大値に現在の値を代入する
+			max.x = Vtx.x;
+		}
+
+		if (Vtx.x < min.x)
+		{// 最大値より小さい場合
+			// 最小値に現在の値を代入する
+			min.x = Vtx.x;
+		}
+
+
+		// ***  頂点座標（Z軸）の比較  ***
+
+		// 最大値より大きい場合
+		if (Vtx.z > max.z)
+		{
+			// 最大値に現在の値を代入する
+			max.z = Vtx.z;
+		}
+
+		if (Vtx.z < min.z)
+		{// 最大値より小さい場合
+			// 最小値に現在の値を代入する
+			min.z = Vtx.z;
+		}
+
+		// 頂点のサイズ分進める
+		pVtxBuff += sizeFVF;
+	}
+
+	// XとZの最大値を代入
+	m_fWidth = max.x;
+
 	return S_OK;
 }
 
@@ -57,26 +133,20 @@ void CItem::Update(void)
 {
 	switch (m_type)
 	{
-		// 奥に進む指示の場合
-	case ITEM_BACK:
-
-
-		break;
-
-		// 右に進む指示の場合
-	case ITEM_RIGHT:
-
-
-		break;
-
-		// 手前に進む指示の場合
-	case ITEM_FRONT:
-
-
-		break;
-
 		// 左に進む指示の場合
 	case ITEM_LEFT:
+
+
+		break;
+
+		// ジャンプする指示の場合
+	case ITEM_JUMP:
+
+
+		break;
+
+		// 壁を登る指示の場合
+	case ITEM_CLIMB:
 
 
 		break;

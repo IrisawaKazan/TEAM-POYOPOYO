@@ -19,10 +19,9 @@ public:
 	typedef enum
 	{
 		ITEM_NOEN = 0,	// なし
-		ITEM_BACK,		// 奥に進む指示
-		ITEM_RIGHT,		// 右に進む指示
-		ITEM_FRONT,		// 手前に進む指示
 		ITEM_LEFT,		// 左に進む指示
+		ITEM_JUMP,		// ジャンプする指示
+		ITEM_CLIMB,		// 壁を登る指示
 		ITEM_MAX,		// 上限
 	}ITEM;
 
