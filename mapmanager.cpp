@@ -42,22 +42,29 @@ void CMapManager::Uninit(void)
 //***************************************
 void CMapManager::Update(void)
 {
+	// 何個のスイッチが押されているか
 	int nFinished = 0;
+
+	// スイッチにアクセス
 	for (auto Switchs = m_vMapSwitch.begin(); Switchs != m_vMapSwitch.end(); Switchs++)
 	{
+		// 押されていたら
 		if ((*Switchs)->IsPress() == true)
 		{
+			// インクリメント
 			nFinished++;
 		}
 	}
-	CDebugProc::print("押された%d\n", nFinished);
 
+	// すべて押されていたら
 	if (nFinished >= (int)m_vMapSwitch.size())
 	{
+		// 起動
 		m_vDoor[0]->Begin();
 	}
 	else
 	{
+		// シャットダウン
 		m_vDoor[0]->End();
 	}
 }
