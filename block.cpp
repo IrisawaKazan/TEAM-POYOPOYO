@@ -46,7 +46,6 @@ CBlock* CBlock::Create(std::string sName,D3DXVECTOR3 pos, D3DXVECTOR3 rot,D3DXVE
 	if (pBlock != nullptr)
 	{
 		// オブジェクト設定
-		pBlock->SetIdx(sName);
 		pBlock->m_sNamePath = sName;
 		pBlock->SetPosition(pos);
 		pBlock->SetRotasion(rot);
