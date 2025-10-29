@@ -9,6 +9,10 @@
 #include "mapmanager.h"
 #include "block.h"
 #include "modelmanager.h"
+#include "switch.h"
+#include "scene.h"
+#include "fade.h"
+#include "title.h"
 
 // ネームスペース
 using namespace nlohmann;
@@ -38,6 +42,31 @@ void CMapManager::Uninit(void)
 //***************************************
 void CMapManager::Update(void)
 {
+	// 何個のスイッチが押されているか
+	int nFinished = 0;
+
+	// スイッチにアクセス
+	for (auto Switchs = m_vMapSwitch.begin(); Switchs != m_vMapSwitch.end(); Switchs++)
+	{
+		// 押されていたら
+		if ((*Switchs)->IsPress() == true)
+		{
+			// インクリメント
+			nFinished++;
+		}
+	}
+
+	// すべて押されていたら
+	if (nFinished >= (int)m_vMapSwitch.size())
+	{
+		// 起動
+		m_vDoor[0]->Begin();
+	}
+	else
+	{
+		// シャットダウン
+		m_vDoor[0]->End();
+	}
 }
 
 //***************************************
@@ -126,14 +155,38 @@ void CMapManager::Load(std::string Path)
 		Scale.y = obj["Transform"]["Scale"]["y"];
 		Scale.z = obj["Transform"]["Scale"]["z"];
 
-		// 生成、要素に追加
-		CBlock* LocalObject = NULL;
-		LocalObject = CBlock::Create(LocalPath, Pos, VEC3_NULL);
-		LocalObject->SetScale(Scale);
-		LocalObject->SetQuat(CMath::ConvertQuat(Quad));
-		LocalObject->SetIdx(LocalPath);
-
-		// 連結
-		m_vMapObject.push_back(LocalObject);
+		if (LocalPath.find("Switch-Button") != string::npos)
+		{
+			// 生成、要素に追加
+			CSwitch* LocalObject = NULL;
+			LocalObject = CSwitch::Create(LocalPath, Pos, VEC3_NULL);
+			LocalObject->SetScale(Scale);
+			LocalObject->SetQuat(CMath::ConvertQuat(Quad));
+			LocalObject->SetIdx(LocalPath);
+			// 連結
+			m_vMapSwitch.push_back(LocalObject);
+		}
+		else if (LocalPath.find("Door") != string::npos)
+		{
+			// 生成、要素に追加
+			CDoor* LocalObject = NULL;
+			LocalObject = CDoor::Create(LocalPath, Pos, VEC3_NULL);
+			LocalObject->SetScale(Scale);
+			LocalObject->SetQuat(CMath::ConvertQuat(Quad));
+			LocalObject->SetIdx(LocalPath);
+			// 連結
+			m_vDoor.push_back(LocalObject);
+		}
+		else
+		{
+			// 生成、要素に追加
+			CBlock* LocalObject = NULL;
+			LocalObject = CBlock::Create(LocalPath, Pos, VEC3_NULL);
+			LocalObject->SetScale(Scale);
+			LocalObject->SetQuat(CMath::ConvertQuat(Quad));
+			LocalObject->SetIdx(LocalPath);
+			// 連結
+			m_vMapObject.push_back(LocalObject);
+		}
 	}
 }

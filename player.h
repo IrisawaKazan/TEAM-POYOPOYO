@@ -22,6 +22,7 @@ public:
 	void Uninit(void);
 	void Update(void);
 	void Draw(void);
+	btRigidBody* GetRB(void) { return m_RigitBody.get(); }
 
 	// セッター
 	void SetPos(D3DXVECTOR3 Pos);

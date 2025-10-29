@@ -19,8 +19,8 @@ public:
 	static const D3DXVECTOR3 SPAWN_ROT;         // NPCの出現回転 sato Add
 	static constexpr float SPAWN_RANGE = 50.0f; // NPCの出現間隔 sato Add
 	static constexpr float Fall = -100.0f;		// 落下として扱う高さ
-	static constexpr int SPAWN_TIME = 120;		// NPCの出現時間
-	static constexpr int CAPACITY = 100;		// 最大数
+	static constexpr int SPAWN_TIME = 30;		// NPCの出現時間
+	static constexpr int CAPACITY = 500;		// 最大数
 
 	CPlayerManager();
 	~CPlayerManager();
@@ -28,7 +28,7 @@ public:
 	void Uninit(void);
 	void Update(void);
 	void Draw(void);
-
+	std::vector<CPlayer*>& GetVPlayer(void) { return m_pPlayer; }
 	void DethMessage(CPlayer* pPlayer);
 
 private:

@@ -39,8 +39,13 @@ public:
 
 	int GetNs(void);
 	int GetMin(void);
-	static int GetTime(void) { return m_nTimer; }
+	int GetTime(void) { return m_nTime; }
+	static int GetTimer(void) { return m_nTimer; }
 
+	static CTimer* Instance(void) {
+		static CTimer* pInstance = new CTimer;
+		return pInstance;
+	}
 private:
 	static CNumber* m_pNumber1[MAX_TIMER];	// ナンバーのポインタ(秒)
 	static CNumber* m_pNumber2[MAX_TIMER];	// ナンバーのポインタ(分)

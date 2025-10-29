@@ -213,8 +213,11 @@ void CManager::Update()
 	// カメラのアップデート
 	m_pCamera->Update();
 
-	// 物理世界でシュミレーションを実行
-	m_pDynamicsWorld->stepSimulation(btScalar(GetFPS()), 10, 0.016f);
+	if (m_isPause == false)
+	{
+		// 物理世界でシュミレーションを実行
+		m_pDynamicsWorld->stepSimulation(btScalar(GetFPS()), 10, 0.016f);
+	}
 
 	// ライトのアップデート
 	m_pLight->Update();

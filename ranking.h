@@ -14,6 +14,9 @@
 #include "object2D.h"
 #include "number.h"
 
+//	マクロ定義
+#define MAX_NUMBER (2)
+
 //  ランキングクラスを定義
 class CRanking
 {
@@ -23,15 +26,18 @@ public:
 	~CRanking();
 
 	//	メンバ関数
-	static CRanking* Create(void);
+	static CRanking* Instance(void) {
+		static CRanking* pInstance = new CRanking;
+		return pInstance;
+	}
+
 	HRESULT Init(void);
 	void Uninit(void);
 	void Update(void);
 	void Draw(void);
 
 private:
-
-
+	int m_Time;
 };
 
 #endif // !_RANKING_H_

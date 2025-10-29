@@ -223,6 +223,7 @@
     <ClCompile Include="uplift.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="abstractblock.h" />
     <ClInclude Include="arrow.h" />
     <ClInclude Include="block.h" />
     <ClInclude Include="camera.h" />

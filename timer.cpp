@@ -23,6 +23,7 @@ CTimer::CTimer(int nPriority) : CObject(nPriority)
 	m_nTime = NULL;
 	m_nNs = NULL;
 	m_nMin = NULL;
+	Init();
 }
 
 //----------------------------------------
