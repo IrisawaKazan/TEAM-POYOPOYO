@@ -45,17 +45,20 @@ void CMapManager::Update(void)
 	int nFinished = 0;
 	for (auto Switchs = m_vMapSwitch.begin(); Switchs != m_vMapSwitch.end(); Switchs++)
 	{
-		if ((*Switchs)->IsFinished() == true)
+		if ((*Switchs)->IsPress() == true)
 		{
 			nFinished++;
 		}
 	}
-	if (nFinished >= m_vMapSwitch.size())
+	CDebugProc::print("押された%d\n", nFinished);
+
+	if (nFinished >= (int)m_vMapSwitch.size())
 	{
-		if (CManager::GetScene()->GetMode() == CScene::MODE_GAME)
-		{
-			CFade::SetFade(new CTitle);
-		}
+		m_vDoor[0]->Begin();
+	}
+	else
+	{
+		m_vDoor[0]->End();
 	}
 }
 
@@ -155,6 +158,17 @@ void CMapManager::Load(std::string Path)
 			LocalObject->SetIdx(LocalPath);
 			// 連結
 			m_vMapSwitch.push_back(LocalObject);
+		}
+		else if (LocalPath.find("Door") != string::npos)
+		{
+			// 生成、要素に追加
+			CDoor* LocalObject = NULL;
+			LocalObject = CDoor::Create(LocalPath, Pos, VEC3_NULL);
+			LocalObject->SetScale(Scale);
+			LocalObject->SetQuat(CMath::ConvertQuat(Quad));
+			LocalObject->SetIdx(LocalPath);
+			// 連結
+			m_vDoor.push_back(LocalObject);
 		}
 		else
 		{

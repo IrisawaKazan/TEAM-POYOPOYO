@@ -117,11 +117,11 @@ HRESULT CRenderer::Init(HWND hWnd, bool bWindow)
 	m_pDebugProc = new CDebugProc;
 	m_pDebugProc->Init();
 
-#ifdef _DEBUG
+//#ifdef _DEBUG
 	m_pDebugProc->SetEnable(true);
-#else
-	m_pDebugProc->SetEnable(false);
-#endif // _DEBUG
+//#else
+	//m_pDebugProc->SetEnable(false);
+//#endif // _DEBUG
 
 	return S_OK;
 }

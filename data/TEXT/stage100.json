@@ -2,7 +2,7 @@
   {
     "RigitBody": {
       "IsStatic": true,
-      "Mass": 100.0
+      "Mass": 0.0
     },
     "Assets": {
       "Path": "data/MODEL/Switch-Plate.x"
@@ -29,7 +29,7 @@
   {
     "RigitBody": {
       "IsStatic": true,
-      "Mass": 100.0
+      "Mass": 0.0
     },
     "Assets": {
       "Path": "data/MODEL/Switch-Button.x"
@@ -56,7 +56,7 @@
   {
     "RigitBody": {
       "IsStatic": true,
-      "Mass": 100.0
+      "Mass": 0.0
     },
     "Assets": {
       "Path": "data/MODEL/Switch-Plate.x"
@@ -83,7 +83,7 @@
   {
     "RigitBody": {
       "IsStatic": true,
-      "Mass": 100.0
+      "Mass": 0.0
     },
     "Assets": {
       "Path": "data/MODEL/Switch-Button.x"
@@ -110,7 +110,7 @@
   {
     "RigitBody": {
       "IsStatic": true,
-      "Mass": 100.0
+      "Mass": 0.0
     },
     "Assets": {
       "Path": "data/MODEL/Switch-Plate.x"
@@ -137,7 +137,7 @@
   {
     "RigitBody": {
       "IsStatic": true,
-      "Mass": 100.0
+      "Mass": 0.0
     },
     "Assets": {
       "Path": "data/MODEL/Switch-Button.x"
@@ -164,7 +164,7 @@
   {
     "RigitBody": {
       "IsStatic": true,
-      "Mass": 100.0
+      "Mass": 0.0
     },
     "Assets": {
       "Path": "data/MODEL/wall.x"
@@ -590,6 +590,33 @@
         "x": 15.0,
         "y": 1.0,
         "z": 40.0
+      }
+    }
+  },
+  {
+    "RigitBody": {
+      "IsStatic": true,
+      "Mass": 0.0
+    },
+    "Assets": {
+      "Path": "data/MODEL/Door.x"
+    },
+    "Transform": {
+      "Pos": {
+        "x": -2000.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "Rot": {
+        "w": 1.0,
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "Scale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
       }
     }
   },

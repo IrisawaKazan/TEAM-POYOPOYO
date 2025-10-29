@@ -12,6 +12,7 @@
 // 前方宣言
 class CBlock;
 class CSwitch;
+class CDoor;
 
 // クラスを定義
 class CMapManager
@@ -43,6 +44,7 @@ private:
 	CMapManager() { Init(); }
 	// メンバ変数
 	std::vector<CBlock*> m_vMapObject;			// マップに置くオブジェクト
+	std::vector<CDoor*> m_vDoor;				// ドア
 	std::vector<CSwitch*> m_vMapSwitch;			// マップに置くスイッチ
 };
 
