@@ -13,11 +13,13 @@
 //***************************************
 CItem::CItem()
 {
-	m_type = ITEM_NOEN;						// アイテムの種類
-	m_pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);	// 位置
-	m_rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);	// 向き
-	m_fWidth = 0.0f;						// 横幅
-	m_fDepth = 0.0f;						// 奥行
+	m_type = ITEM_NOEN;							// アイテムの種類
+	m_pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);		// 位置
+	m_rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);		// 向き
+	m_fWidth = 0.0f;							// 横幅
+	m_fDepth = 0.0f;							// 奥行
+	m_scale = D3DXVECTOR3(1.0f, 1.0f, 1.0f);	// 拡大率
+	m_nModelIdx = 0;							// インデックス
 }
 
 //***************************************
@@ -32,8 +34,8 @@ CItem::~CItem()
 //***************************************
 HRESULT CItem::Init(void)
 {
-	// オブジェクト3Dの初期化処理
-	CObject3D::Init();
+	// オブジェクトXの初期化処理
+	CObjectX::Init();
 
 	return S_OK;
 }
@@ -43,8 +45,8 @@ HRESULT CItem::Init(void)
 //***************************************
 void CItem::Uninit(void)
 {
-	// オブジェクト3Dの終了処理
-	CObject3D::Uninit();
+	// オブジェクトXの終了処理
+	CObjectX::Uninit();
 
 }
 
@@ -61,8 +63,8 @@ void CItem::Update(void)
 
 		break;
 
-		// 前進する指示の場合
-	case ITEM_FORWARD:
+		// 右に進む指示の場合
+	case ITEM_RIGHT:
 
 
 		break;
@@ -72,10 +74,15 @@ void CItem::Update(void)
 
 
 		break;
+
+		// 左に進む指示の場合
+	case ITEM_LEFT:
+
+
+		break;
+
 	}
 
-	// オブジェクト3Dの更新処理
-	CObject3D::Update();
 
 }
 
@@ -84,15 +91,15 @@ void CItem::Update(void)
 //***************************************
 void CItem::Draw(void)
 {
-	// オブジェクト3Dの描画処理
-	CObject3D::Draw();
+	// オブジェクトXの描画処理
+	CObjectX::Draw();
 
 }
 
 //***************************************
-// 当たり判定処理
+// 生成処理
 //***************************************
-CItem* CItem::Create(const ITEM type, const D3DXVECTOR3 pos, const float fWidth, const float fDepth)
+CItem* CItem::Create(const ITEM type, const D3DXVECTOR3 pos, const D3DXVECTOR3 rot, const float fWidth, const float fDepth, const D3DXVECTOR3 scale,  const std::string FileName)
 {
 	// アイテムのポインタ
 	CItem* pItem = nullptr;
@@ -105,11 +112,20 @@ CItem* CItem::Create(const ITEM type, const D3DXVECTOR3 pos, const float fWidth,
 		return nullptr;
 	}
 
-	// 引数の値をそれぞれの変数に代入 
-	pItem->m_type = type;		// アイテムの種類
-	pItem->m_pos = pos;			// 位置
-	pItem->m_fWidth = fWidth;	// 横幅
-	pItem->m_fDepth = fDepth;	// 奥行
+	// オブジェクトXのセッターに引数の値を代入
+	pItem->SetPosition(pos);	// 位置
+	pItem->SetRotasion(rot);	// 向き
+	pItem->SetScale(scale);		// 拡大率
+	pItem->SetIdx(FileName);	// モデルのファイル名
+
+	// 引数の値をそれぞれのメンバ変数に代入 
+	pItem->m_type = type;					// アイテムの種類
+	pItem->m_pos = pos;						// 位置
+	pItem->m_rot = rot;						// 向き
+	pItem->m_fWidth = fWidth;				// 横幅
+	pItem->m_fDepth = fDepth;				// 奥行
+	pItem->m_scale = scale;					// 拡大率
+	pItem->m_nModelIdx = pItem->GetIndx();	// インデックス
 
 	// 初期化処理
 	pItem->Init();
