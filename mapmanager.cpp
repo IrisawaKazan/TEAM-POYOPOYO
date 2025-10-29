@@ -9,6 +9,7 @@
 #include "mapmanager.h"
 #include "block.h"
 #include "modelmanager.h"
+#include "switch.h"
 
 // ネームスペース
 using namespace nlohmann;
@@ -126,14 +127,27 @@ void CMapManager::Load(std::string Path)
 		Scale.y = obj["Transform"]["Scale"]["y"];
 		Scale.z = obj["Transform"]["Scale"]["z"];
 
-		// 生成、要素に追加
-		CBlock* LocalObject = NULL;
-		LocalObject = CBlock::Create(LocalPath, Pos, VEC3_NULL);
-		LocalObject->SetScale(Scale);
-		LocalObject->SetQuat(CMath::ConvertQuat(Quad));
-		LocalObject->SetIdx(LocalPath);
-
-		// 連結
-		m_vMapObject.push_back(LocalObject);
+		if (LocalPath.find("Switch-Button") != string::npos)
+		{
+			// 生成、要素に追加
+			CSwitch* LocalObject = NULL;
+			LocalObject = CSwitch::Create(LocalPath, Pos, VEC3_NULL);
+			LocalObject->SetScale(Scale);
+			LocalObject->SetQuat(CMath::ConvertQuat(Quad));
+			LocalObject->SetIdx(LocalPath);
+			// 連結
+			m_vMapSwitch.push_back(LocalObject);
+		}
+		else
+		{
+			// 生成、要素に追加
+			CBlock* LocalObject = NULL;
+			LocalObject = CBlock::Create(LocalPath, Pos, VEC3_NULL);
+			LocalObject->SetScale(Scale);
+			LocalObject->SetQuat(CMath::ConvertQuat(Quad));
+			LocalObject->SetIdx(LocalPath);
+			// 連結
+			m_vMapObject.push_back(LocalObject);
+		}
 	}
 }

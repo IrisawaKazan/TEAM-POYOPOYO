@@ -296,6 +296,7 @@
     <ClInclude Include="mapmanager.h" />
     <ClInclude Include="json.hpp" />
     <ClInclude Include="math.h" />
+    <ClInclude Include="abstractblock.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ソース">

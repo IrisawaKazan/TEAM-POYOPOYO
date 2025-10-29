@@ -14,6 +14,7 @@
 #include "game.h"
 #include "model.h"
 #include "navi.h"
+#include "switch.h"
 
 //***************************************
 // コンストラクタ
@@ -21,13 +22,8 @@
 CBlock::CBlock(int nPriority):CObjectX(nPriority)
 {
 	m_type = TYPE_NONE;
-	m_pos = VEC3_NULL;
-	m_rot = VEC3_NULL;
-	m_VtxMax = { -10000.0f,-10000.0f,-10000.0f };
-	m_VtxMin = { 10000.0f,10000.0f,10000.0f };
 	m_size = VEC3_NULL;
 	m_RBOffset = VEC3_NULL;
-	D3DXQuaternionIdentity(&m_Quad);
 	m_sNamePath = {};
 }
 
@@ -53,7 +49,6 @@ CBlock* CBlock::Create(std::string sName,D3DXVECTOR3 pos, D3DXVECTOR3 rot,D3DXVE
 		pBlock->SetIdx(sName);
 		pBlock->m_sNamePath = sName;
 		pBlock->SetPosition(pos);
-		pBlock->m_pos = pos;
 		pBlock->SetRotasion(rot);
 		pBlock->SetScale(Scale);
 		pBlock->Init();
@@ -71,8 +66,8 @@ CBlock* CBlock::Create(std::string sName,D3DXVECTOR3 pos, D3DXVECTOR3 rot,D3DXVE
 void CBlock::SetQuat(btQuaternion Quad)
 {
 	if (m_RigitBody == nullptr) return;
-	m_Quad = CMath::ConvertQuat(Quad);
-	SetQuad(m_Quad);
+	D3DXQUATERNION myQuat = CMath::ConvertQuat(Quad);
+	SetQuad(myQuat);
 }
 
 //***************************************
@@ -102,6 +97,10 @@ HRESULT CBlock::Init(void)
 	// 頂点バッファをロック
 	pMesh->LockVertexBuffer(D3DLOCK_READONLY, (void**)&pVtxBuff);
 
+	D3DXVECTOR3 Max, Min;
+	Max = VEC3_NULL;
+	Min = VEC3_NULL;
+
 	// 頂点数分回す
 	for (int nCntBlock = 0; nCntBlock < nNumVtx; nCntBlock++)
 	{
@@ -109,36 +108,36 @@ HRESULT CBlock::Init(void)
 		D3DXVECTOR3 Vtx = *(D3DXVECTOR3*)pVtxBuff;
 
 		// 頂点座標の比較
-		if (Vtx.x > m_VtxMax.x)
+		if (Vtx.x > Max.x)
 		{// xが最大値より大きかったら
 			// 代入
-			m_VtxMax.x = Vtx.x;
+			Max.x = Vtx.x;
 		}
-		if (Vtx.y > m_VtxMax.y)
+		if (Vtx.y > Max.y)
 		{// yが最大値より大きかったら
 			// 代入
-			m_VtxMax.y = Vtx.y;
+			Max.y = Vtx.y;
 		}
-		if (Vtx.z > m_VtxMax.z)
+		if (Vtx.z > Max.z)
 		{// zが最大値より大きかったら
 			// 代入
-			m_VtxMax.z = Vtx.z;
+			Max.z = Vtx.z;
 		}
 
-		if (Vtx.x < m_VtxMin.x)
+		if (Vtx.x < Min.x)
 		{// xが最小値より小さかったら
 			// 代入
-			m_VtxMin.x = Vtx.x;
+			Min.x = Vtx.x;
 		}
-		if (Vtx.y < m_VtxMin.y)
+		if (Vtx.y < Min.y)
 		{// yが最小値より小さかったら
 			// 代入
-			m_VtxMin.y = Vtx.y;
+			Min.y = Vtx.y;
 		}
-		if (Vtx.z < m_VtxMin.z)
+		if (Vtx.z < Min.z)
 		{// zが最小値より小さかったら
 			// 代入
-			m_VtxMin.z = Vtx.z;
+			Min.z = Vtx.z;
 		}
 
 		// 頂点フォーマットのサイズ分進める
@@ -146,9 +145,9 @@ HRESULT CBlock::Init(void)
 	}
 
 	// サイズを代入する
-	m_size.x = m_VtxMax.x;			// sizeのx
-	m_size.y = m_VtxMax.y * 0.5f;	// sizeのy
-	m_size.z = m_VtxMax.z;			// sizeのz
+	m_size.x = Max.x;			// sizeのx
+	m_size.y = Max.y * 0.5f;	// sizeのy
+	m_size.z = Max.z;			// sizeのz
 
 	// リジットボディーのオフセットを設定
 	m_RBOffset.y = m_size.y * GetScale().y;
@@ -270,10 +269,8 @@ void CBlock::Update(void)
 	// 物理世界の位置から回転行列をかけ合わせたオフセットを引く
 	btVector3 pos = trans.getOrigin() - worldoffet;
 
-	// 位置に代入
-	m_pos.x = pos.x();
-	m_pos.y = pos.y();
-	m_pos.z = pos.z();
+	// 位置を設定
+	SetPosition(D3DXVECTOR3(pos.x(), pos.y(), pos.z()));
 
 	// ナビにレイキャストオブジェクトを登録 sato 仮
 	CModelManager* pModelTexManager = CModelManager::Instance();
@@ -327,9 +324,9 @@ void CBlock::UpdateRB(void)
 
 	// OBBの回転（例：Y軸まわりに45度回転）
 	btQuaternion rotation;
-	rotation = CMath::ConvertQuat(m_Quad);
+	rotation = CMath::ConvertQuat(GetQuad());
 	origin.setRotation(rotation);
-	origin.setOrigin(btVector3(m_pos.x, m_pos.y, m_pos.z));
+	origin.setOrigin(btVector3(GetPosition().x, GetPosition().y, GetPosition().z));
 	offset.setOrigin(btVector3(m_RBOffset.x, m_RBOffset.y, m_RBOffset.z));
 	transform.mult(origin, offset);
 

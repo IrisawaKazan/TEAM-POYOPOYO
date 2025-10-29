@@ -80,8 +80,10 @@ HRESULT CGame::Init(void)
 	CObject3D::Create(D3DXVECTOR3(-2000.0f,1000.0f,0.0f), D3DXVECTOR3((-D3DX_PI * 0.5f), (-D3DX_PI * 0.5f), 0.0f),"data\\TEXTURE\\wall.jpg",D3DXVECTOR2(1000.0f, 1000.0f));
 	CObject3D::Create(D3DXVECTOR3(2000.0f,1000.0f,0.0f), D3DXVECTOR3((-D3DX_PI * 0.5f), (D3DX_PI * 0.5f), 0.0f), "data\\TEXTURE\\wall.jpg", D3DXVECTOR2(1000.0f, 1000.0f));
 
-	CNaviUI::Create("data/TEXTURE/UI/Frame000.png", { NAVI_UI_TEXTURES.begin(), NAVI_UI_TEXTURES.end() }, D3DXVECTOR3(SCREEN_WIDTH * 0.1f, SCREEN_HEIGHT * 0.82f, 0.0f), D3DXVECTOR2(100.0f, 100.0f));
+	CBlock::Create("data\\Model\\mine_shaft.x", { 2000.0f,0.0f,0.0f }, {0.0f, D3DX_PI,0.0f}, { 1.0f,1.0f,1.0f });
 
+	CNaviUI::Create("data/TEXTURE/UI/Frame000.png", { NAVI_UI_TEXTURES.begin(), NAVI_UI_TEXTURES.end() }, D3DXVECTOR3(SCREEN_WIDTH * 0.1f, SCREEN_HEIGHT * 0.82f, 0.0f), D3DXVECTOR2(100.0f, 100.0f));
+	
 	CTimer::Create(D3DXVECTOR3(640.0f,360.0f,0.0f));
 #ifdef _DEBUG
 #else
@@ -132,6 +134,10 @@ void CGame::Update(void)
 	//	}
 	//}
 #endif // DEBUG
+	if (m_pMapManager != nullptr)
+	{
+		m_pMapManager->Update();
+	}
 	if (m_pPauseManager != NULL)
 	{
 		m_pPauseManager->Update();
