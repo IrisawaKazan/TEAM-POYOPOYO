@@ -61,14 +61,32 @@ void CTutorial::Update(void)
 
 			break;
 
-			// 前進する指示の場合
-		case TUTORIAL_FORWARD:
+			// 右に進む指示の場合
+		case TUTORIAL_RIGHT:
 
 
 			break;
 
 			// 手前に進む指示の場合
 		case TUTORIAL_FRONT:
+
+
+			break;
+
+			// 左に進む指示の場合
+		case TUTORIAL_LEFT:
+
+
+			break;
+
+			// ジャンプする指示の場合
+		case TUTORIAL_JUMP:
+
+
+			break;
+
+			// 壁をよじ登る指示の場合
+		case TUTORIAL_CLIMB:
 
 
 			break;

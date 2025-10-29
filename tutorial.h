@@ -20,11 +20,11 @@ public:
 	{
 		TUTORIAL_NOEN = 0,	// なし
 		TUTORIAL_BACK,		// 奥に進む指示
-		TUTORIAL_FORWARD,	// 前進する指示
+		TUTORIAL_RIGHT,		// 右に進む指示
 		TUTORIAL_FRONT,		// 手前に進む指示
+		TUTORIAL_LEFT,		// 左に進む指示
 		TUTORIAL_JUMP,		// ジャンプする指示
-		TUTORIAL_BREAK,		// 壊す指示
-		TUTORIAL_STOP,		// 止まる指示
+		TUTORIAL_CLIMB,		// 壁をよじ登る指示
 		TUTORIAL_MAX,		// 上限
 	}TUTORIAL;
 
