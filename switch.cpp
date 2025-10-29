@@ -78,9 +78,13 @@ void CSwitch::Uninit(void)
 //***************************************
 void CSwitch::Update(void)
 {
+	m_IsPressed = false;
+	m_IsFinished = false;
+
+	D3DXVECTOR3 CurrentPos = GetPosition();
+
 	// 衝突判定
 	int numManifolds = CManager::GetDynamicsWorld()->getDispatcher()->getNumManifolds();
-	D3DXVECTOR3 myPos = GetPosition();
 
 	for (int i = 0; i < numManifolds; i++)
 	{
@@ -95,16 +99,27 @@ void CSwitch::Update(void)
 			{
 				if ((objA == (*Players)->GetRB() && objB == GetRB()) || (objA == GetRB() && objB == (*Players)->GetRB()))
 				{
-					myPos.y -= 0.1f;
-				}
-				else if (myPos.y <= 0)
-				{
-					myPos.y += 0.1f;
+					m_IsPressed = true;
+					break;
 				}
 			}
 		}
+		if (m_IsPressed == true) break;
 	}
-	SetPosition(myPos);
+	if (m_IsPressed)
+	{
+		m_IsFinished = true;
+		// Y位置を少し下げる（沈む）
+		if (Config::Depth < CurrentPos.y - Config::PressSpeed)
+			CurrentPos.y -= Config::PressSpeed;
+	}
+	else
+	{
+		// 離されたら元の高さに戻す
+		if (0 > CurrentPos.y + Config::ReturnSpeed)
+			CurrentPos.y += Config::ReturnSpeed;
+	}
+	SetPosition(CurrentPos);
 	// 更新
 	CBlock::Update();
 }

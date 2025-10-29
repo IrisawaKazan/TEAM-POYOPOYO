@@ -10,6 +10,9 @@
 #include "block.h"
 #include "modelmanager.h"
 #include "switch.h"
+#include "scene.h"
+#include "fade.h"
+#include "title.h"
 
 // ネームスペース
 using namespace nlohmann;
@@ -39,6 +42,21 @@ void CMapManager::Uninit(void)
 //***************************************
 void CMapManager::Update(void)
 {
+	int nFinished = 0;
+	for (auto Switchs = m_vMapSwitch.begin(); Switchs != m_vMapSwitch.end(); Switchs++)
+	{
+		if ((*Switchs)->IsFinished() == true)
+		{
+			nFinished++;
+		}
+	}
+	if (nFinished >= m_vMapSwitch.size())
+	{
+		if (CManager::GetScene()->GetMode() == CScene::MODE_GAME)
+		{
+			CFade::SetFade(new CTitle);
+		}
+	}
 }
 
 //***************************************
