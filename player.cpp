@@ -100,7 +100,7 @@ void CPlayer::Update(void)
 		D3DXVECTOR3 rot = GetRot();
 
 		size_t idx = 0;
-		CNavi::TYPE naviType = pObject->ActivateTrigger(pos, &rot, &idx);
+		CNavi::TYPE naviType = pObject->ActivateTrigger(pos, &rot.y, &idx);
 
 		// 触れたナビゲーションタイプによって処理を分岐
 		switch (naviType)

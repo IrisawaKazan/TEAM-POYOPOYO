@@ -18,7 +18,7 @@
 //--------------------------------
 // 生成
 //--------------------------------
-CArrow* CArrow::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, const char* filePath, D3DXVECTOR2 size, size_t idx)
+CArrow* CArrow::Create(D3DXVECTOR3 pos, D3DXMATRIX rotMtx, float angle, const char* filePath, D3DXVECTOR2 size, size_t idx)
 {
 	// インスタンスの生成
 	CArrow* pArrow = new CArrow;
@@ -28,10 +28,11 @@ CArrow* CArrow::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, const char* filePath, D
 	}
 
 	pArrow->SetType(CNavi::TYPE::Arrow);
-	pArrow->SetFilePath(filePath);
+	pArrow->SetTexIdx(CTextureManager::Instance()->Register(filePath));
 	pArrow->SetSize(size);
-	pArrow->SetPosition(pos);
-	pArrow->SetRotasion(rot);
+	pArrow->SetPos(pos);
+	pArrow->SetRotMtx(rotMtx);
+	pArrow->SetAngle(angle);
 	pArrow->SetLength(D3DXVec2Length(&size));
 	pArrow->SetChengeLength(D3DXVec2Length(&size) * CHENGE_LENGTH_MAGNIFICATION);
 	pArrow->SetBiasIdx(idx);
@@ -83,10 +84,10 @@ void CArrow::Draw(void)
 //--------------------------------
 // ナビゲーションアクション
 //--------------------------------
-void CArrow::Activate(D3DXVECTOR3* rot) const
+void CArrow::Activate(float* angle) const
 {
-	if (rot != nullptr)
+	if (angle != nullptr)
 	{// nullでなければ
-		*rot = GetRot(); // 角度を渡す
+		*angle = GetAngle(); // 角度を渡す
 	}
 }

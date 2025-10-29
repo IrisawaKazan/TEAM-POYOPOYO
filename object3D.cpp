@@ -159,6 +159,7 @@ void CObject3D::Draw(void)
 
 	// ワールドマトリックスの設定
 	pDevice->SetTransform(D3DTS_WORLD, &m_mtxWorld);
+
 	// 頂点バッファをデバイスからデータストリームに設定
 	pDevice->SetStreamSource(0, m_pVertex, 0, sizeof(VERTEX_3D));
 	// テクスチャの設定

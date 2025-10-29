@@ -35,6 +35,7 @@ public:
 	void SetUV(D3DXVECTOR2 UVMax, D3DXVECTOR2 UVMin) { m_UVMax = UVMax;m_UVMin = UVMin; };
 	void ResisterTexIndx(const int TexIndx) { m_nTexIndx = TexIndx; };
 	void SetFilePath(const char* FilePath) { m_FilePath = FilePath; };
+
 	// ÉQÉbÉ^Å[
 	D3DXVECTOR3 GetPos(void) const { return m_Pos; };
 	D3DXVECTOR3 GetRot(void) const { return m_Rot; };

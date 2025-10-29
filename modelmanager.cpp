@@ -129,6 +129,16 @@ int CModelManager::Register(std::string sName)
 		&Info.dwNumMat,
 		&Info.pMesh);
 
+	// D3DXIntersect のための高速化構造を構築する sato 仮
+	Info.pMesh->Optimize(
+		D3DXMESHOPT_COMPACT | D3DXMESHOPT_ATTRSORT, // 最適化オプション
+		NULL,                                       // 入力Adjacency (通常NULLでOK)
+		NULL,                                       // 出力Adjacency (通常NULLでOK)
+		NULL,                                       // Face Remap (通常NULLでOK)
+		NULL,                                       // Vertex Remap (通常NULLでOK)
+		&Info.pMesh                                 // 最適化されたメッシュの格納先 (自分自身を上書き)
+	);
+
 	D3DXMATERIAL* pMat;	//マテリアルへのポインタ
 
 	// テクスチャの分の配列の確保

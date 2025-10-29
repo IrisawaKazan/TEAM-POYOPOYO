@@ -71,10 +71,13 @@ private:
 	D3DXVECTOR2 ConvertMouseToScreen(D3DXVECTOR2 mousePos);
 	void CreateRay(D3DXVECTOR2 mousePos);
 	D3DXVECTOR3 PlaneIntersect(float fHeight);
-	D3DXVECTOR3 MeshIntersect(const LPD3DXMESH& pMesh, const D3DXMATRIX& mtxWorld);
+	D3DXVECTOR3 MeshIntersect(const LPD3DXMESH& pMesh, const D3DXMATRIX& mtxWorld, const float enableAngle, D3DXVECTOR3* pNor = nullptr);
+	bool CheckLatent(const LPD3DXMESH& pMesh, const D3DXMATRIX& mtxWorld, float lengthSq);
+	D3DXMATRIX CreateMatrixFromNormal(D3DXVECTOR3 nor);
 
 	static constexpr float HEIGHT = 0.05f;                                             // 地面の高さ
 	static constexpr const char* MARKER_TEXTURE_PATH = "data/TEXTURE/MagicCircle.png"; // マーカーのテクスチャパス
+	static const float ENABLE_ANGLE;                                                   // おけるオブジェクト角度の閾値(どこまでを床としますか?)
 	static const D3DXVECTOR3 MARKER_OFFSET;                                            // マーカーのオフセット位置
 	static const D3DXVECTOR2 MARKER_SIZE;                                              // マーカーのサイズ
 
