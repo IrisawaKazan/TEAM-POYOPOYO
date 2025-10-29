@@ -84,7 +84,8 @@ HRESULT CGame::Init(void)
 
 	CNaviUI::Create("data/TEXTURE/UI/Frame000.png", { NAVI_UI_TEXTURES.begin(), NAVI_UI_TEXTURES.end() }, D3DXVECTOR3(SCREEN_WIDTH * 0.1f, SCREEN_HEIGHT * 0.82f, 0.0f), D3DXVECTOR2(100.0f, 100.0f));
 	
-	CTimer::Create(D3DXVECTOR3(640.0f,360.0f,0.0f));
+	CTimer::Instance()->SetPosition(D3DXVECTOR3(640.0f, 360.0f, 0.0f));
+	//CTimer::Create(D3DXVECTOR3(640.0f,360.0f,0.0f));
 #ifdef _DEBUG
 #else
 #endif // _DEBUG
@@ -123,16 +124,16 @@ HRESULT CGame::Init(void)
 void CGame::Update(void)
 {
 #ifdef _DEBUG
-	//if (CManager::GetInputKeyboard() != NULL)
-	//{
-	//	if (CManager::GetInputKeyboard()->GetTrigger(DIK_SPACE) == true)
-	//	{
-	//		if (CManager::GetScene()->GetMode() == MODE_GAME)
-	//		{
-	//			CFade::SetFade(new CResult);
-	//		}
-	//	}
-	//}
+	if (CManager::GetInputKeyboard() != NULL)
+	{
+		if (CManager::GetInputKeyboard()->GetTrigger(DIK_SPACE) == true)
+		{
+			if (CManager::GetScene()->GetMode() == MODE_GAME)
+			{
+				CFade::SetFade(new CResult);
+			}
+		}
+	}
 #endif // DEBUG
 	if (m_pMapManager != nullptr)
 	{
@@ -178,6 +179,16 @@ void CGame::Uninit(void)
 			delete m_RigitBody->getMotionState();
 		}
 		m_RigitBody.reset();
+	}
+
+	int nTime = CTimer::Instance()->GetTime();
+	ofstream pFile("data\\Ranking.txt");
+
+	if (pFile)
+	{
+		pFile << nTime << endl;
+
+		pFile.close();
 	}
 
 	delete this;
