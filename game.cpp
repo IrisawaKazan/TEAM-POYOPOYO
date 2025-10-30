@@ -182,16 +182,6 @@ void CGame::Uninit(void)
 		m_RigitBody.reset();
 	}
 
-	int nTime = CTimer::Instance()->GetTime();
-	ofstream pFile("data\\Ranking.txt");
-
-	if (pFile)
-	{
-		pFile << nTime << endl;
-
-		pFile.close();
-	}
-
 	delete this;
 }
 
