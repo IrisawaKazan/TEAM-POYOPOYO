@@ -84,36 +84,40 @@ void CNavi::Update(void)
 		m_list = static_cast<LIST>((static_cast<unsigned char>(m_list) + 1) % static_cast<unsigned char>(LIST::Max));
 	}
 
-	bool isRepeat = false; // オブジェクトが重なっているか判定用フラグ
-	do
-	{// オブジェクトが重なっているか判定
-		isRepeat = false;
-		for (auto pObject : m_apObject)
-		{// 既にあるオブジェクトと新しく作成したオブジェクトが重なっているか判定
-			if (pObject == m_lastObject) continue; // 自分自身はスキップ
-
-			if (m_lastObject->ReleaseTrigger(pObject->GetreleaseCollObject()))
-			{// 重なっている場合
-				// 古いオブジェクトを削除
-				pObject->RequestRelease();
-				SwapRemove(m_apObject, pObject);
-
-				isRepeat = true;
-				break; // 内側のループを抜けて再度判定を行う
-			}
-		}
-	} while (isRepeat);
-
-	for (size_t cntArrow = 0; cntArrow < m_apObject.size(); cntArrow++)
-	{// バイアスインデックス再設定
-		m_apObject[cntArrow]->SetBiasIdx(cntArrow);
-	}
-
-	m_apObject.shrink_to_fit(); // メモリの無駄を削減
-
-	if (m_pMarker != nullptr)
+	if (m_isobjectCreate)
 	{
-		m_pMarker->SetBiasID(m_apObject.size()); // マーカーのバイアスIDを更新
+		bool isRepeat = false; // オブジェクトが重なっているか判定用フラグ
+		do
+		{// オブジェクトが重なっているか判定
+			isRepeat = false;
+			for (auto pObject : m_apObject)
+			{// 既にあるオブジェクトと新しく作成したオブジェクトが重なっているか判定
+				if (pObject == m_lastObject) continue; // 自分自身はスキップ
+
+				if (m_lastObject->ReleaseTrigger(pObject->GetreleaseCollObject()))
+				{// 重なっている場合
+					// 古いオブジェクトを削除
+					pObject->RequestRelease();
+					SwapRemove(m_apObject, pObject);
+
+					isRepeat = true;
+					break; // 内側のループを抜けて再度判定を行う
+				}
+			}
+		} while (isRepeat);
+
+		for (size_t cntArrow = 0; cntArrow < m_apObject.size(); cntArrow++)
+		{// バイアスインデックス再設定
+			m_apObject[cntArrow]->SetBiasIdx(cntArrow);
+		}
+
+		m_apObject.shrink_to_fit(); // メモリの無駄を削減
+
+		if (m_pMarker != nullptr)
+		{
+			m_pMarker->SetBiasID(m_apObject.size()); // マーカーのバイアスIDを更新
+		}
+		m_isobjectCreate = false;
 	}
 
 	if (m_pos.y > (MARKER_OFFSET.y + 1.0f) && CManager::GetInputMouse()->OnDown(0))
