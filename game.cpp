@@ -160,6 +160,7 @@ void CGame::Uninit(void)
 	// プレイヤーマネージャーの破棄
 	if (m_pPlayerManager != NULL)
 	{
+		m_pPlayerManager->Uninit();
 		delete m_pPlayerManager;
 		m_pPlayerManager = NULL;
 	}
@@ -169,6 +170,8 @@ void CGame::Uninit(void)
 		m_pPauseManager->Uninit();
 		m_pPauseManager = NULL;
 	}
+
+	CMapManager::Instance()->Uninit();
 
 	// 剛体の削除
 	if (m_RigitBody)

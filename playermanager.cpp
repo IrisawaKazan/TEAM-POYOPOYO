@@ -42,7 +42,15 @@ HRESULT CPlayerManager::Init(void)
 //************************************************************
 void CPlayerManager::Uninit(void)
 {
+	// 今置いてあるオブジェクトの破棄
+	for (auto MapObjects = m_pPlayer.begin(); MapObjects != m_pPlayer.end(); MapObjects++)
+	{
+		MapObjects = m_pPlayer.erase(MapObjects);
+		if (MapObjects == m_pPlayer.end()) break;
+	}
 
+	// クリア
+	m_pPlayer.clear();
 }
 
 //************************************************************
