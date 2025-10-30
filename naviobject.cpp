@@ -292,9 +292,6 @@ void CNaviObject::SetReleaseObject()
 	// 円柱にトランスフォームを設定
 	m_releaseObject->setWorldTransform(triggerTransform);
 
-	// isTrigger(押し返し無し)
-	m_releaseObject->setCollisionFlags(m_releaseObject->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE);
-
 	// 追加
 	CManager::GetDynamicsWorld()->addCollisionObject(m_releaseObject.get());
 }

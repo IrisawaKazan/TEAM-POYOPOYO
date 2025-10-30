@@ -65,7 +65,7 @@ public:
 	}
 
 private:
-	CNavi() : m_RayPos{ 0.0f,0.0f,0.0f }, m_RayDir{ 0.0f,0.0f,0.0f }, m_pos{ 0.0f,0.0f,0.0f }, m_clickPos{ 0.0f,0.0f,0.0f }, m_aRayCastTarget{}, m_pMarker{}, m_apObject{}, m_list{} {};
+	CNavi() : m_RayPos{ 0.0f,0.0f,0.0f }, m_RayDir{ 0.0f,0.0f,0.0f }, m_pos{ 0.0f,0.0f,0.0f }, m_clickPos{ 0.0f,0.0f,0.0f }, m_aRayCastTarget{}, m_pMarker{}, m_apObject{}, m_lastObject{}, m_isobjectCreate{}, m_list{} {};
 	~CNavi() {};
 
 	D3DXVECTOR2 ConvertMouseToScreen(D3DXVECTOR2 mousePos);
@@ -92,6 +92,8 @@ private:
 	CNaviMarker* m_pMarker; // マーカーのポインタ
 
 	std::vector<CNaviObject*> m_apObject; // オブジェクトの配列
+	CNaviObject* m_lastObject;            // 最後のオブジェクト
+	bool m_isobjectCreate;                // 生成フラグ
 
 	LIST m_list;                 // 今選ばれているオブジェクト
 };
