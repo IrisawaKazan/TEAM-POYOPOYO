@@ -35,6 +35,16 @@ HRESULT CMapManager::Init(void)
 //***************************************
 void CMapManager::Uninit(void)
 {
+	// 今置いてあるオブジェクトの破棄
+	for (auto MapObjects = m_vMapObject.begin(); MapObjects != m_vMapObject.end(); MapObjects++)
+	{
+		(*MapObjects)->Uninit();
+		MapObjects = m_vMapObject.erase(MapObjects);
+		if (MapObjects == m_vMapObject.end()) break;
+	}
+
+	// クリア
+	m_vMapObject.clear();
 }
 
 //***************************************
