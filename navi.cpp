@@ -84,42 +84,6 @@ void CNavi::Update(void)
 		m_list = static_cast<LIST>((static_cast<unsigned char>(m_list) + 1) % static_cast<unsigned char>(LIST::Max));
 	}
 
-	if (m_isobjectCreate)
-	{
-		bool isRepeat = false; // オブジェクトが重なっているか判定用フラグ
-		do
-		{// オブジェクトが重なっているか判定
-			isRepeat = false;
-			for (auto pObject : m_apObject)
-			{// 既にあるオブジェクトと新しく作成したオブジェクトが重なっているか判定
-				if (pObject == m_lastObject) continue; // 自分自身はスキップ
-
-				if (m_lastObject->ReleaseTrigger(pObject->GetreleaseCollObject()))
-				{// 重なっている場合
-					// 古いオブジェクトを削除
-					pObject->RequestRelease();
-					SwapRemove(m_apObject, pObject);
-
-					isRepeat = true;
-					break; // 内側のループを抜けて再度判定を行う
-				}
-			}
-		} while (isRepeat);
-
-		for (size_t cntArrow = 0; cntArrow < m_apObject.size(); cntArrow++)
-		{// バイアスインデックス再設定
-			m_apObject[cntArrow]->SetBiasIdx(cntArrow);
-		}
-
-		m_apObject.shrink_to_fit(); // メモリの無駄を削減
-
-		if (m_pMarker != nullptr)
-		{
-			m_pMarker->SetBiasID(m_apObject.size()); // マーカーのバイアスIDを更新
-		}
-		m_isobjectCreate = false;
-	}
-
 	if (m_pos.y > (MARKER_OFFSET.y + 1.0f) && CManager::GetInputMouse()->OnDown(0))
 	{// 左クリックしたとき
 		m_clickPos = m_pos; // クリックした位置を保存
@@ -150,8 +114,7 @@ void CNavi::Update(void)
 		}
 		if (m_apObject.empty()) return;
 
-		m_lastObject = m_apObject.back(); // 新しく作成したオブジェクトのポインタ
-		m_isobjectCreate = true;
+		m_pNewObject = m_apObject.back(); // 新しく作成したオブジェクトのポインタ
 	}
 
 	m_aRayCastTarget.clear(); // レイキャスト対象オブジェクト配列をクリア
@@ -562,4 +525,42 @@ D3DXMATRIX CNavi::CreateMatrixFromNormal(D3DXVECTOR3 nor)
 void CNavi::SetMarker(void)
 {
 	m_pMarker = CNaviMarker::Create(MARKER_TEXTURE_PATH, MARKER_SIZE);
+}
+
+//--------------------------------
+// ナビゲーションマーカーの作成
+//--------------------------------
+void CNavi::HitCheckObject()
+{
+	bool isRepeat = false; // オブジェクトが重なっているか判定用フラグ
+	do
+	{// オブジェクトが重なっているか判定
+		isRepeat = false;
+		for (auto pObject : m_apObject)
+		{// 既にあるオブジェクトと新しく作成したオブジェクトが重なっているか判定
+			if (pObject == m_pNewObject) continue; // 自分自身はスキップ
+
+			if (m_pNewObject->ReleaseTrigger(pObject->GetreleaseCollObject()))
+			{// 重なっている場合
+				// 古いオブジェクトを削除
+				pObject->RequestRelease();
+				SwapRemove(m_apObject, pObject);
+
+				isRepeat = true;
+				break; // 内側のループを抜けて再度判定を行う
+			}
+		}
+	} while (isRepeat);
+
+	for (size_t cntArrow = 0; cntArrow < m_apObject.size(); cntArrow++)
+	{// バイアスインデックス再設定
+		m_apObject[cntArrow]->SetBiasIdx(cntArrow);
+	}
+
+	m_apObject.shrink_to_fit(); // メモリの無駄を削減
+
+	if (m_pMarker != nullptr)
+	{
+		m_pMarker->SetBiasID(m_apObject.size()); // マーカーのバイアスIDを更新
+	}
 }

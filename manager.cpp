@@ -213,6 +213,9 @@ void CManager::Update()
 	// カメラのアップデート
 	m_pCamera->Update();
 
+	// ナビの更新 sato Add
+	CNavi::GetInstance()->Update();
+
 	if (m_isPause == false)
 	{
 		// 物理世界でシュミレーションを実行
@@ -222,8 +225,8 @@ void CManager::Update()
 	// ライトのアップデート
 	m_pLight->Update();
 
-	// ナビの更新 sato Add
-	CNavi::GetInstance()->Update();
+	// ナビの重なり防止 sato Add
+	CNavi::GetInstance()->HitCheckObject();
 
 	if (m_pScene != NULL)
 	{

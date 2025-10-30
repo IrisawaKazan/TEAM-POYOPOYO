@@ -90,7 +90,18 @@ void CNaviObject::Uninit(void)
 //--------------------------------
 void CNaviObject::Update(void)
 {
+	// ワールドへのポインタを取得
+	btDynamicsWorld* world = CManager::GetDynamicsWorld();
 
+	// オブジェクトがワールドに登録されている場合、削除
+	if (m_triggerObject)
+	{
+		world->removeCollisionObject(m_triggerObject.get());
+	}
+	if (m_releaseObject)
+	{
+		world->removeCollisionObject(m_releaseObject.get());
+	}
 }
 
 //--------------------------------
