@@ -25,6 +25,8 @@ CMapManager::~CMapManager()
 {
 	// クリア
 	m_vMapObject.clear();
+	m_vDoor.clear();
+	m_vMapSwitch.clear();
 }
 
 //***************************************
@@ -34,6 +36,8 @@ HRESULT CMapManager::Init(void)
 {
 	// ベクターをクリア
 	m_vMapObject.clear();
+	m_vDoor.clear();
+	m_vMapSwitch.clear();
 
 	// 正常終了
 	return S_OK;
@@ -117,6 +121,8 @@ void CMapManager::Load(std::string Path)
 
 	// クリア
 	m_vMapObject.clear();
+	m_vDoor.clear();
+	m_vMapSwitch.clear();
 
 	// jsonデータを宣言
 	ordered_json jsonData;
