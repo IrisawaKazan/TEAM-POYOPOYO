@@ -67,7 +67,7 @@ HRESULT CItem::Init(void)
 	// 頂点のサイズを取得
 	sizeFVF = D3DXGetFVFVertexSize(pMesh->GetFVF());
 
-	// 頂点バッファの取得
+	// 頂点バッファをロック
 	pMesh->LockVertexBuffer(D3DLOCK_READONLY, (void**)&pVtxBuff);
 
 	// 頂点の数だけ回す
@@ -111,7 +111,11 @@ HRESULT CItem::Init(void)
 	}
 
 	// XとZの最大値を代入
-	m_fWidth = max.x;
+	m_fWidth = max.x;	// 横幅に代入
+	m_fDepth = max.z;	// 奥行に代入
+
+	// 頂点バッファをアンロック
+	pMesh->UnlockVertexBuffer();
 
 	return S_OK;
 }
@@ -131,6 +135,12 @@ void CItem::Uninit(void)
 //***************************************
 void CItem::Update(void)
 {
+	// 横に少しづつ回転
+	m_rot.y += 0.05f;
+
+	// 更新した向きを引数に代入
+	SetRotasion(m_rot);
+
 	switch (m_type)
 	{
 		// 左に進む指示の場合
@@ -169,7 +179,7 @@ void CItem::Draw(void)
 //***************************************
 // 生成処理
 //***************************************
-CItem* CItem::Create(const ITEM type, const D3DXVECTOR3 pos, const D3DXVECTOR3 rot, const float fWidth, const float fDepth, const D3DXVECTOR3 scale,  const std::string FileName)
+CItem* CItem::Create(const ITEM type, const D3DXVECTOR3 pos, const D3DXVECTOR3 rot, const D3DXVECTOR3 scale,  const std::string FileName)
 {
 	// アイテムのポインタ
 	CItem* pItem = nullptr;
@@ -192,8 +202,6 @@ CItem* CItem::Create(const ITEM type, const D3DXVECTOR3 pos, const D3DXVECTOR3 r
 	pItem->m_type = type;					// アイテムの種類
 	pItem->m_pos = pos;						// 位置
 	pItem->m_rot = rot;						// 向き
-	pItem->m_fWidth = fWidth;				// 横幅
-	pItem->m_fDepth = fDepth;				// 奥行
 	pItem->m_scale = scale;					// 拡大率
 	pItem->m_nModelIdx = pItem->GetIndx();	// インデックス
 

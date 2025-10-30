@@ -42,8 +42,6 @@ public:
 	static CItem* Create(const ITEM type,	// 種類
 		const D3DXVECTOR3 pos,				// 位置
 		const D3DXVECTOR3 rot,				// 向き
-		const float fWidth,					// 横幅
-		const float fDepth,					// 奥行
 		const D3DXVECTOR3 scale,			// 向き
 		const std::string FileName);		// モデルのファイル名
 
