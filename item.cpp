@@ -136,7 +136,7 @@ void CItem::Uninit(void)
 void CItem::Update(void)
 {
 	// ‰¡‚É­‚µ‚Ã‚Â‰ñ“]
-	m_rot.y += 0.05f;
+	m_rot.z += 0.05f;
 
 	// XV‚µ‚½Œü‚«‚ğˆø”‚É‘ã“ü
 	SetRotasion(m_rot);
