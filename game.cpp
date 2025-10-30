@@ -23,6 +23,7 @@
 #include "gimmick.h"
 #include "switch.h"
 #include "mapmanager.h"
+#include "item.h"
 
 // 規定値を設定
 // プレイヤー
@@ -86,6 +87,10 @@ HRESULT CGame::Init(void)
 	
 	//CTimer::Instance()->SetPosition(D3DXVECTOR3(640.0f, 360.0f, 0.0f));
 	CTimer::Create(D3DXVECTOR3(640.0f,360.0f,0.0f));
+
+	// アイテムの生成処理 Misaki
+	CItem::Create(CItem::ITEM_LEFT, D3DXVECTOR3(0.0f,0.0f,0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(1.0f, 1.0f, 1.0f), "data\\Model\\item\\item000.x");
+
 #ifdef _DEBUG
 #else
 #endif // _DEBUG
