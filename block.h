@@ -38,6 +38,7 @@ public:
 	void Update(void);
 	void UpdateRB(void);
 	void Draw(void);
+	D3DXVECTOR3 GetSize(void) { return m_size; }
 	btRigidBody* GetRB(void) { return m_RigitBody.get(); }
 
 	static CBlock* Create(std::string sName, D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 Scale = { 1.0f,1.0f,1.0f });
