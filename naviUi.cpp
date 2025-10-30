@@ -100,23 +100,32 @@ void CNaviUI::SetObjectUI(void)
 	CTextureManager* textureManager = CTextureManager::Instance();
 
 	// 今のオブジェクト
-	unsigned char listID = static_cast<char>(CNavi::GetInstance()->GetList());
+	unsigned int listID = static_cast<int>(CNavi::GetInstance()->GetList());
 	if (!m_objectTexturePaths.empty() && m_objectTexturePaths.size() > listID)
 	{// テクスチャがあればセット
-		m_pObjects[0]->SetTexIndx(textureManager->Register(m_objectTexturePaths[listID]));
+		if (m_pObjects[0] != nullptr)
+		{
+			m_pObjects[0]->SetTexIndx(textureManager->Register(m_objectTexturePaths[listID]));
+		}
 	}
 
 	// 前のオブジェクト
-	unsigned char lastListID = Wrap(char(listID - 1), char(0), char(int(CNavi::LIST::Max) - 1));
+	unsigned int lastListID = Wrap(int(listID - 1), int(0), int(CNavi::LIST::Max) - 1);
 	if (!m_objectTexturePaths.empty() && m_objectTexturePaths.size() > lastListID)
 	{// テクスチャがあればセット
-		m_pObjects[1]->SetTexIndx(textureManager->Register(m_objectTexturePaths[lastListID]));
+		if (m_pObjects[1] != nullptr)
+		{
+			m_pObjects[1]->SetTexIndx(textureManager->Register(m_objectTexturePaths[lastListID]));
+		}
 	}
 
 	// 次のオブジェクト
-	unsigned char nextListID = Wrap(char(listID + 1), char(0), char(int(CNavi::LIST::Max) - 1));
+	unsigned int nextListID = Wrap(int(listID + 1), int(0), int(CNavi::LIST::Max) - 1);
 	if (!m_objectTexturePaths.empty() && m_objectTexturePaths.size() > nextListID)
 	{// テクスチャがあればセット
-		m_pObjects[2]->SetTexIndx(textureManager->Register(m_objectTexturePaths[nextListID]));
+		if (m_pObjects[2] != nullptr)
+		{
+			m_pObjects[2]->SetTexIndx(textureManager->Register(m_objectTexturePaths[nextListID]));
+		}
 	}
 }

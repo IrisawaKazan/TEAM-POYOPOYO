@@ -15,7 +15,7 @@
 class CNaviObject : public CObject
 {
 public:
-	CNaviObject() : CObject(4), m_pVertex{}, m_texIdx{}, m_pos{}, m_mtxRot{}, m_angle{}, m_size{}, m_type{}, m_length{}, m_chengeLength{}, m_idx{ m_nextIdx }, m_biasIdx{} { m_nextIdx++; };
+	CNaviObject() : CObject(4), m_pVertex{}, m_texIdx{}, m_pos{}, m_mtxRot{}, m_angle{}, m_size{}, m_type{}, m_length{}, m_chengeLength{}, m_idx{ m_nextIdx }, m_biasIdx{}, m_triggerShape{}, m_releaseShape{}, m_triggerObject{}, m_releaseObject{} { m_nextIdx++; };
 	~CNaviObject() override {};
 
 	HRESULT Init(void) override;
@@ -32,8 +32,8 @@ public:
 	void SetLength(float length) { m_length = length; }
 	void SetChengeLength(float length) { m_chengeLength = length; }
 	void SetBiasIdx(size_t biasIdx) { m_biasIdx = biasIdx; }
-	CNavi::TYPE ActivateTrigger(const D3DXVECTOR3& pos, float* pAngle, size_t* pIdx) const;
-	bool ReleaseTrigger(const D3DXVECTOR3& pos, float length) const;
+	CNavi::TYPE ActivateTrigger(const btCollisionObject* const& collisionObject, float* pAngle, size_t* pIdx) const;
+	bool ReleaseTrigger(const btCollisionObject* const& collisionObject) const;
 
 	D3DXVECTOR3 GetPos(void) { return m_pos; }
 	float GetAngle(void) const { return m_angle; }
@@ -41,6 +41,7 @@ public:
 	float GetChengeLength() const { return m_chengeLength; }
 	size_t GetIdx() const { return m_idx; }
 	size_t GetBiasIdx() const { return m_biasIdx; }
+	btCollisionObject* GetreleaseCollObject() { return m_releaseObject.get(); }
 
 	void RequestRelease() { Release(); }
 
@@ -51,6 +52,9 @@ protected:
 	virtual void Activate(float* angle) const = 0;
 
 private:
+	void SetTriggerObject();
+	void SetReleaseObject();
+
 	LPDIRECT3DVERTEXBUFFER9 m_pVertex; // 頂点
 	int m_texIdx;                      // テクスチャ番号
 	D3DXVECTOR3 m_pos;                 // 座標
@@ -65,4 +69,9 @@ private:
 	float m_chengeLength; // 反応する範囲
 	size_t m_idx;         // インデックス (Trigger渡し用)
 	size_t m_biasIdx;     // インデックス (Zバイアス用)
+
+	std::unique_ptr<btCylinderShape> m_triggerShape;    // 当たり判定の形(アクティブ)
+	std::unique_ptr<btCylinderShape> m_releaseShape;    // 当たり判定の形(アクティブ)
+	std::unique_ptr<btCollisionObject> m_triggerObject; // 当たり判定(アクティブ)
+	std::unique_ptr<btCollisionObject> m_releaseObject; // 当たり判定(上書き)
 };

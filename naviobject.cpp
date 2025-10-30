@@ -63,6 +63,11 @@ HRESULT CNaviObject::Init(void)
 
 	// 頂点バッファをアンロック
 	m_pVertex->Unlock();
+
+	// 当たり判定
+	SetTriggerObject();
+	SetReleaseObject();
+
 	return S_OK;
 }
 
@@ -148,35 +153,148 @@ void CNaviObject::Draw(void)
 //--------------------------------
 // 触れたら起動する
 //--------------------------------
-CNavi::TYPE CNaviObject::ActivateTrigger(const D3DXVECTOR3& pos, float* pAngle, size_t* pIdx) const
+CNavi::TYPE CNaviObject::ActivateTrigger(const btCollisionObject* const& collisionObject, float* pAngle, size_t* pIdx) const
 {
-	D3DXVECTOR3 space = pos - m_pos;
-	float hight(space.y);
-	space.y = 0.0f;
-	float length = D3DXVec3Length(&space);
-	if (length <= m_chengeLength && std::abs(hight) <= CHENGE_HEIGHT)
+	// 何組が衝突しているか
+	int numManifolds = CManager::GetDynamicsWorld()->getDispatcher()->getNumManifolds();
+
+	// 衝突回数分繰り返し
+	for (int nCnt = 0; nCnt < numManifolds; nCnt++)
 	{
-		Activate(pAngle);
-		if (pIdx != nullptr)
+		// 衝突しているペアを取得
+		btPersistentManifold* manifold = CManager::GetDynamicsWorld()->getDispatcher()->getManifoldByIndexInternal(nCnt);
+
+		// 衝突していたら
+		if (manifold->getNumContacts() <= 0) continue;
+
+		// 衝突オブジェクト１、２を取得
+		const btCollisionObject* objA = manifold->getBody0();
+		const btCollisionObject* objB = manifold->getBody1();
+
+		// プレイヤーとスイッチが当たっていたら
+		if ((objA == m_triggerObject.get() && objB == collisionObject) || (objA == collisionObject && objB == m_triggerObject.get()))
 		{
-			*pIdx = m_idx;
+			Activate(pAngle);
+			if (pIdx != nullptr)
+			{
+				*pIdx = m_idx;
+			}
+			return m_type;
 		}
-		return m_type;
 	}
-	else
-	{
-		return CNavi::TYPE::None;
-	}
+
+	return CNavi::TYPE::None;
 }
 
 //--------------------------------
 // 触れたら消す
 //--------------------------------
-bool CNaviObject::ReleaseTrigger(const D3DXVECTOR3& pos, float length) const
+bool CNaviObject::ReleaseTrigger(const btCollisionObject* const& collisionObject) const
 {
-	D3DXVECTOR3 space = pos - m_pos;
-	float hight(space.y);
-	space.y = 0.0f;
-	float spaseLength = D3DXVec3Length(&space);
-	return (spaseLength < (m_length + length) && std::abs(hight) <= CHENGE_HEIGHT);
+	// 何組が衝突しているか
+	int numManifolds = CManager::GetDynamicsWorld()->getDispatcher()->getNumManifolds();
+
+	// 衝突回数分繰り返し
+	for (int nCnt = 0; nCnt < numManifolds; nCnt++)
+	{
+		// 衝突しているペアを取得
+		btPersistentManifold* manifold = CManager::GetDynamicsWorld()->getDispatcher()->getManifoldByIndexInternal(nCnt);
+
+		// 衝突していたら
+		if (manifold->getNumContacts() <= 0) continue;
+
+		// 衝突オブジェクト１、２を取得
+		const btCollisionObject* objA = manifold->getBody0();
+		const btCollisionObject* objB = manifold->getBody1();
+
+		// プレイヤーとスイッチが当たっていたら
+		if ((objA == m_releaseObject.get() && objB == collisionObject) || (objA == collisionObject && objB == m_releaseObject.get()))
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
+//--------------------------------
+// ActivateTrigger用の当たり判定
+//--------------------------------
+void CNaviObject::SetTriggerObject()
+{
+	// 円柱の設定
+	float radius = m_chengeLength;
+	float halfHeight = CHENGE_HEIGHT;
+	btVector3 cylinderHalfExtents(radius, halfHeight, radius);
+	m_triggerShape = std::make_unique<btCylinderShape>(cylinderHalfExtents);
+
+	m_triggerObject = std::make_unique<btCollisionObject>();
+	m_triggerObject->setCollisionShape(m_triggerShape.get());
+
+	// 座標と回転
+	btVector3 bulletPos(m_pos.x, m_pos.y, m_pos.z);
+
+	// Bullet用の3x3行列（Basis）を作成
+	btMatrix3x3 bulletBasis;
+	bulletBasis.setValue(
+		m_mtxRot._11, m_mtxRot._12, m_mtxRot._13,
+		m_mtxRot._21, m_mtxRot._22, m_mtxRot._23,
+		m_mtxRot._31, m_mtxRot._32, m_mtxRot._33
+	);
+
+	// トランスフォームを作成
+	btTransform triggerTransform;
+	triggerTransform.setIdentity();
+	triggerTransform.setOrigin(bulletPos);
+	triggerTransform.setBasis(bulletBasis);
+
+	// 円柱にトランスフォームを設定
+	m_triggerObject->setWorldTransform(triggerTransform);
+
+	// isTrigger(押し返し無し)
+	m_triggerObject->setCollisionFlags(m_triggerObject->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE);
+
+	// 追加
+	CManager::GetDynamicsWorld()->addCollisionObject(m_triggerObject.get());
+}
+
+//--------------------------------
+// ReleaseTrigger用の当たり判定
+//--------------------------------
+void CNaviObject::SetReleaseObject()
+{
+	// 円柱の設定
+	float radius = m_length;
+	float halfHeight = CHENGE_HEIGHT;
+	btVector3 cylinderHalfExtents(radius, halfHeight, radius);
+	m_releaseShape = std::make_unique<btCylinderShape>(cylinderHalfExtents);
+
+	m_releaseObject = std::make_unique<btCollisionObject>();
+	m_releaseObject->setCollisionShape(m_releaseShape.get());
+
+	// 座標と回転
+	btVector3 bulletPos(m_pos.x, m_pos.y, m_pos.z);
+
+	// Bullet用の3x3行列（Basis）を作成
+	btMatrix3x3 bulletBasis;
+	bulletBasis.setValue(
+		m_mtxRot._11, m_mtxRot._12, m_mtxRot._13,
+		m_mtxRot._21, m_mtxRot._22, m_mtxRot._23,
+		m_mtxRot._31, m_mtxRot._32, m_mtxRot._33
+	);
+
+	// トランスフォームを作成
+	btTransform triggerTransform;
+	triggerTransform.setIdentity();
+	triggerTransform.setOrigin(bulletPos);
+	triggerTransform.setBasis(bulletBasis);
+
+	// 円柱にトランスフォームを設定
+	m_releaseObject->setWorldTransform(triggerTransform);
+
+	// isTrigger(押し返し無し)
+	m_releaseObject->setCollisionFlags(m_releaseObject->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE);
+
+	// 追加
+	CManager::GetDynamicsWorld()->addCollisionObject(m_releaseObject.get());
 }

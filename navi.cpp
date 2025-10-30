@@ -124,7 +124,7 @@ void CNavi::Update(void)
 			{// 既にあるオブジェクトと新しく作成したオブジェクトが重なっているか判定
 				if (pObject == pNewObject) continue; // 自分自身はスキップ
 
-				if (pNewObject->ReleaseTrigger(pObject->GetPos(), pObject->GetChengeLength()))
+				if (pNewObject->ReleaseTrigger(pObject->GetreleaseCollObject()))
 				{// 重なっている場合
 					// 古いオブジェクトを削除
 					pObject->RequestRelease();
