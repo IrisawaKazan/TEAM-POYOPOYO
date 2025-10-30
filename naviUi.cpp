@@ -73,7 +73,7 @@ HRESULT CNaviUI::Init(void)
 //--------------------------------
 void CNaviUI::Uninit(void)
 {
-	
+	Release();
 }
 
 //--------------------------------

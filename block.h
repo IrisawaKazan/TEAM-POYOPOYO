@@ -49,7 +49,7 @@ private:
 	TYPE m_type;			// ブロックのタイプ
 	D3DXVECTOR3 m_size;		// サイズ
 	D3DXVECTOR3 m_RBOffset;	// オフセット
-	std::string m_sNamePath;	// ファイルパス
+	std::string m_sNamePath;// ファイルパス
 	std::unique_ptr<btCollisionShape> m_CollisionShape;	// 当たり判定の形状
 	std::unique_ptr<btRigidBody> m_RigitBody;			// リジットボディー
 };

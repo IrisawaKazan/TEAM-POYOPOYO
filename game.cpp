@@ -176,17 +176,6 @@ void CGame::Uninit(void)
 		m_pPauseManager = NULL;
 	}
 
-	// „‘Ì‚Ìíœ
-	if (m_RigitBody)
-	{
-		CManager::GetDynamicsWorld()->removeRigidBody(m_RigitBody.get());
-		if (m_RigitBody->getMotionState())
-		{
-			delete m_RigitBody->getMotionState();
-		}
-		m_RigitBody.reset();
-	}
-
 	delete this;
 }
 
