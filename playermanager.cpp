@@ -42,7 +42,8 @@ HRESULT CPlayerManager::Init(void)
 //************************************************************
 void CPlayerManager::Uninit(void)
 {
-
+	// ÉNÉäÉA
+	m_pPlayer.clear();
 }
 
 //************************************************************

@@ -19,7 +19,7 @@ class CMapManager
 {
 public:
 	// デストラクタ
-	~CMapManager() { m_vMapObject.clear(); }
+	~CMapManager();
 
 	// メンバ関数
 	HRESULT Init(void);

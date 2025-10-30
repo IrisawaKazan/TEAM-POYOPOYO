@@ -19,6 +19,15 @@ using namespace nlohmann;
 using namespace std;
 
 //***************************************
+// デストラクタ
+//***************************************
+CMapManager::~CMapManager()
+{
+	// クリア
+	m_vMapObject.clear();
+}
+
+//***************************************
 // 初期化処理
 //***************************************
 HRESULT CMapManager::Init(void)
@@ -104,14 +113,6 @@ void CMapManager::Load(std::string Path)
 	{
 		MessageBox(NULL, "ファイルが読み込めませんでした", "終了メッセージ", MB_OK);
 		return;
-	}
-
-	// 今置いてあるオブジェクトの破棄
-	for (auto MapObjects = m_vMapObject.begin(); MapObjects != m_vMapObject.end(); MapObjects++)
-	{
-		(*MapObjects)->Uninit();
-		MapObjects = m_vMapObject.erase(MapObjects);
-		if (MapObjects == m_vMapObject.end()) break;
 	}
 
 	// クリア
