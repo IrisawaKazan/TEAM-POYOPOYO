@@ -50,6 +50,7 @@ void CModelCharacter::Uninit(void)
 		if ((*itr) != NULL)
 		{
 			(*itr)->Uninit();
+			(*itr) = NULL;
 		}
 	}
 	m_apModel.clear();
