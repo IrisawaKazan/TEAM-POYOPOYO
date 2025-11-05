@@ -148,6 +148,7 @@
     <ClCompile Include="math.cpp">
       <Filter>ヘッダー</Filter>
     </ClCompile>
+    <ClCompile Include="goal.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="arrow.h">
@@ -309,6 +310,7 @@
     <ClInclude Include="math.h">
       <Filter>ヘッダー</Filter>
     </ClInclude>
+    <ClInclude Include="goal.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ソース">
