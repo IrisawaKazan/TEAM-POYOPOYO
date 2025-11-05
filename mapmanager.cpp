@@ -71,6 +71,33 @@ void CMapManager::Update(void)
 		}
 	}
 
+	// すべて押されていたら
+	if (nFinished >= (int)m_vMapSwitch.size())
+	{
+		// 起動
+		m_Door->Begin();
+	}
+	else
+	{
+		// シャットダウン
+		m_Door->End();
+	}
+
+	CollisionGoaltoPlayers();
+}
+
+//***************************************
+// 描画処理
+//***************************************
+void CMapManager::Draw(void)
+{
+}
+
+//***************************************
+// プレイヤーたちとゴールの当たり判定
+//***************************************
+void CMapManager::CollisionGoaltoPlayers(void)
+{
 	// 何組が衝突しているか
 	int numManifolds = CManager::GetDynamicsWorld()->getDispatcher()->getNumManifolds();
 
@@ -90,7 +117,7 @@ void CMapManager::Update(void)
 			const btCollisionObject* objA = manifold->getBody0();
 			const btCollisionObject* objB = manifold->getBody1();
 
-			// プレイヤーとスイッチが当たっていたら
+			// プレイヤーとゴールが当たっていたら
 			const bool Condition = (objA == (*Players)->GetRB() && objB == m_Goal->GetCollisionObject()) || (objA == m_Goal->GetCollisionObject() && objB == (*Players)->GetRB());
 
 			// 切り上げ
@@ -105,25 +132,6 @@ void CMapManager::Update(void)
 			break;
 		}
 	}
-
-	// すべて押されていたら
-	if (nFinished >= (int)m_vMapSwitch.size())
-	{
-		// 起動
-		m_Door->Begin();
-	}
-	else
-	{
-		// シャットダウン
-		m_Door->End();
-	}
-}
-
-//***************************************
-// 描画処理
-//***************************************
-void CMapManager::Draw(void)
-{
 }
 
 //***************************************
@@ -159,18 +167,6 @@ void CMapManager::Load(std::string Path)
 	// クリア
 	m_vMapObject.clear();
 	m_vMapSwitch.clear();
-
-	if (m_Door != nullptr)
-	{
-		m_Door->Uninit();
-		m_Door = nullptr;
-	}
-
-	if (m_Goal != nullptr)
-	{
-		m_Goal->Uninit();
-		m_Goal = nullptr;
-	}
 
 	// jsonデータを宣言
 	ordered_json jsonData;
