@@ -88,14 +88,8 @@ void CSwitch::Uninit(void)
 //***************************************
 void CSwitch::Update(void)
 {
-	// 押していない判定にする
-	m_IsPressed = false;
-
 	// 今の位置を取得
 	D3DXVECTOR3 CurrentPos = GetPosition();
-
-	// 当たり判定
-	CollisionPlayer();
 
 	// 押されていたら
 	if (m_IsPressed == true)
@@ -131,48 +125,6 @@ void CSwitch::Draw(void)
 	// 描画
 	CBlock::Draw();
 }
-
-//***************************************
-// プレイヤーとの当たり判定
-//***************************************
-void CSwitch::CollisionPlayer(void)
-{
-	// 何組が衝突しているか
-	int numManifolds = CManager::GetDynamicsWorld()->getDispatcher()->getNumManifolds();
-
-	// 衝突回数分繰り返し
-	for (int nCnt = 0; nCnt < numManifolds; nCnt++)
-	{
-		// プレイヤーの配列にアクセス
-		for (auto Players = CGame::GetPlayerManager()->GetVPlayer().begin(); Players != CGame::GetPlayerManager()->GetVPlayer().end(); Players++)
-		{
-			// 衝突しているペアを取得
-			btPersistentManifold* manifold = CManager::GetDynamicsWorld()->getDispatcher()->getManifoldByIndexInternal(nCnt);
-
-			// 衝突していたら
-			if (manifold->getNumContacts() <= 0) continue;
-
-			// 衝突オブジェクト１、２を取得
-			const btCollisionObject* objA = manifold->getBody0();
-			const btCollisionObject* objB = manifold->getBody1();
-
-			// プレイヤーとスイッチが当たっていたら
-			const bool Condition = (objA == (*Players)->GetRB() && objB == GetRB()) || (objA == GetRB() && objB == (*Players)->GetRB());
-
-			// 切り上げ
-			if (Condition == false) continue;
-
-			// 押された状態にする
-			m_IsPressed = true;
-
-			// 処理を切り上げる
-			break;
-		}
-		// 押されていたら勝利を切り上げる
-		if (m_IsPressed == true) break;
-	}
-}
-
 
 //***************************************
 // ドア

@@ -30,7 +30,6 @@ public:
 	void Uninit(void);
 	void Update(void);
 	void Draw(void);
-	void CollisionPlayer(void);
 
 	// ÉQÉbÉ^Å[
 	bool IsPress(void) { return m_IsPressed; }

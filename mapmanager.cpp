@@ -83,6 +83,8 @@ void CMapManager::Update(void)
 		m_Door->End();
 	}
 
+	CollisionSwitchtoPlayers();
+
 	CollisionGoaltoPlayers();
 }
 
@@ -131,6 +133,58 @@ void CMapManager::CollisionGoaltoPlayers(void)
 			// 処理を切り上げる
 			break;
 		}
+	}
+}
+
+//***************************************
+// プレイヤーたちとスイッチの当たり判定
+//***************************************
+void CMapManager::CollisionSwitchtoPlayers(void)
+{
+	// 何組が衝突しているか
+	int numManifolds = CManager::GetDynamicsWorld()->getDispatcher()->getNumManifolds();
+
+	// 押されたかどうか
+	bool IsPressed = false;
+
+	// スイッチの配列にアクセス
+	for (auto Switch = m_vMapSwitch.begin(); Switch != m_vMapSwitch.end(); Switch++)
+	{
+		// 押されていない状態にする
+		IsPressed = false;
+
+		// 衝突回数分繰り返し
+		for (int nCnt = 0; nCnt < numManifolds; nCnt++)
+		{
+			// プレイヤーの配列にアクセス
+			for (auto Players = CGame::GetPlayerManager()->GetVPlayer().begin(); Players != CGame::GetPlayerManager()->GetVPlayer().end(); Players++)
+			{
+				// 衝突しているペアを取得
+				btPersistentManifold* manifold = CManager::GetDynamicsWorld()->getDispatcher()->getManifoldByIndexInternal(nCnt);
+
+				// 衝突していたら
+				if (manifold->getNumContacts() <= 0) continue;
+
+				// 衝突オブジェクト１、２を取得
+				const btCollisionObject* objA = manifold->getBody0();
+				const btCollisionObject* objB = manifold->getBody1();
+
+				// プレイヤーとスイッチが当たっていたら
+				const bool Condition = (objA == (*Players)->GetRB() && objB == (*Switch)->GetRB()) || (objA == (*Switch)->GetRB() && objB == (*Players)->GetRB());
+
+				// 切り上げ
+				if (Condition == false) continue;
+
+				IsPressed = true;
+
+				// 処理を切り上げる
+				break;
+			}
+			// 押されていたら切り上げる
+			if (IsPressed == true) break;
+		}
+		// 状態を設定
+		(*Switch)->SetPressed(IsPressed);
 	}
 }
 
