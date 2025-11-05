@@ -35,6 +35,9 @@ public:
 	// ゲッター
 	bool IsPress(void) { return m_IsPressed; }
 
+	// セッター
+	void SetPressed(const bool Condition) { m_IsPressed = Condition; }
+
 	// 静的メンバ関数
 	// 生成
 	static CSwitch* Create(std::string sName, D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 Scale = { 1.0f,1.0f,1.0f });

@@ -28,6 +28,7 @@ public:
 	void Update(void);
 	void Draw(void);
 	void CollisionGoaltoPlayers(void);
+	void CollisionSwitchtoPlayers(void);
 
 	// ê∂ê¨
 	void CreateObject(D3DXVECTOR3 Pos, D3DXVECTOR3 Rot, std::string Path);
