@@ -20,6 +20,7 @@ public:
 	void Uninit(void);
 	void Update(void);
 	void Draw(void);
+	btGhostObject* GetCollisionObject(void) { return m_GhostObject.get(); }
 
 	static CGoal* Create(D3DXVECTOR3 Pos, D3DXVECTOR3 Size);
 

@@ -145,10 +145,10 @@
     <ClCompile Include="mapmanager.cpp">
       <Filter>ソース</Filter>
     </ClCompile>
-    <ClCompile Include="math.cpp">
-      <Filter>ヘッダー</Filter>
-    </ClCompile>
     <ClCompile Include="goal.cpp" />
+    <ClCompile Include="math.cpp">
+      <Filter>ソース</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="arrow.h">

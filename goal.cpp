@@ -64,11 +64,6 @@ void CGoal::Uninit(void)
 	if (m_GhostObject)
 	{
 		CManager::GetDynamicsWorld()->removeCollisionObject(m_GhostObject.get());
-		
-		if (m_GhostObject->getCollisionShape())
-		{
-			delete m_GhostObject->getCollisionShape();
-		}
 		m_GhostObject.reset();
 	}
 	
