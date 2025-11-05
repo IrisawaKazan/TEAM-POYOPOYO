@@ -14,6 +14,7 @@ class CBlock;
 class CSwitch;
 class CDoor;
 class CGoal;
+class CItem;
 
 // クラスを定義
 class CMapManager
@@ -28,6 +29,7 @@ public:
 	void Update(void);
 	void Draw(void);
 	void CollisionGoaltoPlayers(void);
+	void CollisionItemtoPlayers(void); // Misaki
 
 	// 生成
 	void CreateObject(D3DXVECTOR3 Pos, D3DXVECTOR3 Rot, std::string Path);
@@ -50,6 +52,8 @@ private:
 	CDoor* m_Door;										// ドア
 	CGoal* m_Goal;										// ゴール
 	std::vector<CSwitch*> m_vMapSwitch;					// マップに置くスイッチ
+	// アイテムの当たり判定 Misaki
+	CItem* m_Item;
 };
 
 #endif // !_MAPMANAGER_H_

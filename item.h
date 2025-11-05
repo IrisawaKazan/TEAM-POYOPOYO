@@ -35,8 +35,8 @@ public:
 	void Uninit(void);
 	void Draw(void);
 
-	// アイテムの当たり判定
-	bool CollisionItem(const D3DXVECTOR3 pos, const float fWidth, const float fDepth);
+	// リジットボディの初期化処理
+	void InitRB(void);
 
 	// 静的メンバ関数
 	static CItem* Create(const ITEM type,	// 種類
@@ -48,13 +48,12 @@ public:
 private:
 
 	// メンバ変数
-	ITEM m_type;			// アイテムの種類
-	D3DXVECTOR3 m_pos;		// 位置
-	D3DXVECTOR3 m_rot;		// 向き
-	float m_fWidth;			// 横幅
-	float m_fDepth;			// 奥行
-	D3DXVECTOR3 m_scale;	// 拡大率
-	int m_nModelIdx;		// インデックス
+	ITEM m_type;											// アイテムの種類
+	D3DXVECTOR3 m_size;										// サイズ
+	D3DXVECTOR3 m_RBOffset;									// オフセット
+	std::unique_ptr<btCollisionShape> m_CollisionShape;		// 当たり判定の形状
+	std::unique_ptr<btRigidBody> m_RigitBody;				// リジットボディー
+
 };
 
 #endif

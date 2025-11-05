@@ -135,6 +135,45 @@ void CMapManager::CollisionGoaltoPlayers(void)
 }
 
 //***************************************
+// プレイヤーたちとアイテムの当たり判定 Misaki
+//***************************************
+void CMapManager::CollisionItemtoPlayers(void)
+{
+	//// 何組が衝突しているか
+	//int numManifolds = CManager::GetDynamicsWorld()->getDispatcher()->getNumManifolds();
+
+	//// 衝突回数分繰り返し
+	//for (int nCnt = 0; nCnt < numManifolds; nCnt++)
+	//{
+	//	// プレイヤーの配列にアクセス
+	//	for (auto Players = CGame::GetPlayerManager()->GetVPlayer().begin(); Players != CGame::GetPlayerManager()->GetVPlayer().end(); Players++)
+	//	{
+	//		// 衝突しているペアを取得
+	//		btPersistentManifold* manifold = CManager::GetDynamicsWorld()->getDispatcher()->getManifoldByIndexInternal(nCnt);
+
+	//		// 衝突していたら
+	//		if (manifold->getNumContacts() <= 0) continue;
+
+	//		// 衝突オブジェクト１、２を取得
+	//		const btCollisionObject* objA = manifold->getBody0();
+	//		const btCollisionObject* objB = manifold->getBody1();
+
+	//		// プレイヤーとアイテムが当たった場合
+	//		const bool ItemCondition = (objA == (*Players)->GetRB() && objB == m_Item->GetCollisionObject()) || (objA == m_Item->GetCollisionObject() && objB == (*Players)->GetRB());
+
+	//		// 切り上げ
+	//		if (ItemCondition == false) continue;
+
+
+
+	//		// 処理を切り上げる
+	//		break;
+	//	}
+	//}
+}
+
+
+//***************************************
 // オブジェクトを生成
 //***************************************
 void CMapManager::CreateObject(D3DXVECTOR3 Pos, D3DXVECTOR3 Rot, std::string Path)
