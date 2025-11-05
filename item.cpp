@@ -135,33 +135,23 @@ void CItem::Uninit(void)
 //***************************************
 void CItem::Update(void)
 {
-	// 横に少しづつ回転
-	m_rot.z += 0.05f;
+	// クオータニオン
+	D3DXQUATERNION pQuat;
+	// 回転させる軸
+	D3DXVECTOR3 Axis = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
+	// 向き
+	static float fAngle = 0.0f;
 
-	// 更新した向きを引数に代入
-	SetRotasion(m_rot);
+	// クオータニオンの取得
+	pQuat = GetQuad();
+	// 回転量を加算
+	fAngle += 0.05f;
 
-	switch (m_type)
-	{
-		// 左に進む指示の場合
-	case ITEM_LEFT:
+	// クオータニオンの計算
+	D3DXQuaternionRotationAxis(&pQuat, &Axis, fAngle);
 
-
-		break;
-
-		// ジャンプする指示の場合
-	case ITEM_JUMP:
-
-
-		break;
-
-		// 壁を登る指示の場合
-	case ITEM_CLIMB:
-
-
-		break;
-
-	}
+	// 更新したクオータニオンを引数に代入
+	SetQuad(pQuat);
 
 
 }
@@ -192,13 +182,13 @@ CItem* CItem::Create(const ITEM type, const D3DXVECTOR3 pos, const D3DXVECTOR3 r
 		return nullptr;
 	}
 
-	// オブジェクトXのセッターに引数の値を代入
+	// オブジェクトXのセッターに引数の値を入れる
 	pItem->SetPosition(pos);	// 位置
 	pItem->SetRotasion(rot);	// 向き
 	pItem->SetScale(scale);		// 拡大率
 	pItem->SetIdx(FileName);	// モデルのファイル名
 
-	// 引数の値をそれぞれのメンバ変数に代入 
+	// 引数の値をそれぞれのメンバ変数に代入する
 	pItem->m_type = type;					// アイテムの種類
 	pItem->m_pos = pos;						// 位置
 	pItem->m_rot = rot;						// 向き
