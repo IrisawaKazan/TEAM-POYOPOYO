@@ -10,6 +10,7 @@
 #include "renderer.h"
 #include "input.h"
 #include "arrow.h"
+#include "object2D.h"
 
 //--------------------------------
 //
@@ -21,6 +22,7 @@
 const float CNavi::ENABLE_ANGLE = cosf(D3DXToRadian(60.0f));                // 床って何度まで?
 const D3DXVECTOR3 CNavi::MARKER_OFFSET = D3DXVECTOR3(0.0f, -1000.0f, 0.0f); // ナビマーカーのオフセット位置
 const D3DXVECTOR2 CNavi::MARKER_SIZE = D3DXVECTOR2(60.0f, 60.0f);           // ナビマーカーのサイズ
+const D3DXVECTOR2 CNavi::POINTER_SIZE = D3DXVECTOR2(SCREEN_WIDTH*0.02f, SCREEN_WIDTH * 0.02f); // ポインターのサイズ
 
 //--------------------------------
 // 初期化処理
@@ -44,6 +46,9 @@ HRESULT CNavi::Init(void)
 
 	// ナビマーカーを初期化
 	m_pMarker = nullptr;
+
+	m_isController = false;
+	m_pPointer = nullptr;
 	return S_OK;
 }
 
@@ -52,7 +57,22 @@ HRESULT CNavi::Init(void)
 //--------------------------------
 void CNavi::Uninit(void)
 {
+	// オブジェクト
+	RemoveObject();
 
+	// ポインター
+	if (m_pPointer != nullptr)
+	{
+		m_pPointer->Uninit();
+		m_pPointer = nullptr;
+	}
+
+	// マーカー
+	if (m_pMarker != nullptr)
+	{
+		m_pMarker->Uninit();
+		m_pMarker = nullptr;
+	}
 }
 
 //--------------------------------
@@ -60,14 +80,8 @@ void CNavi::Uninit(void)
 //--------------------------------
 void CNavi::Update(void)
 {
-	// ウインドウのクライアント内でのマウス座標を取得
-	D3DXVECTOR2 mousePos = CManager::GetInputMouse()->GetPos();
-
-	// マウス座標をDirectXの画面座標に変換
-	mousePos = ConvertMouseToScreen(mousePos);
-
 	// レイを作成
-	CreateRay(mousePos);
+	CreateRay(SetScreenPos());
 
 	// 位置を更新
 	if (m_pMarker != nullptr)
@@ -75,16 +89,16 @@ void CNavi::Update(void)
 		m_pMarker->SetPos(m_pos + D3DXVECTOR3(0.0f, MARKER_HEIGHT, 0.0f));
 	}
 
-	if (CManager::GetInputKeyboard()->GetTrigger(DIK_Q) || CManager::GetInputMouse()->GetMouseState().lZ > 0)
+	if (CManager::GetInputKeyboard()->GetTrigger(DIK_Q) || CManager::GetInputMouse()->GetMouseState().lZ > 0 || CManager::GetInputJoypad()->GetTrigger(CInputJoypad::JOYKEY_L1))
 	{// Qキーでオブジェクトを変更
 		m_list = static_cast<LIST>((static_cast<unsigned char>(m_list) + static_cast<unsigned char>(LIST::Max) - 1) % static_cast<unsigned char>(LIST::Max));
 	}
-	else if (CManager::GetInputKeyboard()->GetTrigger(DIK_E) || CManager::GetInputMouse()->GetMouseState().lZ < 0)
+	else if (CManager::GetInputKeyboard()->GetTrigger(DIK_E) || CManager::GetInputMouse()->GetMouseState().lZ < 0 || CManager::GetInputJoypad()->GetTrigger(CInputJoypad::JOYKEY_R1))
 	{// Eキーでオブジェクトを変更
 		m_list = static_cast<LIST>((static_cast<unsigned char>(m_list) + 1) % static_cast<unsigned char>(LIST::Max));
 	}
 
-	if (m_pos.y > (MARKER_OFFSET.y + 1.0f) && CManager::GetInputMouse()->OnDown(0))
+	if (m_pos.y > (MARKER_OFFSET.y + 1.0f) && (CManager::GetInputMouse()->OnDown(0) || CManager::GetInputJoypad()->GetTrigger(CInputJoypad::JOYKEY_R2) || CManager::GetInputJoypad()->GetTrigger(CInputJoypad::JOYKEY_R3) || CManager::GetInputJoypad()->GetTrigger(CInputJoypad::JOYKEY_A)))
 	{// 左クリックしたとき
 		m_clickPos = m_pos; // クリックした位置を保存
 
@@ -118,6 +132,51 @@ void CNavi::Update(void)
 	}
 
 	m_aRayCastTarget.clear(); // レイキャスト対象オブジェクト配列をクリア
+}
+
+//--------------------------------
+// 2D上のナビゲーション座標を求める
+//--------------------------------
+D3DXVECTOR2 CNavi::SetScreenPos()
+{
+	D3DXVECTOR2 resultPos{ 0,0 };
+	// ウインドウのクライアント内でのマウス座標を取得
+	D3DXVECTOR2 mousePos = CManager::GetInputMouse()->GetPos();
+
+	// マウス座標をDirectXの画面座標に変換
+	resultPos = ConvertMouseToScreen(mousePos);
+
+	return resultPos;
+}
+
+//--------------------------------
+// Pointerを生成し表示
+//--------------------------------
+void CNavi::SetPointer(bool enable, D3DXVECTOR2 screenPos)
+{
+	if (enable)
+	{
+		if (m_pPointer == nullptr)
+		{
+			m_pPointer = CObject2D::Create(D3DXVECTOR3(screenPos.x, screenPos.y, 0.0f), VEC3_NULL, POINTER_SIZE);
+			if (FAILED(m_pPointer->Init()))
+			{
+				m_pPointer->Uninit();
+				m_pPointer = nullptr;
+				return;
+			}
+			m_pPointer->SetTexIndx(CTextureManager::Instance()->Register(POINTER_TEXTURE_PATH));
+		}
+		m_pPointer->SetPosition(D3DXVECTOR3(screenPos.x, screenPos.y, 0.0f));
+	}
+	else
+	{
+		if (m_pPointer != nullptr)
+		{
+			m_pPointer->Uninit();
+			m_pPointer = nullptr;
+		}
+	}
 }
 
 //--------------------------------

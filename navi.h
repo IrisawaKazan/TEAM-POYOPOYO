@@ -8,6 +8,7 @@
 
 class CNaviMarker;
 class CNaviObject;
+class CObject2D;
 //--------------------------------
 // ナビゲーションマーカーのクラス
 //--------------------------------
@@ -55,6 +56,8 @@ public:
 	void SetMarker(void);
 	void RemoveMarker(void) { m_pMarker = nullptr; }
 
+	void RemoveObject(void) { m_apObject.clear(); m_pNewObject = nullptr; }
+
 	const std::vector<CNaviObject*>& GetObjects(void) const { return m_apObject; }
 	LIST GetList(void) const { return m_list; }
 
@@ -67,9 +70,11 @@ public:
 	}
 
 private:
-	CNavi() : m_RayPos{ 0.0f,0.0f,0.0f }, m_RayDir{ 0.0f,0.0f,0.0f }, m_pos{ 0.0f,0.0f,0.0f }, m_clickPos{ 0.0f,0.0f,0.0f }, m_aRayCastTarget{}, m_pMarker{}, m_apObject{}, m_list{}, m_pNewObject{} {};
+	CNavi() : m_isController{}, m_pPointer{}, m_RayPos{ 0.0f,0.0f,0.0f }, m_RayDir{ 0.0f,0.0f,0.0f }, m_pos{ 0.0f,0.0f,0.0f }, m_clickPos{ 0.0f,0.0f,0.0f }, m_aRayCastTarget{}, m_pMarker{}, m_apObject{}, m_list{}, m_pNewObject{} {};
 	~CNavi() {};
 
+	D3DXVECTOR2 SetScreenPos();
+	void SetPointer(bool enable, D3DXVECTOR2 screenPos = VEC2_NULL);
 	D3DXVECTOR2 ConvertMouseToScreen(D3DXVECTOR2 mousePos);
 	void CreateRay(D3DXVECTOR2 mousePos);
 	D3DXVECTOR3 PlaneIntersect(float fHeight);
@@ -77,12 +82,17 @@ private:
 	bool CheckLatent(const LPD3DXMESH& pMesh, const D3DXMATRIX& mtxWorld, float lengthSq);
 	D3DXMATRIX CreateMatrixFromNormal(D3DXVECTOR3 nor);
 
-	static constexpr float MARKER_HEIGHT = 0.1f;                                       // 地面からマーカーをオフセットする高さ
-	static constexpr float OBJECT_HEIGHT = 0.05f;                                      // 地面からオブジェクトをオフセットする高さ
-	static constexpr const char* MARKER_TEXTURE_PATH = "data/TEXTURE/MagicCircle.png"; // マーカーのテクスチャパス
-	static const float ENABLE_ANGLE;                                                   // おけるオブジェクト角度の閾値(どこまでを床としますか?)
-	static const D3DXVECTOR3 MARKER_OFFSET;                                            // マーカーのオフセット位置
-	static const D3DXVECTOR2 MARKER_SIZE;                                              // マーカーのサイズ
+	static constexpr float MARKER_HEIGHT = 0.1f;                                          // 地面からマーカーをオフセットする高さ
+	static constexpr float OBJECT_HEIGHT = 0.05f;                                         // 地面からオブジェクトをオフセットする高さ
+	static constexpr const char* MARKER_TEXTURE_PATH = "data/TEXTURE/MagicCircle.png";    // マーカーのテクスチャパス
+	static constexpr const char* POINTER_TEXTURE_PATH = "data/TEXTURE/PointerMark000.png";// ポインターのテクスチャパス
+	static const float ENABLE_ANGLE;                                                      // おけるオブジェクト角度の閾値(どこまでを床としますか?)
+	static const D3DXVECTOR3 MARKER_OFFSET;                                               // マーカーのオフセット位置
+	static const D3DXVECTOR2 MARKER_SIZE;                                                 // マーカーのサイズ
+	static const D3DXVECTOR2 POINTER_SIZE;                                                // ポインターのサイズ
+
+	bool m_isController;   // コントローラー操作
+	CObject2D* m_pPointer; // コントローラー操作時のポインター
 
 	D3DXVECTOR3 m_RayPos; // レイの始点
 	D3DXVECTOR3 m_RayDir; // レイの方向

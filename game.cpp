@@ -159,8 +159,9 @@ void CGame::Update(void)
 //***************************************
 void CGame::Uninit(void)
 {
-	// ナビゲーションマーカーを破棄
+	// ナビゲーションのマーカーとオブジェクトを破棄
 	CNavi::GetInstance()->RemoveMarker();
+	CNavi::GetInstance()->RemoveObject();
 
 	// プレイヤーマネージャーの破棄
 	if (m_pPlayerManager != NULL)

@@ -382,17 +382,19 @@ void CCamera::UpdateKeyboardMoveSide(void)
 void CCamera::UpdateJoyPadMoveSide(void)
 {
 	// コントローラーの入力を取得
-	bool Left = m_pInputJoypad->GetPress(CInputJoypad::JOYKEY_LEFT);
-	bool Right = m_pInputJoypad->GetPress(CInputJoypad::JOYKEY_RIGET);
+	XINPUT_STATE* pState;
+	pState = m_pInputJoypad->GetJoyStickAngle();
+	bool Left = m_pInputJoypad->GetPress(CInputJoypad::JOYKEY_LEFT) || (m_pInputJoypad->GetJoyStickL() && pState->Gamepad.sThumbLX < 0);
+	bool Right = m_pInputJoypad->GetPress(CInputJoypad::JOYKEY_RIGET) || (m_pInputJoypad->GetJoyStickL() && pState->Gamepad.sThumbLX > 0);
 
 	// 左右に動かす
 	if (Left == true)
 	{
-		m_posRDest.x -= Config::MoveSpeedSide;
+		m_posRDest.x += Config::MoveSpeedSide;
 	}
 	if (Right == true)
 	{
-		m_posRDest.x += Config::MoveSpeedSide;
+		m_posRDest.x -= Config::MoveSpeedSide;
 	}
 
 	// Clampで範囲内に収める
