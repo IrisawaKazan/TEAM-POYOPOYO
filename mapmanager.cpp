@@ -26,19 +26,6 @@ using namespace std;
 //***************************************
 CMapManager::~CMapManager()
 {
-	// 剛体の削除
-	if (m_RigitBody)
-	{
-		CManager::GetDynamicsWorld()->removeRigidBody(m_RigitBody.get());
-		if (m_RigitBody->getMotionState())
-		{
-			delete m_RigitBody->getMotionState();
-		}
-		m_RigitBody.reset();
-	}
-
-	// 衝突形状の削除
-	m_CollisionShape.reset();
 	// クリア
 	m_vMapObject.clear();
 	m_vDoor.clear();
@@ -64,6 +51,19 @@ HRESULT CMapManager::Init(void)
 //***************************************
 void CMapManager::Uninit(void)
 {
+	// 剛体の削除
+	if (m_RigitBody)
+	{
+		CManager::GetDynamicsWorld()->removeRigidBody(m_RigitBody.get());
+		if (m_RigitBody->getMotionState())
+		{
+			delete m_RigitBody->getMotionState();
+		}
+		m_RigitBody.reset();
+	}
+
+	// 衝突形状の削除
+	m_CollisionShape.reset();
 }
 
 //***************************************

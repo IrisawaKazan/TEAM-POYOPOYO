@@ -176,6 +176,11 @@ void CGame::Uninit(void)
 		m_pPauseManager = NULL;
 	}
 
+	if (m_pMapManager != nullptr)
+	{
+		m_pMapManager->Uninit();
+	}
+
 	delete this;
 }
 
