@@ -14,13 +14,9 @@
 //***************************************
 CItem::CItem()
 {
-	m_type = ITEM_NOEN;							// アイテムの種類
-	m_pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);		// 位置
-	m_rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);		// 向き
-	m_fWidth = 0.0f;							// 横幅
-	m_fDepth = 0.0f;							// 奥行
-	m_scale = D3DXVECTOR3(1.0f, 1.0f, 1.0f);	// 拡大率
-	m_nModelIdx = 0;							// インデックス
+	m_type = ITEM_NOEN;		// アイテムの種類
+	m_size = VEC3_NULL;		// サイズ
+	m_RBOffset = VEC3_NULL;	// リジットボディのオフセット
 }
 
 //***************************************
@@ -38,84 +34,60 @@ HRESULT CItem::Init(void)
 	// オブジェクトXの初期化処理
 	CObjectX::Init();
 
-	// モデルマネージャーのポインタ
-	CModelManager* pModelManager;
+	// メモリ確保OBBの大きさを設定
+	m_CollisionShape = std::make_unique<btBoxShape>(btVector3(m_size.x * GetScale().x, m_size.y * GetScale().y, m_size.z * GetScale().z));
 
-	// インスタンス生成
-	pModelManager = CModelManager::Instance();
+	// 質量
+	btScalar mass = 0.0f;
 
-	// モデルの詳細情報
-	CModelManager::ModelInfo ModelInfo = pModelManager->GetAddress(m_nModelIdx);
+	// 慣性モーメントの計算用変数
+	btVector3 inertia(0, 0, 0);
 
-	// メッシュ情報
-	LPD3DXMESH pMesh = ModelInfo.pMesh;
+	// 計算
+	m_CollisionShape->calculateLocalInertia(mass, inertia);
 
-	// ローカル変数
-	int nNumVtx;				// 頂点の総数
-	DWORD sizeFVF;				// 頂点のサイズ
-	BYTE* pVtxBuff;				// 頂点のポインタ
-	D3DXVECTOR3 max, min;		// 頂点の最大値と最小値
-	D3DXVECTOR3 Vtx;			// 頂点座標
+	// 最終的な計算結果、位置、位置からのオフセット
+	btTransform transform, Origin, Offset;
 
-	// 最大値と最小値の初期化
-	max = VEC3_NULL;
-	min = VEC3_NULL;
+	// 初期化
+	transform.setIdentity();
+	Origin.setIdentity();
+	Offset.setIdentity();
 
-	// 頂点の最大数を取得
-	nNumVtx = pMesh->GetNumVertices();
+	// 向き
+	btQuaternion rotation;
 
-	// 頂点のサイズを取得
-	sizeFVF = D3DXGetFVFVertexSize(pMesh->GetFVF());
+	// 代入
+	rotation = CMath::ConvertQuat(GetQuad());
 
-	// 頂点バッファをロック
-	pMesh->LockVertexBuffer(D3DLOCK_READONLY, (void**)&pVtxBuff);
+	// 位置と向きを設定
+	Origin.setRotation(rotation);
+	Origin.setOrigin(btVector3(GetPosition().x, GetPosition().y, GetPosition().z));
 
-	// 頂点の数だけ回す
-	for (int nCount = 0; nCount < nNumVtx; nCount++)
-	{
-		// 頂点座標を代入する
-		Vtx = *(D3DXVECTOR3*)pVtxBuff;
+	// オフセットを設定
+	Offset.setOrigin(btVector3(m_RBOffset.x, m_RBOffset.y, m_RBOffset.z));
 
-		// ***  頂点座標（X軸）の比較  ***
+	// 合成
+	transform.mult(Origin, Offset);
 
-		if (Vtx.x > max.x)
-		{// 最大値より大きい場合
-			// 最大値に現在の値を代入する
-			max.x = Vtx.x;
-		}
+	// 位置と向きを管理するモーションを生成
+	btDefaultMotionState* motionState = new btDefaultMotionState(transform);
+	btRigidBody::btRigidBodyConstructionInfo info(mass, motionState, m_CollisionShape.get());
 
-		if (Vtx.x < min.x)
-		{// 最大値より小さい場合
-			// 最小値に現在の値を代入する
-			min.x = Vtx.x;
-		}
+	// 生成
+	m_RigitBody = std::make_unique<btRigidBody>(info);
 
+	// 移動制限を設定
+	m_RigitBody->setLinearFactor(btVector3(1, 1, 1));
 
-		// ***  頂点座標（Z軸）の比較  ***
+	// 物理ボディーに自分自身を紐付け
+	m_RigitBody->setUserPointer(this);
 
-		// 最大値より大きい場合
-		if (Vtx.z > max.z)
-		{
-			// 最大値に現在の値を代入する
-			max.z = Vtx.z;
-		}
+	// 動的オブジェクトか静的オブジェクトか
+	m_RigitBody->setActivationState(DISABLE_DEACTIVATION);
 
-		if (Vtx.z < min.z)
-		{// 最大値より小さい場合
-			// 最小値に現在の値を代入する
-			min.z = Vtx.z;
-		}
-
-		// 頂点のサイズ分進める
-		pVtxBuff += sizeFVF;
-	}
-
-	// XとZの最大値を代入
-	m_fWidth = max.x;	// 横幅に代入
-	m_fDepth = max.z;	// 奥行に代入
-
-	// 頂点バッファをアンロック
-	pMesh->UnlockVertexBuffer();
+	// 物理世界に物理ボディーを追加
+	CManager::GetDynamicsWorld()->addRigidBody(m_RigitBody.get());
 
 	return S_OK;
 }
@@ -188,49 +160,12 @@ CItem* CItem::Create(const ITEM type, const D3DXVECTOR3 pos, const D3DXVECTOR3 r
 	pItem->SetScale(scale);		// 拡大率
 	pItem->SetIdx(FileName);	// モデルのファイル名
 
-	// 引数の値をそれぞれのメンバ変数に代入する
-	pItem->m_type = type;					// アイテムの種類
-	pItem->m_pos = pos;						// 位置
-	pItem->m_rot = rot;						// 向き
-	pItem->m_scale = scale;					// 拡大率
-	pItem->m_nModelIdx = pItem->GetIndx();	// インデックス
+	// メンバ変数に代入する
+	pItem->m_type = type;
 
 	// 初期化処理
 	pItem->Init();
 
 	// ポインタを返す
 	return pItem;
-}
-
-//***************************************
-// 当たり判定処理
-//***************************************
-bool CItem::CollisionItem(const D3DXVECTOR3 pos, const float fWidth, const float fDepth)
-{
-	// 対象の当たり判定
-	float SubjectXL = pos.x - fWidth;	// X軸での左側の当たり判定
-	float SubjectXR = pos.x + fWidth;	// X軸での右側の当たり判定
-	float SubjectZF = pos.z - fDepth;	// Z軸での手前側の当たり判定
-	float SubjectZB = pos.z + fDepth;	// Z軸での奥側の当たり判定
-
-	// アイテムの当たり判定
-	float ItemXL = m_pos.x - m_fWidth;	// X軸での左側の当たり判定
-	float ItemXR = m_pos.x + m_fWidth;	// X軸での右側の当たり判定
-	float ItemZF = m_pos.z - m_fDepth;	// Z軸での手前側の当たり判定
-	float ItemZB = m_pos.z + m_fDepth;	// Z軸での奥側の当たり判定
-
-	// X軸での当たり判定
-	if (SubjectXR <= ItemXL || SubjectXL >= ItemXR)
-	{// 当たってない場合
-		return false;
-	}
-
-	// Z軸での当たり判定
-	if (SubjectZB <= ItemZF || SubjectZF >= ItemZB)
-	{// 当たってない場合
-		return false;
-	}
-
-	// 当たっていると判定する
-	return true;
 }
