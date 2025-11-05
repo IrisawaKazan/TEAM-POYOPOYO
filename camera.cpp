@@ -382,8 +382,8 @@ void CCamera::UpdateKeyboardMoveSide(void)
 void CCamera::UpdateJoyPadMoveSide(void)
 {
 	// コントローラーの入力を取得
-	bool Left = m_pInputJoypad->GetPress(CInputJoypad::JOYKEY_L2);
-	bool Right = m_pInputJoypad->GetPress(CInputJoypad::JOYKEY_R2);
+	bool Left = m_pInputJoypad->GetPress(CInputJoypad::JOYKEY_LEFT);
+	bool Right = m_pInputJoypad->GetPress(CInputJoypad::JOYKEY_RIGET);
 
 	// 左右に動かす
 	if (Left == true)

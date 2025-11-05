@@ -179,15 +179,17 @@ void CPlayer::Update(void)
 		D3DXVECTOR3 pos = GetPos();
 		D3DXVECTOR3 space = m_turnPos - pos;
 		if (D3DXVec3Length(&space) <= TURN_RADIUS)
-		{// ターン位置に来たら
-			// ターン
-			SetRotDest(D3DXVECTOR3(0.0f, m_turnAngle, 0.0f));
-			SetRot(D3DXVECTOR3(0.0f, m_turnAngle, 0.0f));
-			
-			// 元に戻す
-			m_turnPos = { 0.0f,-1000.0f,0.0f };
-			m_turnAngle = 0.0f;
-			m_state = STATE::NORMAL;
+		{// ターン位置に来たらまたは、もう過ぎていたら)
+			Turn();
+		}
+		else
+		{
+			D3DXVec3Normalize(&space, &space);
+			D3DXVECTOR3 movevec = D3DXVECTOR3(moveDir.normalize());
+			if (D3DXVec3Dot(&space, &movevec) < 0.0f)
+			{// もう後ろの場合ターン
+				Turn();
+			}
 		}
 		break;
 	}
@@ -232,4 +234,17 @@ CPlayer* CPlayer::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 	{
 		return nullptr;
 	}
+}
+
+// ターン
+void CPlayer::Turn()
+{
+	// ターン
+	SetRotDest(D3DXVECTOR3(0.0f, m_turnAngle, 0.0f));
+	SetRot(D3DXVECTOR3(0.0f, m_turnAngle, 0.0f));
+
+	// 元に戻す
+	m_turnPos = { 0.0f,-1000.0f,0.0f };
+	m_turnAngle = 0.0f;
+	m_state = STATE::NORMAL;
 }

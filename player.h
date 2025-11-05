@@ -39,7 +39,9 @@ public:
 	static CPlayer* Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot);
 
 private:
-	static constexpr float TURN_RADIUS = 5.0f; // ターンの中心軸からのずれの許容範囲
+	void Turn();
+
+	static constexpr float TURN_RADIUS = 10.0f; // ターンの中心軸からのずれの許容範囲
 
 	std::unique_ptr<btCollisionShape> m_CollisionShape;
 	std::unique_ptr<btRigidBody> m_RigitBody;		// リジットボディー
