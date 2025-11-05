@@ -77,7 +77,8 @@ private:
 	bool CheckLatent(const LPD3DXMESH& pMesh, const D3DXMATRIX& mtxWorld, float lengthSq);
 	D3DXMATRIX CreateMatrixFromNormal(D3DXVECTOR3 nor);
 
-	static constexpr float HEIGHT = 0.05f;                                             // 地面の高さ
+	static constexpr float MARKER_HEIGHT = 0.1f;                                       // 地面からマーカーをオフセットする高さ
+	static constexpr float OBJECT_HEIGHT = 0.05f;                                      // 地面からオブジェクトをオフセットする高さ
 	static constexpr const char* MARKER_TEXTURE_PATH = "data/TEXTURE/MagicCircle.png"; // マーカーのテクスチャパス
 	static const float ENABLE_ANGLE;                                                   // おけるオブジェクト角度の閾値(どこまでを床としますか?)
 	static const D3DXVECTOR3 MARKER_OFFSET;                                            // マーカーのオフセット位置

@@ -90,7 +90,6 @@ HRESULT CNaviMarker::Init(void)
 
 	m_pos = { 0,0,0 };
 	D3DXMatrixIdentity(&m_mtxRot);
-	m_nBiasID = 0;
 	return S_OK;
 }
 
@@ -128,11 +127,6 @@ void CNaviMarker::Draw(void)
 	pDevice->SetRenderState(D3DRS_ALPHAREF, 1);
 	pDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
 
-	// Depth Bias 設定 sato
-	float depthBias = -0.000001f;                                  //Zバッファをカメラ方向にオフセットする値
-	depthBias *= m_nBiasID;                                        // バイアスID分だけオフセット
-	pDevice->SetRenderState(D3DRS_DEPTHBIAS, *(DWORD*)&depthBias); //Zバイアス設定
-
 	//計算用マトリックス
 	D3DXMATRIX mtxWorld, mtxTrans;
 
@@ -160,10 +154,6 @@ void CNaviMarker::Draw(void)
 
 	// ポリゴンの描画
 	pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
-
-	// Depth Bias 設定を解除
-	float resetBias = 0.0f;
-	pDevice->SetRenderState(D3DRS_DEPTHBIAS, *(DWORD*)&resetBias);
 
 	// アルファテストを無効に戻す
 	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);

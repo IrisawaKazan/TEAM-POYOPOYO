@@ -12,6 +12,14 @@
 // インクルード
 #include "main.h"
 
+// 衝突フィルターグループ sato Add
+enum class CollisionFilterGroups : short
+{
+	COL_NOTHING = 0,      // 衝突しない
+	COL_PLAYER = 1 << 1,  // プレイヤー
+	COL_TRIGGER = 1 << 2  // トリガー
+};
+
 // クラス宣言
 class CObject
 {

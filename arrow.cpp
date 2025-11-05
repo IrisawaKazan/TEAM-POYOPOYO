@@ -18,7 +18,7 @@
 //--------------------------------
 // 生成
 //--------------------------------
-CArrow* CArrow::Create(D3DXVECTOR3 pos, D3DXMATRIX rotMtx, float angle, const char* filePath, D3DXVECTOR2 size, size_t idx)
+CArrow* CArrow::Create(D3DXVECTOR3 pos, D3DXMATRIX rotMtx, float angle, const char* filePath, D3DXVECTOR2 size)
 {
 	// インスタンスの生成
 	CArrow* pArrow = new CArrow;
@@ -35,7 +35,6 @@ CArrow* CArrow::Create(D3DXVECTOR3 pos, D3DXMATRIX rotMtx, float angle, const ch
 	pArrow->SetAngle(angle);
 	pArrow->SetLength(D3DXVec2Length(&size));
 	pArrow->SetChengeLength(D3DXVec2Length(&size) * CHENGE_LENGTH_MAGNIFICATION);
-	pArrow->SetBiasIdx(idx);
 
 	// 初期化
 	if (FAILED(pArrow->Init()))
@@ -84,10 +83,14 @@ void CArrow::Draw(void)
 //--------------------------------
 // ナビゲーションアクション
 //--------------------------------
-void CArrow::Activate(float* angle) const
+void CArrow::Activate(D3DXVECTOR3* outPos, float* outAngle) const
 {
-	if (angle != nullptr)
+	if (outPos != nullptr)
 	{// nullでなければ
-		*angle = GetAngle(); // 角度を渡す
+		*outPos = GetPos(); // 角度を渡す
+	}
+	if (outAngle != nullptr)
+	{// nullでなければ
+		*outAngle = GetAngle(); // 角度を渡す
 	}
 }

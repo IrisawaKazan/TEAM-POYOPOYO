@@ -72,7 +72,7 @@ void CNavi::Update(void)
 	// 位置を更新
 	if (m_pMarker != nullptr)
 	{
-		m_pMarker->SetPos(m_pos);
+		m_pMarker->SetPos(m_pos + D3DXVECTOR3(0.0f, MARKER_HEIGHT, 0.0f));
 	}
 
 	if (CManager::GetInputKeyboard()->GetTrigger(DIK_Q) || CManager::GetInputMouse()->GetMouseState().lZ > 0)
@@ -93,19 +93,19 @@ void CNavi::Update(void)
 		{
 		case CNavi::LIST::RightArrow:
 			// 矢印を作成
-			m_apObject.push_back(CArrow::Create(m_clickPos, m_pMarker->GetRotMtx(), D3DXToRadian(90.0f), "data/TEXTURE/UI/ArrowMark001.png", m_pMarker->GetSize(), m_apObject.size()));
+			m_apObject.push_back(CArrow::Create(m_clickPos + D3DXVECTOR3(0.0f, OBJECT_HEIGHT, 0.0f), m_pMarker->GetRotMtx(), D3DXToRadian(90.0f), "data/TEXTURE/UI/ArrowMark001.png", m_pMarker->GetSize()));
 			break;
 		case CNavi::LIST::FrontArrow:
 			// 矢印を作成
-			m_apObject.push_back(CArrow::Create(m_clickPos, m_pMarker->GetRotMtx(), D3DXToRadian(180.0f), "data/TEXTURE/UI/ArrowMark001.png", m_pMarker->GetSize(), m_apObject.size()));
+			m_apObject.push_back(CArrow::Create(m_clickPos + D3DXVECTOR3(0.0f, OBJECT_HEIGHT, 0.0f), m_pMarker->GetRotMtx(), D3DXToRadian(180.0f), "data/TEXTURE/UI/ArrowMark001.png", m_pMarker->GetSize()));
 			break;
 		case CNavi::LIST::LeftArrow:
 			// 矢印を作成
-			m_apObject.push_back(CArrow::Create(m_clickPos, m_pMarker->GetRotMtx(), D3DXToRadian(-90.0f), "data/TEXTURE/UI/ArrowMark001.png", m_pMarker->GetSize(), m_apObject.size()));
+			m_apObject.push_back(CArrow::Create(m_clickPos + D3DXVECTOR3(0.0f, OBJECT_HEIGHT, 0.0f), m_pMarker->GetRotMtx(), D3DXToRadian(-90.0f), "data/TEXTURE/UI/ArrowMark001.png", m_pMarker->GetSize()));
 			break;
 		case CNavi::LIST::BackArrow:
 			// 矢印を作成
-			m_apObject.push_back(CArrow::Create(m_clickPos, m_pMarker->GetRotMtx(), D3DXToRadian(0.0f), "data/TEXTURE/UI/ArrowMark001.png", m_pMarker->GetSize(), m_apObject.size()));
+			m_apObject.push_back(CArrow::Create(m_clickPos + D3DXVECTOR3(0.0f, OBJECT_HEIGHT, 0.0f), m_pMarker->GetRotMtx(), D3DXToRadian(0.0f), "data/TEXTURE/UI/ArrowMark001.png", m_pMarker->GetSize()));
 			break;
 		//case CNavi::LIST::Climb:
 		//	break;
@@ -261,8 +261,7 @@ void CNavi::CalculateIntersection(void)
 	}
 
 	// 最終的に最も近かった座標を登録
-	closestHitPos.y += HEIGHT;    // 少し上にオフセット
-	m_pos = closestHitPos;        // 位置
+	m_pos = closestHitPos;            // 位置
 	if (m_pMarker != nullptr)
 	{
 		m_pMarker->SetRotMtx(mtxRot); // 角度
@@ -552,15 +551,5 @@ void CNavi::HitCheckObject()
 		}
 	} while (isRepeat);
 
-	for (size_t cntArrow = 0; cntArrow < m_apObject.size(); cntArrow++)
-	{// バイアスインデックス再設定
-		m_apObject[cntArrow]->SetBiasIdx(cntArrow);
-	}
-
 	m_apObject.shrink_to_fit(); // メモリの無駄を削減
-
-	if (m_pMarker != nullptr)
-	{
-		m_pMarker->SetBiasID(m_apObject.size()); // マーカーのバイアスIDを更新
-	}
 }

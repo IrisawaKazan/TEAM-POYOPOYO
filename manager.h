@@ -97,5 +97,7 @@ private:
 	std::unique_ptr<btDefaultCollisionConfiguration> m_pConfiguration;	// 衝突判定を実行するクラス
 	std::unique_ptr<btSequentialImpulseConstraintSolver> m_pSolver;		// 制約ソルバー
 	std::unique_ptr<btCollisionDispatcher> m_pDispatcher;				// 衝突判定を検出するクラス
+
+	std::unique_ptr<btGhostPairCallback> m_pGhostPairCallback; // TriggerとCollisionの完全な分離 sato Add
 };
 #endif // !_MANAGER_H_

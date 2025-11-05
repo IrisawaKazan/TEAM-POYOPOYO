@@ -14,7 +14,7 @@
 class CNaviMarker : public CObject
 {
 public:
-	CNaviMarker() : CObject(4), m_nBiasID{}, m_pVertex{}, m_texIdx{}, m_pos{}, m_mtxRot{}, m_size{} {};
+	CNaviMarker() : CObject(4), m_pVertex{}, m_texIdx{}, m_pos{}, m_mtxRot{}, m_size{} {};
 	~CNaviMarker() {};
 	static CNaviMarker* Create(const char* filePath, D3DXVECTOR2 size);
 
@@ -23,7 +23,6 @@ public:
 	void Update(void) override;
 	void Draw(void) override;
 
-	void SetBiasID(const size_t biasID) { m_nBiasID = biasID; }
 	void SetTexIdx(int texIdx) { m_texIdx = texIdx; }
 	void SetPos(D3DXVECTOR3 pos) { m_pos = pos; }
 	void SetRotMtx(const D3DXMATRIX& mtxRot) { m_mtxRot = mtxRot; }
@@ -33,7 +32,6 @@ public:
 	D3DXMATRIX GetRotMtx(void) { return m_mtxRot; }
 
 private:
-	size_t m_nBiasID;                  // バイアスID
 	LPDIRECT3DVERTEXBUFFER9 m_pVertex; // 頂点
 	int m_texIdx;                      // テクスチャ番号
 	D3DXVECTOR3 m_pos;                 // 座標

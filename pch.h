@@ -29,6 +29,7 @@
 #include "string.h"
 #include "stdlib.h"
 #include <bullet/btBulletDynamicsCommon.h>
+#include <bullet/BulletCollision/CollisionDispatch/btGhostObject.h>
 #include "json.hpp"
 #include "math.h"
 #include "math_T.h"

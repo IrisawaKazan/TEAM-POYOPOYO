@@ -142,8 +142,12 @@
     <ClCompile Include="switch.cpp">
       <Filter>ソース</Filter>
     </ClCompile>
-    <ClCompile Include="mapmanager.cpp" />
-    <ClCompile Include="math.cpp" />
+    <ClCompile Include="mapmanager.cpp">
+      <Filter>ソース</Filter>
+    </ClCompile>
+    <ClCompile Include="math.cpp">
+      <Filter>ヘッダー</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="arrow.h">
@@ -293,10 +297,18 @@
     <ClInclude Include="switch.h">
       <Filter>ヘッダー</Filter>
     </ClInclude>
-    <ClInclude Include="mapmanager.h" />
-    <ClInclude Include="json.hpp" />
-    <ClInclude Include="math.h" />
-    <ClInclude Include="abstractblock.h" />
+    <ClInclude Include="abstractblock.h">
+      <Filter>ヘッダー</Filter>
+    </ClInclude>
+    <ClInclude Include="json.hpp">
+      <Filter>ヘッダー</Filter>
+    </ClInclude>
+    <ClInclude Include="mapmanager.h">
+      <Filter>ヘッダー</Filter>
+    </ClInclude>
+    <ClInclude Include="math.h">
+      <Filter>ヘッダー</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ソース">

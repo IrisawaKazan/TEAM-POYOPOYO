@@ -56,6 +56,10 @@ HRESULT CPlayer::Init(void)
 	m_naviObjectCountMap = std::unordered_map<size_t, unsigned short>();
 	m_naviObjectIdxListOld = std::vector<size_t>();
 
+	m_state = STATE::NORMAL;            // 通常
+	m_turnPos = { 0.0f,-1000.0f,0.0f }; // 初期値
+	m_turnAngle = 0.0f;                 // 初期値
+
 	return S_OK;
 }
 
@@ -96,18 +100,25 @@ void CPlayer::Update(void)
 	std::vector<CNaviObject*> pObjects = CNavi::GetInstance()->GetObjects();
 	for (const CNaviObject* pObject : pObjects)
 	{
-		D3DXVECTOR3 pos = GetPos();
-		D3DXVECTOR3 rot = GetRot();
-
+		D3DXVECTOR3 pos{};
+		float angle{};
 		size_t idx = 0;
-		CNavi::TYPE naviType = pObject->ActivateTrigger(m_RigitBody.get(), &rot.y, &idx);
+		CNavi::TYPE naviType = pObject->ActivateTrigger(m_RigitBody.get(), &pos, &angle, &idx);
 
 		// 触れたナビゲーションタイプによって処理を分岐
 		switch (naviType)
 		{
 		case CNavi::TYPE::Arrow:
-			SetRotDest(rot);
-			SetRot(rot);
+			// Playerの位置と方向
+			D3DXVECTOR3 myPos = GetPos();
+
+			// 矢印の位置と方向
+			D3DXVECTOR3 objectPos = pos;                                       // 矢印の中心座標
+			D3DXVECTOR3 objectDir = D3DXVECTOR3(sinf(angle),0.0f,cosf(angle)); // 矢印の向き
+
+			m_turnPos = CMath::GetNierToLineXZ(myPos, objectPos, objectDir); // 矢印のベクトル上の近い地点
+			m_turnAngle = angle;   // ターン方向
+			m_state = STATE::TURN; // ターン開始
 			break;
 		//case CNavi::TYPE::Climb:
 		//	break;
@@ -156,6 +167,30 @@ void CPlayer::Update(void)
 	newPos = trans.getOrigin();
 	//newPos.setY(0.0f);
 	SetPos(D3DXVECTOR3(newPos.x(), newPos.y(), newPos.z()));
+
+	// 状態処理
+	switch (m_state)
+	{
+		// 通常
+	case CPlayer::STATE::NORMAL:
+		break;
+		// ターン
+	case CPlayer::STATE::TURN:
+		D3DXVECTOR3 pos = GetPos();
+		D3DXVECTOR3 space = m_turnPos - pos;
+		if (D3DXVec3Length(&space) <= TURN_RADIUS)
+		{// ターン位置に来たら
+			// ターン
+			SetRotDest(D3DXVECTOR3(0.0f, m_turnAngle, 0.0f));
+			SetRot(D3DXVECTOR3(0.0f, m_turnAngle, 0.0f));
+			
+			// 元に戻す
+			m_turnPos = { 0.0f,-1000.0f,0.0f };
+			m_turnAngle = 0.0f;
+			m_state = STATE::NORMAL;
+		}
+		break;
+	}
 
 	CModelCharacter::Update();
 }

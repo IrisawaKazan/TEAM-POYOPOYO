@@ -26,6 +26,10 @@ public:
 	static float ConvertFloat(float Value, int Format = 2);
 	static btQuaternion ConvertQuat(D3DXQUATERNION Set);
 	static D3DXQUATERNION ConvertQuat(btQuaternion Set);
+
+	static bool CalculateXZIntersection(D3DXVECTOR3& outIntersection, const D3DXVECTOR3& line1_pos, const D3DXVECTOR3& line1_dir, const D3DXVECTOR3& line2_pos, const D3DXVECTOR3& line2_dir); // sato Add
+	static float GetDistanceToLineXZ(const D3DXVECTOR3& point, const D3DXVECTOR3& linePos, const D3DXVECTOR3& lineDir);                                                                        // sato Add
+	static D3DXVECTOR3 GetNierToLineXZ(const D3DXVECTOR3& point, const D3DXVECTOR3& linePos, const D3DXVECTOR3& lineDir);                                                                      // sato Add
 private:
 	// コンストラクタ・デストラクタ
 	CMath();

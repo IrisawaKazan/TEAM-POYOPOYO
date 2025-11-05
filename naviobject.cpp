@@ -76,10 +76,25 @@ HRESULT CNaviObject::Init(void)
 //--------------------------------
 void CNaviObject::Uninit(void)
 {
-	if (m_pVertex != NULL)
+	// ワールドへのポインタを取得
+	btDynamicsWorld* world = CManager::GetDynamicsWorld();
+
+	// オブジェクトがワールドに登録されている場合、削除
+	if (m_triggerObject != nullptr)
+	{
+		world->removeCollisionObject(m_triggerObject.get());
+		m_triggerObject.reset();
+	}
+	if (m_releaseObject != nullptr)
+	{
+		world->removeCollisionObject(m_releaseObject.get());
+		m_releaseObject.reset();
+	}
+
+	if (m_pVertex != nullptr)
 	{
 		m_pVertex->Release();
-		m_pVertex = NULL;
+		m_pVertex = nullptr;
 	}
 	// メモリの開放
 	Release();
@@ -90,17 +105,31 @@ void CNaviObject::Uninit(void)
 //--------------------------------
 void CNaviObject::Update(void)
 {
-	// ワールドへのポインタを取得
-	btDynamicsWorld* world = CManager::GetDynamicsWorld();
+	// 座標と回転
+	btVector3 bulletPos(m_pos.x, m_pos.y, m_pos.z);
 
-	// オブジェクトがワールドに登録されている場合、削除
-	if (m_triggerObject)
+	// Bullet用の3x3行列（Basis）を作成
+	btMatrix3x3 bulletBasis;
+	bulletBasis.setValue(
+		m_mtxRot._11, m_mtxRot._12, m_mtxRot._13,
+		m_mtxRot._21, m_mtxRot._22, m_mtxRot._23,
+		m_mtxRot._31, m_mtxRot._32, m_mtxRot._33
+	);
+
+	// トランスフォームを作成
+	btTransform triggerTransform;
+	triggerTransform.setIdentity();
+	triggerTransform.setOrigin(bulletPos);
+	triggerTransform.setBasis(bulletBasis);
+
+	// 円柱にトランスフォームを設定
+	if (m_triggerObject != nullptr)
 	{
-		world->removeCollisionObject(m_triggerObject.get());
+		m_triggerObject->setWorldTransform(triggerTransform);
 	}
-	if (m_releaseObject)
+	if (m_releaseObject != nullptr)
 	{
-		world->removeCollisionObject(m_releaseObject.get());
+		m_releaseObject->setWorldTransform(triggerTransform);
 	}
 }
 
@@ -115,11 +144,6 @@ void CNaviObject::Draw(void)
 	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
 	pDevice->SetRenderState(D3DRS_ALPHAREF, 1);
 	pDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
-
-	// Depth Bias 設定 sato
-	float depthBias = -0.000001f;                                  //Zバッファをカメラ方向にオフセットする値
-	depthBias *= m_biasIdx;                                        // バイアスID分だけオフセット
-	pDevice->SetRenderState(D3DRS_DEPTHBIAS, *(DWORD*)&depthBias); //Zバイアス設定
 
 	// 計算用マトリックス
 	D3DXMATRIX mtxWorld, mtxTrans;
@@ -153,10 +177,6 @@ void CNaviObject::Draw(void)
 	// ポリゴンの描画
 	pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
 
-	// Depth Bias 設定を解除 sato
-	float resetBias = 0.0f;
-	pDevice->SetRenderState(D3DRS_DEPTHBIAS, *(DWORD*)&resetBias);
-
 	// アルファテストを無効に戻す
 	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
 }
@@ -164,37 +184,29 @@ void CNaviObject::Draw(void)
 //--------------------------------
 // 触れたら起動する
 //--------------------------------
-CNavi::TYPE CNaviObject::ActivateTrigger(const btCollisionObject* const& collisionObject, float* pAngle, size_t* pIdx) const
+CNavi::TYPE CNaviObject::ActivateTrigger(const btCollisionObject* const& collisionObject, D3DXVECTOR3* outPos, float* outAngle, size_t* outIdx) const
 {
-	// 何組が衝突しているか
-	int numManifolds = CManager::GetDynamicsWorld()->getDispatcher()->getNumManifolds();
+	// ゴーストオブジェクトと重なっているオブジェクトの数を取得
+	int numOverlapping = m_triggerObject->getNumOverlappingObjects();
 
-	// 衝突回数分繰り返し
-	for (int nCnt = 0; nCnt < numManifolds; nCnt++)
+	// オブジェクトをループ処理
+	for (int cntObject = 0; cntObject < numOverlapping; cntObject++)
 	{
-		// 衝突しているペアを取得
-		btPersistentManifold* manifold = CManager::GetDynamicsWorld()->getDispatcher()->getManifoldByIndexInternal(nCnt);
+		// 重なっている相手のオブジェクトを取得
+		btCollisionObject* otherObject = m_triggerObject->getOverlappingObject(cntObject);
 
-		// 衝突していたら
-		if (manifold->getNumContacts() <= 0) continue;
-
-		// 衝突オブジェクト１、２を取得
-		const btCollisionObject* objA = manifold->getBody0();
-		const btCollisionObject* objB = manifold->getBody1();
-
-		// プレイヤーとスイッチが当たっていたら
-		if ((objA == m_triggerObject.get() && objB == collisionObject) || (objA == collisionObject && objB == m_triggerObject.get()))
-		{
-			Activate(pAngle);
-			if (pIdx != nullptr)
+		if (collisionObject == otherObject)
+		{// 呼び出し元の特定
+			Activate(outPos, outAngle); // 固有処理
+			if (outIdx != nullptr)
 			{
-				*pIdx = m_idx;
+				*outIdx = m_idx; //自身の番号を渡す
 			}
 			return m_type;
 		}
 	}
 
-	return CNavi::TYPE::None;
+	return CNavi::TYPE::None;	// 衝突していいない
 }
 
 //--------------------------------
@@ -202,24 +214,16 @@ CNavi::TYPE CNaviObject::ActivateTrigger(const btCollisionObject* const& collisi
 //--------------------------------
 bool CNaviObject::ReleaseTrigger(const btCollisionObject* const& collisionObject) const
 {
-	// 何組が衝突しているか
-	int numManifolds = CManager::GetDynamicsWorld()->getDispatcher()->getNumManifolds();
+	// ゴーストオブジェクトと重なっているオブジェクトの数を取得
+	int numOverlapping = m_releaseObject->getNumOverlappingObjects();
 
-	// 衝突回数分繰り返し
-	for (int nCnt = 0; nCnt < numManifolds; nCnt++)
+	// 重なっているオブジェクトをループ処理
+	for (int i = 0; i < numOverlapping; i++)
 	{
-		// 衝突しているペアを取得
-		btPersistentManifold* manifold = CManager::GetDynamicsWorld()->getDispatcher()->getManifoldByIndexInternal(nCnt);
-
-		// 衝突していたら
-		if (manifold->getNumContacts() <= 0) continue;
-
-		// 衝突オブジェクト１、２を取得
-		const btCollisionObject* objA = manifold->getBody0();
-		const btCollisionObject* objB = manifold->getBody1();
-
-		// プレイヤーとスイッチが当たっていたら
-		if ((objA == m_releaseObject.get() && objB == collisionObject) || (objA == collisionObject && objB == m_releaseObject.get()))
+		// 重なっている相手のオブジェクトを取得
+		btCollisionObject* otherObject = m_releaseObject->getOverlappingObject(i);
+		
+		if (collisionObject == otherObject)
 		{
 			return true;
 		}
@@ -239,7 +243,7 @@ void CNaviObject::SetTriggerObject()
 	btVector3 cylinderHalfExtents(radius, halfHeight, radius);
 	m_triggerShape = std::make_unique<btCylinderShape>(cylinderHalfExtents);
 
-	m_triggerObject = std::make_unique<btCollisionObject>();
+	m_triggerObject = std::make_unique<btGhostObject>();
 	m_triggerObject->setCollisionShape(m_triggerShape.get());
 
 	// 座標と回転
@@ -266,7 +270,7 @@ void CNaviObject::SetTriggerObject()
 	m_triggerObject->setCollisionFlags(m_triggerObject->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE);
 
 	// 追加
-	CManager::GetDynamicsWorld()->addCollisionObject(m_triggerObject.get());
+	CManager::GetDynamicsWorld()->addCollisionObject(m_triggerObject.get(), short(CollisionFilterGroups::COL_TRIGGER), btBroadphaseProxy::DefaultFilter);
 }
 
 //--------------------------------
@@ -280,7 +284,7 @@ void CNaviObject::SetReleaseObject()
 	btVector3 cylinderHalfExtents(radius, halfHeight, radius);
 	m_releaseShape = std::make_unique<btCylinderShape>(cylinderHalfExtents);
 
-	m_releaseObject = std::make_unique<btCollisionObject>();
+	m_releaseObject = std::make_unique<btGhostObject>();
 	m_releaseObject->setCollisionShape(m_releaseShape.get());
 
 	// 座標と回転
@@ -303,6 +307,9 @@ void CNaviObject::SetReleaseObject()
 	// 円柱にトランスフォームを設定
 	m_releaseObject->setWorldTransform(triggerTransform);
 
+	// isTrigger(押し返し無し)
+	m_releaseObject->setCollisionFlags(m_releaseObject->getCollisionFlags() | btCollisionObject::CF_NO_CONTACT_RESPONSE);
+
 	// 追加
-	CManager::GetDynamicsWorld()->addCollisionObject(m_releaseObject.get());
+	CManager::GetDynamicsWorld()->addCollisionObject(m_releaseObject.get(), short(CollisionFilterGroups::COL_TRIGGER), short(CollisionFilterGroups::COL_TRIGGER));
 }

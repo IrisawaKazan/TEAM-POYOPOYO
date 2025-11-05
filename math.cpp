@@ -370,6 +370,78 @@ D3DXQUATERNION CMath::ConvertQuat(btQuaternion Set)
 //	return D3DXVec3Dot(&VecC, &VecC);
 //}
 
+//---------------------------------
+// 2つの直線がXZ平面上で交わる点 sato Add
+//---------------------------------
+bool CMath::CalculateXZIntersection(D3DXVECTOR3& outIntersection, const D3DXVECTOR3& line1_pos, const D3DXVECTOR3& line1_dir, const D3DXVECTOR3& line2_pos, const D3DXVECTOR3& line2_dir)
+{
+	// 2Dベクトルの外積(Z成分)
+	float denominator = line1_dir.x * line2_dir.z - line1_dir.z * line2_dir.x;
+
+	if (fabs(denominator) < 1e-6f)
+	{// 2直線は平行
+		return false;
+	}
+
+	// pos間の差分（XZ平面）
+	float deltaPosX = line2_pos.x - line1_pos.x;
+	float deltaPosZ = line2_pos.z - line1_pos.z;
+
+	// t = (DeltaP.x * dir2.z - DeltaP.z * dir2.x) / denominator
+	float t = (deltaPosX * line2_dir.z - deltaPosZ * line2_dir.x) / denominator;
+
+	// 交点を計算
+	outIntersection.x = line1_pos.x + t * line1_dir.x;
+	outIntersection.z = line1_pos.z + t * line1_dir.z;
+
+	// Y座標
+	outIntersection.y = line1_pos.y + t * line1_dir.y;
+
+	return true;
+}
+
+//---------------------------------
+// XZ平面上の1つの直線上で点に一番近い地点 sato Add
+//---------------------------------
+D3DXVECTOR3 CMath::GetNierToLineXZ(const D3DXVECTOR3& point, const D3DXVECTOR3& linePos, const D3DXVECTOR3& lineDir)
+{
+	// 直線の基点から点へのベクトル（XZ平面）
+	float vecPX = point.x - linePos.x;
+	float vecPZ = point.z - linePos.z;
+
+	// 直線の基点から、点に最も近い直線上の点までの距離
+	float projection = vecPX * lineDir.x + vecPZ * lineDir.z;
+
+	// 直線上で最も近い点の座標（XZ）
+	float closestX = linePos.x + lineDir.x * projection;
+	float closestZ = linePos.z + lineDir.z * projection;
+
+	return D3DXVECTOR3(closestX, point.y, closestZ);
+}
+
+//---------------------------------
+// 1つの直線と点のXZ平面上の距離 sato Add
+//---------------------------------
+float CMath::GetDistanceToLineXZ(const D3DXVECTOR3& point, const D3DXVECTOR3& linePos, const D3DXVECTOR3& lineDir)
+{
+	// 直線の基点から点へのベクトル（XZ平面）
+	float vecPX = point.x - linePos.x;
+	float vecPZ = point.z - linePos.z;
+
+	// 直線の基点から、点に最も近い直線上の点までの距離
+	float projection = vecPX * lineDir.x + vecPZ * lineDir.z;
+
+	// 直線上で最も近い点の座標（XZ）
+	float closestX = linePos.x + lineDir.x * projection;
+	float closestZ = linePos.z + lineDir.z * projection;
+
+	// 点と、最も近い点との距離（XZ）
+	float dx = point.x - closestX;
+	float dz = point.z - closestZ;
+
+	return hypotf(dx, dz);
+}
+
 //***************************************
 // デストラクタ
 //***************************************

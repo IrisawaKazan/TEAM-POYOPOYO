@@ -71,6 +71,10 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, bool bWnd)
 	m_pDispatcher = make_unique<btCollisionDispatcher>(m_pConfiguration.get());
 	m_pSolver = make_unique<btSequentialImpulseConstraintSolver>();
 
+	// Trigger‚ÆCollision‚ÌŠ®‘S‚È•ª—£ sato Add
+	m_pGhostPairCallback = make_unique<btGhostPairCallback>();
+	m_pBroadPhase->getOverlappingPairCache()->setInternalGhostPairCallback(m_pGhostPairCallback.get());
+
 	// •¨—¢ŠE¶¬
 	m_pDynamicsWorld = make_unique<btDiscreteDynamicsWorld>(m_pDispatcher.get(), m_pBroadPhase.get(), m_pSolver.get(), m_pConfiguration.get());
 
