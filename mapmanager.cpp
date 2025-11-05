@@ -16,6 +16,7 @@
 #include "game.h"
 #include "result.h"
 #include "playermanager.h"
+#include "goal.h"
 
 // ネームスペース
 using namespace nlohmann;
@@ -28,7 +29,6 @@ CMapManager::~CMapManager()
 {
 	// クリア
 	m_vMapObject.clear();
-	m_vDoor.clear();
 	m_vMapSwitch.clear();
 }
 
@@ -39,7 +39,6 @@ HRESULT CMapManager::Init(void)
 {
 	// ベクターをクリア
 	m_vMapObject.clear();
-	m_vDoor.clear();
 	m_vMapSwitch.clear();
 
 	// 正常終了
@@ -51,19 +50,6 @@ HRESULT CMapManager::Init(void)
 //***************************************
 void CMapManager::Uninit(void)
 {
-	// 剛体の削除
-	if (m_RigitBody)
-	{
-		CManager::GetDynamicsWorld()->removeRigidBody(m_RigitBody.get());
-		if (m_RigitBody->getMotionState())
-		{
-			delete m_RigitBody->getMotionState();
-		}
-		m_RigitBody.reset();
-	}
-
-	// 衝突形状の削除
-	m_CollisionShape.reset();
 }
 
 //***************************************
@@ -105,7 +91,7 @@ void CMapManager::Update(void)
 			const btCollisionObject* objB = manifold->getBody1();
 
 			// プレイヤーとスイッチが当たっていたら
-			const bool Condition = (objA == (*Players)->GetRB() && objB == m_RigitBody.get()) || (objA == m_RigitBody.get() && objB == (*Players)->GetRB());
+			const bool Condition = (objA == (*Players)->GetRB() && objB == m_Goal->GetCollisionObject()) || (objA == m_Goal->GetCollisionObject() && objB == (*Players)->GetRB());
 
 			// 切り上げ
 			if (Condition == false) continue;
@@ -124,12 +110,12 @@ void CMapManager::Update(void)
 	if (nFinished >= (int)m_vMapSwitch.size())
 	{
 		// 起動
-		m_vDoor[0]->Begin();
+		m_Door->Begin();
 	}
 	else
 	{
 		// シャットダウン
-		m_vDoor[0]->End();
+		m_Door->End();
 	}
 }
 
@@ -172,8 +158,19 @@ void CMapManager::Load(std::string Path)
 
 	// クリア
 	m_vMapObject.clear();
-	m_vDoor.clear();
 	m_vMapSwitch.clear();
+
+	if (m_Door != nullptr)
+	{
+		m_Door->Uninit();
+		m_Door = nullptr;
+	}
+
+	if (m_Goal != nullptr)
+	{
+		m_Goal->Uninit();
+		m_Goal = nullptr;
+	}
 
 	// jsonデータを宣言
 	ordered_json jsonData;
@@ -227,53 +224,12 @@ void CMapManager::Load(std::string Path)
 		else if (LocalPath.find("Door") != string::npos)
 		{
 			// 生成、要素に追加
-			CDoor* LocalObject = NULL;
-			LocalObject = CDoor::Create(LocalPath, Pos, VEC3_NULL);
-			LocalObject->SetScale(Scale);
-			LocalObject->SetQuat(CMath::ConvertQuat(Quad));
-			LocalObject->SetIdx(LocalPath);
-			// 連結
-			m_vDoor.push_back(LocalObject);
+			m_Door = CDoor::Create(LocalPath, Pos, VEC3_NULL);
+			m_Door->SetScale(Scale);
+			m_Door->SetQuat(CMath::ConvertQuat(Quad));
+			m_Door->SetIdx(LocalPath);
 
-			// メモリ確保OBBの大きさを設定
-			m_CollisionShape = std::make_unique<btBoxShape>(btVector3(LocalObject->GetSize().x, LocalObject->GetSize().y, LocalObject->GetSize().z));
-
-			// 質量
-			btScalar mass = 0.0f;
-
-			// 慣性モーメントの計算用変数
-			btVector3 inertia(0, 0, 0);
-
-			// 計算
-			m_CollisionShape->calculateLocalInertia(mass, inertia);
-
-			// 最終的な計算結果、位置、位置からのオフセット
-			btTransform transform;
-
-			// 初期化
-			transform.setIdentity();
-
-			// 合成
-			transform.setOrigin(btVector3(Pos.x, Pos.y + LocalObject->GetSize().y * 0.5f, Pos.z));
-
-			// 位置と向きを管理するモーションを生成
-			btDefaultMotionState* motionState = new btDefaultMotionState(transform);
-			btRigidBody::btRigidBodyConstructionInfo info(mass, motionState, m_CollisionShape.get());
-
-			// 生成
-			m_RigitBody = std::make_unique<btRigidBody>(info);
-
-			// 移動制限を設定
-			m_RigitBody->setLinearFactor(btVector3(1, 1, 1));
-
-			// 物理ボディーに自分自身を紐付け
-			m_RigitBody->setUserPointer(this);
-
-			// 動的オブジェクトか静的オブジェクトか
-			m_RigitBody->setActivationState(DISABLE_DEACTIVATION);
-
-			// 物理世界に物理ボディーを追加
-			CManager::GetDynamicsWorld()->addRigidBody(m_RigitBody.get());
+			m_Goal = CGoal::Create(Pos, m_Door->GetSize());
 		}
 		else
 		{

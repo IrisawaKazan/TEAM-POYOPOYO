@@ -13,6 +13,7 @@
 class CBlock;
 class CSwitch;
 class CDoor;
+class CGoal;
 
 // クラスを定義
 class CMapManager
@@ -44,11 +45,10 @@ private:
 	CMapManager() { Init(); }
 	// メンバ変数
 	// ゴールの当たり判定
-	std::unique_ptr<btCollisionShape> m_CollisionShape;	// 当たり判定の形状
-	std::unique_ptr<btRigidBody> m_RigitBody;			// リジットボディー
-	std::vector<CBlock*> m_vMapObject;			// マップに置くオブジェクト
-	std::vector<CDoor*> m_vDoor;				// ドア
-	std::vector<CSwitch*> m_vMapSwitch;			// マップに置くスイッチ
+	std::vector<CBlock*> m_vMapObject;					// マップに置くオブジェクト
+	CDoor* m_Door;										// ドア
+	CGoal* m_Goal;										// ゴール
+	std::vector<CSwitch*> m_vMapSwitch;					// マップに置くスイッチ
 };
 
 #endif // !_MAPMANAGER_H_
