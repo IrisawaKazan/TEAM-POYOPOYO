@@ -12,6 +12,57 @@
 #include "arrow.h"
 #include "object2D.h"
 
+namespace
+{
+	//------------------
+	// マウス制限
+	//------------------
+	void ConfineCursorToWindow(HWND hWnd)
+	{
+		RECT rect;
+		GetClientRect(hWnd, &rect);
+
+		rect.left += 10;
+		rect.top += 10;
+		rect.right -= 10;
+		rect.bottom -= 10;
+
+		MapWindowPoints(hWnd, NULL, (POINT*)&rect, 2);
+		ClipCursor(&rect);
+	}
+
+	//-----------------
+	// マウス解放
+	//-----------------
+	void ReleaseCursor(void)
+	{
+		ClipCursor(NULL); // 制限を解除
+	}
+
+	//-----------------
+    // マウスセット
+    //-----------------
+	void SetCursor(bool isEnable)
+	{
+		if (isEnable)
+		{
+			ReleaseCursor();
+			while (ShowCursor(TRUE) < 0);
+		}
+		else
+		{
+			while (ShowCursor(FALSE) >= 0);
+
+			LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
+			D3DDEVICE_CREATION_PARAMETERS creationParams{};
+			if (SUCCEEDED(pDevice->GetCreationParameters(&creationParams)))
+			{
+				ConfineCursorToWindow(creationParams.hFocusWindow);
+			}
+		}
+	}
+}
+
 //--------------------------------
 //
 // ナビゲーションマーカーのクラス
@@ -33,7 +84,7 @@ HRESULT CNavi::Init(void)
 	D3DXVECTOR2 mousePos = CManager::GetInputMouse()->GetPos();
 
 	// マウス座標をDirectXの画面座標に変換
-	mousePos = ConvertMouseToScreen(mousePos);
+	mousePos = ConvertClientToDirectX(mousePos);
 
 	// レイを作成
 	CreateRay(mousePos);
@@ -61,18 +112,10 @@ void CNavi::Uninit(void)
 	RemoveObject();
 
 	// ポインター
-	if (m_pPointer != nullptr)
-	{
-		m_pPointer->Uninit();
-		m_pPointer = nullptr;
-	}
+	m_pPointer = nullptr;
 
 	// マーカー
-	if (m_pMarker != nullptr)
-	{
-		m_pMarker->Uninit();
-		m_pMarker = nullptr;
-	}
+	m_pMarker = nullptr;
 }
 
 //--------------------------------
@@ -80,8 +123,17 @@ void CNavi::Uninit(void)
 //--------------------------------
 void CNavi::Update(void)
 {
+	// 操作管理
+	CheckController();
+
+	// スクリーン座標
+	SetScreenPos();
+
+	// ポインター
+	UpdatePointer(m_isController && m_pos.y <= (MARKER_OFFSET.y + 1.0f));
+
 	// レイを作成
-	CreateRay(SetScreenPos());
+	CreateRay(m_screenPos);
 
 	// 位置を更新
 	if (m_pMarker != nullptr)
@@ -98,7 +150,7 @@ void CNavi::Update(void)
 		m_list = static_cast<LIST>((static_cast<unsigned char>(m_list) + 1) % static_cast<unsigned char>(LIST::Max));
 	}
 
-	if (m_pos.y > (MARKER_OFFSET.y + 1.0f) && (CManager::GetInputMouse()->OnDown(0) || CManager::GetInputJoypad()->GetTrigger(CInputJoypad::JOYKEY_R2) || CManager::GetInputJoypad()->GetTrigger(CInputJoypad::JOYKEY_R3) || CManager::GetInputJoypad()->GetTrigger(CInputJoypad::JOYKEY_A)))
+	if (m_pos.y > (MARKER_OFFSET.y + 1.0f) && (CManager::GetInputMouse()->OnDown(0) || CManager::GetInputJoypad()->GetTrigger(CInputJoypad::JOYKEY_R2) || CManager::GetInputJoypad()->GetTrigger(CInputJoypad::JOYKEY_A)))
 	{// 左クリックしたとき
 		m_clickPos = m_pos; // クリックした位置を保存
 
@@ -135,58 +187,89 @@ void CNavi::Update(void)
 }
 
 //--------------------------------
+// 操作を管理
+//--------------------------------
+void CNavi::CheckController()
+{
+	// コントローラー操作とマウス操作
+	if (CManager::GetInputMouse()->IsMove())
+	{
+		if (m_isController)
+		{
+			MouseCursorCome();
+			SetCursor(true);
+		}
+		m_isController = false;
+	}
+	if (CManager::GetInputJoypad()->GetJoyStickR())
+	{
+		if (!m_isController)
+		{
+			SetCursor(false);
+		}
+		m_isController = true;
+	}
+}
+
+//--------------------------------
 // 2D上のナビゲーション座標を求める
 //--------------------------------
 D3DXVECTOR2 CNavi::SetScreenPos()
 {
 	D3DXVECTOR2 resultPos{ 0,0 };
-	// ウインドウのクライアント内でのマウス座標を取得
-	D3DXVECTOR2 mousePos = CManager::GetInputMouse()->GetPos();
 
-	// マウス座標をDirectXの画面座標に変換
-	resultPos = ConvertMouseToScreen(mousePos);
+	if (m_isController)
+	{
+		if (CManager::GetInputJoypad()->GetJoyStickR())
+		{
+			XINPUT_STATE* pState{};
+			pState = CManager::GetInputJoypad()->GetJoyStickAngle();
+			resultPos = m_screenPos + D3DXVECTOR2((float(pState->Gamepad.sThumbRX) / float(SHRT_MAX)) * CONTROLLER_SPEED, -(float(pState->Gamepad.sThumbRY) / float(SHRT_MAX)) * CONTROLLER_SPEED);
+		}
+		else
+		{
+			resultPos = m_screenPos;
+		}
+	}
+	else
+	{
+		D3DXVECTOR2 clientPos{};
 
+		// ウインドウのクライアント内でのマウス座標を取得
+		clientPos = CManager::GetInputMouse()->GetPos();
+
+		// ウインドウ座標をDirectXの画面座標に変換
+		resultPos = ConvertClientToDirectX(clientPos);
+	}
+
+	// 設定
+	m_screenPos = resultPos;
 	return resultPos;
 }
 
 //--------------------------------
 // Pointerを生成し表示
 //--------------------------------
-void CNavi::SetPointer(bool enable, D3DXVECTOR2 screenPos)
+void CNavi::UpdatePointer(bool enable)
 {
-	if (enable)
+	if (m_pPointer != nullptr)
 	{
-		if (m_pPointer == nullptr)
+		if (enable)
 		{
-			m_pPointer = CObject2D::Create(D3DXVECTOR3(screenPos.x, screenPos.y, 0.0f), VEC3_NULL, POINTER_SIZE);
-			if (FAILED(m_pPointer->Init()))
-			{
-				m_pPointer->Uninit();
-				m_pPointer = nullptr;
-				return;
-			}
-			m_pPointer->SetTexIndx(CTextureManager::Instance()->Register(POINTER_TEXTURE_PATH));
+			m_pPointer->SetPosition(D3DXVECTOR3(m_screenPos.x, m_screenPos.y, 0.0f));
 		}
-		m_pPointer->SetPosition(D3DXVECTOR3(screenPos.x, screenPos.y, 0.0f));
-	}
-	else
-	{
-		if (m_pPointer != nullptr)
+		else
 		{
-			m_pPointer->Uninit();
-			m_pPointer = nullptr;
+			m_pPointer->SetPosition(D3DXVECTOR3(-float(SCREEN_WIDTH), -float(SCREEN_HEIGHT), 0.0f));
 		}
 	}
 }
 
 //--------------------------------
-// マウス座標をDirectXの画面サイズに変換
+// クライアント座標をDirectXの座標に変換
 //--------------------------------
-D3DXVECTOR2 CNavi::ConvertMouseToScreen(D3DXVECTOR2 mousePos)
+D3DXVECTOR2 CNavi::ConvertClientToDirectX(D3DXVECTOR2 clientPos)
 {
-	// ウインドウのクライアント内でのマウス座標
-	D3DXVECTOR2 windowClientPos = mousePos;
-
 	// DirectXの画面サイズを取得
 	D3DXVECTOR2 directXScreenSize = { SCREEN_WIDTH,SCREEN_HEIGHT };
 
@@ -204,12 +287,42 @@ D3DXVECTOR2 CNavi::ConvertMouseToScreen(D3DXVECTOR2 mousePos)
 		}
 	}
 
-	// マウス座標をDirectXの画面サイズに変換
-	D3DXVECTOR2 resultMousePos{};
-	resultMousePos.x = (windowClientPos.x / clientSize.x) * directXScreenSize.x;
-	resultMousePos.y = (windowClientPos.y / clientSize.y) * directXScreenSize.y;
+	// クライアント座標をDirectX座標に変換
+	D3DXVECTOR2 resultPos{};
+	resultPos.x = (clientPos.x / clientSize.x) * directXScreenSize.x;
+	resultPos.y = (clientPos.y / clientSize.y) * directXScreenSize.y;
 
-	return resultMousePos;
+	return resultPos;
+}
+
+//--------------------------------
+// DirectXの座標をクライアント座標に変換
+//--------------------------------
+D3DXVECTOR2 CNavi::ConvertDirectXToClient(D3DXVECTOR2 directXPos)
+{
+	// DirectXの画面サイズを取得
+	D3DXVECTOR2 directXScreenSize = { SCREEN_WIDTH,SCREEN_HEIGHT };
+
+	// DirectXデバイスに登録されているウインドウのサイズを取得
+	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
+	D3DDEVICE_CREATION_PARAMETERS creationParams{};
+	D3DXVECTOR2 clientSize{ SCREEN_WIDTH,SCREEN_HEIGHT };
+	if (SUCCEEDED(pDevice->GetCreationParameters(&creationParams)))
+	{
+		RECT rect{};
+		if (creationParams.hFocusWindow != nullptr)
+		{
+			GetClientRect(creationParams.hFocusWindow, &rect);
+			clientSize = { static_cast<float>(rect.right - rect.left),static_cast<float>(rect.bottom - rect.top) };
+		}
+	}
+
+	// DirectXの座標をクライアント座標に変換
+	D3DXVECTOR2 resultPos{};
+	resultPos.x = (directXPos.x / directXScreenSize.x) * clientSize.x;
+	resultPos.y = (directXPos.y / directXScreenSize.y) * clientSize.y;
+
+	return resultPos;
 }
 
 //--------------------------------
@@ -578,11 +691,52 @@ D3DXMATRIX CNavi::CreateMatrixFromNormal(D3DXVECTOR3 nor)
 }
 
 //--------------------------------
+// マウスカーソルを中心にする
+//--------------------------------
+void CNavi::MouseCursorSenter()
+{
+	D3DXVECTOR2 senter{ ConvertDirectXToClient({ float(SCREEN_WIDTH) * 0.5f, float(SCREEN_HEIGHT) * 0.5f }) };
+	POINT senterPoint{ LONG(senter.x),LONG(senter.y) };
+	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
+	D3DDEVICE_CREATION_PARAMETERS creationParams{};
+	if (SUCCEEDED(pDevice->GetCreationParameters(&creationParams)) && creationParams.hFocusWindow != nullptr)
+	{
+		ClientToScreen(creationParams.hFocusWindow, &senterPoint);
+		SetCursorPos(senterPoint.x, senterPoint.y);
+	}
+}
+
+//--------------------------------
+// マウスカーソルをナビゲーション座標に合わせる
+//--------------------------------
+void CNavi::MouseCursorCome()
+{
+	D3DXVECTOR2 senter{ ConvertDirectXToClient(m_screenPos) };
+	POINT senterPoint{ LONG(senter.x),LONG(senter.y) };
+	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
+	D3DDEVICE_CREATION_PARAMETERS creationParams{};
+	if (SUCCEEDED(pDevice->GetCreationParameters(&creationParams)) && creationParams.hFocusWindow != nullptr)
+	{
+		ClientToScreen(creationParams.hFocusWindow, &senterPoint);
+		SetCursorPos(senterPoint.x, senterPoint.y);
+	}
+}
+
+//--------------------------------
 // ナビゲーションマーカーの作成
 //--------------------------------
 void CNavi::SetMarker(void)
 {
 	m_pMarker = CNaviMarker::Create(MARKER_TEXTURE_PATH, MARKER_SIZE);
+}
+
+//--------------------------------
+// ナビゲーションポインターの作成
+//--------------------------------
+void CNavi::SetPointer(void)
+{
+	m_pPointer = CObject2D::Create(D3DXVECTOR3(m_screenPos.x, m_screenPos.y, 0.0f), VEC3_NULL, POINTER_SIZE);
+	m_pPointer->SetTexIndx(CTextureManager::Instance()->Register(POINTER_TEXTURE_PATH));
 }
 
 //--------------------------------
