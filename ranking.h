@@ -15,7 +15,9 @@
 #include "number.h"
 
 //	マクロ定義
-#define MAX_NUMBER (2)
+#define MAX_TIME (2)
+#define MAX_NUM (5)
+#define MAX_SECOND (60)
 
 //  ランキングクラスを定義
 class CRanking
@@ -31,14 +33,24 @@ public:
 		return pInstance;
 	}
 
-	HRESULT Init(void);
+	HRESULT Init(HWND hWnd);
 	void Uninit(void);
 	void Update(void);
 	void Draw(void);
 
+	void Sort(void);
+	void Change(void);
+	void LoadFile(void);
+	void WriteFile(void);
+
+	void InitNum(void);
 private:
-	int m_nMin;	// 分
-	int m_nSec;	// 秒
+	CNumber* m_pNumber1[MAX_TIME][MAX_NUM];		// タイムの変数(秒)
+	CNumber* m_pNumber2[MAX_TIME][MAX_NUM];		// タイムの変数(分)
+	CNumber* m_pNumber3[MAX_NUM];				// タイムの変数(：)
+	int m_nTime[MAX_NUM];						// 総時間
+	int m_nMin[MAX_NUM];						// 分
+	int m_nSec[MAX_NUM];						// 秒
 };
 
 #endif // !_RANKING_H_
