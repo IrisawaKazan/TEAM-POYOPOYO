@@ -55,6 +55,7 @@ private:
 	std::vector<CSwitch*> m_vMapSwitch;					// マップに置くスイッチ
 	// アイテムの当たり判定 Misaki
 	CItem* m_Item;
+	std::vector<CItem*> m_vMapItem;					// マップに置くアイテム
 };
 
 #endif // !_MAPMANAGER_H_
