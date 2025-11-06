@@ -86,7 +86,7 @@ HRESULT CGame::Init(void)
 
 	CBlock::Create("data\\Model\\mine_shaft.x", { 2000.0f,0.0f,0.0f }, {0.0f, D3DX_PI,0.0f}, { 1.0f,1.0f,1.0f });
 
-	CNaviUI::Create("data/TEXTURE/UI/Frame000.png", { NAVI_UI_TEXTURES.begin(), NAVI_UI_TEXTURES.end() }, D3DXVECTOR3(SCREEN_WIDTH * 0.1f, SCREEN_HEIGHT * 0.82f, 0.0f), D3DXVECTOR2(100.0f, 100.0f));
+	CNaviUI::Create("data/TEXTURE/UI/Frame001.png", { NAVI_UI_TEXTURES.begin(), NAVI_UI_TEXTURES.end() }, D3DXVECTOR3(SCREEN_WIDTH * 0.1f, SCREEN_HEIGHT * 0.82f, 0.0f), D3DXVECTOR2(100.0f, 100.0f));
 	
 	//CTimer::Instance()->SetPosition(D3DXVECTOR3(640.0f, 360.0f, 0.0f));
 	CTimer::Create(D3DXVECTOR3(640.0f,360.0f,0.0f));
