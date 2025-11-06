@@ -17,6 +17,7 @@
 #include "result.h"
 #include "playermanager.h"
 #include "goal.h"
+#include "item.h"	// Misaki
 
 // ネームスペース
 using namespace nlohmann;
@@ -83,9 +84,15 @@ void CMapManager::Update(void)
 		m_Door->End();
 	}
 
+	// スイッチとプレイヤーの当たり判定
 	CollisionSwitchtoPlayers();
 
+	// ゴールとプレイヤーの当たり判定
 	CollisionGoaltoPlayers();
+
+	//// アイテムとプレイヤーの当たり判定
+	//CollisionItemtoPlayers();
+
 }
 
 //***************************************
@@ -193,38 +200,52 @@ void CMapManager::CollisionSwitchtoPlayers(void)
 //***************************************
 void CMapManager::CollisionItemtoPlayers(void)
 {
-	//// 何組が衝突しているか
-	//int numManifolds = CManager::GetDynamicsWorld()->getDispatcher()->getNumManifolds();
+	// 何組が衝突しているか
+	int numManifolds = CManager::GetDynamicsWorld()->getDispatcher()->getNumManifolds();
 
-	//// 衝突回数分繰り返し
-	//for (int nCnt = 0; nCnt < numManifolds; nCnt++)
-	//{
-	//	// プレイヤーの配列にアクセス
-	//	for (auto Players = CGame::GetPlayerManager()->GetVPlayer().begin(); Players != CGame::GetPlayerManager()->GetVPlayer().end(); Players++)
-	//	{
-	//		// 衝突しているペアを取得
-	//		btPersistentManifold* manifold = CManager::GetDynamicsWorld()->getDispatcher()->getManifoldByIndexInternal(nCnt);
+	// 入手したかどうか
+	bool bTake = false;
 
-	//		// 衝突していたら
-	//		if (manifold->getNumContacts() <= 0) continue;
+	// アイテムの配列にアクセス
+	for (auto Item = m_vMapItem.begin(); Item != m_vMapItem.end(); Item++)
+	{
+		// 衝突回数分繰り返し
+		for (int nCnt = 0; nCnt < numManifolds; nCnt++)
+		{
+			// プレイヤーの配列にアクセス
+			for (auto Players = CGame::GetPlayerManager()->GetVPlayer().begin(); Players != CGame::GetPlayerManager()->GetVPlayer().end(); Players++)
+			{
+				// 衝突しているペアを取得
+				btPersistentManifold* manifold = CManager::GetDynamicsWorld()->getDispatcher()->getManifoldByIndexInternal(nCnt);
 
-	//		// 衝突オブジェクト１、２を取得
-	//		const btCollisionObject* objA = manifold->getBody0();
-	//		const btCollisionObject* objB = manifold->getBody1();
+				// 衝突していたら
+				if (manifold->getNumContacts() <= 0) continue;
 
-	//		// プレイヤーとアイテムが当たった場合
-	//		const bool ItemCondition = (objA == (*Players)->GetRB() && objB == m_Item->GetCollisionObject()) || (objA == m_Item->GetCollisionObject() && objB == (*Players)->GetRB());
+				// 衝突オブジェクト１、２を取得
+				const btCollisionObject* objA = manifold->getBody0();
+				const btCollisionObject* objB = manifold->getBody1();
 
-	//		// 切り上げ
-	//		if (ItemCondition == false) continue;
+				// プレイヤーとアイテムが当たっていたら
+				const bool Condition = (objA == (*Players)->GetRB() && objB == (*Item)->GetRB()) || (objA == (*Item)->GetRB() && objB == (*Players)->GetRB());
+				
+				if (Condition == false)
+				{// 当たっていなかった場合
+					continue;
+				}
+				else
+				{// 当たっている場合
+					bTake = true;
+				}
 
+				// 処理を切り上げる
+				break;
+			}
+		}
+	}
+}
 
-
-	//		// 処理を切り上げる
-	//		break;
-	//	}
-	//}
-}//***************************************// オブジェクトを生成
+//***************************************
+// オブジェクトを生成
 //***************************************
 void CMapManager::CreateObject(D3DXVECTOR3 Pos, D3DXVECTOR3 Rot, std::string Path)
 {

@@ -74,8 +74,8 @@ HRESULT CGame::Init(void)
 	m_pMapManager = CMapManager::Instance();
 	m_pMapManager->Load("data\\TEXT\\stage100.json");
 
-	// ナビゲーションマーカーをセット
-	CNavi::GetInstance()->SetMarker();
+	// ナビゲーションのセット
+	CNavi::GetInstance()->set();
 
 	CObject3D::Create(D3DXVECTOR3(0.0f,1000.0f,-1000.0f), D3DXVECTOR3((D3DX_PI * 0.5f),0.0f,0.0f),"data\\TEXTURE\\wall.jpg",D3DXVECTOR2(2000.0f,1000.0f));
 	CObject3D::Create(D3DXVECTOR3(-2000.0f,1000.0f,0.0f), D3DXVECTOR3((-D3DX_PI * 0.5f), (-D3DX_PI * 0.5f), 0.0f),"data\\TEXTURE\\wall.jpg",D3DXVECTOR2(1000.0f, 1000.0f));
@@ -159,9 +159,8 @@ void CGame::Update(void)
 //***************************************
 void CGame::Uninit(void)
 {
-	// ナビゲーションのマーカーとオブジェクトを破棄
-	CNavi::GetInstance()->RemoveMarker();
-	CNavi::GetInstance()->RemoveObject();
+	// ナビゲーションのリムーブ
+	CNavi::GetInstance()->remove();
 
 	// プレイヤーマネージャーの破棄
 	if (m_pPlayerManager != NULL)
