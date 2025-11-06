@@ -20,6 +20,7 @@ class CMapEditer;
 class CPauseManager;
 class CPlayerManager;
 class CMapManager;
+class CTutorialBoard;
 
 // ゲームシーンクラスを定義
 class CGame : public CScene
@@ -61,7 +62,6 @@ public:
 	static void ResetPlayer(void);
 
 	// ゲッター
-	static bool GetPause(void) { return m_isPause; };
 	static CPlayerManager* GetPlayerManager(void) { return m_pPlayerManager; }; // sato Add
 
 private:
@@ -80,6 +80,7 @@ private:
 	static CPauseManager* m_pPauseManager;				// ポーズマネージャーへのポインタ
 	static CPlayerManager* m_pPlayerManager;			// プレイヤーマネージャー
 	static CMapManager* m_pMapManager;			// プレイヤーマネージャー
-	static bool m_isPause;								// ポーズ中かどうか
+
+	static CTutorialBoard* m_pTutorialBoard;
 };
 #endif // !_GAME_H_
