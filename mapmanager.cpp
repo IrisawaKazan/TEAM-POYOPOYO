@@ -42,6 +42,8 @@ HRESULT CMapManager::Init(void)
 	m_vMapObject.clear();
 	m_vMapSwitch.clear();
 
+	m_bGoal = false;
+
 	// ³íI—¹
 	return S_OK;
 }
@@ -134,6 +136,7 @@ void CMapManager::CollisionGoaltoPlayers(void)
 
 			if (CFade::GetFadeSingle()->GetFade() != CFade::FADE_OUT)
 			{
+				m_bGoal = true;
 				CFade::SetFade(new CResult);
 			}
 

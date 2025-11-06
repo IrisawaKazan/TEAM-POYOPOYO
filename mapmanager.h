@@ -31,7 +31,6 @@ public:
 	void CollisionGoaltoPlayers(void);
 	void CollisionSwitchtoPlayers(void);
 	void CollisionItemtoPlayers(void); // Misaki
-
 	// 生成
 	void CreateObject(D3DXVECTOR3 Pos, D3DXVECTOR3 Rot, std::string Path);
 
@@ -44,6 +43,10 @@ public:
 		static std::unique_ptr<CMapManager> Instance(new CMapManager);
 		return Instance.get();
 	};
+
+	// ゴール判定の取得
+	static bool GetGoal(void) { return m_bGoal; };
+
 private:
 	// コンストラクタ
 	CMapManager() { Init(); }
@@ -56,6 +59,8 @@ private:
 	// アイテムの当たり判定 Misaki
 	CItem* m_Item;
 	std::vector<CItem*> m_vMapItem;					// マップに置くアイテム
+
+	static bool m_bGoal;							// ゴールの判定(タイム用)
 };
 
 #endif // !_MAPMANAGER_H_
