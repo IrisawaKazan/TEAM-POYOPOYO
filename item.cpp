@@ -131,8 +131,16 @@ void CItem::Update(void)
 	D3DXVECTOR3 Axis = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
 	// 向き
 	static float fAngle = 0.0f;
+	// 位置
+	D3DXVECTOR3 pos = VEC3_NULL;
+	// カウント
+	static int nCount = 0;
+
 	// クオータニオンの取得
 	pQuat = GetQuad();
+	// 位置の取得
+	pos = GetPosition();
+
 
 	if (m_bTake == false)
 	{// 入手していない場合
@@ -149,6 +157,32 @@ void CItem::Update(void)
 	else if (m_bTake == true)
 	{// 入手した場合
 
+		// 回転量を加算
+		fAngle += 0.2f * 0.9f;
+
+		// 位置に移動量を加算
+		pos += D3DXVECTOR3(0.0f, 10.0f * 0.8f, 0.0f);
+
+		// クオータニオンの計算
+		D3DXQuaternionRotationAxis(&pQuat, &Axis, fAngle);
+
+		// 更新したクオータニオンを引数に代入
+		SetQuad(pQuat);
+		SetPosition(pos);
+
+		// カウントを一つ進める
+		nCount++;
+
+		if (nCount >= 60)
+		{// カウントが設定値を超えた場合
+
+			// カウントを初期化
+			nCount = 0;
+
+			// 終了処理
+			Uninit();
+
+		}
 	}
 
 }
