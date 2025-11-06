@@ -35,9 +35,6 @@ public:
 	void Uninit(void);
 	void Draw(void);
 
-	// リジットボディの初期化処理
-	void InitRB(void);
-
 	// 静的メンバ関数
 	static CItem* Create(const ITEM type,	// 種類
 		const D3DXVECTOR3 pos,				// 位置
