@@ -114,7 +114,7 @@ void CPlayer::Update(void)
 			D3DXVECTOR3 myPos = GetPos();
 
 			// 矢印の位置と方向
-			D3DXVECTOR3 objectPos = pos;                                       // 矢印の中心座標
+			D3DXVECTOR3 objectPos = pos;                                         // 矢印の中心座標
 			D3DXVECTOR3 objectDir = D3DXVECTOR3(sinf(angle), 0.0f, cosf(angle)); // 矢印の向き
 
 			m_turnPos = CMath::GetNierToLineXZ(myPos, objectPos, objectDir); // 矢印のベクトル上の近い地点
