@@ -20,7 +20,6 @@ CRanking::CRanking()
 		m_nMin[nCnt] = NULL;
 		m_nSec[nCnt] = NULL;
 	}
-	//Init();
 }
 
 //****************************************************************
@@ -39,7 +38,10 @@ HRESULT CRanking::Init(HWND hWnd)
 	// ì«Ç›çûÇ›
 	LoadFile();
 
+	// ÉiÉìÉoÅ[ÇÃèâä˙âª
+	InitNum();
 
+	return S_OK;
 }
 
 //****************************************************************
@@ -47,7 +49,35 @@ HRESULT CRanking::Init(HWND hWnd)
 //****************************************************************
 void CRanking::Uninit(void)
 {
+	for (int nNum = 0; nNum < MAX_NUM; nNum++)
+	{
+		for (int nCnt = 0; nCnt < MAX_TIMER; nCnt++)
+		{
+			if (m_pNumber1[nCnt][nNum] != nullptr)
+			{
+				m_pNumber1[nCnt][nNum]->Uninit();
 
+				delete m_pNumber1[nCnt][nNum];
+				m_pNumber1[nCnt][nNum] = nullptr;
+			}
+
+			if (m_pNumber2[nCnt][nNum] != nullptr)
+			{
+				m_pNumber2[nCnt][nNum]->Uninit();
+
+				delete m_pNumber2[nCnt][nNum];
+				m_pNumber2[nCnt][nNum] = nullptr;
+			}
+		}
+
+		if (m_pNumber3[nNum] != nullptr)
+		{
+			m_pNumber3[nNum]->Uninit();
+
+			delete m_pNumber3[nNum];
+			m_pNumber3[nNum] = nullptr;
+		}
+	}
 }
 
 //****************************************************************
@@ -68,6 +98,16 @@ void CRanking::Update(void)
 void CRanking::Draw(void)
 {
 
+	for (int nNum = 0; nNum < MAX_NUM; nNum++)
+	{
+		for (int nCnt = 0; nCnt < MAX_TIMER; nCnt++)
+		{
+			m_pNumber1[nCnt][nNum]->Draw();
+			m_pNumber2[nCnt][nNum]->Draw();
+		}
+
+		m_pNumber3[nNum]->Draw();
+	}
 }
 
 //****************************************************************
@@ -220,14 +260,14 @@ void CRanking::InitNum(void)
 
 			if (m_pNumber1[nCnt][nNum] != nullptr)
 			{
-				m_pNumber1[nCnt][nNum]->Init(200.0f, 200.0f, nCnt, 50.0f, 50.0f, MAX_TIMER, 4, "data\\TEXTURE\\number005.png", 0.1f);
+				m_pNumber1[nCnt][nNum]->Init(200.0f, 200.0f, 0.0f, 50.0f, nCnt, 50.0f, 50.0f, MAX_TIMER, 4, "data\\TEXTURE\\number005.png", 0.1f);
 			}
 
 			m_pNumber2[nCnt][nNum] = new CNumber;
 
 			if (m_pNumber2[nCnt][nNum] != nullptr)
 			{
-				m_pNumber2[nCnt][nNum]->Init(50.0f, 50.0f, nCnt, 50.0f, 50.0f, MAX_TIMER, 4, "data\\TEXTURE\\number005.png", 0.1f);
+				m_pNumber2[nCnt][nNum]->Init(50.0f, 50.0f, 0.0f, 50.0f, nCnt, 50.0f, 50.0f, MAX_TIMER, 4, "data\\TEXTURE\\number005.png", 0.1f);
 			}
 		}
 
@@ -235,9 +275,7 @@ void CRanking::InitNum(void)
 
 		if (m_pNumber3[nNum] != nullptr)
 		{
-			m_pNumber3[nNum]->Init(150.0f, 200.0f, 0, 1.0f, 0.0f, 1, 0, "data\\TEXTURE\\coron.png", 1.0f);
+			m_pNumber3[nNum]->Init(150.0f, 200.0f, 0.0f, 50.0f, 0, 1.0f, 0.0f, 1, 0, "data\\TEXTURE\\coron.png", 1.0f);
 		}
 	}
-
-	return S_OK;
 }

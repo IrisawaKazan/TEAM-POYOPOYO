@@ -37,7 +37,7 @@ CNumber* CNumber::Create(D3DXVECTOR3 pos)
 //==============================================================
 // èâä˙âª
 //==============================================================
-HRESULT CNumber::Init(float fX1, float fX2, int nCnt, float fNum1, float fNum2, int nNum, int nAdd, const char* FileName, float fx)
+HRESULT CNumber::Init(float fX1, float fX2, float fY1, float fY2, int nCnt, float fNum1, float fNum2, int nNum, int nAdd, const char* FileName, float fx)
 {
 	m_nIdx = CTextureManager::Instance()->Register(FileName);
 
@@ -57,10 +57,10 @@ HRESULT CNumber::Init(float fX1, float fX2, int nCnt, float fNum1, float fNum2, 
 	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 
 	// í∏ì_ç¿ïWÇÃê›íË
-	pVtx[0].pos = D3DXVECTOR3(fX1 + nCnt * fNum1, 0.0f, 0.0f);
-	pVtx[1].pos = D3DXVECTOR3(fX2 + nCnt * fNum1 + fNum2, 0.0f, 0.0f);
-	pVtx[2].pos = D3DXVECTOR3(fX1 + nCnt * fNum1, 50.0f, 0.0f);
-	pVtx[3].pos = D3DXVECTOR3(fX2 + nCnt * fNum1 + fNum2, 50.0f, 0.0f);
+	pVtx[0].pos = D3DXVECTOR3(fX1 + nCnt * fNum1, fY1, 0.0f);
+	pVtx[1].pos = D3DXVECTOR3(fX2 + nCnt * fNum1 + fNum2, fY1, 0.0f);
+	pVtx[2].pos = D3DXVECTOR3(fX1 + nCnt * fNum1, fY2, 0.0f);
+	pVtx[3].pos = D3DXVECTOR3(fX2 + nCnt * fNum1 + fNum2, fY2, 0.0f);
 
 	// rhwÇÃê›íË
 	pVtx[0].rhw = 1.0f;
