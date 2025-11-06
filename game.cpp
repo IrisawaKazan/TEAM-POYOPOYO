@@ -159,6 +159,13 @@ void CGame::Update(void)
 	{
 		m_pTutorialBoard->Update();
 	}
+
+	if (CManager::GetInputKeyboard()->GetTrigger(DIK_SPACE) == true)
+	{
+		//CManager::GetSound()->Play(CSound::LABEL_ENTER);
+		CFade::SetFade(new CResult);
+		CManager::OffPause();
+	}
 }
 
 //***************************************
