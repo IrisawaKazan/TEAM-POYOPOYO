@@ -15,7 +15,7 @@
 class CNaviObject : public CObject
 {
 public:
-	CNaviObject() : CObject(4), m_pVertex{}, m_texIdx{}, m_pos{}, m_mtxRot{}, m_angle{}, m_size{}, m_type{}, m_length{}, m_chengeLength{}, m_idx{ m_nextIdx }, m_triggerShape{}, m_releaseShape{}, m_triggerObject{}, m_releaseObject{} { m_nextIdx++; };
+	CNaviObject() : CObject(3), m_pVertex{}, m_texIdx{}, m_pos{}, m_mtxRot{}, m_angle{}, m_size{}, m_type{}, m_length{}, m_chengeLength{}, m_idx{ m_nextIdx }, m_triggerShape{}, m_releaseShape{}, m_triggerObject{}, m_releaseObject{} { m_nextIdx++; };
 	~CNaviObject() override {};
 
 	HRESULT Init(void) override;
