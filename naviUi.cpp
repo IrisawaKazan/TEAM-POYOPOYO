@@ -110,7 +110,12 @@ void CNaviUI::SetObjectUI(void)
 	}
 
 	// 前のオブジェクト
-	unsigned int lastListID = Wrap(int(listID - 1), int(0), int(CNavi::LIST::Max) - 1);
+	unsigned int lastListID{ listID };
+	while (true)
+	{// 無効化オブジェクトをスキップ
+		lastListID = Wrap(int(lastListID - 1), int(0), int(CNavi::LIST::Max) - 1);
+		if (CNavi::GetInstance()->GetEnable(CNavi::LIST(lastListID)))break;
+	}
 	if (!m_objectTexturePaths.empty() && m_objectTexturePaths.size() > lastListID)
 	{// テクスチャがあればセット
 		if (m_pObjects[1] != nullptr)
@@ -120,7 +125,12 @@ void CNaviUI::SetObjectUI(void)
 	}
 
 	// 次のオブジェクト
-	unsigned int nextListID = Wrap(int(listID + 1), int(0), int(CNavi::LIST::Max) - 1);
+	unsigned int nextListID{ listID };
+	while (true)
+	{// 無効化オブジェクトをスキップ
+		nextListID = Wrap(int(nextListID + 1), int(0), int(CNavi::LIST::Max) - 1);
+		if (CNavi::GetInstance()->GetEnable(CNavi::LIST(nextListID)))break;
+	}
 	if (!m_objectTexturePaths.empty() && m_objectTexturePaths.size() > nextListID)
 	{// テクスチャがあればセット
 		if (m_pObjects[2] != nullptr)

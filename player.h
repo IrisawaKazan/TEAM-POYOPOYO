@@ -19,9 +19,11 @@ public:
 	// 状態
 	enum class STATE : unsigned char
 	{
-		NORMAL,
-		TURN,
-		MAX
+		Normal,
+		Turn,
+		Climb,
+		Jump,
+		Max
 	};
 
 	CPlayer();
@@ -41,7 +43,7 @@ public:
 private:
 	void Turn();
 
-	static constexpr float TURN_RADIUS = 10.0f; // ターンの中心軸からのずれの許容範囲
+	static constexpr float TURN_RADIUS = 8.0f; // ターンの中心軸からのずれの許容範囲
 
 	std::unique_ptr<btCollisionShape> m_CollisionShape;
 	std::unique_ptr<btRigidBody> m_RigitBody;		// リジットボディー
