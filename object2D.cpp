@@ -303,10 +303,10 @@ void CObject2D::Draw()
 //*********************************************
 // 2Dポリゴンを作る
 //*********************************************
-CObject2D* CObject2D::Create(const D3DXVECTOR3 Pos, const D3DXVECTOR3 Rot)
+CObject2D* CObject2D::Create(const D3DXVECTOR3 Pos, const D3DXVECTOR3 Rot, int priority)
 {
 	CObject2D* pObject2D;
-	pObject2D = new CObject2D(4);
+	pObject2D = new CObject2D(priority);
 	pObject2D->Init();
 	pObject2D->SetPosition(Pos);
 	pObject2D->SetRotasion(Rot);
@@ -318,10 +318,10 @@ CObject2D* CObject2D::Create(const D3DXVECTOR3 Pos, const D3DXVECTOR3 Rot)
 //*********************************************
 // 2Dポリゴンを作るテクスチャ指定
 //*********************************************
-CObject2D* CObject2D::Create(const D3DXVECTOR3 Pos, const D3DXVECTOR3 Rot, const D3DXVECTOR2 Size)
+CObject2D* CObject2D::Create(const D3DXVECTOR3 Pos, const D3DXVECTOR3 Rot, const D3DXVECTOR2 Size, int priority)
 {
 	CObject2D* pObject2D;
-	pObject2D = new CObject2D(7);
+	pObject2D = new CObject2D(priority);
 	pObject2D->Init();
 	pObject2D->SetPosition(Pos);
 	pObject2D->SetRotasion(Rot);

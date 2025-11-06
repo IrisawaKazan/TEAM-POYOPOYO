@@ -335,4 +335,9 @@
       <Filter>リソース</Filter>
     </Image>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="data\CURSOR\Test.cur">
+      <Filter>リソース</Filter>
+    </None>
+  </ItemGroup>
 </Project>
