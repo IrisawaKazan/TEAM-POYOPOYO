@@ -26,6 +26,21 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hInstancePrev, _
 	// メモリリーク検知
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF | _CRTDBG_CHECK_ALWAYS_DF);//メモリリーク検知
 
+	// LoadImage の結果を一時変数で受け取る
+	HCURSOR hCursor = (HCURSOR)LoadImage(hInstance, MAKEINTRESOURCE(IDC_CURSOR1), IMAGE_CURSOR, 0, 0, LR_DEFAULTSIZE | LR_SHARED);
+
+	DWORD dwError = 0; // エラーコード格納用
+	if (hCursor == NULL)
+	{
+		// LoadImageが失敗した場合、直後にエラーコードを取得する
+		dwError = GetLastError();
+
+		// メッセージボックスでエラーコードを表示する
+		char szError[256];
+		wsprintf(szError, "カーソルの読み込みに失敗しました。\nエラーコード: %d", dwError);
+		MessageBox(NULL, szError, "LoadImage エラー", MB_OK);
+	}
+
 	WNDCLASSEX wcex =
 	{
 		sizeof(WNDCLASSEX),
@@ -35,8 +50,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hInstancePrev, _
 		0,
 		hInstance,
 		LoadIcon(hInstance, MAKEINTRESOURCE(IDI_ICON1)),
-		LoadCursor(NULL,IDC_ARROW),
-		(HBRUSH)(COLOR_WINDOW + 1),
+        (HCURSOR)LoadImage(hInstance, MAKEINTRESOURCE(IDC_CURSOR1), IMAGE_CURSOR, 0, 0, LR_DEFAULTSIZE | LR_SHARED),
+        (HBRUSH)(COLOR_WINDOW + 1),
 		NULL,
 		CLASS_NAME,
 		LoadIcon(hInstance, MAKEINTRESOURCE(IDI_ICON1))
