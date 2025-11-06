@@ -71,14 +71,14 @@ HRESULT CTimer::Init(void)
 
 		if (m_pNumber1[nCnt] != nullptr)
 		{
-			m_pNumber1[nCnt]->Init(200.0f, 200.0f, 0.0f, 50.0f, nCnt, 50.0f, 50.0f, MAX_TIMER, 4, "data\\TEXTURE\\number005.png", 0.1f);
+			m_pNumber1[nCnt]->Init(200.0f, 200.0f, 0.0f, 50.0f, nCnt, 0, 50.0f, 50.0f, 0.0f, MAX_TIMER, 4, "data\\TEXTURE\\number005.png", 0.1f);
 		}
 
 		m_pNumber2[nCnt] = new CNumber;
 
 		if (m_pNumber2[nCnt] != nullptr)
 		{
-			m_pNumber2[nCnt]->Init(50.0f, 50.0f, 0.0f, 50.0f, nCnt, 50.0f, 50.0f, MAX_TIMER, 4, "data\\TEXTURE\\number005.png", 0.1f);
+			m_pNumber2[nCnt]->Init(50.0f, 50.0f, 0.0f, 50.0f, nCnt, 0, 50.0f, 50.0f, 0.0f, MAX_TIMER, 4, "data\\TEXTURE\\number005.png", 0.1f);
 		}
 	}
 
@@ -86,7 +86,7 @@ HRESULT CTimer::Init(void)
 
 	if (m_pNumber3 != nullptr)
 	{
-		m_pNumber3->Init(150.0f, 200.0f, 0.0f, 50.0f ,0, 1.0f, 0.0f, 1, 0, "data\\TEXTURE\\coron.png", 1.0f);
+		m_pNumber3->Init(150.0f, 200.0f, 0.0f, 50.0f ,0, 0, 1.0f, 0.0f, 0.0f, 1, 0, "data\\TEXTURE\\coron.png", 1.0f);
 	}
 
 	return S_OK;

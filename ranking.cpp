@@ -33,7 +33,7 @@ CRanking::~CRanking()
 //****************************************************************
 // 初期化
 //****************************************************************
-HRESULT CRanking::Init(HWND hWnd)
+HRESULT CRanking::Init(void)
 {
 	// 読み込み
 	LoadFile();
@@ -202,7 +202,7 @@ void CRanking::Change(void)
 //****************************************************************
 void CRanking::LoadFile(void)
 {
-	ifstream pFile("data\\RANKING\\Ranking.txt");
+	ifstream pFile("data\\Ranking.txt");
 	string line = {};
 
 	// ファイルが正常に開けたら
@@ -231,7 +231,7 @@ void CRanking::LoadFile(void)
 //****************************************************************
 void CRanking::WriteFile(void)
 {
-	ofstream outFile("data\\RANKING\\Ranking.txt");
+	ofstream outFile("data\\Ranking.txt");
 	string line = {};
 
 	// ファイルが正常に開けたら
@@ -260,14 +260,14 @@ void CRanking::InitNum(void)
 
 			if (m_pNumber1[nCnt][nNum] != nullptr)
 			{
-				m_pNumber1[nCnt][nNum]->Init(200.0f, 200.0f, 0.0f, 50.0f, nCnt, 50.0f, 50.0f, MAX_TIMER, 4, "data\\TEXTURE\\number005.png", 0.1f);
+				m_pNumber1[nCnt][nNum]->Init(200.0f, 200.0f, 0.0f, 50.0f, nCnt, nNum, 50.0f, 50.0f, 50.0f, MAX_TIMER, 4, "data\\TEXTURE\\number005.png", 0.1f);
 			}
 
 			m_pNumber2[nCnt][nNum] = new CNumber;
 
 			if (m_pNumber2[nCnt][nNum] != nullptr)
 			{
-				m_pNumber2[nCnt][nNum]->Init(50.0f, 50.0f, 0.0f, 50.0f, nCnt, 50.0f, 50.0f, MAX_TIMER, 4, "data\\TEXTURE\\number005.png", 0.1f);
+				m_pNumber2[nCnt][nNum]->Init(50.0f, 50.0f, 0.0f, 50.0f, nCnt, nNum, 50.0f, 50.0f, 50.0f, MAX_TIMER, 4, "data\\TEXTURE\\number005.png", 0.1f);
 			}
 		}
 
@@ -275,7 +275,7 @@ void CRanking::InitNum(void)
 
 		if (m_pNumber3[nNum] != nullptr)
 		{
-			m_pNumber3[nNum]->Init(150.0f, 200.0f, 0.0f, 50.0f, 0, 1.0f, 0.0f, 1, 0, "data\\TEXTURE\\coron.png", 1.0f);
+			m_pNumber3[nNum]->Init(150.0f, 200.0f, 0.0f, 50.0f, 0, nNum, 1.0f, 0.0f, 50.0f, 1, 0, "data\\TEXTURE\\coron.png", 1.0f);
 		}
 	}
 }
