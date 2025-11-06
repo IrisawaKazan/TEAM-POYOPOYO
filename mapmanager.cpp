@@ -232,13 +232,13 @@ void CMapManager::CollisionItemtoPlayers(void)
 				const btCollisionObject* objB = manifold->getBody1();
 
 				// プレイヤーとアイテムが当たっていたら
-				const bool Condition = (objA == (*Players)->GetRB() && objB == (*Item)->GetRB()) || (objA == (*Item)->GetRB() && objB == (*Players)->GetRB());
+				const bool Condition = (objA == (*Players)->GetRB() && objB == (*Item)->GetCollisionObject()) || (objA == (*Item)->GetCollisionObject() && objB == (*Players)->GetRB());
 				
 				if (Condition == false)
 				{// 当たっていなかった場合
 					continue;
 				}
-				else
+				else if(Condition == true)
 				{// 当たっている場合
 					// アイテムを持っている状態に変更する
 					(*Item)->SetItemTake(true);
@@ -356,4 +356,16 @@ void CMapManager::Load(std::string Path)
 			m_vMapObject.push_back(LocalObject);
 		}
 	}
+
+	// アイテムの生成処理 Misaki
+	m_Item = CItem::Create(CItem::ITEM_LEFT,	// 種類
+		D3DXVECTOR3(800.0f, 50.0f, 150.0f), 	// 位置
+		D3DXVECTOR3(0.0f, 0.0f, 0.0f), 			// 向き
+		D3DXVECTOR3(1.2f, 1.2f, 1.2f),			// 拡大率
+		"data\\Model\\item\\item000.x");		// テキストファイル
+
+	// 連結
+	m_vMapItem.push_back(m_Item);
+
+
 }

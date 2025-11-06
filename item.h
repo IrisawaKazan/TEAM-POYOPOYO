@@ -39,14 +39,13 @@ public:
 	void SetItemTake(const bool bTake) { m_bTake = bTake; }
 
 	// リジットボディ
-	void UpdateRB(void);
-	btRigidBody* GetRB(void) { return m_RigitBody.get(); }
+	btGhostObject* GetCollisionObject(void) { return m_GhostObject.get(); }
 
 	// 静的メンバ関数
 	static CItem* Create(const ITEM type,	// 種類
 		const D3DXVECTOR3 pos,				// 位置
 		const D3DXVECTOR3 rot,				// 向き
-		const D3DXVECTOR3 scale,			// 向き
+		const D3DXVECTOR3 scale,			// 拡大率
 		const std::string FileName);		// モデルのファイル名
 
 private:
@@ -54,10 +53,11 @@ private:
 	// メンバ変数
 	ITEM m_type;											// アイテムの種類
 	D3DXVECTOR3 m_size;										// サイズ
+	D3DXVECTOR3 m_pos;										// 位置
 	bool m_bTake;											// 入手したかどうか
 	D3DXVECTOR3 m_RBOffset;									// オフセット
 	std::unique_ptr<btCollisionShape> m_CollisionShape;		// 当たり判定の形状
-	std::unique_ptr<btRigidBody> m_RigitBody;				// リジットボディー
+	std::unique_ptr<btGhostObject> m_GhostObject;			// ゴーストオブジェクト
 
 };
 
