@@ -221,6 +221,7 @@
     <ClCompile Include="titlemanager.cpp" />
     <ClCompile Include="titlemenu.cpp" />
     <ClCompile Include="tutorial.cpp" />
+    <ClCompile Include="tutorialBoard.cpp" />
     <ClCompile Include="uplift.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -277,6 +278,7 @@
     <ClInclude Include="titlemanager.h" />
     <ClInclude Include="titlemenu.h" />
     <ClInclude Include="tutorial.h" />
+    <ClInclude Include="tutorialBoard.h" />
     <ClInclude Include="uplift.h" />
   </ItemGroup>
   <ItemGroup>

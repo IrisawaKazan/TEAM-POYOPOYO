@@ -24,6 +24,7 @@
 #include "switch.h"
 #include "mapmanager.h"
 #include "item.h"
+#include "tutorialBoard.h"
 
 // 規定値を設定
 // プレイヤー
@@ -76,6 +77,8 @@ HRESULT CGame::Init(void)
 
 	// ナビゲーションのセット
 	CNavi::GetInstance()->set();
+
+	CTutorialBoard::Create();
 
 	CObject3D::Create(D3DXVECTOR3(0.0f,1000.0f,-1000.0f), D3DXVECTOR3((D3DX_PI * 0.5f),0.0f,0.0f),"data\\TEXTURE\\wall.jpg",D3DXVECTOR2(2000.0f,1000.0f));
 	CObject3D::Create(D3DXVECTOR3(-2000.0f,1000.0f,0.0f), D3DXVECTOR3((-D3DX_PI * 0.5f), (-D3DX_PI * 0.5f), 0.0f),"data\\TEXTURE\\wall.jpg",D3DXVECTOR2(1000.0f, 1000.0f));
