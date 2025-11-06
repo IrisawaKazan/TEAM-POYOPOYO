@@ -44,31 +44,30 @@ public:
 		D3DXMATRIX mtxWorld;
 	};
 
-	HRESULT Init(void);
-	void Uninit(void);
-	void Update(void);
-
-	D3DXVECTOR3 GetClickPos(void) const { return m_clickPos; }
-
-	void RegisterRayCastObject(LPD3DXMESH pMesh, const D3DXMATRIX& mtxWorld);
-	void CalculateIntersection(void);
-
-	void set() { SetMarker(); SetPointer(); SetDefaultEnable(); }
-	void remove() { RemoveMarker(); RemovePointer(); RemoveObject(); }
-
-	bool SetEnable(LIST list, bool enable);
-	bool GetEnable(LIST list) { return m_enableList.at(list); }
-
-	const std::vector<CNaviObject*>& GetObjects(void) const { return m_apObject; }
-	LIST GetList(void) const { return m_list; }
-
-	void HitCheckObject();
-
 	static CNavi* GetInstance()
 	{
 		static CNavi instance;
 		return &instance;
 	}
+
+	HRESULT Init(void);
+	void Uninit(void);
+	void Update(void);
+
+	void set() { SetMarker(); SetPointer(); SetDefaultEnable(); }
+	void remove() { RemoveMarker(); RemovePointer(); RemoveObject(); }
+
+	bool SetEnable(LIST list, bool enable);
+	bool GetEnable(LIST list) const { return m_enableList.at(list); }
+
+	void RegisterRayCastObject(LPD3DXMESH pMesh, const D3DXMATRIX& mtxWorld);
+	void CalculateIntersection(void);
+	void HitCheckObject();
+
+	const std::vector<CNaviObject*>& GetObjects(void) const { return m_apObject; }
+	LIST GetList(void) const { return m_list; }
+
+	D3DXVECTOR3 GetClickPos(void) const { return m_clickPos; }
 
 private:
 	CNavi() : m_screenPos{}, m_isController{}, m_pPointer{}, m_RayPos{ 0.0f,0.0f,0.0f }, m_RayDir{ 0.0f,0.0f,0.0f }, m_pos{ 0.0f,0.0f,0.0f }, m_clickPos{ 0.0f,0.0f,0.0f }, m_aRayCastTarget{}, m_pMarker{}, m_apObject{}, m_list{}, m_pNewObject{}, m_enableList{} {};
@@ -77,15 +76,10 @@ private:
 	void CheckController();
 	D3DXVECTOR2 SetScreenPos();
 	void UpdatePointer(bool enable);
-	D3DXVECTOR2 ConvertClientToDirectX(D3DXVECTOR2 clientPos);
-	D3DXVECTOR2 ConvertDirectXToClient(D3DXVECTOR2 directXPos);
 	void CreateRay(D3DXVECTOR2 mousePos);
 	D3DXVECTOR3 PlaneIntersect(float fHeight);
 	D3DXVECTOR3 MeshIntersect(const LPD3DXMESH& pMesh, const D3DXMATRIX& mtxWorld, const float enableAngle, D3DXVECTOR3* pNor = nullptr);
 	bool CheckLatent(const LPD3DXMESH& pMesh, const D3DXMATRIX& mtxWorld, float lengthSq);
-	D3DXMATRIX CreateMatrixFromNormal(D3DXVECTOR3 nor);
-	void MouseCursorSenter();
-	void MouseCursorCome();
 	void SetMarker(void);
 	void RemoveMarker(void) { m_pMarker = nullptr; }
 	void SetPointer(void);

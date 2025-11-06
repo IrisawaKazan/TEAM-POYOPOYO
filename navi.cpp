@@ -61,6 +61,137 @@ namespace
 			}
 		}
 	}
+
+	//--------------------------------
+    // クライアント座標をDirectXの座標に変換
+    //--------------------------------
+	D3DXVECTOR2 ConvertClientToDirectX(D3DXVECTOR2 clientPos)
+	{
+		// DirectXの画面サイズを取得
+		D3DXVECTOR2 directXScreenSize = { SCREEN_WIDTH,SCREEN_HEIGHT };
+
+		// DirectXデバイスに登録されているウインドウのサイズを取得
+		LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
+		D3DDEVICE_CREATION_PARAMETERS creationParams{};
+		D3DXVECTOR2 clientSize{ SCREEN_WIDTH,SCREEN_HEIGHT };
+		if (SUCCEEDED(pDevice->GetCreationParameters(&creationParams)))
+		{
+			RECT rect{};
+			if (creationParams.hFocusWindow != nullptr)
+			{
+				GetClientRect(creationParams.hFocusWindow, &rect);
+				clientSize = { static_cast<float>(rect.right - rect.left),static_cast<float>(rect.bottom - rect.top) };
+			}
+		}
+
+		// クライアント座標をDirectX座標に変換
+		D3DXVECTOR2 resultPos{};
+		resultPos.x = (clientPos.x / clientSize.x) * directXScreenSize.x;
+		resultPos.y = (clientPos.y / clientSize.y) * directXScreenSize.y;
+
+		return resultPos;
+	}
+
+	//--------------------------------
+	// DirectXの座標をクライアント座標に変換
+	//--------------------------------
+	D3DXVECTOR2 ConvertDirectXToClient(D3DXVECTOR2 directXPos)
+	{
+		// DirectXの画面サイズを取得
+		D3DXVECTOR2 directXScreenSize = { SCREEN_WIDTH,SCREEN_HEIGHT };
+
+		// DirectXデバイスに登録されているウインドウのサイズを取得
+		LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
+		D3DDEVICE_CREATION_PARAMETERS creationParams{};
+		D3DXVECTOR2 clientSize{ SCREEN_WIDTH,SCREEN_HEIGHT };
+		if (SUCCEEDED(pDevice->GetCreationParameters(&creationParams)))
+		{
+			RECT rect{};
+			if (creationParams.hFocusWindow != nullptr)
+			{
+				GetClientRect(creationParams.hFocusWindow, &rect);
+				clientSize = { static_cast<float>(rect.right - rect.left),static_cast<float>(rect.bottom - rect.top) };
+			}
+		}
+
+		// DirectXの座標をクライアント座標に変換
+		D3DXVECTOR2 resultPos{};
+		resultPos.x = (directXPos.x / directXScreenSize.x) * clientSize.x;
+		resultPos.y = (directXPos.y / directXScreenSize.y) * clientSize.y;
+
+		return resultPos;
+	}
+
+	//--------------------------------
+    // マウスカーソルを中心にする
+    //--------------------------------
+	void MouseCursorSenter()
+	{
+		D3DXVECTOR2 senter{ ConvertDirectXToClient({ float(SCREEN_WIDTH) * 0.5f, float(SCREEN_HEIGHT) * 0.5f }) };
+		POINT senterPoint{ LONG(senter.x),LONG(senter.y) };
+		LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
+		D3DDEVICE_CREATION_PARAMETERS creationParams{};
+		if (SUCCEEDED(pDevice->GetCreationParameters(&creationParams)) && creationParams.hFocusWindow != nullptr)
+		{
+			ClientToScreen(creationParams.hFocusWindow, &senterPoint);
+			SetCursorPos(senterPoint.x, senterPoint.y);
+		}
+	}
+
+	//--------------------------------
+	// マウスカーソルをナビゲーション座標に合わせる
+	//--------------------------------
+	void MouseCursorCome(D3DXVECTOR2 screenPos)
+	{
+		D3DXVECTOR2 senter{ ConvertDirectXToClient(screenPos) };
+		POINT senterPoint{ LONG(senter.x),LONG(senter.y) };
+		LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
+		D3DDEVICE_CREATION_PARAMETERS creationParams{};
+		if (SUCCEEDED(pDevice->GetCreationParameters(&creationParams)) && creationParams.hFocusWindow != nullptr)
+		{
+			ClientToScreen(creationParams.hFocusWindow, &senterPoint);
+			SetCursorPos(senterPoint.x, senterPoint.y);
+		}
+	}
+
+	//----------------------------------------------------------------
+    // 法線ベクトルから回転行列を作成する
+    //----------------------------------------------------------------
+	D3DXMATRIX CreateMatrixFromNormal(D3DXVECTOR3 nor)
+	{
+		D3DXVec3Normalize(&nor, &nor);
+
+		D3DXVECTOR3 newY_Axis = nor; // Y軸は法線
+		D3DXVECTOR3 newZ_Axis;
+		D3DXVECTOR3 newX_Axis;
+
+		D3DXVECTOR3 referenceForward(0.0f, 0.0f, 1.0f); // 基準となる前方
+
+		if (fabsf(D3DXVec3Dot(&newY_Axis, &referenceForward)) > 0.999f)
+		{// もし法線がほぼ真上または真下を向いている
+			// 基準となる前方を、ワールドの上方向(0,1,0)に変更する
+			referenceForward = VEC_UP;
+		}
+
+		// 基準となる前方から、法線に平行な成分を引くことで、平面上に投影する
+		D3DXVECTOR3 parallelPart = D3DXVec3Dot(&referenceForward, &newY_Axis) * newY_Axis;
+		newZ_Axis = referenceForward - parallelPart;
+		D3DXVec3Normalize(&newZ_Axis, &newZ_Axis);
+
+		// Y x Z = X
+		D3DXVec3Cross(&newX_Axis, &newY_Axis, &newZ_Axis);
+		D3DXVec3Normalize(&newX_Axis, &newX_Axis);
+
+		// 行列を組み立てる
+		D3DXMATRIX mtxRot;
+		D3DXMatrixIdentity(&mtxRot);
+
+		mtxRot._11 = newX_Axis.x; mtxRot._12 = newX_Axis.y; mtxRot._13 = newX_Axis.z;
+		mtxRot._21 = newY_Axis.x; mtxRot._22 = newY_Axis.y; mtxRot._23 = newY_Axis.z;
+		mtxRot._31 = newZ_Axis.x; mtxRot._32 = newZ_Axis.y; mtxRot._33 = newZ_Axis.z;
+
+		return mtxRot;
+	}
 }
 
 //--------------------------------
@@ -320,7 +451,7 @@ void CNavi::CheckController()
 	{
 		if (m_isController)
 		{
-			MouseCursorCome();
+			MouseCursorCome(m_screenPos);
 			SetCursor(true);
 		}
 		m_isController = false;
@@ -387,66 +518,6 @@ void CNavi::UpdatePointer(bool enable)
 			m_pPointer->SetPosition(D3DXVECTOR3(-float(SCREEN_WIDTH), -float(SCREEN_HEIGHT), 0.0f));
 		}
 	}
-}
-
-//--------------------------------
-// クライアント座標をDirectXの座標に変換
-//--------------------------------
-D3DXVECTOR2 CNavi::ConvertClientToDirectX(D3DXVECTOR2 clientPos)
-{
-	// DirectXの画面サイズを取得
-	D3DXVECTOR2 directXScreenSize = { SCREEN_WIDTH,SCREEN_HEIGHT };
-
-	// DirectXデバイスに登録されているウインドウのサイズを取得
-	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
-	D3DDEVICE_CREATION_PARAMETERS creationParams{};
-	D3DXVECTOR2 clientSize{ SCREEN_WIDTH,SCREEN_HEIGHT };
-	if (SUCCEEDED(pDevice->GetCreationParameters(&creationParams)))
-	{
-		RECT rect{};
-		if (creationParams.hFocusWindow != nullptr)
-		{
-			GetClientRect(creationParams.hFocusWindow, &rect);
-			clientSize = { static_cast<float>(rect.right - rect.left),static_cast<float>(rect.bottom - rect.top) };
-		}
-	}
-
-	// クライアント座標をDirectX座標に変換
-	D3DXVECTOR2 resultPos{};
-	resultPos.x = (clientPos.x / clientSize.x) * directXScreenSize.x;
-	resultPos.y = (clientPos.y / clientSize.y) * directXScreenSize.y;
-
-	return resultPos;
-}
-
-//--------------------------------
-// DirectXの座標をクライアント座標に変換
-//--------------------------------
-D3DXVECTOR2 CNavi::ConvertDirectXToClient(D3DXVECTOR2 directXPos)
-{
-	// DirectXの画面サイズを取得
-	D3DXVECTOR2 directXScreenSize = { SCREEN_WIDTH,SCREEN_HEIGHT };
-
-	// DirectXデバイスに登録されているウインドウのサイズを取得
-	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
-	D3DDEVICE_CREATION_PARAMETERS creationParams{};
-	D3DXVECTOR2 clientSize{ SCREEN_WIDTH,SCREEN_HEIGHT };
-	if (SUCCEEDED(pDevice->GetCreationParameters(&creationParams)))
-	{
-		RECT rect{};
-		if (creationParams.hFocusWindow != nullptr)
-		{
-			GetClientRect(creationParams.hFocusWindow, &rect);
-			clientSize = { static_cast<float>(rect.right - rect.left),static_cast<float>(rect.bottom - rect.top) };
-		}
-	}
-
-	// DirectXの座標をクライアント座標に変換
-	D3DXVECTOR2 resultPos{};
-	resultPos.x = (directXPos.x / directXScreenSize.x) * clientSize.x;
-	resultPos.y = (directXPos.y / directXScreenSize.y) * clientSize.y;
-
-	return resultPos;
 }
 
 //--------------------------------
@@ -708,77 +779,6 @@ bool CNavi::CheckLatent(const LPD3DXMESH& pMesh, const D3DXMATRIX& mtxWorld, flo
 
 	// 隠していない
 	return false;
-}
-
-//----------------------------------------------------------------
-// 法線ベクトルから回転行列を作成する
-//----------------------------------------------------------------
-D3DXMATRIX CNavi::CreateMatrixFromNormal(D3DXVECTOR3 nor)
-{
-	D3DXVec3Normalize(&nor, &nor);
-
-	D3DXVECTOR3 newY_Axis = nor; // Y軸は法線
-	D3DXVECTOR3 newZ_Axis;
-	D3DXVECTOR3 newX_Axis;
-
-	D3DXVECTOR3 referenceForward(0.0f, 0.0f, 1.0f); // 基準となる前方
-
-	if (fabsf(D3DXVec3Dot(&newY_Axis, &referenceForward)) > 0.999f)
-	{// もし法線がほぼ真上または真下を向いている
-		// 基準となる前方を、ワールドの上方向(0,1,0)に変更する
-		referenceForward = VEC_UP;
-	}
-
-	// 基準となる前方から、法線に平行な成分を引くことで、平面上に投影する
-	D3DXVECTOR3 parallelPart = D3DXVec3Dot(&referenceForward, &newY_Axis) * newY_Axis;
-	newZ_Axis = referenceForward - parallelPart;
-	D3DXVec3Normalize(&newZ_Axis, &newZ_Axis);
-
-	// Y x Z = X
-	D3DXVec3Cross(&newX_Axis, &newY_Axis, &newZ_Axis);
-	D3DXVec3Normalize(&newX_Axis, &newX_Axis);
-
-	// 行列を組み立てる
-	D3DXMATRIX mtxRot;
-	D3DXMatrixIdentity(&mtxRot);
-
-	mtxRot._11 = newX_Axis.x; mtxRot._12 = newX_Axis.y; mtxRot._13 = newX_Axis.z;
-	mtxRot._21 = newY_Axis.x; mtxRot._22 = newY_Axis.y; mtxRot._23 = newY_Axis.z;
-	mtxRot._31 = newZ_Axis.x; mtxRot._32 = newZ_Axis.y; mtxRot._33 = newZ_Axis.z;
-
-	return mtxRot;
-}
-
-//--------------------------------
-// マウスカーソルを中心にする
-//--------------------------------
-void CNavi::MouseCursorSenter()
-{
-	D3DXVECTOR2 senter{ ConvertDirectXToClient({ float(SCREEN_WIDTH) * 0.5f, float(SCREEN_HEIGHT) * 0.5f }) };
-	POINT senterPoint{ LONG(senter.x),LONG(senter.y) };
-	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
-	D3DDEVICE_CREATION_PARAMETERS creationParams{};
-	if (SUCCEEDED(pDevice->GetCreationParameters(&creationParams)) && creationParams.hFocusWindow != nullptr)
-	{
-		ClientToScreen(creationParams.hFocusWindow, &senterPoint);
-		SetCursorPos(senterPoint.x, senterPoint.y);
-	}
-}
-
-//--------------------------------
-// マウスカーソルをナビゲーション座標に合わせる
-//--------------------------------
-void CNavi::MouseCursorCome()
-{
-	D3DXVECTOR2 senter{ ConvertDirectXToClient(m_screenPos) };
-	POINT senterPoint{ LONG(senter.x),LONG(senter.y) };
-	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
-	D3DDEVICE_CREATION_PARAMETERS creationParams{};
-	if (SUCCEEDED(pDevice->GetCreationParameters(&creationParams)) && creationParams.hFocusWindow != nullptr)
-	{
-		ClientToScreen(creationParams.hFocusWindow, &senterPoint);
-		SetCursorPos(senterPoint.x, senterPoint.y);
-	}
 }
 
 //--------------------------------

@@ -316,10 +316,10 @@
       <Filter>ヘッダー</Filter>
     </ClInclude>
     <ClInclude Include="goal.h">
-      <Filter>ソース</Filter>
+      <Filter>ヘッダー</Filter>
     </ClInclude>
     <ClInclude Include="tutorialBoard.h">
-      <Filter>ソース</Filter>
+      <Filter>ヘッダー</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
