@@ -8,6 +8,9 @@
 // インクルード
 #include "item.h"
 #include "modelmanager.h"
+#include "game.h"
+#include "navi.h"
+#include "tutorialBoard.h"
 
 //***************************************
 // コンストラクタ
@@ -145,6 +148,11 @@ void CItem::Update(void)
 			// 終了処理
 			Uninit();
 
+			// チュートリアル表示
+			CGame::GetTutorialBoard()->SetUp("data\\TEXTURE\\tutorial_001.png");
+
+			// アイテムの有効化
+			CNavi::GetInstance()->SetEnable(CNavi::LIST::LeftArrow, true);
 		}
 	}
 
