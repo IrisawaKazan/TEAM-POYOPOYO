@@ -62,6 +62,7 @@ public:
 	static void ResetPlayer(void);
 
 	// ÉQÉbÉ^Å[
+	static CTutorialBoard* GetTutorialBoard(void) { return m_pTutorialBoard; }
 	static CPlayerManager* GetPlayerManager(void) { return m_pPlayerManager; }; // sato Add
 
 private:
