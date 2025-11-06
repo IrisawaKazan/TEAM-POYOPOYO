@@ -149,6 +149,7 @@
     <ClCompile Include="math.cpp">
       <Filter>ソース</Filter>
     </ClCompile>
+    <ClCompile Include="tutorialBoard.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="arrow.h">
@@ -311,6 +312,7 @@
       <Filter>ヘッダー</Filter>
     </ClInclude>
     <ClInclude Include="goal.h" />
+    <ClInclude Include="tutorialBoard.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ソース">

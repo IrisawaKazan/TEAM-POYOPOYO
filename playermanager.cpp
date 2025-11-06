@@ -53,8 +53,10 @@ void CPlayerManager::Update(void)
 {
 	bool bPause = CManager::isPause();
 
+	bool Istutorial = CManager::isTutorial();
+
 	// ポーズ中だったら
-	if (bPause != true)
+	if (bPause != true && Istutorial != true)
 	{
 		// タイマーを進める
 		m_Timer++;

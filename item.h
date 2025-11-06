@@ -36,7 +36,7 @@ public:
 	void Draw(void);
 
 	// アイテムを入手状態の設定処理
-	void SetItemTake(const bool bTake);
+	void SetItemTake(const bool bTake) { m_bTake = bTake; }
 
 	// リジットボディ
 	void UpdateRB(void);

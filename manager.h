@@ -53,6 +53,7 @@ public:
 	static void ChangePause(void) { m_isPause = !m_isPause; };
 	static void OffPause(void) { m_isPause = false; };
 	static void OnPause(void) { m_isPause = true; };
+	static void SetTutorial(const bool Setter) { m_isNowTutorial = Setter; };
 	static void SetClear(const bool isClear) { m_isClear = isClear; };
 
 	// ゲッター
@@ -77,6 +78,8 @@ public:
 
 	// 条件式の関数か
 	static bool isPause(void) { return m_isPause; };
+	static bool isTutorial(void) { return m_isNowTutorial; };
+
 private:
 	// 静的メンバ変数
 	static CRenderer* m_Renderer;				// レンダラー生成用
@@ -91,6 +94,7 @@ private:
 	static CFade* m_pFade;						// 画面遷移用のフェードのインスタンス
 	static std::unique_ptr<btDiscreteDynamicsWorld> m_pDynamicsWorld;				// 物理世界
 	static bool m_isPause;						// ポーズ中かどうか
+	static bool m_isNowTutorial;				// tutorial中かどうか
 	static bool m_isClear;						// 敵を全滅させたかどうか
 
 	std::unique_ptr<btDbvtBroadphase> m_pBroadPhase;					// 衝突判定のクラス

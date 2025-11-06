@@ -54,6 +54,14 @@ END
 // remains consistent on all systems.
 IDI_ICON1               ICON                    "data\\ICON\\Test.ico"
 
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Cursor
+//
+
+IDC_CURSOR1             CURSOR                  "data\\CURSOR\\Test.cur"
+
 #endif    // “ú–{Œê (“ú–{) resources
 /////////////////////////////////////////////////////////////////////////////
 

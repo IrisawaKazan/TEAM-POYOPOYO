@@ -20,6 +20,7 @@ class CMapEditer;
 class CPauseManager;
 class CPlayerManager;
 class CMapManager;
+class CTutorialBoard;
 
 // ゲームシーンクラスを定義
 class CGame : public CScene
@@ -61,23 +62,26 @@ public:
 	static void ResetPlayer(void);
 
 	// ゲッター
-	static bool GetPause(void) { return m_isPause; };
+	static CTutorialBoard* GetTutorialBoard(void) { return m_pTutorialBoard; }
 	static CPlayerManager* GetPlayerManager(void) { return m_pPlayerManager; }; // sato Add
 
 private:
 	// ナビゲーションオブジェクトUIのテクスチャリスト
-	static constexpr std::array<const char*, 4u> NAVI_UI_TEXTURES =
+	static constexpr std::array<const char*, 6u> NAVI_UI_TEXTURES =
 	{
 		"data/TEXTURE/UI/ArrowMark002.png",
 		"data/TEXTURE/UI/ArrowMark001.png",
 		"data/TEXTURE/UI/ArrowMark003.png",
-		"data/TEXTURE/UI/ArrowMark000.png"
+		"data/TEXTURE/UI/ArrowMark000.png",
+		"data/TEXTURE/coron.png",
+		"data/TEXTURE/ue.jpg"
 	};
 
 	// 静的メンバ変数
 	static CPauseManager* m_pPauseManager;				// ポーズマネージャーへのポインタ
 	static CPlayerManager* m_pPlayerManager;			// プレイヤーマネージャー
 	static CMapManager* m_pMapManager;			// プレイヤーマネージャー
-	static bool m_isPause;								// ポーズ中かどうか
+
+	static CTutorialBoard* m_pTutorialBoard;
 };
 #endif // !_GAME_H_
