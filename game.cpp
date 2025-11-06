@@ -41,7 +41,7 @@ const D3DXVECTOR3 CGame::Config::Sky::Pos = VEC3_NULL;
 CPauseManager* CGame::m_pPauseManager = NULL;
 CPlayerManager* CGame::m_pPlayerManager = NULL;
 CMapManager* CGame::m_pMapManager = NULL;
-bool CGame::m_isPause = false;
+CTutorialBoard* CGame::m_pTutorialBoard = NULL;
 
 using namespace std;
 
@@ -78,7 +78,7 @@ HRESULT CGame::Init(void)
 	// ナビゲーションのセット
 	CNavi::GetInstance()->set();
 
-	CTutorialBoard::Create();
+	m_pTutorialBoard = CTutorialBoard::Create();
 
 	CObject3D::Create(D3DXVECTOR3(0.0f,1000.0f,-1000.0f), D3DXVECTOR3((D3DX_PI * 0.5f),0.0f,0.0f),"data\\TEXTURE\\wall.jpg",D3DXVECTOR2(2000.0f,1000.0f));
 	CObject3D::Create(D3DXVECTOR3(-2000.0f,1000.0f,0.0f), D3DXVECTOR3((-D3DX_PI * 0.5f), (-D3DX_PI * 0.5f), 0.0f),"data\\TEXTURE\\wall.jpg",D3DXVECTOR2(1000.0f, 1000.0f));
@@ -155,6 +155,10 @@ void CGame::Update(void)
 	{
 		m_pPlayerManager->Update();
 	}
+	if (m_pTutorialBoard != NULL)
+	{
+		m_pTutorialBoard->Update();
+	}
 }
 
 //***************************************
@@ -182,6 +186,12 @@ void CGame::Uninit(void)
 	if (m_pMapManager != nullptr)
 	{
 		m_pMapManager->Uninit();
+	}
+
+	if (m_pTutorialBoard != nullptr)
+	{
+		m_pTutorialBoard->Uninit();
+		m_pTutorialBoard = nullptr;
 	}
 
 	delete this;

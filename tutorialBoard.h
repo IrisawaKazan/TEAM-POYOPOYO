@@ -13,7 +13,7 @@
 // ëOï˚êÈåæ
 class CObject2D;
 
-class CTutorialBoard : public CObject
+class CTutorialBoard
 {
 public:
 	CTutorialBoard();
@@ -22,9 +22,12 @@ public:
 	HRESULT Init(void);
 	void Uninit(void);
 	void Update(void);
-	void Draw(void);
 
 	static CTutorialBoard* Create(void);
+
+	void SetUp(std::string boardpath);
+
+	bool GetProgress(void) { return m_Isprogress; }
 
 private:
 	CObject2D* m_pBackground;	// 

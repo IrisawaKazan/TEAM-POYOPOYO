@@ -32,6 +32,7 @@ CLight* CManager::m_pLight = NULL;
 CScene* CManager::m_pScene = NULL;
 CFade* CManager::m_pFade = NULL;
 bool CManager::m_isPause = false;
+bool CManager::m_isNowTutorial = false;
 bool CManager::m_isClear = false;
 
 //***************************************
@@ -220,7 +221,7 @@ void CManager::Update()
 	// ナビの更新 sato Add
 	CNavi::GetInstance()->Update();
 
-	if (m_isPause == false)
+	if (m_isPause == false && m_isNowTutorial == false)
 	{
 		// 物理世界でシュミレーションを実行
 		m_pDynamicsWorld->stepSimulation(btScalar(GetFPS()), 10, 0.016f);
@@ -242,7 +243,7 @@ void CManager::Update()
 		m_pFade->Update();
 	}
 
-	if (m_isPause == false)
+	if (m_isPause == false && m_isNowTutorial == false)
 	{
 		if (m_Renderer != NULL)
 		{
