@@ -23,6 +23,9 @@
 using namespace nlohmann;
 using namespace std;
 
+// 静的メンバ変数
+bool CMapManager::m_bGoal = false;
+
 //***************************************
 // デストラクタ
 //***************************************
