@@ -15,7 +15,7 @@ class CObject2D;
 class CNaviUI : public CObject
 {
 public:
-	CNaviUI() : CObject(7), m_pObjects{}, m_objectTexturePaths{}, m_pos{}, m_size{} {};
+	CNaviUI() : CObject(7), m_pFrames{}, m_pObjects{}, m_objectTexturePaths{}, m_pos{}, m_size{} {};
 	~CNaviUI() {};
 	static CNaviUI* Create(const char* frameTexturePath, std::vector<const char*> objectTexturePaths, D3DXVECTOR3 pos, D3DXVECTOR2 size);
 
@@ -32,7 +32,7 @@ public:
 private:
 	void SetObjectUI(void);
 
-	CObject2D* m_pFrame;                           // UIフレーム
+	std::array<CObject2D*, 3u> m_pFrames;          // UIフレーム
 	std::array<CObject2D*, 3u> m_pObjects;         // 2Dオブジェクト配列
 	const char* m_frameTexturePath;                // フレームのテクスチャ
 	std::vector<const char*> m_objectTexturePaths; // ナビゲーションオブジェクトのテクスチャ配列
