@@ -149,6 +149,8 @@ void CTimer::Update(void)
 
 		m_nTime = 0;
 	}
+
+	m_nTimer++;
 }
 
 //----------------------------------------

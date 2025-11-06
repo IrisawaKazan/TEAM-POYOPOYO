@@ -37,7 +37,8 @@ public:
 	void Draw(void);
 
 private:
-	int m_Time;
+	int m_nMin;	// •ª
+	int m_nSec;	// •b
 };
 
 #endif // !_RANKING_H_

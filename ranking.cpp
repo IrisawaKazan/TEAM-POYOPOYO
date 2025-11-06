@@ -1,44 +1,80 @@
+//****************************************************************
+//
+// ランキングの処理[ranking.cpp]
+// Author Kensaku Hatori
+//
+//****************************************************************
 #include "ranking.h"
 
 using namespace std;
 
+//****************************************************************
+// コンストラクタ
+//****************************************************************
 CRanking::CRanking()
 {
-	m_Time = 0;
+	m_nMin = NULL;
+	m_nSec = NULL;
 	Init();
 }
 
+//****************************************************************
+// デストラクタ
+//****************************************************************
 CRanking::~CRanking()
 {
 
 }
 
+//****************************************************************
+// 初期化
+//****************************************************************
 HRESULT CRanking::Init(void)
 {
-	ifstream pFile("data\\Ranking.txt");
-	string line = {};
+	ifstream pFileMin("data\\Ranking.txt");
+	string Minline = {};
 
-	getline(pFile, line);
+	getline(pFileMin, Minline);
 
-	istringstream iss(line);
+	istringstream issMin(Minline);
 
-	iss >> m_Time;
+	issMin >> m_nMin;
 
-	pFile.close();
+	pFileMin.close();
+
+	ifstream pFileSec("data\\Ranking.txt");
+	string Secline = {};
+
+	getline(pFileSec, Secline);
+
+	istringstream issSec(Secline);
+
+	issSec >> m_nSec;
+
+	pFileSec.close();
 
 	return S_OK;
 }
 
+//****************************************************************
+// 破棄
+//****************************************************************
 void CRanking::Uninit(void)
 {
 
 }
 
+//****************************************************************
+// 更新
+//****************************************************************
 void CRanking::Update(void)
 {
 
 }
 
+//****************************************************************
+// 描画
+//****************************************************************
 void CRanking::Draw(void)
 {
 
