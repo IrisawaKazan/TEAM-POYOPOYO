@@ -23,7 +23,7 @@ public:
 
 	CNumber();
 	~CNumber();
-	HRESULT Init(float fX1, float fX2, int nCnt, float fNum1, float fNum2, int nNum, int nAdd, const char* FileName, float fx);
+	HRESULT Init(float fX1, float fX2, float fY1,float fY2,int nCnt, int nCnt2, float fNum1, float fNum2, float fNum3, int nNum, int nAdd, const char* FileName, float fx);
 	void Uninit(void);
 	void Update(void);
 	void Draw(void);

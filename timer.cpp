@@ -7,6 +7,7 @@
 #include"timer.h"
 #include"number.h"
 #include"manager.h"
+#include "mapmanager.h"
 
 // 静的メンバ変数宣言
 CNumber* CTimer::m_pNumber1[MAX_TIMER] = {};
@@ -70,14 +71,14 @@ HRESULT CTimer::Init(void)
 
 		if (m_pNumber1[nCnt] != nullptr)
 		{
-			m_pNumber1[nCnt]->Init(200.0f, 200.0f, nCnt, 50.0f, 50.0f, MAX_TIMER, 4, "data\\TEXTURE\\number005.png", 0.1f);
+			m_pNumber1[nCnt]->Init(200.0f, 200.0f, 0.0f, 50.0f, nCnt, 0, 50.0f, 50.0f, 0.0f, MAX_TIMER, 4, "data\\TEXTURE\\number005.png", 0.1f);
 		}
 
 		m_pNumber2[nCnt] = new CNumber;
 
 		if (m_pNumber2[nCnt] != nullptr)
 		{
-			m_pNumber2[nCnt]->Init(50.0f, 50.0f, nCnt, 50.0f, 50.0f, MAX_TIMER, 4, "data\\TEXTURE\\number005.png", 0.1f);
+			m_pNumber2[nCnt]->Init(50.0f, 50.0f, 0.0f, 50.0f, nCnt, 0, 50.0f, 50.0f, 0.0f, MAX_TIMER, 4, "data\\TEXTURE\\number005.png", 0.1f);
 		}
 	}
 
@@ -85,7 +86,7 @@ HRESULT CTimer::Init(void)
 
 	if (m_pNumber3 != nullptr)
 	{
-		m_pNumber3->Init(150.0f, 200.0f, 0, 1.0f, 0.0f, 1, 0, "data\\TEXTURE\\coron.png", 1.0f);
+		m_pNumber3->Init(150.0f, 200.0f, 0.0f, 50.0f ,0, 0, 1.0f, 0.0f, 0.0f, 1, 0, "data\\TEXTURE\\coron.png", 1.0f);
 	}
 
 	return S_OK;
@@ -131,6 +132,9 @@ void CTimer::Uninit(void)
 //----------------------------------------
 void CTimer::Update(void)
 {
+	bool bTime = CMapManager::GetGoal();
+
+	// 秒の加算
 	m_nNs++;
 
 	// 1秒経過
@@ -150,7 +154,12 @@ void CTimer::Update(void)
 		m_nTime = 0;
 	}
 
-	m_nTimer++;
+	// ゴールしていなかったら
+	if (bTime != true)
+	{
+		// 総タイムを加算
+		m_nTimer++;
+	}
 }
 
 //----------------------------------------
@@ -193,45 +202,24 @@ void CTimer::SetTime(int nTime)
 	int nData = 100;				// 3桁
 	int nData1 = 10;				// 2桁
 
-	m_nTime -= nTime;
-
-	for (int nCnt1 = 0; nCnt1 < MAX_TIMER; nCnt1++)
+	m_nTime += nTime;
+	
+	for (int nCnt = 0; nCnt < MAX_TIMER; nCnt++)
 	{
-		if (nCnt1 == 0)
+		if (nCnt == 0)
 		{
 			// 0番目だったら
-			aPosTexU[0] = m_nTime / nData;
+			aPosTexU[0] = m_nMin / nData;
 		}
 		else
 		{
 			// 0番目以外
-			aPosTexU[nCnt1] = (m_nTime % nData) / nData1;
+			aPosTexU[nCnt] = (m_nMin % nData) / nData1;
 			nData = nData / 10;
 			nData1 = nData1 / 10;
 		}
 
-		m_pNumber2[nCnt1]->SetNumber(aPosTexU[nCnt1], 4);
-	}
-
-	int nData2 = 100;
-	int nData3 = 10;
-	
-	for (int nCnt2 = 0; nCnt2 < MAX_TIMER; nCnt2++)
-	{
-		if (nCnt2 == 0)
-		{
-			// 0番目だったら
-			aPosTexU[0] = m_nMin / nData2;
-		}
-		else
-		{
-			// 0番目以外
-			aPosTexU[nCnt2] = (m_nMin % nData2) / nData3;
-			nData2 = nData2 / 10;
-			nData3 = nData3 / 10;
-		}
-
-		m_pNumber1[nCnt2]->SetNumber(aPosTexU[nCnt2], 4);
+		m_pNumber1[nCnt]->SetNumber(aPosTexU[nCnt], 4);
 	}
 }
 

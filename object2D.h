@@ -25,8 +25,8 @@ public:
 	void Uninit(void);
 	void Update(void);
 	void Draw(void);
-	static CObject2D* Create(const D3DXVECTOR3 Pos, const D3DXVECTOR3 Rot);
-	static CObject2D* Create(const D3DXVECTOR3 Pos, const D3DXVECTOR3 Rot,const D3DXVECTOR2 Size);
+	static CObject2D* Create(const D3DXVECTOR3 Pos, const D3DXVECTOR3 Rot, int priority = 4);
+	static CObject2D* Create(const D3DXVECTOR3 Pos, const D3DXVECTOR3 Rot,const D3DXVECTOR2 Size, int priority = 4);
 
 	// セッター
 	void SetPosition(const D3DXVECTOR3 Pos);
