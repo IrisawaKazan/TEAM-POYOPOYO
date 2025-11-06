@@ -66,12 +66,14 @@ public:
 
 private:
 	// ナビゲーションオブジェクトUIのテクスチャリスト
-	static constexpr std::array<const char*, 4u> NAVI_UI_TEXTURES =
+	static constexpr std::array<const char*, 6u> NAVI_UI_TEXTURES =
 	{
 		"data/TEXTURE/UI/ArrowMark002.png",
 		"data/TEXTURE/UI/ArrowMark001.png",
 		"data/TEXTURE/UI/ArrowMark003.png",
-		"data/TEXTURE/UI/ArrowMark000.png"
+		"data/TEXTURE/UI/ArrowMark000.png",
+		"data/TEXTURE/coron.png",
+		"data/TEXTURE/ue.jpg"
 	};
 
 	// 静的メンバ変数

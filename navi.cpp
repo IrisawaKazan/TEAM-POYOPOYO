@@ -95,6 +95,11 @@ HRESULT CNavi::Init(void)
 	// 選ばれているオブジェクト
 	m_list = LIST::RightArrow;
 
+	for (LIST idx = LIST(0); idx < LIST::Max; idx = LIST(unsigned char(idx) + unsigned char(1)))
+	{// 有効化リストの作成と初期化
+		m_enableList.try_emplace(idx, false);
+	}
+
 	// ナビマーカーを初期化
 	m_pMarker = nullptr;
 
@@ -142,12 +147,20 @@ void CNavi::Update(void)
 	}
 
 	if (CManager::GetInputKeyboard()->GetTrigger(DIK_Q) || CManager::GetInputMouse()->GetMouseState().lZ > 0 || CManager::GetInputJoypad()->GetTrigger(CInputJoypad::JOYKEY_L1))
-	{// Qキーでオブジェクトを変更
-		m_list = static_cast<LIST>((static_cast<unsigned char>(m_list) + static_cast<unsigned char>(LIST::Max) - 1) % static_cast<unsigned char>(LIST::Max));
+	{// Qキーでオブジェクトを変更、有効化されていないオブジェクトはスキップ
+		while (true)
+		{
+			m_list = static_cast<LIST>((static_cast<unsigned char>(m_list) + static_cast<unsigned char>(LIST::Max) - 1) % static_cast<unsigned char>(LIST::Max));
+			if (GetEnable(m_list))break;
+		}
 	}
-	else if (CManager::GetInputKeyboard()->GetTrigger(DIK_E) || CManager::GetInputMouse()->GetMouseState().lZ < 0 || CManager::GetInputJoypad()->GetTrigger(CInputJoypad::JOYKEY_R1))
-	{// Eキーでオブジェクトを変更
-		m_list = static_cast<LIST>((static_cast<unsigned char>(m_list) + 1) % static_cast<unsigned char>(LIST::Max));
+	if (CManager::GetInputKeyboard()->GetTrigger(DIK_E) || CManager::GetInputMouse()->GetMouseState().lZ < 0 || CManager::GetInputJoypad()->GetTrigger(CInputJoypad::JOYKEY_R1))
+	{// Eキーでオブジェクトを変更、有効化されていないオブジェクトはスキップ
+		while (true)
+		{
+			m_list = static_cast<LIST>((static_cast<unsigned char>(m_list) + 1) % static_cast<unsigned char>(LIST::Max));
+			if (GetEnable(m_list))break;
+		}
 	}
 
 	if (m_pos.y > (MARKER_OFFSET.y + 1.0f) && (CManager::GetInputMouse()->OnDown(0) || CManager::GetInputJoypad()->GetTrigger(CInputJoypad::JOYKEY_R2) || CManager::GetInputJoypad()->GetTrigger(CInputJoypad::JOYKEY_A)))
@@ -173,10 +186,10 @@ void CNavi::Update(void)
 			// 矢印を作成
 			m_apObject.push_back(CArrow::Create(m_clickPos + D3DXVECTOR3(0.0f, OBJECT_HEIGHT, 0.0f), m_pMarker->GetRotMtx(), D3DXToRadian(0.0f), "data/TEXTURE/UI/ArrowMark001.png", m_pMarker->GetSize()));
 			break;
-		//case CNavi::LIST::Climb:
-		//	break;
-		//case CNavi::LIST::Attack:
-		//	break;
+		case CNavi::LIST::Climb:
+			break;
+		case CNavi::LIST::Jump:
+			break;
 		}
 		if (m_apObject.empty()) return;
 
@@ -184,6 +197,117 @@ void CNavi::Update(void)
 	}
 
 	m_aRayCastTarget.clear(); // レイキャスト対象オブジェクト配列をクリア
+}
+
+//--------------------------------
+// レイキャストの対象オブジェクトを登録
+//--------------------------------
+void CNavi::RegisterRayCastObject(LPD3DXMESH pMesh, const D3DXMATRIX& mtxWorld)
+{
+	// メッシュがNULLなら登録しない
+	if (pMesh == nullptr) return;
+
+	// オブジェクトを登録
+	RayCastTarget target;
+	target.pMesh = pMesh;
+	target.mtxWorld = mtxWorld;
+	m_aRayCastTarget.push_back(target);
+}
+
+//--------------------------------
+// 交点を計算
+//--------------------------------
+void CNavi::CalculateIntersection(void)
+{
+	D3DXVECTOR3 closestHitPos = MARKER_OFFSET; // 無効なヒット位置で初期化
+	float closestDistSq = -1.0f;               // 最も近い距離の「2乗」
+	D3DXMATRIX mtxRot{};                       // 回転行列
+
+	// 登録されたオブジェクトをループ
+	for (const RayCastTarget& target : m_aRayCastTarget)
+	{
+		// オブジェクトのメッシュと交差判定
+		D3DXVECTOR3 normal{ 0.0f,1.0f,0.0f };
+		D3DXVECTOR3 hitPos = MeshIntersect(target.pMesh, target.mtxWorld, ENABLE_ANGLE, &normal);
+
+		if (hitPos.y > (MARKER_OFFSET.y + 1.0f))
+		{// ヒットしたか？ (MeshIntersect が MARKER_OFFSET 以外を返したか)
+			// レイの始点から交点までの距離の2乗を計算
+			D3DXVECTOR3 vecToHit = hitPos - m_RayPos;
+			float distSq = D3DXVec3LengthSq(&vecToHit);
+
+			// 「初めてのヒット」または「既に見つけた点より近い」場合
+			if (closestDistSq < 0.0f || distSq < closestDistSq)
+			{
+				closestDistSq = distSq;                  // 距離を更新
+				closestHitPos = hitPos;                  // 交点を更新
+				mtxRot = CreateMatrixFromNormal(normal); // 回転行列を更新
+			}
+		}
+	}
+
+	// 登録されたオブジェクトをループ
+	for (const RayCastTarget& target : m_aRayCastTarget)
+	{
+		if (CheckLatent(target.pMesh, target.mtxWorld, closestDistSq))
+		{// 隠れていたら無効
+			m_pos = MARKER_OFFSET;
+			return;
+		}
+	}
+
+	// 最終的に最も近かった座標を登録
+	m_pos = closestHitPos;            // 位置
+	if (m_pMarker != nullptr)
+	{
+		m_pMarker->SetRotMtx(mtxRot); // 角度
+	}
+}
+
+//-----------------------------
+// オブジェクトの有効化
+//-----------------------------
+bool CNavi::SetEnable(LIST list, bool enable)
+{
+	auto it = m_enableList.find(list);
+	if (it != m_enableList.end())
+	{// キーが存在する場合
+		// 値を更新
+		it->second = enable;
+		return true;
+	}
+	else
+	{// キーが存在しない場合
+		return false;
+	}
+}
+
+//--------------------------------
+// ナビゲーションマーカーの作成
+//--------------------------------
+void CNavi::HitCheckObject()
+{
+	bool isRepeat = false; // オブジェクトが重なっているか判定用フラグ
+	do
+	{// オブジェクトが重なっているか判定
+		isRepeat = false;
+		for (auto pObject : m_apObject)
+		{// 既にあるオブジェクトと新しく作成したオブジェクトが重なっているか判定
+			if (pObject == m_pNewObject) continue; // 自分自身はスキップ
+
+			if (m_pNewObject->ReleaseTrigger(pObject->GetreleaseCollObject()))
+			{// 重なっている場合
+				// 古いオブジェクトを削除
+				pObject->RequestRelease();
+				SwapRemove(m_apObject, pObject);
+
+				isRepeat = true;
+				break; // 内側のループを抜けて再度判定を行う
+			}
+		}
+	} while (isRepeat);
+
+	m_apObject.shrink_to_fit(); // メモリの無駄を削減
 }
 
 //--------------------------------
@@ -373,71 +497,6 @@ void CNavi::CreateRay(D3DXVECTOR2 mousePos)
 	m_RayPos = vNear;                        // レイの始点はニアクリップ面上の点
 	m_RayDir = vFar - vNear;                 // ニアからファーへ向かうベクトル
 	D3DXVec3Normalize(&m_RayDir, &m_RayDir); // 方向ベクトルなので正規化する
-}
-
-//--------------------------------
-// レイキャストの対象オブジェクトを登録
-//--------------------------------
-void CNavi::RegisterRayCastObject(LPD3DXMESH pMesh, const D3DXMATRIX& mtxWorld)
-{
-	// メッシュがNULLなら登録しない
-	if (pMesh == nullptr) return;
-
-	// オブジェクトを登録
-	RayCastTarget target;
-	target.pMesh = pMesh;
-	target.mtxWorld = mtxWorld;
-	m_aRayCastTarget.push_back(target);
-}
-
-//--------------------------------
-// 交点を計算
-//--------------------------------
-void CNavi::CalculateIntersection(void)
-{
-	D3DXVECTOR3 closestHitPos = MARKER_OFFSET; // 無効なヒット位置で初期化
-	float closestDistSq = -1.0f;               // 最も近い距離の「2乗」
-	D3DXMATRIX mtxRot{};                       // 回転行列
-
-	// 登録されたオブジェクトをループ
-	for (const RayCastTarget& target : m_aRayCastTarget)
-	{
-		// オブジェクトのメッシュと交差判定
-		D3DXVECTOR3 normal{ 0.0f,1.0f,0.0f };
-		D3DXVECTOR3 hitPos = MeshIntersect(target.pMesh, target.mtxWorld, ENABLE_ANGLE, &normal);
-
-		if (hitPos.y > (MARKER_OFFSET.y + 1.0f))
-		{// ヒットしたか？ (MeshIntersect が MARKER_OFFSET 以外を返したか)
-			// レイの始点から交点までの距離の2乗を計算
-			D3DXVECTOR3 vecToHit = hitPos - m_RayPos;
-			float distSq = D3DXVec3LengthSq(&vecToHit);
-
-			// 「初めてのヒット」または「既に見つけた点より近い」場合
-			if (closestDistSq < 0.0f || distSq < closestDistSq)
-			{
-				closestDistSq = distSq;                  // 距離を更新
-				closestHitPos = hitPos;                  // 交点を更新
-				mtxRot = CreateMatrixFromNormal(normal); // 回転行列を更新
-			}
-		}
-	}
-
-	// 登録されたオブジェクトをループ
-	for (const RayCastTarget& target : m_aRayCastTarget)
-	{
-		if (CheckLatent(target.pMesh, target.mtxWorld, closestDistSq))
-		{// 隠れていたら無効
-			m_pos = MARKER_OFFSET;
-			return;
-		}
-	}
-
-	// 最終的に最も近かった座標を登録
-	m_pos = closestHitPos;            // 位置
-	if (m_pMarker != nullptr)
-	{
-		m_pMarker->SetRotMtx(mtxRot); // 角度
-	}
 }
 
 //--------------------------------
@@ -740,29 +799,13 @@ void CNavi::SetPointer(void)
 }
 
 //--------------------------------
-// ナビゲーションマーカーの作成
+// 有効か状態の初期化
 //--------------------------------
-void CNavi::HitCheckObject()
+void CNavi::SetDefaultEnable()
 {
-	bool isRepeat = false; // オブジェクトが重なっているか判定用フラグ
-	do
-	{// オブジェクトが重なっているか判定
-		isRepeat = false;
-		for (auto pObject : m_apObject)
-		{// 既にあるオブジェクトと新しく作成したオブジェクトが重なっているか判定
-			if (pObject == m_pNewObject) continue; // 自分自身はスキップ
-
-			if (m_pNewObject->ReleaseTrigger(pObject->GetreleaseCollObject()))
-			{// 重なっている場合
-				// 古いオブジェクトを削除
-				pObject->RequestRelease();
-				SwapRemove(m_apObject, pObject);
-
-				isRepeat = true;
-				break; // 内側のループを抜けて再度判定を行う
-			}
-		}
-	} while (isRepeat);
-
-	m_apObject.shrink_to_fit(); // メモリの無駄を削減
+	for (LIST idx = LIST(0); idx < LIST::Max; idx = LIST(unsigned char(idx) + unsigned char(1)))
+	{// 有効化リストの初期化
+		auto& enable = m_enableList.at(idx);
+		enable = DEFAULT_ENABLE[unsigned int(idx)];
+	}
 }

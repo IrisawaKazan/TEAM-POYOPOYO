@@ -34,6 +34,8 @@ CMapManager::~CMapManager()
 	// クリア
 	m_vMapObject.clear();
 	m_vMapSwitch.clear();
+	m_vMapItem.clear();
+
 }
 
 //***************************************
@@ -44,6 +46,7 @@ HRESULT CMapManager::Init(void)
 	// ベクターをクリア
 	m_vMapObject.clear();
 	m_vMapSwitch.clear();
+	m_vMapItem.clear();
 
 	m_bGoal = false;
 
@@ -95,8 +98,8 @@ void CMapManager::Update(void)
 	// ゴールとプレイヤーの当たり判定
 	CollisionGoaltoPlayers();
 
-	//// アイテムとプレイヤーの当たり判定
-	//CollisionItemtoPlayers();
+	// アイテムとプレイヤーの当たり判定
+	CollisionItemtoPlayers();
 
 }
 
@@ -209,9 +212,6 @@ void CMapManager::CollisionItemtoPlayers(void)
 	// 何組が衝突しているか
 	int numManifolds = CManager::GetDynamicsWorld()->getDispatcher()->getNumManifolds();
 
-	// 入手したかどうか
-	bool bTake = false;
-
 	// アイテムの配列にアクセス
 	for (auto Item = m_vMapItem.begin(); Item != m_vMapItem.end(); Item++)
 	{
@@ -240,7 +240,8 @@ void CMapManager::CollisionItemtoPlayers(void)
 				}
 				else
 				{// 当たっている場合
-					bTake = true;
+					// アイテムを持っている状態に変更する
+					(*Item)->SetItemTake(true);
 				}
 
 				// 処理を切り上げる

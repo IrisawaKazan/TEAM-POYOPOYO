@@ -56,7 +56,7 @@ HRESULT CPlayer::Init(void)
 	m_naviObjectCountMap = std::unordered_map<size_t, unsigned short>();
 	m_naviObjectIdxListOld = std::vector<size_t>();
 
-	m_state = STATE::NORMAL;            // 通常
+	m_state = STATE::Normal;            // 通常
 	m_turnPos = { 0.0f,-1000.0f,0.0f }; // 初期値
 	m_turnAngle = 0.0f;                 // 初期値
 
@@ -109,20 +109,22 @@ void CPlayer::Update(void)
 		switch (naviType)
 		{
 		case CNavi::TYPE::Arrow:
+		{
 			// Playerの位置と方向
 			D3DXVECTOR3 myPos = GetPos();
 
 			// 矢印の位置と方向
 			D3DXVECTOR3 objectPos = pos;                                       // 矢印の中心座標
-			D3DXVECTOR3 objectDir = D3DXVECTOR3(sinf(angle),0.0f,cosf(angle)); // 矢印の向き
+			D3DXVECTOR3 objectDir = D3DXVECTOR3(sinf(angle), 0.0f, cosf(angle)); // 矢印の向き
 
 			m_turnPos = CMath::GetNierToLineXZ(myPos, objectPos, objectDir); // 矢印のベクトル上の近い地点
 			m_turnAngle = angle;   // ターン方向
-			m_state = STATE::TURN; // ターン開始
+			m_state = STATE::Turn; // ターン開始
 			break;
-		//case CNavi::TYPE::Climb:
-		//	break;
-		//case CNavi::TYPE::Attack:
+		}
+		case CNavi::TYPE::Climb:
+			break;
+		case CNavi::TYPE::Jump:
 			break;
 		}
 
@@ -172,10 +174,11 @@ void CPlayer::Update(void)
 	switch (m_state)
 	{
 		// 通常
-	case CPlayer::STATE::NORMAL:
+	case CPlayer::STATE::Normal:
 		break;
 		// ターン
-	case CPlayer::STATE::TURN:
+	case CPlayer::STATE::Turn:
+	{
 		D3DXVECTOR3 pos = GetPos();
 		D3DXVECTOR3 space = m_turnPos - pos;
 		if (D3DXVec3Length(&space) <= TURN_RADIUS)
@@ -191,6 +194,13 @@ void CPlayer::Update(void)
 				Turn();
 			}
 		}
+		break;
+	}
+		// 登る
+	case CPlayer::STATE::Climb:
+		break;
+		// 跳ぶ
+	case CPlayer::STATE::Jump:
 		break;
 	}
 
@@ -246,5 +256,5 @@ void CPlayer::Turn()
 	// 元に戻す
 	m_turnPos = { 0.0f,-1000.0f,0.0f };
 	m_turnAngle = 0.0f;
-	m_state = STATE::NORMAL;
+	m_state = STATE::Normal;
 }
