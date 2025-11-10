@@ -125,7 +125,7 @@ void CCamera::Update(void)
 	UpdateMove();
 
 	// デバック用 sato
-//#ifdef _DEBUG
+#ifdef _DEBUG
 	// 通常のカメラに戻す(仮) sato
 	if (m_pInputKeyboard->GetTrigger(DIK_F2))
 	{
@@ -141,7 +141,7 @@ void CCamera::Update(void)
 			break;
 		}
 	}
-//#endif // _DEBUG
+#endif // _DEBUG
 }
 
 //***************************************
