@@ -16,6 +16,8 @@ const D3DXVECTOR3 CTitleManager::Config::Menu::Bace = { 250.0f,450.0f,0.0f };
 const D3DXVECTOR3 CTitleManager::Config::Logo::Apper = { 250.0f,0.0f,0.0f };
 const D3DXVECTOR3 CTitleManager::Config::Logo::Dest = { 250.0f,200.0f,0.0f };
 const D3DXVECTOR2 CTitleManager::Config::Logo::Size = { 200.0f,150.0f };
+const D3DXVECTOR3 CTitleManager::Config::BG::Apper = { SCREEN_WIDTH * 0.5f,SCREEN_HEIGHT * 0.5f,0.0f };	// Misaki
+const D3DXVECTOR2 CTitleManager::Config::BG::Size = { SCREEN_CENTER };									// Misaki
 
 // シングルトンを宣言
 CTitleManager* CTitleManager::m_Singleton = NULL;
@@ -34,14 +36,20 @@ HRESULT CTitleManager::Init(void)
 {
 	// 選んでいつメニュー
 	m_SelectMenu = CTitleMenu::START;
+
 	// メニューを一気に生成
 	for (int nCount = 0; nCount < CTitleMenu::MAX; nCount++)
 	{
 		CTitleMenu* pTitleMenu = CTitleMenu::Create(D3DXVECTOR3(CTitleManager::Config::Menu::Bace.x, CTitleManager::Config::Menu::Bace.y + CTitleManager::Config::Menu::OffSet * nCount, 0.0f), (CTitleMenu::Menu)nCount);
 		m_apTitleMenu.push_back(pTitleMenu);
 	}
+
 	//w ロゴを生成
 	m_TitleLogo = CTitleLogo::Create(CTitleManager::Config::Logo::Apper, VEC3_NULL, CTitleManager::Config::Logo::Size, CTitleManager::Config::Logo::FilePath);
+	
+	// タイトル背景を生成
+	m_TitleBG = CTitleBG::Create(CTitleManager::Config::BG::Apper, VEC3_NULL, CTitleManager::Config::BG::Size, CTitleManager::Config::BG::FilePath);
+
 	return S_OK;
 }
 
@@ -56,6 +64,7 @@ void CTitleManager::Uninit(void)
 		m_apTitleMenu.clear();
 		m_Singleton = NULL;
 	}
+
 	// 自分自身の破棄
 	Release();
 }
