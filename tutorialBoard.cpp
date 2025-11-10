@@ -8,6 +8,7 @@
 #include "tutorialBoard.h"
 #include "object2D.h"
 #include "input.h"
+#include "fade.h"
 
 //----------------------------------------
 // コンストラクタ
@@ -86,6 +87,8 @@ CTutorialBoard* CTutorialBoard::Create(void)
 
 void CTutorialBoard::SetUp(std::string boardpath)
 {
+	if (CFade::GetFadeSingle()->GetFade() != CFade::FADE_NONE) return;
+
 	m_pBackground->SetCol({ 0.0f, 0.0f, 0.0f, 0.4f });
 	m_pBoard->SetCol({ 1.0f, 1.0f, 1.0f, 1.0f });
 	m_pBoard->SetTexIndx(CTextureManager::Instance()->Register(boardpath));
