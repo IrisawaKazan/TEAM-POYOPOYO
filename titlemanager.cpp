@@ -12,7 +12,7 @@
 #include "sound.h"
 
 // ãKíËílÇê›íË
-const D3DXVECTOR3 CTitleManager::Config::Menu::Bace = { 250.0f,450.0f,0.0f };
+const D3DXVECTOR3 CTitleManager::Config::Menu::Bace = { 250.0f,500.0f,0.0f };
 const D3DXVECTOR3 CTitleManager::Config::Logo::Apper = { 250.0f,0.0f,0.0f };
 const D3DXVECTOR3 CTitleManager::Config::Logo::Dest = { 250.0f,200.0f,0.0f };
 const D3DXVECTOR2 CTitleManager::Config::Logo::Size = { 200.0f,150.0f };
