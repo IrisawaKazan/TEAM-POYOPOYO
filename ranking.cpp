@@ -118,34 +118,50 @@ void CRanking::Sort(void)
 	int nNowTime = CTimer::GetTimer();
 
 	// ƒ\[ƒg—pƒ[ƒJƒ‹•Ï”
-	int nCnt = 0;
 	int nData = 0;
 
-	if (m_nTime[MAX_NUM - 1] > nNowTime)
+	// 0•b‚¶‚á‚È‚©‚Á‚½‚ç
+	if (m_nTime[MAX_NUM - 1] >= 60)
 	{
-		m_nTime[MAX_NUM - 1] = nNowTime;
-		nCnt = MAX_NUM - 1;
+		// ”z—ñ‚ÌÅŒã‚Ì”’l‚ª¡‚Ì”’l‚æ‚è‘å‚«‚©‚Á‚½‚ç
+		if (m_nTime[MAX_NUM - 1] > nNowTime)
+		{
+			m_nTime[MAX_NUM - 1] = nNowTime;
+		}
+	}
+	else
+	{
+		if (m_nTime[MAX_NUM - 1] < nNowTime)
+		{
+			m_nTime[MAX_NUM - 1] = nNowTime;
+		}
 	}
 
 	for (int nCnt1 = 0; nCnt1 < MAX_NUM; nCnt1++)
 	{
 		for (int nCnt2 = nCnt1 + 1; nCnt2 < MAX_NUM; nCnt2++)
 		{
-			if (m_nTime[nCnt1] >= m_nTime[nCnt2])
+			// ”äŠrŒ³0•b‚¶‚á‚È‚©‚Á‚½‚ç
+			if (m_nTime[nCnt1] >= 60)
 			{
-				nData = m_nTime[nCnt1];
-				m_nTime[nCnt1] = m_nTime[nCnt2];
-				m_nTime[nCnt2] = nData;
+				// ”äŠrŒ³‚ª”äŠræ‚æ‚è‘å‚«‚©‚Á‚½‚ç
+				if (m_nTime[nCnt1] >= m_nTime[nCnt2])
+				{
+					// ”äŠræ‚ª0•b‚¶‚á‚È‚©‚Á‚½‚ç
+					if (m_nTime[nCnt2] >= 60)
+					{
+						nData = m_nTime[nCnt1];
+						m_nTime[nCnt1] = m_nTime[nCnt2];
+						m_nTime[nCnt2] = nData;
+					}
+				}
 			}
-		}
-	}
-
-	for (int nCnt3 = 0; nCnt3 < MAX_NUM; nCnt3++)
-	{
-		if (nNowTime == m_nTime[nCnt3])
-		{
-			nCnt = nCnt3;
-			break;
+			else
+			{
+				nData = m_nTime[nCnt2];
+				m_nTime[nCnt2] = m_nTime[nCnt1];
+				m_nTime[nCnt1] = nData;
+			}
 		}
 	}
 

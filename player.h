@@ -69,5 +69,6 @@ private:
 	const CBlock* m_pClimbBlock; // 登るブロック
 
 	bool m_isGrounded;     // 着地しているか?
+	bool m_IsSlopeTrigger;	// スロープに乗った瞬間のフラグ
 };
 #endif

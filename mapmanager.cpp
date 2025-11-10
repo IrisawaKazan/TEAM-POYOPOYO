@@ -101,6 +101,7 @@ void CMapManager::Update(void)
 	// アイテムとプレイヤーの当たり判定
 	CollisionItemtoPlayers();
 
+	CollisionSlopetoPlayers();
 }
 
 //***************************************
@@ -252,6 +253,63 @@ void CMapManager::CollisionItemtoPlayers(void)
 }
 
 //***************************************
+// 滑り台とプレイヤーの当たり判定
+//***************************************
+void CMapManager::CollisionSlopetoPlayers(void)
+{
+	// 衝突数を取得
+	int numManifolds = CManager::GetDynamicsWorld()->getDispatcher()->getNumManifolds();
+
+	// プレイヤーにアクセス
+	for (auto Players = CGame::GetPlayerManager()->GetVPlayer().begin(); Players != CGame::GetPlayerManager()->GetVPlayer().end(); Players++)
+	{
+		// スロープに当たったかどうかのフラグ
+		bool isCollidingWithSlope = false;
+
+		// 衝突オブジェクトにアクセス
+		for (int nCnt = 0; nCnt < numManifolds; nCnt++)
+		{
+			// ペアで取得
+			btPersistentManifold* manifold = CManager::GetDynamicsWorld()->getDispatcher()->getManifoldByIndexInternal(nCnt);
+
+			// 衝突していなかったら切り上げ(念のため)
+			if (manifold->getNumContacts() <= 0) continue;
+
+			// オブジェクト1,2を取得
+			const btCollisionObject* objA = manifold->getBody0();
+			const btCollisionObject* objB = manifold->getBody1();
+
+			// プレイヤーが含まれているかどうか
+			const bool isPlayerInvolved = (objA == (*Players)->GetRB() || objB == (*Players)->GetRB());
+
+			// 含まれていなかったら
+			if (!isPlayerInvolved) continue;
+
+			// スロープが含まれているかどうか
+			const bool isSlopeInvolved = (objA == m_Slope->GetRB() || objB == m_Slope->GetRB());
+			if (isSlopeInvolved)
+			{
+				// フラグを有効にする
+				isCollidingWithSlope = true;
+				// 切り上げ
+				break;
+			}
+		}
+
+		// 含まれていたら
+		if (isCollidingWithSlope)
+		{
+			if ((*Players)->GetMotionInfo()->GetBlendMotion() != 2)(*Players)->GetMotionInfo()->SetMotion(2, false);
+		}
+		// 含まれていない
+		else
+		{
+			if ((*Players)->GetMotionInfo()->GetBlendMotion() != 1)(*Players)->GetMotionInfo()->SetMotion(1, false);
+		}
+	}
+}
+
+//***************************************
 // オブジェクトを生成
 //***************************************
 void CMapManager::CreateObject(D3DXVECTOR3 Pos, D3DXVECTOR3 Rot, std::string Path)
@@ -343,6 +401,13 @@ void CMapManager::Load(std::string Path)
 			m_Door->SetIdx(LocalPath);
 
 			m_Goal = CGoal::Create(Pos, m_Door->GetSize());
+		}
+		else if (LocalPath.find("slope") != string::npos)
+		{
+			m_Slope = CBlock::Create(LocalPath, Pos, VEC3_NULL);
+			m_Slope->SetScale(Scale);
+			m_Slope->SetQuat(CMath::ConvertQuat(Quad));
+			m_Slope->SetIdx(LocalPath);
 		}
 		else
 		{

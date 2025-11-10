@@ -13,6 +13,7 @@
 #include "object.h"
 #include "titlemenu.h"
 #include "titlelogo.h"
+#include "titlebg.h"	// Misaki
 
 // タイトルマネージャーのクラスを定義
 class CTitleManager : public CObject
@@ -30,6 +31,7 @@ public:
 			static constexpr float DestHeight = 150.0f;	// 立幅
 			static constexpr int Frame = 30;			// フレーム
 		};
+
 		// ロゴの規定値を設定
 		struct Logo {
 			static const D3DXVECTOR3 Apper;													// 初期位置
@@ -38,6 +40,14 @@ public:
 			static constexpr int AnimFrame = 60;											// アニメーションフレーム
 			static constexpr const char* FilePath = "data\\TEXTURE\\Title\\TitleLogo000.png";	// テクスチャのパス
 		};
+
+		// ロゴの規定値を設定
+		struct BG {
+			static const D3DXVECTOR3 Apper;													// 初期位置
+			static const D3DXVECTOR2 Size;													// 大きさ
+			static constexpr const char* FilePath = "data\\TEXTURE\\Title\\Title000.png";	// テクスチャのパス
+		};
+
 	};
 
 	// デストラクタ
@@ -55,6 +65,7 @@ public:
 	// ゲッター
 	CTitleMenu::Menu GetSelectMenu(void) { return m_SelectMenu; };
 	CTitleLogo* GetTitleLogo(void) { return m_TitleLogo; };
+	CTitleBG* GetTitleBG(void) { return m_TitleBG; };
 
 	// 静的メンバ関数
 	// ゲッター
@@ -71,5 +82,6 @@ private:
 	CTitleLogo* m_TitleLogo;				// タイトルロゴ
 	std::vector<CTitleMenu*> m_apTitleMenu;	// ポーズメニュー
 	CTitleMenu::Menu m_SelectMenu;			// 選んでいるメニュー
+	CTitleBG* m_TitleBG;					// タイトル背景 Misaki
 };
 #endif // !_TITLEMANAGER_H_
