@@ -14,7 +14,12 @@
 class CPlayer : public CModelCharacter
 {
 public:
-	static constexpr float MOVE_SPEED = 10.0f;           // 移動スピード sato Add
+	static constexpr float CAPSULE_RADIUS = 7.0f;  // カプセルの半径 sato Add
+	static constexpr float CAPSULE_HEIGHT = 20.0f; // カプセルの高さ sato Add
+	static constexpr float MOVE_SPEED = 10.0f;     // 移動スピード sato Add
+	static constexpr float JUMP_POWER = 30.0f;     // ジャンプ力 sato Add
+	static constexpr float JUMP_SPEED_INA = 5.0f;  // ジャンプ中の移動係数 sato Add
+	static constexpr float GROUND_SPACE = 5.0f;    // 着地時の判定値 sato Add
 
 	// 状態
 	enum class STATE : unsigned char
@@ -23,6 +28,7 @@ public:
 		Turn,
 		Climb,
 		Jump,
+		Jumping,
 		Max
 	};
 
@@ -41,7 +47,10 @@ public:
 	static CPlayer* Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot);
 
 private:
+	void UpdateGroundedState();
 	void Turn();
+	void Climb();
+	void Jump(btVector3& moveDir);
 
 	static constexpr float TURN_RADIUS = 8.0f; // ターンの中心軸からのずれの許容範囲
 
@@ -51,8 +60,10 @@ private:
 	std::unordered_map<size_t, unsigned short> m_naviObjectCountMap; // ナビゲーションオブジェクトの接触回数管理用マップ
 	std::vector<size_t> m_naviObjectIdxListOld;                      // 前のフレームで触れていたナビゲーションオブジェクトのインデックスリスト
 
-	STATE m_state;         // 状態 sato Add
-	D3DXVECTOR3 m_turnPos; // 曲がる位置 sato Add
-	float m_turnAngle;     // 曲がる方向 sato Add
+	STATE m_state;            // 状態 sato Add
+	D3DXVECTOR3 m_activePos;  // 行動位置 sato Add
+	float m_turnAngle;        // 曲がる方向 sato Add
+
+	bool m_isGrounded;     // 着地しているか?
 };
 #endif

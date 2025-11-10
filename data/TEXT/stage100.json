@@ -221,7 +221,7 @@
       "Mass": 100.0
     },
     "Assets": {
-      "Path": "data/MODEL/wall.x"
+      "Path": "data/MODEL/slope.x"
     },
     "Transform": {
       "Pos": {
