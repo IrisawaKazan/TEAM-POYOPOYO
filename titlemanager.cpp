@@ -12,10 +12,10 @@
 #include "sound.h"
 
 // 規定値を設定
-const D3DXVECTOR3 CTitleManager::Config::Menu::Bace = { 250.0f,400.0f,0.0f };
+const D3DXVECTOR3 CTitleManager::Config::Menu::Bace = { 250.0f,450.0f,0.0f };
 const D3DXVECTOR3 CTitleManager::Config::Logo::Apper = { 250.0f,0.0f,0.0f };
 const D3DXVECTOR3 CTitleManager::Config::Logo::Dest = { 250.0f,200.0f,0.0f };
-const D3DXVECTOR2 CTitleManager::Config::Logo::Size = { 200.0f,200.0f };
+const D3DXVECTOR2 CTitleManager::Config::Logo::Size = { 200.0f,150.0f };
 
 // シングルトンを宣言
 CTitleManager* CTitleManager::m_Singleton = NULL;
