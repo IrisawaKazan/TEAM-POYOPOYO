@@ -18,6 +18,7 @@
 #define MAX_TIME (2)
 #define MAX_NUM (5)
 #define MAX_SECOND (60)
+#define MAX_MINUTES (3600)
 
 //  ランキングクラスを定義
 class CRanking

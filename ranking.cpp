@@ -159,9 +159,9 @@ void CRanking::Sort(void)
 //****************************************************************
 void CRanking::Change(void)
 {
-	for (int nCnt = 0; nCnt < MAX_NUM; nCnt++)
+	for (int nCnt = 0; nCnt < MAX_NUM + 1; nCnt++)
 	{
-		m_nMin[nCnt] = m_nTime[nCnt] / MAX_SECOND;
+		m_nMin[nCnt] = m_nTime[nCnt] / MAX_MINUTES;
 		m_nSec[nCnt] = m_nTime[nCnt] % MAX_SECOND;
 	}
 

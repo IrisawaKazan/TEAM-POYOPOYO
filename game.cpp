@@ -42,6 +42,7 @@ CPauseManager* CGame::m_pPauseManager = NULL;
 CPlayerManager* CGame::m_pPlayerManager = NULL;
 CMapManager* CGame::m_pMapManager = NULL;
 CTutorialBoard* CGame::m_pTutorialBoard = NULL;
+bool CGame::m_bGoal = false;
 
 using namespace std;
 
@@ -64,6 +65,8 @@ CGame::~CGame()
 //***************************************
 HRESULT CGame::Init(void)
 {
+	m_bGoal = false;
+
 	// プレイヤーマネジャー
 	m_pPlayerManager = new CPlayerManager;
 
@@ -163,8 +166,8 @@ void CGame::Update(void)
 	if (CManager::GetInputKeyboard()->GetTrigger(DIK_SPACE) == true)
 	{
 		//CManager::GetSound()->Play(CSound::LABEL_ENTER);
+		m_bGoal = true;
 		CFade::SetFade(new CResult);
-		CManager::OffPause();
 	}
 }
 
