@@ -145,11 +145,15 @@
     <ClCompile Include="mapmanager.cpp">
       <Filter>ソース</Filter>
     </ClCompile>
-    <ClCompile Include="goal.cpp" />
     <ClCompile Include="math.cpp">
       <Filter>ソース</Filter>
     </ClCompile>
-    <ClCompile Include="tutorialBoard.cpp" />
+    <ClCompile Include="goal.cpp">
+      <Filter>ソース</Filter>
+    </ClCompile>
+    <ClCompile Include="tutorialBoard.cpp">
+      <Filter>ソース</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="arrow.h">
@@ -311,8 +315,12 @@
     <ClInclude Include="math.h">
       <Filter>ヘッダー</Filter>
     </ClInclude>
-    <ClInclude Include="goal.h" />
-    <ClInclude Include="tutorialBoard.h" />
+    <ClInclude Include="goal.h">
+      <Filter>ヘッダー</Filter>
+    </ClInclude>
+    <ClInclude Include="tutorialBoard.h">
+      <Filter>ヘッダー</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ソース">

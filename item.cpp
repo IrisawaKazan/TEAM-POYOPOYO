@@ -8,6 +8,9 @@
 // インクルード
 #include "item.h"
 #include "modelmanager.h"
+#include "game.h"
+#include "navi.h"
+#include "tutorialBoard.h"
 
 //***************************************
 // コンストラクタ
@@ -15,7 +18,8 @@
 CItem::CItem(int nPriority) :CObjectX(nPriority)
 {
 	m_type = ITEM_NOEN;		// アイテムの種類
-	m_size = VEC3_NULL;		// サイズ
+	m_size = D3DXVECTOR3(50.0f, 50.0f, 50.0f);		// サイズ
+	m_pos = VEC3_NULL;		// 位置
 	m_bTake = false;		// 入手したかどうか
 	m_RBOffset = VEC3_NULL;	// リジットボディのオフセット
 }
@@ -36,59 +40,28 @@ HRESULT CItem::Init(void)
 	CObjectX::Init();
 
 	// メモリ確保OBBの大きさを設定
-	m_CollisionShape = std::make_unique<btBoxShape>(btVector3(m_size.x * GetScale().x, m_size.y * GetScale().y, m_size.z * GetScale().z));
+	m_CollisionShape = std::make_unique<btBoxShape>(btVector3(m_size.x, m_size.y, m_size.z));
 
-	// 質量
-	btScalar mass = 0.0f;
+	// GhostObjectを作成
+	m_GhostObject = std::make_unique<btGhostObject>();
 
-	// 慣性モーメントの計算用変数
-	btVector3 inertia(0, 0, 0);
+	// 衝突形状を設定
+	m_GhostObject->setCollisionShape(m_CollisionShape.get());
 
-	// 計算
-	m_CollisionShape->calculateLocalInertia(mass, inertia);
-
-	// 最終的な計算結果、位置、位置からのオフセット
-	btTransform transform, Origin, Offset;
-
-	// 初期化
+	// ワールド変換（位置と回転）を設定
+	D3DXVECTOR3 Offset = VEC3_NULL;
+	Offset.y += m_size.y * 0.5f;
+	btTransform transform;
 	transform.setIdentity();
-	Origin.setIdentity();
-	Offset.setIdentity();
+	transform.setOrigin(btVector3(m_pos.x, m_pos.y + Offset.y, m_pos.z)); // 位置を設定
+	m_GhostObject->setWorldTransform(transform);
 
-	// 向き
-	btQuaternion rotation;
-
-	// 代入
-	rotation = CMath::ConvertQuat(GetQuad());
-
-	// 位置と向きを設定
-	Origin.setRotation(rotation);
-	Origin.setOrigin(btVector3(GetPosition().x, GetPosition().y, GetPosition().z));
-
-	// オフセットを設定
-	Offset.setOrigin(btVector3(m_RBOffset.x, m_RBOffset.y, m_RBOffset.z));
-
-	// 合成
-	transform.mult(Origin, Offset);
-
-	// 位置と向きを管理するモーションを生成
-	btDefaultMotionState* motionState = new btDefaultMotionState(transform);
-	btRigidBody::btRigidBodyConstructionInfo info(mass, motionState, m_CollisionShape.get());
-
-	// 生成
-	m_RigitBody = std::make_unique<btRigidBody>(info);
-
-	// 移動制限を設定
-	m_RigitBody->setLinearFactor(btVector3(1, 1, 1));
-
-	// 物理ボディーに自分自身を紐付け
-	m_RigitBody->setUserPointer(this);
-
-	// 動的オブジェクトか静的オブジェクトか
-	m_RigitBody->setActivationState(DISABLE_DEACTIVATION);
-
-	// 物理世界に物理ボディーを追加
-	CManager::GetDynamicsWorld()->addRigidBody(m_RigitBody.get());
+	// 衝突グループとマスクを設定してワールドに追加
+	CManager::GetDynamicsWorld()->addCollisionObject(
+		m_GhostObject.get(),
+		btBroadphaseProxy::SensorTrigger,
+		btBroadphaseProxy::AllFilter
+	);
 
 	return S_OK;
 }
@@ -99,14 +72,10 @@ HRESULT CItem::Init(void)
 void CItem::Uninit(void)
 {
 	// 剛体の削除
-	if (m_RigitBody)
+	if (m_GhostObject)
 	{
-		CManager::GetDynamicsWorld()->removeRigidBody(m_RigitBody.get());
-		if (m_RigitBody->getMotionState())
-		{
-			delete m_RigitBody->getMotionState();
-		}
-		m_RigitBody.reset();
+		CManager::GetDynamicsWorld()->removeCollisionObject(m_GhostObject.get());
+		m_GhostObject.reset();
 	}
 
 	// 衝突形状の削除
@@ -122,9 +91,6 @@ void CItem::Uninit(void)
 //***************************************
 void CItem::Update(void)
 {
-	// リジットボディの更新処理
-	UpdateRB();
-
 	// クオータニオン
 	D3DXQUATERNION pQuat;
 	// 回転させる軸
@@ -161,7 +127,7 @@ void CItem::Update(void)
 		fAngle += 0.2f * 0.9f;
 
 		// 位置に移動量を加算
-		pos += D3DXVECTOR3(0.0f, 10.0f * 0.8f, 0.0f);
+		pos += D3DXVECTOR3(0.0f, 3.0f * 0.8f, 0.0f);
 
 		// クオータニオンの計算
 		D3DXQuaternionRotationAxis(&pQuat, &Axis, fAngle);
@@ -173,7 +139,7 @@ void CItem::Update(void)
 		// カウントを一つ進める
 		nCount++;
 
-		if (nCount >= 60)
+		if (nCount >= 30)
 		{// カウントが設定値を超えた場合
 
 			// カウントを初期化
@@ -182,83 +148,16 @@ void CItem::Update(void)
 			// 終了処理
 			Uninit();
 
+			// チュートリアル表示
+			CGame::GetTutorialBoard()->SetUp("data\\TEXTURE\\tutorial_001.png");
+
+			// アイテムの有効化
+			CNavi::GetInstance()->SetEnable(CNavi::LIST::LeftArrow, true);
 		}
 	}
 
 }
 
-//***************************************
-// リジットボディの更新処理
-//***************************************
-void CItem::UpdateRB(void)
-{
-	// 剛体の削除
-	if (m_RigitBody)
-	{
-		// 物理世界から削除
-		CManager::GetDynamicsWorld()->removeRigidBody(m_RigitBody.get());
-
-		// モーションステートを取得nullチェック
-		if (m_RigitBody->getMotionState())
-		{
-			// モーションステートを削除
-			delete m_RigitBody->getMotionState();
-		}
-		// リジットボディをクリア
-		m_RigitBody.reset();
-	}
-
-	D3DXVECTOR3 Scale = GetScale();
-
-	// 当たり判定を再生成
-	m_CollisionShape.reset(new btBoxShape(btVector3(m_size.x * Scale.x, m_size.y * Scale.y, m_size.z * Scale.z)));
-	m_RBOffset.y = m_size.y * Scale.y;
-
-	// 質量を宣言
-	btScalar Mass = 0;
-
-	// 抗力を代入
-	btVector3 Inertia = { 0.0f,0.0f,0.0f };
-
-	// 抗力を設定
-	m_CollisionShape->calculateLocalInertia(Mass, Inertia);
-
-	// 物理世界の位置などを取得
-	btTransform transform, origin, offset;
-
-	// 初期化
-	transform.setIdentity();
-	origin.setIdentity();
-	offset.setIdentity();
-
-	// OBBの回転（例：Y軸まわりに45度回転）
-	btQuaternion rotation;
-	rotation = CMath::ConvertQuat(GetQuad());
-	origin.setRotation(rotation);
-	origin.setOrigin(btVector3(GetPosition().x, GetPosition().y, GetPosition().z));
-	offset.setOrigin(btVector3(m_RBOffset.x, m_RBOffset.y, m_RBOffset.z));
-	transform.mult(origin, offset);
-
-	// インターフェイスを設定
-	btDefaultMotionState* motionState = new btDefaultMotionState(transform);
-	btRigidBody::btRigidBodyConstructionInfo info(Mass, motionState, m_CollisionShape.get());
-
-	// リジットボディーを再生成
-	m_RigitBody.reset(new btRigidBody(info));
-
-	// 移動方向を制限
-	m_RigitBody->setLinearFactor(btVector3(1, 1, 1));
-
-	// ユーザーポインタを設定
-	m_RigitBody->setUserPointer(this);
-
-	// スリープ状態を設定
-	m_RigitBody->setActivationState(DISABLE_DEACTIVATION);
-
-	// 物理世界にリジットボディーを追加
-	CManager::GetDynamicsWorld()->addRigidBody(m_RigitBody.get());
-
-}
 
 //***************************************
 // 描画処理
@@ -294,6 +193,7 @@ CItem* CItem::Create(const ITEM type, const D3DXVECTOR3 pos, const D3DXVECTOR3 r
 
 	// メンバ変数に代入する
 	pItem->m_type = type;
+	pItem->m_pos = pos;
 
 	// 初期化処理
 	pItem->Init();

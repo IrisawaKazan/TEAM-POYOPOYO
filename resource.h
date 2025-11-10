@@ -2,8 +2,8 @@
 // Microsoft Visual C++ で生成されたインクルード ファイル。
 // Team_Game.rc で使用
 //
-#define IDI_ICON1                       101
-#define IDC_CURSOR1                     104
+#define IDI_ICON1                       100
+#define IDC_CURSOR1                     200
 
 // Next default values for new objects
 // 
