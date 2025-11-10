@@ -166,7 +166,6 @@ void CRanking::Change(void)
 	{
 		m_nMin[nCnt] = m_nTime[nCnt] / MAX_MINUTES;
 		m_nSec[nCnt] = (m_nTime[nCnt] % MAX_MINUTES) / MAX_SECOND;
-
 	}
 
 
