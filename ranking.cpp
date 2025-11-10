@@ -118,34 +118,48 @@ void CRanking::Sort(void)
 	int nNowTime = CTimer::GetTimer();
 
 	// ソート用ローカル変数
-	int nCnt = 0;
 	int nData = 0;
 
-	if (m_nTime[MAX_NUM - 1] > nNowTime)
+	// 0秒じゃなかったら
+	if (m_nTime[MAX_NUM - 1] >= 60)
 	{
-		m_nTime[MAX_NUM - 1] = nNowTime;
-		nCnt = MAX_NUM - 1;
+		// 配列の最後の数値が今の数値より大きかったら
+		if (m_nTime[MAX_NUM - 1] > nNowTime)
+		{
+			m_nTime[MAX_NUM - 1] = nNowTime;
+		}
+	}
+	else
+	{
+		if (m_nTime[MAX_NUM - 1] < nNowTime)
+		{
+			m_nTime[MAX_NUM - 1] = nNowTime;
+		}
 	}
 
 	for (int nCnt1 = 0; nCnt1 < MAX_NUM; nCnt1++)
 	{
 		for (int nCnt2 = nCnt1 + 1; nCnt2 < MAX_NUM; nCnt2++)
 		{
-			if (m_nTime[nCnt1] >= m_nTime[nCnt2])
+			// 0秒じゃなかったら
+			if (m_nTime[nCnt1] >= 60)
 			{
-				nData = m_nTime[nCnt1];
-				m_nTime[nCnt1] = m_nTime[nCnt2];
-				m_nTime[nCnt2] = nData;
+				if (m_nTime[nCnt1] >= m_nTime[nCnt2])
+				{
+					if (m_nTime[nCnt2] >= 60)
+					{
+						nData = m_nTime[nCnt1];
+						m_nTime[nCnt1] = m_nTime[nCnt2];
+						m_nTime[nCnt2] = nData;
+					}
+				}
 			}
-		}
-	}
-
-	for (int nCnt3 = 0; nCnt3 < MAX_NUM; nCnt3++)
-	{
-		if (nNowTime == m_nTime[nCnt3])
-		{
-			nCnt = nCnt3;
-			break;
+			else
+			{
+				nData = m_nTime[nCnt2];
+				m_nTime[nCnt2] = m_nTime[nCnt1];
+				m_nTime[nCnt1] = nData;
+			}
 		}
 	}
 
