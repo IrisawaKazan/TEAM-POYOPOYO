@@ -140,9 +140,11 @@ void CMapManager::CollisionGoaltoPlayers(void)
 			// 切り上げ
 			if (Condition == false) continue;
 
+			// タイマー用
+			if(Condition == true) m_bGoal = true;
+
 			if (CFade::GetFadeSingle()->GetFade() != CFade::FADE_OUT)
 			{
-				m_bGoal = true;
 				CFade::SetFade(new CResult);
 			}
 
