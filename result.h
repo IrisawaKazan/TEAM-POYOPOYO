@@ -11,6 +11,7 @@
 
 // インクルード
 #include "scene.h"
+#include "ranking.h"
 
 //	リザルトクラスを定義
 class CResult	:public CScene
@@ -27,7 +28,7 @@ public:
 	void Draw(void)		override;
 
 private:
-
+	CRanking* m_pRanking;
 
 };
 

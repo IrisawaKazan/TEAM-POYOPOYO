@@ -8,6 +8,7 @@
 #include"number.h"
 #include"manager.h"
 #include "mapmanager.h"
+#include "game.h"
 
 // Ã“Iƒƒ“ƒo•Ï”éŒ¾
 CNumber* CTimer::m_pNumber1[MAX_TIMER] = {};
@@ -133,6 +134,7 @@ void CTimer::Uninit(void)
 void CTimer::Update(void)
 {
 	bool bTime = CMapManager::GetGoal();
+	bool bTime1 = CGame::GetGoal();
 
 	// •b‚Ì‰ÁZ
 	m_nNs++;
@@ -155,7 +157,7 @@ void CTimer::Update(void)
 	}
 
 	// ƒS[ƒ‹‚µ‚Ä‚¢‚È‚©‚Á‚½‚ç
-	if (bTime != true)
+	if (bTime != true || bTime1 != true)
 	{
 		// ‘ƒ^ƒCƒ€‚ğ‰ÁZ
 		m_nTimer++;

@@ -64,7 +64,7 @@ public:
 	// ゲッター
 	static CTutorialBoard* GetTutorialBoard(void) { return m_pTutorialBoard; }
 	static CPlayerManager* GetPlayerManager(void) { return m_pPlayerManager; }; // sato Add
-
+	static bool GetGoal(void) { return m_bGoal; };
 private:
 	// ナビゲーションオブジェクトUIのテクスチャリスト
 	static constexpr std::array<const char*, 6u> NAVI_UI_TEXTURES =
@@ -83,5 +83,7 @@ private:
 	static CMapManager* m_pMapManager;			// プレイヤーマネージャー
 
 	static CTutorialBoard* m_pTutorialBoard;
+
+	static bool m_bGoal;
 };
 #endif // !_GAME_H_
