@@ -141,11 +141,13 @@ void CRanking::Sort(void)
 	{
 		for (int nCnt2 = nCnt1 + 1; nCnt2 < MAX_NUM; nCnt2++)
 		{
-			// 0•b‚¶‚á‚È‚©‚Á‚½‚ç
+			// ”äŠrŒ³0•b‚¶‚á‚È‚©‚Á‚½‚ç
 			if (m_nTime[nCnt1] >= 60)
 			{
+				// ”äŠrŒ³‚ª”äŠræ‚æ‚è‘å‚«‚©‚Á‚½‚ç
 				if (m_nTime[nCnt1] >= m_nTime[nCnt2])
 				{
+					// ”äŠræ‚ª0•b‚¶‚á‚È‚©‚Á‚½‚ç
 					if (m_nTime[nCnt2] >= 60)
 					{
 						nData = m_nTime[nCnt1];
