@@ -73,8 +73,8 @@ private:
 		"data/TEXTURE/UI/ArrowMark001.png",
 		"data/TEXTURE/UI/ArrowMark003.png",
 		"data/TEXTURE/UI/ArrowMark000.png",
-		"data/TEXTURE/coron.png",
-		"data/TEXTURE/ue.jpg"
+		"data/TEXTURE/UI/ClimbMark000.png",
+		"data/TEXTURE/UI/JumpMark000.png"
 	};
 
 	// Ã“Iƒƒ“ƒo•Ï”
