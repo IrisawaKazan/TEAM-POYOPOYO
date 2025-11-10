@@ -154,6 +154,12 @@
     <ClCompile Include="tutorialBoard.cpp">
       <Filter>ソース</Filter>
     </ClCompile>
+    <ClCompile Include="jump.cpp">
+      <Filter>ソース</Filter>
+    </ClCompile>
+    <ClCompile Include="climb.cpp">
+      <Filter>ソース</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="arrow.h">
@@ -319,6 +325,12 @@
       <Filter>ヘッダー</Filter>
     </ClInclude>
     <ClInclude Include="tutorialBoard.h">
+      <Filter>ヘッダー</Filter>
+    </ClInclude>
+    <ClInclude Include="jump.h">
+      <Filter>ヘッダー</Filter>
+    </ClInclude>
+    <ClInclude Include="climb.h">
       <Filter>ヘッダー</Filter>
     </ClInclude>
   </ItemGroup>

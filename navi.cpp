@@ -10,6 +10,8 @@
 #include "renderer.h"
 #include "input.h"
 #include "arrow.h"
+#include "jump.h"
+#include "climb.h"
 #include "object2D.h"
 
 namespace
@@ -318,8 +320,12 @@ void CNavi::Update(void)
 			m_apObject.push_back(CArrow::Create(m_clickPos + D3DXVECTOR3(0.0f, OBJECT_HEIGHT, 0.0f), m_pMarker->GetRotMtx(), D3DXToRadian(0.0f), "data/TEXTURE/UI/ArrowMark001.png", m_pMarker->GetSize()));
 			break;
 		case CNavi::LIST::Climb:
+			// クライムを作成
+			m_apObject.push_back(CClimb::Create(m_clickPos + D3DXVECTOR3(0.0f, OBJECT_HEIGHT, 0.0f), m_pMarker->GetRotMtx(), D3DXToRadian(0.0f), "data/TEXTURE/UI/ClimbMark000.png", m_pMarker->GetSize()));
 			break;
 		case CNavi::LIST::Jump:
+			// ジャンプを作成
+			m_apObject.push_back(CJump::Create(m_clickPos + D3DXVECTOR3(0.0f, OBJECT_HEIGHT, 0.0f), m_pMarker->GetRotMtx(), D3DXToRadian(0.0f), "data/TEXTURE/UI/JumpMark000.png", m_pMarker->GetSize()));
 			break;
 		}
 		if (m_apObject.empty()) return;
