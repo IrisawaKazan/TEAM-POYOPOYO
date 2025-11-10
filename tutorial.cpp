@@ -55,23 +55,6 @@ void CTutorial::Update(void)
 		// 設定したチュートリアルの更新をする
 		switch (m_type)
 		{
-			// 奥に進む指示の場合
-		case TUTORIAL_BACK:
-
-
-			break;
-
-			// 右に進む指示の場合
-		case TUTORIAL_RIGHT:
-
-
-			break;
-
-			// 手前に進む指示の場合
-		case TUTORIAL_FRONT:
-
-
-			break;
 
 			// 左に進む指示の場合
 		case TUTORIAL_LEFT:
