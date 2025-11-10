@@ -87,10 +87,17 @@ private:
 	void RemoveObject(void) { m_apObject.clear(); m_pNewObject = nullptr; }
 	void SetDefaultEnable();
 
-	static constexpr float MARKER_HEIGHT = 0.1f;                                          // 地面からマーカーをオフセットする高さ
-	static constexpr float OBJECT_HEIGHT = 0.05f;                                         // 地面からオブジェクトをオフセットする高さ
-	static constexpr const char* MARKER_TEXTURE_PATH = "data/TEXTURE/MagicCircle.png";    // マーカーのテクスチャパス
-	static constexpr const char* POINTER_TEXTURE_PATH = "data/TEXTURE/PointerMark000.png";// ポインターのテクスチャパス
+	static constexpr float MARKER_HEIGHT = 0.1f;                                           // 地面からマーカーをオフセットする高さ
+	static constexpr float OBJECT_HEIGHT = 0.05f;                                          // 地面からオブジェクトをオフセットする高さ
+	static constexpr const char* MARKER_TEXTURE_PATH = "data/TEXTURE/MagicCircle.png";     // マーカーのテクスチャパス
+	static constexpr const char* POINTER_TEXTURE_PATH = "data/TEXTURE/PointerMark000.png"; // ポインターのテクスチャパス
+	static constexpr std::array<const char*, unsigned int(TYPE::Max)> OBJECT_TEXTURE_PATH =
+	{// ナビゲーションオブジェクトのテクスチャパス
+		nullptr,
+		"data/TEXTURE/UI/ArrowMark001.png",
+		"data/TEXTURE/UI/ClimbMark000.png",
+		"data/TEXTURE/UI/JumpMark.png"
+	};
 	static const float ENABLE_ANGLE;                                                      // おけるオブジェクト角度の閾値(どこまでを床としますか?)
 	static const D3DXVECTOR3 MARKER_OFFSET;                                               // マーカーのオフセット位置
 	static const D3DXVECTOR2 MARKER_SIZE;                                                 // マーカーのサイズ

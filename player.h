@@ -19,7 +19,7 @@ public:
 	static constexpr float MOVE_SPEED = 10.0f;     // 移動スピード sato Add
 	static constexpr float JUMP_POWER = 30.0f;     // ジャンプ力 sato Add
 	static constexpr float JUMP_SPEED_INA = 5.0f;  // ジャンプ中の移動係数 sato Add
-	static constexpr float GROUND_SPACE = 5.0f;    // 着地時の判定値 sato Add
+	static constexpr float GROUND_SPACE = 1.0f;    // 着地時の判定値 sato Add
 
 	// 状態
 	enum class STATE : unsigned char
