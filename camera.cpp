@@ -122,10 +122,8 @@ void CCamera::Update(void)
 		// ˆ—‚ğI‚í‚é
 		return;
 	}
-
 	// ˆÚ“®
 	UpdateMove();
-	}
 }
 
 //***************************************
