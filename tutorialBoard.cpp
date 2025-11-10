@@ -35,6 +35,11 @@ HRESULT CTutorialBoard::Init(void)
 
 	m_pBoard = CObject2D::Create({ 640.0f,360.0f,0.0f }, VEC3_NULL, { 640.0f,360.0f });
 
+	m_pBoard->SetTexIndx(CTextureManager::Instance()->Register("data\\TEXTURE\\tutorial_001.png"));
+	m_pBackground->SetCol({ 0.0f, 0.0f, 0.0f, 0.4f });
+	m_pBoard->SetCol({ 1.0f, 1.0f, 1.0f, 1.0f });
+
+	m_Isprogress = true;
 	return S_OK;
 }
 
@@ -75,7 +80,6 @@ CTutorialBoard* CTutorialBoard::Create(void)
 	{
 		// オブジェクト設定
 		pTutorialBoard->Init();
-		pTutorialBoard->SetUp("data\\TEXTURE\\tutorial_001.png");
 
 		return pTutorialBoard;
 	}
