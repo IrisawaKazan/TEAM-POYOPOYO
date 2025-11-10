@@ -203,7 +203,7 @@ namespace
 //--------------------------------
 
 // 静的メンバ変数の定義
-const float CNavi::ENABLE_ANGLE = cosf(D3DXToRadian(1.0f));                 // 床って何度まで?
+const float CNavi::ENABLE_ANGLE = cosf(D3DXToRadian(60.0f));                // 床って何度まで?
 const D3DXVECTOR3 CNavi::MARKER_OFFSET = D3DXVECTOR3(0.0f, -1000.0f, 0.0f); // ナビマーカーのオフセット位置
 const D3DXVECTOR2 CNavi::MARKER_SIZE = D3DXVECTOR2(60.0f, 60.0f);           // ナビマーカーのサイズ
 const D3DXVECTOR2 CNavi::POINTER_SIZE = D3DXVECTOR2(SCREEN_WIDTH*0.02f, SCREEN_WIDTH * 0.02f); // ポインターのサイズ
@@ -334,6 +334,7 @@ void CNavi::Update(void)
 	}
 
 	m_aRayCastTarget.clear(); // レイキャスト対象オブジェクト配列をクリア
+	m_aLatentTarget.clear();  // レイキャストを隠すオブジェクト配列をクリア
 
 #ifdef _DEBUG
 	if (CManager::GetInputKeyboard()->GetTrigger(DIK_J))
@@ -361,6 +362,21 @@ void CNavi::RegisterRayCastObject(LPD3DXMESH pMesh, const D3DXMATRIX& mtxWorld)
 	target.pMesh = pMesh;
 	target.mtxWorld = mtxWorld;
 	m_aRayCastTarget.push_back(target);
+}
+
+//--------------------------------
+// レイキャストの対象オブジェクトを登録
+//--------------------------------
+void CNavi::RegisterLatentObject(LPD3DXMESH pMesh, const D3DXMATRIX& mtxWorld)
+{
+	// メッシュがNULLなら登録しない
+	if (pMesh == nullptr) return;
+
+	// オブジェクトを登録
+	RayCastTarget target;
+	target.pMesh = pMesh;
+	target.mtxWorld = mtxWorld;
+	m_aLatentTarget.push_back(target);
 }
 
 //--------------------------------
@@ -396,7 +412,7 @@ void CNavi::CalculateIntersection(void)
 	}
 
 	// 登録されたオブジェクトをループ
-	for (const RayCastTarget& target : m_aRayCastTarget)
+	for (const RayCastTarget& target : m_aLatentTarget)
 	{
 		if (CheckLatent(target.pMesh, target.mtxWorld, closestDistSq))
 		{// 隠れていたら無効

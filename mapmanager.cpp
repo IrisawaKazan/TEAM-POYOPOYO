@@ -18,6 +18,7 @@
 #include "playermanager.h"
 #include "goal.h"
 #include "item.h"	// Misaki
+#include "navi.h"
 
 // ネームスペース
 using namespace nlohmann;
@@ -102,6 +103,34 @@ void CMapManager::Update(void)
 	CollisionItemtoPlayers();
 
 	CollisionSlopetoPlayers();
+
+	// ナビにレイキャストオブジェクトを登録 sato
+	{
+		CModelManager* pModelManager = CModelManager::Instance();
+		CModelManager::ModelInfo modelinfo{};
+		for (const auto& pObject : m_vMapObject)
+		{// ブロック
+			modelinfo = pModelManager->GetAddress(pObject->GetIndx());
+			if (pObject->GetFilepath().find("Switch") == std::string::npos)
+			{// switchの土台はキャストしない
+				CNavi::GetInstance()->RegisterRayCastObject(modelinfo.pMesh, pObject->GetWorldMtx());
+			}
+			// 隠れはする
+			CNavi::GetInstance()->RegisterLatentObject(modelinfo.pMesh, pObject->GetWorldMtx());
+		}
+		for (const auto& pObject : m_vMapSwitch)
+		{// switchは隠すだけ
+			modelinfo = pModelManager->GetAddress(pObject->GetIndx());
+			CNavi::GetInstance()->RegisterLatentObject(modelinfo.pMesh, pObject->GetWorldMtx());
+		}
+		// ドアは隠すだけ
+		modelinfo = pModelManager->GetAddress(m_Door->GetIndx());
+		CNavi::GetInstance()->RegisterLatentObject(modelinfo.pMesh, m_Door->GetWorldMtx());
+		// スロープも隠すだけ
+		modelinfo = pModelManager->GetAddress(m_Slope->GetIndx());
+		CNavi::GetInstance()->RegisterLatentObject(modelinfo.pMesh, m_Slope->GetWorldMtx());
+	}
+	// ナビにレイキャストオブジェクトを登録 end
 }
 
 //***************************************

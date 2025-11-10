@@ -280,7 +280,7 @@ void CNaviObject::SetReleaseObject()
 {
 	// ‰~’Œ‚Ìİ’è
 	float radius = m_length;
-	float halfHeight = CHENGE_HEIGHT;
+	float halfHeight = CHENGE_HEIGHT * 10.0f;
 	btVector3 cylinderHalfExtents(radius, halfHeight, radius);
 	m_releaseShape = std::make_unique<btCylinderShape>(cylinderHalfExtents);
 

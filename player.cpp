@@ -147,13 +147,16 @@ void CPlayer::Update(void)
 				}
 
 				// ブロックに向かう
-				D3DXVECTOR3 climbPos = m_pClimbBlock->GetClosestPointOnSurface(myPos);
-				D3DXVECTOR3 space = climbPos - myPos;
-				D3DXVec3Normalize(&space, &space);
-				SetRotDest(D3DXVECTOR3(0.0f, atan2f(-space.x, -space.z), 0.0f));
-				SetRot(D3DXVECTOR3(0.0f, atan2f(-space.x, -space.z), 0.0f));
+				if (m_pClimbBlock != nullptr)
+				{
+					D3DXVECTOR3 climbPos = m_pClimbBlock->GetClosestPointOnSurface(myPos);
+					D3DXVECTOR3 space = climbPos - myPos;
+					D3DXVec3Normalize(&space, &space);
+					SetRotDest(D3DXVECTOR3(0.0f, atan2f(-space.x, -space.z), 0.0f));
+					SetRot(D3DXVECTOR3(0.0f, atan2f(-space.x, -space.z), 0.0f));
 
-				m_state = STATE::Climb; // クライム開始
+					m_state = STATE::Climb; // クライム開始
+				}
 				break;
 			}
 			case CNavi::TYPE::Jump:
@@ -389,7 +392,9 @@ void CPlayer::Turn()
 // クライム
 void CPlayer::Climb(btVector3& moveDir)
 {
-	btCollisionObject* blockObject = m_pClimbBlock->GetRB();
+	// CMapManagerから登れるブロックの全リストを取得
+	std::vector<CBlock*> pAllBlocks = CMapManager::Instance()->GetBlocks();
+	if (pAllBlocks.empty()) return; // 登れるブロックが一つもない
 
 	// 何組が衝突しているか
 	int numManifolds = CManager::GetDynamicsWorld()->getDispatcher()->getNumManifolds();
@@ -407,14 +412,49 @@ void CPlayer::Climb(btVector3& moveDir)
 		const btCollisionObject* objA = manifold->getBody0();
 		const btCollisionObject* objB = manifold->getBody1();
 
-		// プレイヤーとゴールが当たっていたら
-		const bool Condition = (objA == m_RigitBody.get() && objB == blockObject) || (objA == blockObject && objB == m_RigitBody.get());
+		// 衝突したペアの片方がプレイヤーかを確認し、
+		// もう片方（衝突相手）を pOtherObj に格納する
+		const btCollisionObject* pOtherObj = nullptr;
+		if (objA == m_RigitBody.get())
+		{
+			pOtherObj = objB;
+		}
+		else if (objB == m_RigitBody.get())
+		{
+			pOtherObj = objA;
+		}
+		else
+		{
+			continue; // プレイヤーが関係ない衝突
+		}
 
-		// 切り上げ
-		if (Condition == false) continue;
+		// --- 衝突相手の UserPointer を確認 ---
+		void* pUserPtr = pOtherObj->getUserPointer();
+		if (pUserPtr == nullptr) continue; // UserPointerがセットされていない
 
-		// 登る
+		// --- pUserPtr が CBlock のインスタンスかを確認 ---
+		bool isClimbableBlock = false;
+
+		// CBlockのリストをイテレート
+		for (const CBlock* pBlock : pAllBlocks)
+		{
+			// 衝突相手のUserPointer(void*)と、リスト内のCBlockポインタ(CBlock*)を
+			// void* にキャストして比較
+			if (pUserPtr == static_cast<const void*>(pBlock))
+			{
+				// 衝突した相手は、登れるブロックだった
+				isClimbableBlock = true;
+				break; // ブロックリストのスキャンを終了
+			}
+		}
+
+		// 登れるブロックに衝突していなければ、次の衝突ペアをチェック
+		if (isClimbableBlock == false) continue;
+
+		// 登る（Y方向の速度を加える）
 		moveDir.setY(moveDir.y() + CLIMB_SPEED);
+
+		// 1フレームで複数のブロックに同時に触れても、登る処理は1回で良い
 		break;
 	}
 }
