@@ -96,7 +96,7 @@ void CItem::Update(void)
 	// クオータニオン
 	D3DXQUATERNION pQuat;
 	// 回転させる軸
-	D3DXVECTOR3 Axis = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
+	D3DXVECTOR3 Axis = D3DXVECTOR3(1.0f, 0.0f, 0.0f);
 	// 向き
 	static float fAngle = 0.0f;
 	// 位置
