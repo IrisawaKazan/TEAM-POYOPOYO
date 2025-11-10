@@ -24,7 +24,7 @@ CResult::~CResult()
 //  ‰Šú‰»
 HRESULT CResult::Init(void)
 {
-    m_pRanking = new CRanking;
+    m_pRanking = CRanking::Instance();
 
     //  CObject2D::Create(D3DXVECTOR3(640.0f, 370.0f, 0.0f), VEC3_NULL);
     m_pRanking->Init();

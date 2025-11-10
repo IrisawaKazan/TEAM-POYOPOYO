@@ -85,9 +85,6 @@ void CRanking::Uninit(void)
 //****************************************************************
 void CRanking::Update(void)
 {
-	// ソート処理
-	Sort();
-
 	// 変換
 	Change();
 }
@@ -159,10 +156,16 @@ void CRanking::Sort(void)
 //****************************************************************
 void CRanking::Change(void)
 {
-	for (int nCnt = 0; nCnt < MAX_NUM + 1; nCnt++)
+	// ソート処理
+	Sort();
+
+	// 読み込み
+	LoadFile();
+
+	for (int nCnt = 0; nCnt < MAX_NUM; nCnt++)
 	{
 		m_nMin[nCnt] = m_nTime[nCnt] / MAX_MINUTES;
-		m_nSec[nCnt] = m_nTime[nCnt] % MAX_SECOND;
+		m_nSec[nCnt] = (m_nTime[nCnt] % MAX_MINUTES) / MAX_SECOND;
 	}
 
 
