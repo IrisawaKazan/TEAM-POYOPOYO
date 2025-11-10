@@ -160,7 +160,9 @@
     <ClCompile Include="climb.cpp">
       <Filter>ソース</Filter>
     </ClCompile>
-    <ClCompile Include="titlebg.cpp" />
+    <ClCompile Include="titlebg.cpp">
+      <Filter>ソース</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="arrow.h">
@@ -334,7 +336,9 @@
     <ClInclude Include="climb.h">
       <Filter>ヘッダー</Filter>
     </ClInclude>
-    <ClInclude Include="titlebg.h" />
+    <ClInclude Include="titlebg.h">
+      <Filter>ヘッダー</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ソース">
