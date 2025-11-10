@@ -9,6 +9,7 @@
 #include "pausemanager.h"
 #include "manager.h"
 #include "math_T.h"
+#include "fade.h"
 
 // ƒVƒ“ƒOƒ‹ƒgƒ“‚ðéŒ¾
 CPauseManager* CPauseManager::m_Singleton = NULL;
@@ -52,7 +53,7 @@ void CPauseManager::Uninit(void)
 //***************************************
 void CPauseManager::Update(void)
 {
-	if (CManager::GetCamera()->IsAnim() == false)
+	if (CManager::GetCamera()->IsAnim() == false && CFade::GetFadeSingle()->GetFade() == CFade::FADE_NONE)
 	{
 		if (CManager::GetInputKeyboard()->GetTrigger(DIK_P) == true || CManager::GetInputJoypad()->GetTrigger(CInputJoypad::JOYKEY_START) == true)
 		{

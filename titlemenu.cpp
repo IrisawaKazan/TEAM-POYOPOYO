@@ -14,8 +14,8 @@
 #include "game.h"
 
 // ‹K’è’l‚ğİ’è
-const D3DXCOLOR CTitleMenu::Config::DefoultColor = WHITE;
-const D3DXCOLOR CTitleMenu::Config::SelectColor = BLUE;
+const D3DXCOLOR CTitleMenu::Config::DefoultColor = BLACK;
+const D3DXCOLOR CTitleMenu::Config::SelectColor = WHITE;
 
 //***************************************
 // Šî’êƒNƒ‰ƒX‚Ìˆ—

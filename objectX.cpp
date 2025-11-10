@@ -157,7 +157,7 @@ void CObjectX::Draw(void)
 void CObjectX::SetRotasion(D3DXVECTOR3 Rot)
 {
 	m_Rot = Rot;
-	D3DXQuaternionRotationYawPitchRoll(&m_Quad, m_Rot.z, m_Rot.y, m_Rot.z);
+	D3DXQuaternionRotationYawPitchRoll(&m_Quad, m_Rot.y, m_Rot.x, m_Rot.z);
 }
 
 //***************************************

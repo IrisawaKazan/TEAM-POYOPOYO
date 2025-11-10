@@ -460,6 +460,4 @@ void CMapManager::Load(std::string Path)
 
 	// ˜AŒ‹
 	m_vMapItem.push_back(m_Item);
-
-
 }
