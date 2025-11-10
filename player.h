@@ -64,6 +64,7 @@ private:
 	D3DXVECTOR3 m_activePos;  // 行動位置 sato Add
 	float m_turnAngle;        // 曲がる方向 sato Add
 
-	bool m_isGrounded;     // 着地しているか?
+	bool m_isGrounded;		// 着地しているか?
+	bool m_IsSlopeTrigger;	// スロープに乗った瞬間のフラグ
 };
 #endif

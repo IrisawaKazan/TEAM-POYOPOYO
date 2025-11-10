@@ -224,8 +224,21 @@ void CPlayer::Update(void)
 		break;
 	}
 
-	// 物理に移動値を渡す
-	m_RigitBody->setLinearVelocity(moveDir);
+	if(GetMotionInfo()->GetBlendMotion() == 2)
+	{
+		if (m_IsSlopeTrigger == false)
+		{
+			// 物理に移動値を渡す
+			m_RigitBody->applyCentralImpulse(moveDir);
+			m_IsSlopeTrigger = true;
+		}
+	}
+	else
+	{
+		// 物理に移動値を渡す
+		m_RigitBody->setLinearVelocity(moveDir);
+		m_IsSlopeTrigger = false;
+	}
 
 	btVector3 newPos;           // 位置
 	btTransform trans;          // トランスフォーム

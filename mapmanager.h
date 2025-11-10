@@ -31,6 +31,7 @@ public:
 	void CollisionGoaltoPlayers(void);
 	void CollisionSwitchtoPlayers(void);
 	void CollisionItemtoPlayers(void); // Misaki
+	void CollisionSlopetoPlayers(void);
 	// 生成
 	void CreateObject(D3DXVECTOR3 Pos, D3DXVECTOR3 Rot, std::string Path);
 
@@ -55,6 +56,7 @@ private:
 	std::vector<CBlock*> m_vMapObject;					// マップに置くオブジェクト
 	CDoor* m_Door;										// ドア
 	CGoal* m_Goal;										// ゴール
+	CBlock* m_Slope;									// 滑り台
 	std::vector<CSwitch*> m_vMapSwitch;					// マップに置くスイッチ
 	// アイテムの当たり判定 Misaki
 	CItem* m_Item;
