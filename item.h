@@ -53,7 +53,6 @@ private:
 	// メンバ変数
 	ITEM m_type;											// アイテムの種類
 	D3DXVECTOR3 m_size;										// サイズ
-	D3DXVECTOR3 m_pos;										// 位置
 	bool m_bTake;											// 入手したかどうか
 	D3DXVECTOR3 m_RBOffset;									// オフセット
 	std::unique_ptr<btCollisionShape> m_CollisionShape;		// 当たり判定の形状
