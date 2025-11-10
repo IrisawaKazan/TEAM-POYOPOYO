@@ -74,7 +74,7 @@ private:
 		"data/TEXTURE/UI/ArrowMark003.png",
 		"data/TEXTURE/UI/ArrowMark000.png",
 		"data/TEXTURE/UI/ClimbMark000.png",
-		"data/TEXTURE/UI/JumpMark000.png"
+		"data/TEXTURE/UI/JumpMark.png"
 	};
 
 	// Ã“Iƒƒ“ƒo•Ï”

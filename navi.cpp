@@ -305,27 +305,27 @@ void CNavi::Update(void)
 		{
 		case CNavi::LIST::RightArrow:
 			// 矢印を作成
-			m_apObject.push_back(CArrow::Create(m_clickPos + D3DXVECTOR3(0.0f, OBJECT_HEIGHT, 0.0f), m_pMarker->GetRotMtx(), D3DXToRadian(90.0f), "data/TEXTURE/UI/ArrowMark001.png", m_pMarker->GetSize()));
+			m_apObject.push_back(CArrow::Create(m_clickPos + D3DXVECTOR3(0.0f, OBJECT_HEIGHT, 0.0f), m_pMarker->GetRotMtx(), D3DXToRadian(90.0f), OBJECT_TEXTURE_PATH[unsigned int(TYPE::Arrow)], m_pMarker->GetSize()));
 			break;
 		case CNavi::LIST::FrontArrow:
 			// 矢印を作成
-			m_apObject.push_back(CArrow::Create(m_clickPos + D3DXVECTOR3(0.0f, OBJECT_HEIGHT, 0.0f), m_pMarker->GetRotMtx(), D3DXToRadian(180.0f), "data/TEXTURE/UI/ArrowMark001.png", m_pMarker->GetSize()));
+			m_apObject.push_back(CArrow::Create(m_clickPos + D3DXVECTOR3(0.0f, OBJECT_HEIGHT, 0.0f), m_pMarker->GetRotMtx(), D3DXToRadian(180.0f), OBJECT_TEXTURE_PATH[unsigned int(TYPE::Arrow)], m_pMarker->GetSize()));
 			break;
 		case CNavi::LIST::LeftArrow:
 			// 矢印を作成
-			m_apObject.push_back(CArrow::Create(m_clickPos + D3DXVECTOR3(0.0f, OBJECT_HEIGHT, 0.0f), m_pMarker->GetRotMtx(), D3DXToRadian(-90.0f), "data/TEXTURE/UI/ArrowMark001.png", m_pMarker->GetSize()));
+			m_apObject.push_back(CArrow::Create(m_clickPos + D3DXVECTOR3(0.0f, OBJECT_HEIGHT, 0.0f), m_pMarker->GetRotMtx(), D3DXToRadian(-90.0f), OBJECT_TEXTURE_PATH[unsigned int(TYPE::Arrow)], m_pMarker->GetSize()));
 			break;
 		case CNavi::LIST::BackArrow:
 			// 矢印を作成
-			m_apObject.push_back(CArrow::Create(m_clickPos + D3DXVECTOR3(0.0f, OBJECT_HEIGHT, 0.0f), m_pMarker->GetRotMtx(), D3DXToRadian(0.0f), "data/TEXTURE/UI/ArrowMark001.png", m_pMarker->GetSize()));
+			m_apObject.push_back(CArrow::Create(m_clickPos + D3DXVECTOR3(0.0f, OBJECT_HEIGHT, 0.0f), m_pMarker->GetRotMtx(), D3DXToRadian(0.0f), OBJECT_TEXTURE_PATH[unsigned int(TYPE::Arrow)], m_pMarker->GetSize()));
 			break;
 		case CNavi::LIST::Climb:
 			// クライムを作成
-			m_apObject.push_back(CClimb::Create(m_clickPos + D3DXVECTOR3(0.0f, OBJECT_HEIGHT, 0.0f), m_pMarker->GetRotMtx(), D3DXToRadian(0.0f), "data/TEXTURE/UI/ClimbMark000.png", m_pMarker->GetSize()));
+			m_apObject.push_back(CClimb::Create(m_clickPos + D3DXVECTOR3(0.0f, OBJECT_HEIGHT, 0.0f), m_pMarker->GetRotMtx(), D3DXToRadian(180.0f), OBJECT_TEXTURE_PATH[unsigned int(TYPE::Climb)], m_pMarker->GetSize()));
 			break;
 		case CNavi::LIST::Jump:
 			// ジャンプを作成
-			m_apObject.push_back(CJump::Create(m_clickPos + D3DXVECTOR3(0.0f, OBJECT_HEIGHT, 0.0f), m_pMarker->GetRotMtx(), D3DXToRadian(0.0f), "data/TEXTURE/UI/JumpMark000.png", m_pMarker->GetSize()));
+			m_apObject.push_back(CJump::Create(m_clickPos + D3DXVECTOR3(0.0f, OBJECT_HEIGHT, 0.0f), m_pMarker->GetRotMtx(), D3DXToRadian(180.0f), OBJECT_TEXTURE_PATH[unsigned int(TYPE::Jump)], m_pMarker->GetSize()));
 			break;
 		}
 		if (m_apObject.empty()) return;
@@ -336,7 +336,7 @@ void CNavi::Update(void)
 	m_aRayCastTarget.clear(); // レイキャスト対象オブジェクト配列をクリア
 
 #ifdef _DEBUG
-	if (CManager::GetInputKeyboard()->GetTrigger(DIK_I))
+	if (CManager::GetInputKeyboard()->GetTrigger(DIK_J))
 	{
 		SetEnable(LIST::Jump, !GetEnable(LIST::Jump));
 	}

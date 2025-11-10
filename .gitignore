@@ -428,3 +428,4 @@ FodyWeavers.xsd
 /Release
 /*.exe
 /Team_Game.exe
+/data/Ranking.txt
