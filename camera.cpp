@@ -10,6 +10,8 @@
 #include "manager.h"
 #include "math.h"
 #include "math_T.h"
+#include "game.h"
+#include "tutorialBoard.h"
 
 // 名前空間
 using namespace std;
@@ -33,7 +35,7 @@ CCamera::CCamera()
 	m_posV = VEC3_NULL;
 	m_posVDest = VEC3_NULL;
 	m_posR = VEC3_NULL;
-	m_posRDest = VEC3_NULL;
+	m_posRDest = { 1800.0f,0.0f,0.0f };
 	m_vecU = VEC3_NULL;
 	m_rot = VEC3_NULL;
 	m_fDistance = 0.0f;
@@ -123,25 +125,6 @@ void CCamera::Update(void)
 
 	// 移動
 	UpdateMove();
-
-	// デバック用 sato
-//#ifdef _DEBUG
-	// 通常のカメラに戻す(仮) sato
-	if (m_pInputKeyboard->GetTrigger(DIK_F2))
-	{
-		switch (m_mode)
-		{
-		case CCamera::MODE::NORMAL:
-			SetBelt();
-			m_mode = CCamera::MODE::BELTSCROLL;
-			break;
-		case CCamera::MODE::BELTSCROLL:
-			SetNormal();
-			m_mode = CCamera::MODE::NORMAL;
-			break;
-		}
-	}
-//#endif // _DEBUG
 }
 
 //***************************************
@@ -215,7 +198,7 @@ void CCamera::SetBelt(void)
 
 	// 注視点は0
 	m_posR = VEC3_NULL;
-	m_posRDest = VEC3_NULL;
+	m_posRDest = { 1800.0f,0.0f,0.0f };
 
 	// 角度と距離で視点を算出
 	m_posV.x = m_posR.x + cosf(m_rot.x) * sinf(m_rot.y) * m_fDistance;
@@ -231,6 +214,9 @@ void CCamera::SetBelt(void)
 //***************************************
 void CCamera::UpdateMove(void)
 {
+	// チュートリアルボードが出ているときはカメラ操作を受け付けない
+	if (CGame::GetTutorialBoard() != nullptr)if (CGame::GetTutorialBoard()->GetProgress() == true) return;
+
 	// モードごとの更新
 	switch (m_mode)
 	{
