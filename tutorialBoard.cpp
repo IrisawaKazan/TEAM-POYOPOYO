@@ -49,7 +49,7 @@ void CTutorialBoard::Update(void)
 {
 	if (m_Isprogress == true)
 	{
-		if (CManager::GetInputKeyboard()->GetTrigger(DIK_RETURN) == true)
+		if (CManager::GetInputKeyboard()->GetTrigger(DIK_RETURN) == true || CManager::GetInputJoypad()->GetTrigger(CInputJoypad::JOYKEY_B) == true)
 		{
 			m_Isprogress = false;
 
