@@ -41,6 +41,9 @@ HRESULT CRanking::Init(void)
 	// ナンバーの初期化
 	InitNum();
 
+	// 変換
+	Change();
+
 	return S_OK;
 }
 
@@ -85,8 +88,7 @@ void CRanking::Uninit(void)
 //****************************************************************
 void CRanking::Update(void)
 {
-	// 変換
-	Change();
+
 }
 
 //****************************************************************
@@ -169,12 +171,13 @@ void CRanking::Change(void)
 	}
 
 
-	int aPosTexU[MAX_TIMER] = {};
-	int nData = 100;
-	int nData1 = 10;
 
 	for (int nNum = 0; nNum < MAX_NUM; nNum++)
 	{
+		int aPosTexU[MAX_TIMER] = {};
+		int nData = 100;
+		int nData1 = 10;
+
 		for (int nCnt = 0; nCnt < MAX_TIMER; nCnt++)
 		{
 			// 0番目以外
@@ -188,6 +191,10 @@ void CRanking::Change(void)
 
 	for (int nNum = 0; nNum < MAX_NUM; nNum++)
 	{
+		int aPosTexU[MAX_TIMER] = {};
+		int nData = 100;
+		int nData1 = 10;
+
 		for (int nCnt = 0; nCnt < MAX_TIMER; nCnt++)
 		{
 			// 0番目以外
@@ -263,14 +270,14 @@ void CRanking::InitNum(void)
 
 			if (m_pNumber1[nCnt][nNum] != nullptr)
 			{
-				m_pNumber1[nCnt][nNum]->Init(200.0f, 200.0f, 0.0f, 50.0f, nCnt, nNum, 50.0f, 50.0f, 50.0f, MAX_TIMER, 4, "data\\TEXTURE\\number005.png", 0.1f);
+				m_pNumber1[nCnt][nNum]->Init(650.0f, 650.0f, 300.0f, 350.0f, nCnt, nNum, 50.0f, 50.0f, 75.0f, MAX_TIMER, 4, "data\\TEXTURE\\number005.png", 0.1f);
 			}
 
 			m_pNumber2[nCnt][nNum] = new CNumber;
 
 			if (m_pNumber2[nCnt][nNum] != nullptr)
 			{
-				m_pNumber2[nCnt][nNum]->Init(50.0f, 50.0f, 0.0f, 50.0f, nCnt, nNum, 50.0f, 50.0f, 50.0f, MAX_TIMER, 4, "data\\TEXTURE\\number005.png", 0.1f);
+				m_pNumber2[nCnt][nNum]->Init(520.0f, 520.0f, 300.0f, 350.0f, nCnt, nNum, 50.0f, 50.0f, 75.0f, MAX_TIMER, 4, "data\\TEXTURE\\number005.png", 0.1f);
 			}
 		}
 
@@ -278,7 +285,7 @@ void CRanking::InitNum(void)
 
 		if (m_pNumber3[nNum] != nullptr)
 		{
-			m_pNumber3[nNum]->Init(150.0f, 200.0f, 0.0f, 50.0f, 0, nNum, 1.0f, 0.0f, 50.0f, 1, 0, "data\\TEXTURE\\coron.png", 1.0f);
+			m_pNumber3[nNum]->Init(615.0f, 665.0f, 300.0f, 350.0f, 0, nNum, 1.0f, 0.0f, 75.0f, 1, 0, "data\\TEXTURE\\coron.png", 1.0f);
 		}
 	}
 }
