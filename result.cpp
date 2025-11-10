@@ -8,6 +8,8 @@
 #include "result.h"
 #include "object2D.h"
 #include "ranking.h"
+#include "fade.h"
+#include "title.h"
 
 //  コンストラクタ
 CResult::CResult()  :CScene(MODE_RESULT)
@@ -36,6 +38,12 @@ HRESULT CResult::Init(void)
 void CResult::Update(void)
 {
     m_pRanking->Update();
+
+    if (CManager::GetInputKeyboard()->GetTrigger(DIK_RETURN) == true)
+    {
+        //CManager::GetSound()->Play(CSound::LABEL_ENTER);
+        CFade::SetFade(new CTitle);
+    }
 }
 
 //  終了
