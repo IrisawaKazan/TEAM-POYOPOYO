@@ -132,20 +132,23 @@ void CPlayer::Update(void)
 				float minLengthSq{ FLT_MAX };
 				for (const auto& pBlock : pBlocks)
 				{// ブロックを走査
-					D3DXVECTOR3 blockPos = pBlock->GetClosestPointOnSurface(myPos);
-					D3DXVECTOR3 bPos = pBlock->GetPosition();
-					D3DXVECTOR3 space = blockPos - myPos;
-					float lengthSq = D3DXVec3LengthSq(&space);
-					if (lengthSq < minLengthSq)
-					{// より近いブロック
-						m_pClimbBlock = pBlock;
-						minLengthSq = lengthSq;
+					D3DXVECTOR3 climbPos = pBlock->GetClosestPointOnSurface(myPos);
+					D3DXVECTOR3 blockPos = pBlock->GetPosition();
+					if (blockPos.y > myPos.y)
+					{
+						D3DXVECTOR3 space = climbPos - myPos;
+						float lengthSq = D3DXVec3LengthSq(&space);
+						if (lengthSq < minLengthSq)
+						{// より近いブロック
+							m_pClimbBlock = pBlock;
+							minLengthSq = lengthSq;
+						}
 					}
 				}
 
 				// ブロックに向かう
-				D3DXVECTOR3 blockPos = m_pClimbBlock->GetClosestPointOnSurface(myPos);
-				D3DXVECTOR3 space = blockPos - myPos;
+				D3DXVECTOR3 climbPos = m_pClimbBlock->GetClosestPointOnSurface(myPos);
+				D3DXVECTOR3 space = climbPos - myPos;
 				D3DXVec3Normalize(&space, &space);
 				SetRotDest(D3DXVECTOR3(0.0f, atan2f(-space.x, -space.z), 0.0f));
 				SetRot(D3DXVECTOR3(0.0f, atan2f(-space.x, -space.z), 0.0f));
@@ -234,6 +237,10 @@ void CPlayer::Update(void)
 		// 登る
 	case CPlayer::STATE::Climb:
 		Climb(moveDir);
+		if (m_isGrounded)
+		{// 着地したら
+			m_state = STATE::Normal; // 通常に戻す
+		}
 		break;
 		// 跳ぶ
 	case CPlayer::STATE::Jump:
