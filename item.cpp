@@ -171,7 +171,7 @@ void CItem::Update(void)
 			else if (m_type == ITEM_CLIMB)
 			{
 				// チュートリアル表示
-				CGame::GetTutorialBoard()->SetUp("data\\TEXTURE\\tutorial_001.png");
+				CGame::GetTutorialBoard()->SetUp("data\\TEXTURE\\tutorial_004.png");
 
 				// アイテムの有効化
 				CNavi::GetInstance()->SetEnable(CNavi::LIST::LeftArrow, true);

@@ -47,6 +47,9 @@ CCamera::CCamera()
 
 	// モード初期値 sato Add
 	m_mode = MODE::NORMAL;
+
+	// 読み込み
+	LoadMotion("data\\TEXT\\CameraWork\\CameraWork.txt");
 }
 
 //***************************************
@@ -89,9 +92,6 @@ HRESULT CCamera::Init(void)
 	m_pInputKeyboard = CManager::GetInputKeyboard();
 	m_pInputJoypad = CManager::GetInputJoypad();
 	m_pInputMouse = CManager::GetInputMouse();
-
-	// 読み込み
-	LoadMotion("data\\TEXT\\CameraWork\\CameraWork.txt");
 
 	// 正常終了
 	return S_OK;
@@ -196,7 +196,7 @@ void CCamera::SetBelt(void)
 	m_rot = Config::OffSetRot;
 
 	// 注視点は0
-	m_posR = VEC3_NULL;
+	m_posR = { 1800.0f,0.0f,0.0f };
 	m_posRDest = { 1800.0f,0.0f,0.0f };
 
 	// 角度と距離で視点を算出

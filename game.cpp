@@ -78,6 +78,9 @@ HRESULT CGame::Init(void)
 	m_pMapManager = CMapManager::Instance();
 	m_pMapManager->Load("data\\TEXT\\stage100.json");
 
+	// カメラの初期化
+	CManager::GetCamera()->Init();
+
 	// ナビゲーションのセット
 	CNavi::GetInstance()->set();
 
