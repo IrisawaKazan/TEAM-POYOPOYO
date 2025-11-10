@@ -11,12 +11,14 @@
 #include <unordered_map>
 #include "character.h"
 
+class CBlock;
 class CPlayer : public CModelCharacter
 {
 public:
 	static constexpr float CAPSULE_RADIUS = 7.0f;  // カプセルの半径 sato Add
 	static constexpr float CAPSULE_HEIGHT = 20.0f; // カプセルの高さ sato Add
 	static constexpr float MOVE_SPEED = 10.0f;     // 移動スピード sato Add
+	static constexpr float CLIMB_SPEED = 5.0f;  // ジャンプ中の移動係数 sato Add
 	static constexpr float JUMP_POWER = 30.0f;     // ジャンプ力 sato Add
 	static constexpr float JUMP_SPEED_INA = 5.0f;  // ジャンプ中の移動係数 sato Add
 	static constexpr float GROUND_SPACE = 1.0f;    // 着地時の判定値 sato Add
@@ -49,7 +51,7 @@ public:
 private:
 	void UpdateGroundedState();
 	void Turn();
-	void Climb();
+	void Climb(btVector3& moveDir);
 	void Jump(btVector3& moveDir);
 
 	static constexpr float TURN_RADIUS = 8.0f; // ターンの中心軸からのずれの許容範囲
@@ -63,6 +65,8 @@ private:
 	STATE m_state;            // 状態 sato Add
 	D3DXVECTOR3 m_activePos;  // 行動位置 sato Add
 	float m_turnAngle;        // 曲がる方向 sato Add
+
+	const CBlock* m_pClimbBlock; // 登るブロック
 
 	bool m_isGrounded;     // 着地しているか?
 };

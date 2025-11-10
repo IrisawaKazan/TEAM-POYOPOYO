@@ -47,6 +47,9 @@ public:
 	// ゴール判定の取得
 	static bool GetGoal(void) { return m_bGoal; };
 
+	// ブロック配列の取得
+	const std::vector<CBlock*>& GetBlocks() const { return m_vMapObject; }
+
 private:
 	// コンストラクタ
 	CMapManager() { Init(); }

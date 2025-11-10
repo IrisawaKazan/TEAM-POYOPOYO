@@ -28,18 +28,18 @@ public:
 	void Draw(void);
 
 	// ゲッター
-	int GetIndx(void) { return m_nIdx; }
-	float GetAlpha(void) { return m_fAlpha; };
-	D3DXVECTOR3 GetPosition(void) { return m_Pos; };
-	D3DXVECTOR3 GetRotasion(void) { return m_Rot; };
-	D3DXVECTOR3 GetScale(void) { return m_Scale; }
+	int GetIndx(void) const { return m_nIdx; }
+	float GetAlpha(void) const { return m_fAlpha; };
+	D3DXVECTOR3 GetPosition(void) const { return m_Pos; };
+	D3DXVECTOR3 GetRotasion(void) const { return m_Rot; };
+	D3DXVECTOR3 GetScale(void) const { return m_Scale; }
 	D3DXVECTOR3* GetpPosition(void) { return &m_Pos; };
 	D3DXVECTOR3* GetpRotasion(void) { return &m_Rot; };
-	D3DXMATRIX* GetMtxParent(void) { return m_pMtxParent; };
-	D3DXMATRIX GetMtxRot(void) { return m_mtxRot; };
-	D3DXQUATERNION GetQuad(void) { return m_Quad; }
+	D3DXMATRIX* GetMtxParent(void) const { return m_pMtxParent; };
+	D3DXMATRIX GetMtxRot(void) const { return m_mtxRot; };
+	D3DXQUATERNION GetQuad(void) const { return m_Quad; }
 
-	D3DXMATRIX GetWorldMtx(void) { return m_mtxWorld; } // sato add 仮
+	D3DXMATRIX GetWorldMtx(void) const { return m_mtxWorld; } // sato add 仮
 
 	// セッター
 	void SetPosition(D3DXVECTOR3 Pos) { m_Pos = Pos; };

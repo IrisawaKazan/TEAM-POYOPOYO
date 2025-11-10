@@ -340,6 +340,10 @@ void CNavi::Update(void)
 	{
 		SetEnable(LIST::Jump, !GetEnable(LIST::Jump));
 	}
+	if (CManager::GetInputKeyboard()->GetTrigger(DIK_C))
+	{
+		SetEnable(LIST::Climb, !GetEnable(LIST::Climb));
+	}
 #endif // _DEBUG
 
 }

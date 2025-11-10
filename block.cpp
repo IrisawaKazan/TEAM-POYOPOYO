@@ -357,3 +357,41 @@ void CBlock::Draw(void)
 	// 描画
 	CObjectX::Draw();
 }
+
+//***************************************
+//　渡された座標から一番近い表面の位置を返す
+//***************************************
+D3DXVECTOR3 CBlock::GetClosestPointOnSurface(D3DXVECTOR3 worldPoint) const
+{
+	// 箱状の形状がない
+	if (m_RigitBody == nullptr || m_CollisionShape->getShapeType() != BOX_SHAPE_PROXYTYPE)
+	{
+		// 中心座標
+		return GetPosition();
+	}
+
+	// 半分のサイズを取得
+	btBoxShape* boxShape = static_cast<btBoxShape*>(m_CollisionShape.get());
+	btVector3 halfExtents = boxShape->getHalfExtentsWithMargin();
+
+	// トランスフォームを取得
+	btTransform blockTransform = m_RigitBody->getWorldTransform();
+
+	// 渡された座標をbtVector3に変換
+	btVector3 queryPoint(worldPoint.x, worldPoint.y, worldPoint.z);
+
+	// ワールド座標をブロックのローカル座標に変換
+	btVector3 localQueryPoint = blockTransform.inverse() * queryPoint;
+
+	// ローカル座標で、位置を箱の範囲内にクランプする
+	btVector3 localClosestPoint;
+	localClosestPoint.setX(btClamped(localQueryPoint.x(), -halfExtents.x(), halfExtents.x()));
+	localClosestPoint.setY(btClamped(localQueryPoint.y(), -halfExtents.y(), halfExtents.y()));
+	localClosestPoint.setZ(btClamped(localQueryPoint.z(), -halfExtents.z(), halfExtents.z()));
+
+	// ワールド座標に直す
+	btVector3 worldClosestPoint = blockTransform * localClosestPoint;
+
+	// D3DXVECTOR3変換して返す
+	return D3DXVECTOR3(worldClosestPoint.x(), worldClosestPoint.y(), worldClosestPoint.z());
+}

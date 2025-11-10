@@ -9,6 +9,8 @@
 #include "game.h"
 #include "navi.h"
 #include "arrow.h"
+#include "mapmanager.h"
+#include "block.h"
 
 // 静的メンバ変数の定義
 
@@ -60,6 +62,8 @@ HRESULT CPlayer::Init(void)
 	m_activePos = { 0.0f,-1000.0f,0.0f }; // 初期値
 	m_turnAngle = 0.0f;                   // 初期値
 
+	m_pClimbBlock = nullptr;
+
 	m_isGrounded = false;
 	return S_OK;
 }
@@ -100,40 +104,71 @@ void CPlayer::Update(void)
 		size_t idx = 0;
 		CNavi::TYPE naviType = pObject->ActivateTrigger(m_RigitBody.get(), &pos, &angle, &idx);
 
-		// 触れたナビゲーションタイプによって処理を分岐
-		switch (naviType)
+		// 前のフレームで触れていなかった場合は接触回数をカウントアップ
+		if (std::find(m_naviObjectIdxListOld.begin(), m_naviObjectIdxListOld.end(), idx) == m_naviObjectIdxListOld.end())
 		{
-		case CNavi::TYPE::Arrow:
-		{
-			// Playerの位置と方向
-			D3DXVECTOR3 myPos = GetPos();
+			// 触れたナビゲーションタイプによって処理を分岐
+			switch (naviType)
+			{
+			case CNavi::TYPE::Arrow:
+			{
+				// Playerの位置と方向
+				D3DXVECTOR3 myPos = GetPos();
 
-			// 矢印の位置と方向
-			D3DXVECTOR3 objectPos = pos;                                         // 矢印の中心座標
-			D3DXVECTOR3 objectDir = D3DXVECTOR3(sinf(angle), 0.0f, cosf(angle)); // 矢印の向き
+				// 矢印の位置と方向
+				D3DXVECTOR3 objectPos = pos;                                         // 矢印の中心座標
+				D3DXVECTOR3 objectDir = D3DXVECTOR3(sinf(angle), 0.0f, cosf(angle)); // 矢印の向き
 
-			m_activePos = CMath::GetNierToLineXZ(myPos, objectPos, objectDir); // 矢印のベクトル上の近い地点
-			m_turnAngle = angle;   // ターン方向
-			m_state = STATE::Turn; // ターン開始
-			break;
-		}
-		case CNavi::TYPE::Climb:
-			m_state = STATE::Climb; // クライム開始
-			break;
-		case CNavi::TYPE::Jump:
-			// Playerの位置と方向
-			D3DXVECTOR3 myPos = GetPos();
+				m_activePos = CMath::GetNierToLineXZ(myPos, objectPos, objectDir); // 矢印のベクトル上の近い地点
+				m_turnAngle = angle;   // ターン方向
+				m_state = STATE::Turn; // ターン開始
+				break;
+			}
+			case CNavi::TYPE::Climb:
+			{
+				D3DXVECTOR3 myPos = GetPos(); // 自分の位置
+				std::vector<CBlock*> pBlocks = CMapManager::Instance()->GetBlocks(); // ブロック配列
 
-			D3DXVECTOR3 objectPos = pos; // 矢印の中心座標
+				float minLengthSq{ FLT_MAX };
+				for (const auto& pBlock : pBlocks)
+				{// ブロックを走査
+					D3DXVECTOR3 blockPos = pBlock->GetClosestPointOnSurface(myPos);
+					D3DXVECTOR3 bPos = pBlock->GetPosition();
+					D3DXVECTOR3 space = blockPos - myPos;
+					float lengthSq = D3DXVec3LengthSq(&space);
+					if (lengthSq < minLengthSq)
+					{// より近いブロック
+						m_pClimbBlock = pBlock;
+						minLengthSq = lengthSq;
+					}
+				}
 
-			// 進む方向に対して垂直なベクトル
-			float myAngle = GetRot().y;
-			D3DXVECTOR3 verticalDir = D3DXVECTOR3(sinf(myAngle - D3DXToRadian(90.0f)), 0.0f, cosf(myAngle - D3DXToRadian(90.0f))); // 矢印の向き
+				// ブロックに向かう
+				D3DXVECTOR3 blockPos = m_pClimbBlock->GetClosestPointOnSurface(myPos);
+				D3DXVECTOR3 space = blockPos - myPos;
+				D3DXVec3Normalize(&space, &space);
+				SetRotDest(D3DXVECTOR3(0.0f, atan2f(-space.x, -space.z), 0.0f));
+				SetRot(D3DXVECTOR3(0.0f, atan2f(-space.x, -space.z), 0.0f));
 
-			m_activePos = CMath::GetNierToLineXZ(myPos, objectPos, verticalDir); // 矢印のベクトル上の近い地点
+				m_state = STATE::Climb; // クライム開始
+				break;
+			}
+			case CNavi::TYPE::Jump:
+				// Playerの位置と方向
+				D3DXVECTOR3 myPos = GetPos();
 
-			m_state = STATE::Jump;  // ジャンプ開始
-			break;
+				D3DXVECTOR3 objectPos = pos; // 矢印の中心座標
+
+				// 進む方向に対して垂直なベクトル
+				float myAngle = GetRot().y;
+				D3DXVECTOR3 verticalDir = D3DXVECTOR3(sinf(myAngle - D3DXToRadian(90.0f)), 0.0f, cosf(myAngle - D3DXToRadian(90.0f))); // 矢印の向き
+
+				m_activePos = CMath::GetNierToLineXZ(myPos, objectPos, verticalDir); // 矢印のベクトル上の近い地点
+
+				m_state = STATE::Jump;  // ジャンプ開始
+				break;
+			}
+
 		}
 
 		if (naviType != CNavi::TYPE::None && naviType != CNavi::TYPE::Max)
@@ -198,6 +233,7 @@ void CPlayer::Update(void)
 	}
 		// 登る
 	case CPlayer::STATE::Climb:
+		Climb(moveDir);
 		break;
 		// 跳ぶ
 	case CPlayer::STATE::Jump:
@@ -331,16 +367,41 @@ void CPlayer::Turn()
 }
 
 // クライム
-void CPlayer::Climb()
+void CPlayer::Climb(btVector3& moveDir)
 {
+	btCollisionObject* blockObject = m_pClimbBlock->GetRB();
 
+	// 何組が衝突しているか
+	int numManifolds = CManager::GetDynamicsWorld()->getDispatcher()->getNumManifolds();
+
+	// 衝突回数分繰り返し
+	for (int nCnt = 0; nCnt < numManifolds; nCnt++)
+	{
+		// 衝突しているペアを取得
+		btPersistentManifold* manifold = CManager::GetDynamicsWorld()->getDispatcher()->getManifoldByIndexInternal(nCnt);
+
+		// 衝突していたら
+		if (manifold->getNumContacts() <= 0) continue;
+
+		// 衝突オブジェクト１、２を取得
+		const btCollisionObject* objA = manifold->getBody0();
+		const btCollisionObject* objB = manifold->getBody1();
+
+		// プレイヤーとゴールが当たっていたら
+		const bool Condition = (objA == m_RigitBody.get() && objB == blockObject) || (objA == blockObject && objB == m_RigitBody.get());
+
+		// 切り上げ
+		if (Condition == false) continue;
+
+		// 登る
+		moveDir.setY(moveDir.y() + CLIMB_SPEED);
+		break;
+	}
 }
 
 // ジャンプ
 void CPlayer::Jump(btVector3& moveDir)
 {
-	moveDir.setX(moveDir.x() * JUMP_SPEED_INA);
-	moveDir.setZ(moveDir.z() * JUMP_SPEED_INA);
 	moveDir.setY(moveDir.y() + JUMP_POWER);
 	m_state = STATE::Jumping;
 }
