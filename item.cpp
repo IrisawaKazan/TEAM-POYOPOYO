@@ -17,11 +17,10 @@
 //***************************************
 CItem::CItem(int nPriority) :CObjectX(nPriority)
 {
-	m_type = ITEM_NOEN;		// アイテムの種類
+	m_type = ITEM_NOEN;								// アイテムの種類
 	m_size = D3DXVECTOR3(50.0f, 50.0f, 50.0f);		// サイズ
-	m_pos = VEC3_NULL;		// 位置
-	m_bTake = false;		// 入手したかどうか
-	m_RBOffset = VEC3_NULL;	// リジットボディのオフセット
+	m_bTake = false;								// 入手したかどうか
+	m_RBOffset = VEC3_NULL;							// リジットボディのオフセット
 }
 
 //***************************************
@@ -39,6 +38,9 @@ HRESULT CItem::Init(void)
 	// オブジェクトXの初期化処理
 	CObjectX::Init();
 
+	// 位置情報を取得
+	D3DXVECTOR3 pos = GetPosition();
+
 	// メモリ確保OBBの大きさを設定
 	m_CollisionShape = std::make_unique<btBoxShape>(btVector3(m_size.x, m_size.y, m_size.z));
 
@@ -53,7 +55,7 @@ HRESULT CItem::Init(void)
 	Offset.y += m_size.y * 0.5f;
 	btTransform transform;
 	transform.setIdentity();
-	transform.setOrigin(btVector3(m_pos.x, m_pos.y + Offset.y, m_pos.z)); // 位置を設定
+	transform.setOrigin(btVector3(pos.x, pos.y + Offset.y, pos.z)); // 位置を設定
 	m_GhostObject->setWorldTransform(transform);
 
 	// 衝突グループとマスクを設定してワールドに追加
@@ -148,11 +150,33 @@ void CItem::Update(void)
 			// 終了処理
 			Uninit();
 
-			// チュートリアル表示
-			CGame::GetTutorialBoard()->SetUp("data\\TEXTURE\\tutorial_001.png");
+			// アイテムの種類で分ける
+			if (m_type == ITEM_LEFT)
+			{// 左向きのアイテムの場合
+				// チュートリアル表示
+				CGame::GetTutorialBoard()->SetUp("data\\TEXTURE\\tutorial_001.png");
 
-			// アイテムの有効化
-			CNavi::GetInstance()->SetEnable(CNavi::LIST::LeftArrow, true);
+				// アイテムの有効化
+				CNavi::GetInstance()->SetEnable(CNavi::LIST::LeftArrow, true);
+
+			}
+			else if (m_type == ITEM_JUMP)
+			{
+				// チュートリアル表示
+				CGame::GetTutorialBoard()->SetUp("data\\TEXTURE\\tutorial_001.png");
+
+				// アイテムの有効化
+				CNavi::GetInstance()->SetEnable(CNavi::LIST::LeftArrow, true);
+			}
+			else if (m_type == ITEM_CLIMB)
+			{
+				// チュートリアル表示
+				CGame::GetTutorialBoard()->SetUp("data\\TEXTURE\\tutorial_001.png");
+
+				// アイテムの有効化
+				CNavi::GetInstance()->SetEnable(CNavi::LIST::LeftArrow, true);
+			}
+
 		}
 	}
 
@@ -193,7 +217,6 @@ CItem* CItem::Create(const ITEM type, const D3DXVECTOR3 pos, const D3DXVECTOR3 r
 
 	// メンバ変数に代入する
 	pItem->m_type = type;
-	pItem->m_pos = pos;
 
 	// 初期化処理
 	pItem->Init();
