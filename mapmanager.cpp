@@ -427,7 +427,7 @@ void CMapManager::Load(std::string Path)
 		D3DXVECTOR3(800.0f, 50.0f, 150.0f), 	// 位置
 		D3DXVECTOR3(0.0f, 0.0f, 0.0f), 			// 向き
 		D3DXVECTOR3(1.2f, 1.2f, 1.2f),			// 拡大率
-		"data\\Model\\item\\item000.x");		// テキストファイル
+		"data\\Model\\item\\item001.x");		// テキストファイル
 
 	// 連結
 	m_vMapItem.push_back(m_Item);
