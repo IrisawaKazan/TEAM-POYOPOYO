@@ -39,7 +39,7 @@ HRESULT CPlayer::Init(void)
 
 	btTransform transform;
 	transform.setIdentity();
-	transform.setOrigin(btVector3(GetPos().x, GetPos().y + CAPSULE_HEIGHT, GetPos().z));
+	transform.setOrigin(btVector3(GetPos().x, GetPos().y + CAPSULE_HEIGHT + CAPSULE_RADIUS, GetPos().z));
 
 	btDefaultMotionState* motionState = new btDefaultMotionState(transform);
 	btRigidBody::btRigidBodyConstructionInfo info(mass, motionState, m_CollisionShape.get());
@@ -293,6 +293,7 @@ void CPlayer::Update(void)
 		if (D3DXVec3Dot(&space, &movevec) <= 0.0f)
 		{// もう後ろの場合ジャンプ
 			Jump(moveDir);
+			GetMotionInfo()->SetMotion(3, true);
 		}
 		break;
 	}
@@ -301,11 +302,12 @@ void CPlayer::Update(void)
 		if (m_isGrounded)
 		{// 着地したら
 			m_state = STATE::Normal; // 通常に戻す
+			GetMotionInfo()->SetMotion(4, false);
 		}
 		break;
 	}
 
-	if(GetMotionInfo()->GetBlendMotion() == 2)
+	if (GetMotionInfo()->GetBlendMotion() == 2)
 	{
 		if (m_IsSlopeTrigger == false)
 		{
@@ -385,7 +387,7 @@ void CPlayer::UpdateGroundedState()
 	btVector3 rayFrom = m_RigitBody->getWorldTransform().getOrigin(); // プレイヤーの中心
 
 	// カプセルの高さの半分 + 坂道や段差用のマージン
-	const float rayLength = (CAPSULE_HEIGHT * 0.5f) + GROUND_SPACE;
+	const float rayLength = CAPSULE_HEIGHT + CAPSULE_RADIUS;
 	btVector3 rayTo = rayFrom + btVector3(0, -rayLength, 0);
 
 	// レイキャストのコールバック

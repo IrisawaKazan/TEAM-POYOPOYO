@@ -333,7 +333,7 @@ void CMapManager::CollisionSlopetoPlayers(void)
 		// ŠÜ‚Ü‚ê‚Ä‚¢‚È‚¢
 		else
 		{
-			if ((*Players)->GetMotionInfo()->GetBlendMotion() != 1)(*Players)->GetMotionInfo()->SetMotion(1, false);
+			if ((*Players)->GetMotionInfo()->GetBlendMotion() != 1 && (*Players)->IsGround() == true)(*Players)->GetMotionInfo()->SetMotion(1, false);
 		}
 	}
 }
