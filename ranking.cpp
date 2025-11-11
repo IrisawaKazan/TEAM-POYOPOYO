@@ -44,6 +44,12 @@ HRESULT CRanking::Init(void)
 	// •ÏŠ·
 	Change();
 
+	// ƒTƒEƒ“ƒh‚ÌŽæ“¾
+	CSound* pSound = CManager::GetSound();
+
+	// BGM
+	pSound->Play(CSound::LABEL_RANKING_BGM);
+
 	return S_OK;
 }
 

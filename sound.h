@@ -19,16 +19,11 @@ public:
 	// サウンドの列挙型
 	typedef enum
 	{
-		LABEL_BGM = 0,		// BGM
-		LABEL_SHOT,			// 放つ音
-		LABEL_STUCK,		// 刺さる音
-		LABEL_WATERFALL,	// 滝
-		LABEL_MOVESELECT,	// 選択肢を移動させたとき
-		LABEL_MOVEGROUND,	// 地面上を移動したとき
-		LABEL_MOVEGRASS,	// 叢を移動したとき
-		LABEL_MOVEWATER,	// 水の上を移動したとき
-		LABEL_ENTER,		// 決定音
-		LABEL_MAX			// 最大値
+		LABEL_TITLE_BGM = 0,		// タイトルBGM
+		LABEL_GAME_BGM,				// ゲームBGM
+		LABEL_RANKING_BGM,			// ランキングBGM
+
+		LABEL_MAX					// 最大値
 	}LABEL;
 
 	typedef struct
