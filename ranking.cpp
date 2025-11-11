@@ -16,6 +16,10 @@ CRanking::CRanking()
 {
 	for (int nCnt = 0; nCnt < MAX_NUM; nCnt++)
 	{
+		for (int nTime = 0; nTime < MAX_TIMER; nTime++)
+		{
+			m_pNumber1[nTime][nCnt] = nullptr;
+		}
 		m_nTime[nCnt] = NULL;
 		m_nMin[nCnt] = NULL;
 		m_nSec[nCnt] = NULL;
@@ -121,25 +125,25 @@ void CRanking::Sort(void)
 	int nData = 0;
 
 	// 0秒じゃなかったら
-	if (m_nTime[MAX_NUM - 1] >= 60)
+	if (m_nTime[MAX_NUM - 2] >= 60)
 	{
 		// 配列の最後の数値が今の数値より大きかったら
-		if (m_nTime[MAX_NUM - 1] > nNowTime)
+		if (m_nTime[MAX_NUM - 2] > nNowTime)
 		{
-			m_nTime[MAX_NUM - 1] = nNowTime;
+			m_nTime[MAX_NUM - 2] = nNowTime;
 		}
 	}
 	else
 	{
-		if (m_nTime[MAX_NUM - 1] < nNowTime)
+		if (m_nTime[MAX_NUM - 2] < nNowTime)
 		{
-			m_nTime[MAX_NUM - 1] = nNowTime;
+			m_nTime[MAX_NUM - 2] = nNowTime;
 		}
 	}
 
-	for (int nCnt1 = 0; nCnt1 < MAX_NUM; nCnt1++)
+	for (int nCnt1 = 0; nCnt1 < MAX_NUM - 1; nCnt1++)
 	{
-		for (int nCnt2 = nCnt1 + 1; nCnt2 < MAX_NUM; nCnt2++)
+		for (int nCnt2 = nCnt1 + 1; nCnt2 < MAX_NUM - 1; nCnt2++)
 		{
 			// 比較元0秒じゃなかったら
 			if (m_nTime[nCnt1] >= 60)
@@ -174,13 +178,16 @@ void CRanking::Sort(void)
 //****************************************************************
 void CRanking::Change(void)
 {
+	// 今の総数
+	int nNowTime = CTimer::GetTimer();
+
 	// ソート処理
 	Sort();
 
 	// 読み込み
 	LoadFile();
 
-	for (int nCnt = 0; nCnt < MAX_NUM; nCnt++)
+	for (int nCnt = 0; nCnt < MAX_NUM - 1; nCnt++)
 	{
 		m_nMin[nCnt] = m_nTime[nCnt] / MAX_MINUTES;
 		m_nSec[nCnt] = (m_nTime[nCnt] % MAX_MINUTES) / MAX_SECOND;
@@ -188,7 +195,7 @@ void CRanking::Change(void)
 
 
 
-	for (int nNum = 0; nNum < MAX_NUM; nNum++)
+	for (int nNum = 0; nNum < MAX_NUM - 1; nNum++)
 	{
 		int aPosTexU[MAX_TIMER] = {};
 		int nData = 100;
@@ -196,31 +203,59 @@ void CRanking::Change(void)
 
 		for (int nCnt = 0; nCnt < MAX_TIMER; nCnt++)
 		{
-			// 0番目以外
+			// 0番目以外(秒)
 			aPosTexU[nCnt] = (m_nSec[nNum] % nData) / nData1;
 			nData = nData / 10;
 			nData1 = nData1 / 10;
 
 			m_pNumber1[nCnt][nNum]->SetNumber(aPosTexU[nCnt], 4);
 		}
-	}
 
-	for (int nNum = 0; nNum < MAX_NUM; nNum++)
-	{
-		int aPosTexU[MAX_TIMER] = {};
-		int nData = 100;
-		int nData1 = 10;
+		int aPosTexU1[MAX_TIMER] = {};
+		int nData2 = 100;
+		int nData3 = 10;
 
 		for (int nCnt = 0; nCnt < MAX_TIMER; nCnt++)
 		{
-			// 0番目以外
-			aPosTexU[nCnt] = (m_nMin[nNum] % nData) / nData1;
-			nData = nData / 10;
-			nData1 = nData1 / 10;
+			// 0番目以外(分)
+			aPosTexU1[nCnt] = (m_nMin[nNum] % nData2) / nData3;
+			nData2 = nData2 / 10;
+			nData3 = nData3 / 10;
 
-			m_pNumber2[nCnt][nNum]->SetNumber(aPosTexU[nCnt], 4);
+			m_pNumber2[nCnt][nNum]->SetNumber(aPosTexU1[nCnt], 4);
 		}
 	}
+
+	m_nMin[MAX_NUM - 1] = nNowTime / MAX_MINUTES;
+	m_nSec[MAX_NUM - 1] = (nNowTime % MAX_MINUTES) / MAX_SECOND;
+
+	int aPosTexU[MAX_TIMER] = {};
+	int nData[MAX_TIMER] = {};
+	int nData1[MAX_TIMER] = {};
+
+	for (int nCnt = 0; nCnt < MAX_TIMER; nCnt++)
+	{
+		nData[nCnt] = 100;
+		nData1[nCnt] = 10;
+	}
+
+	for (int nCnt = 0; nCnt < MAX_TIMER; nCnt++)
+	{
+		// 0番目以外(秒)
+		aPosTexU[nCnt] = (m_nSec[MAX_NUM - 1] % nData[0]) / nData1[0];
+		nData[0] = nData[0] / 10;
+		nData1[0] = nData1[0] / 10;
+
+		m_pNumber1[nCnt][MAX_NUM - 1]->SetNumber(aPosTexU[nCnt], 4);
+
+		// 0番目以外(分)
+		aPosTexU[nCnt] = (m_nMin[MAX_NUM - 1] % nData[1]) / nData1[1];
+		nData[1] = nData[1] / 10;
+		nData1[1] = nData1[1] / 10;
+
+		m_pNumber2[nCnt][MAX_NUM - 1]->SetNumber(aPosTexU[nCnt], 4);
+	}
+	
 }
 
 //****************************************************************
@@ -258,12 +293,11 @@ void CRanking::LoadFile(void)
 void CRanking::WriteFile(void)
 {
 	ofstream outFile("data\\Ranking.txt");
-	string line = {};
 
 	// ファイルが正常に開けたら
 	if (outFile.is_open())
 	{
-		for (int nCnt = 0; nCnt < MAX_NUM; nCnt++)
+		for (int nCnt = 0; nCnt < MAX_NUM - 1; nCnt++)
 		{
 			outFile << m_nTime[nCnt] << endl;
 		}
@@ -278,7 +312,7 @@ void CRanking::WriteFile(void)
 //****************************************************************
 void CRanking::InitNum(void)
 {
-	for (int nNum = 0; nNum < MAX_NUM; nNum++)
+	for (int nNum = 0; nNum < MAX_NUM - 1; nNum++)
 	{
 		for (int nCnt = 0; nCnt < MAX_TIMER; nCnt++)
 		{
@@ -303,5 +337,29 @@ void CRanking::InitNum(void)
 		{
 			m_pNumber3[nNum]->Init(615.0f, 665.0f, 300.0f, 350.0f, 0, nNum, 1.0f, 0.0f, 75.0f, 1, 0, "data\\TEXTURE\\coron.png", 1.0f);
 		}
+	}
+
+	for (int nCnt = 0; nCnt < MAX_TIMER; nCnt++)
+	{
+		m_pNumber1[nCnt][MAX_NUM - 1] = new CNumber;
+
+		if (m_pNumber1[nCnt][MAX_NUM - 1] != nullptr)
+		{
+			m_pNumber1[nCnt][MAX_NUM - 1]->Init(650.0f, 650.0f, 100.0f, 150.0f, nCnt, 0, 50.0f, 50.0f, 75.0f, MAX_TIMER, 4, "data\\TEXTURE\\number005.png", 0.1f);
+		}
+
+		m_pNumber2[nCnt][MAX_NUM - 1] = new CNumber;
+
+		if (m_pNumber2[nCnt][MAX_NUM - 1] != nullptr)
+		{
+			m_pNumber2[nCnt][MAX_NUM - 1]->Init(520.0f, 520.0f, 100.0f, 150.0f, nCnt, 0, 50.0f, 50.0f, 75.0f, MAX_TIMER, 4, "data\\TEXTURE\\number005.png", 0.1f);
+		}
+	}
+
+	m_pNumber3[MAX_NUM - 1] = new CNumber;
+
+	if (m_pNumber3[MAX_NUM - 1] != nullptr)
+	{
+		m_pNumber3[MAX_NUM - 1]->Init(615.0f, 665.0f, 100.0f, 150.0f, 0, 0, 1.0f, 0.0f, 75.0f, 1, 0, "data\\TEXTURE\\coron.png", 1.0f);
 	}
 }
