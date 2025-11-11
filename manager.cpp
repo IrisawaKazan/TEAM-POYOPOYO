@@ -215,23 +215,23 @@ void CManager::Uninit()
 //***************************************
 void CManager::Update()
 {
-	// カメラのアップデート
-	m_pCamera->Update();
-
-	// ナビの更新 sato Add
-	CNavi::GetInstance()->Update();
-
 	if (m_isPause == false && m_isNowTutorial == false)
 	{
+		// カメラのアップデート
+		m_pCamera->Update();
+
+		// ナビの更新 sato Add
+		CNavi::GetInstance()->Update();
+
 		// 物理世界でシュミレーションを実行
 		m_pDynamicsWorld->stepSimulation(btScalar(GetFPS()), 10, 0.016f);
+
+		// ライトのアップデート
+		m_pLight->Update();
+
+		// ナビの重なり防止 sato Add
+		CNavi::GetInstance()->HitCheckObject();
 	}
-
-	// ライトのアップデート
-	m_pLight->Update();
-
-	// ナビの重なり防止 sato Add
-	CNavi::GetInstance()->HitCheckObject();
 
 	if (m_pScene != NULL)
 	{
@@ -251,8 +251,11 @@ void CManager::Update()
 		}
 	}
 
-	// ナビの交差計算 sato Add
-	CNavi::GetInstance()->CalculateIntersection();
+	if (m_isPause == false && m_isNowTutorial == false)
+	{
+		// ナビの交差計算 sato Add
+		CNavi::GetInstance()->CalculateIntersection();
+	}
 
 	// キーボードが使われていたら更新
 	if (m_pInputKeyboard != NULL)
