@@ -30,7 +30,8 @@ private:
 	LPDIRECT3DVERTEXBUFFER9 m_pVtxBuff;		// 頂点バッファ
 	D3DXVECTOR3 m_pos;						// 位置
 	D3DXVECTOR3 m_move;						// 移動
-	D3DXCOLOR m_col;						// カラー
+	bool m_bChange;							// カラー判定用
+	int m_nColTime;							// カラー用の計算
 	int m_nIdx;								// インデックス番号
 
 };
