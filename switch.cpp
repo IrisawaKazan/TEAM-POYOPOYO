@@ -91,6 +91,9 @@ void CSwitch::Update(void)
 	// 今の位置を取得
 	D3DXVECTOR3 CurrentPos = GetPosition();
 
+	m_IsFinishOld = m_IsFinish;
+	m_IsFinish = false;
+
 	// 押されていたら
 	if (m_IsPressed == true)
 	{
@@ -99,6 +102,10 @@ void CSwitch::Update(void)
 		{
 			// 沈める
 			CurrentPos.y -= Config::PressSpeed;
+		}
+		else
+		{
+			m_IsFinish = true;
 		}
 	}
 	else
@@ -110,6 +117,16 @@ void CSwitch::Update(void)
 			CurrentPos.y += Config::ReturnSpeed;
 		}
 	}
+
+	if (m_IsFinish == true && m_IsFinishOld == false)
+	{
+		// サウンドの取得
+		CSound* pSound = CManager::GetSound();
+
+		// SE
+		pSound->Play(CSound::LABEL_SWITCH_SE);
+	}
+
 	// 位置を設定
 	SetPosition(CurrentPos);
 

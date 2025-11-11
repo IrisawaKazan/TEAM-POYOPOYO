@@ -54,13 +54,14 @@ public:
 	void Uninit(void);
 	void Update(void);
 
-	void set() { SetMarker(); SetPointer(); SetDefaultEnable(); }
+	void set() { SetMarker(); SetPointer(); SetDefaultEnable(); SetList(); }
 	void remove() { RemoveMarker(); RemovePointer(); RemoveObject(); }
 
 	bool SetEnable(LIST list, bool enable);
 	bool GetEnable(LIST list) const { return m_enableList.at(list); }
 
 	void RegisterRayCastObject(LPD3DXMESH pMesh, const D3DXMATRIX& mtxWorld);
+	void RegisterLatentObject(LPD3DXMESH pMesh, const D3DXMATRIX& mtxWorld);
 	void CalculateIntersection(void);
 	void HitCheckObject();
 
@@ -70,7 +71,7 @@ public:
 	D3DXVECTOR3 GetClickPos(void) const { return m_clickPos; }
 
 private:
-	CNavi() : m_screenPos{}, m_isController{}, m_pPointer{}, m_RayPos{ 0.0f,0.0f,0.0f }, m_RayDir{ 0.0f,0.0f,0.0f }, m_pos{ 0.0f,0.0f,0.0f }, m_clickPos{ 0.0f,0.0f,0.0f }, m_aRayCastTarget{}, m_pMarker{}, m_apObject{}, m_list{}, m_pNewObject{}, m_enableList{} {};
+	CNavi() : m_screenPos{}, m_isController{}, m_pPointer{}, m_RayPos{ 0.0f,0.0f,0.0f }, m_RayDir{ 0.0f,0.0f,0.0f }, m_pos{ 0.0f,0.0f,0.0f }, m_clickPos{ 0.0f,0.0f,0.0f }, m_aRayCastTarget{}, m_aLatentTarget{}, m_pMarker{}, m_apObject{}, m_list{}, m_pNewObject{}, m_enableList{} {};
 	~CNavi() {};
 
 	void CheckController();
@@ -86,6 +87,7 @@ private:
 	void RemovePointer(void) { m_pPointer = nullptr; }
 	void RemoveObject(void) { m_apObject.clear(); m_pNewObject = nullptr; }
 	void SetDefaultEnable();
+	void SetList() { m_list = LIST::LeftArrow; }
 
 	static constexpr float MARKER_HEIGHT = 0.1f;                                           // 地面からマーカーをオフセットする高さ
 	static constexpr float OBJECT_HEIGHT = 0.05f;                                          // 地面からオブジェクトをオフセットする高さ
@@ -95,7 +97,7 @@ private:
 	{// ナビゲーションオブジェクトのテクスチャパス
 		nullptr,
 		"data/TEXTURE/UI/ArrowMark001.png",
-		"data/TEXTURE/UI/ClimbMark000.png",
+		"data/TEXTURE/UI/ClimbMark.png",
 		"data/TEXTURE/UI/JumpMark.png"
 	};
 	static const float ENABLE_ANGLE;                                                      // おけるオブジェクト角度の閾値(どこまでを床としますか?)
@@ -120,6 +122,7 @@ private:
 	D3DXVECTOR3 m_clickPos; // クリックした位置
 
 	std::vector<RayCastTarget> m_aRayCastTarget; // レイキャストの対象オブジェクト配列
+	std::vector<RayCastTarget> m_aLatentTarget;  // レイキャストを隠せるオブジェクト配列
 
 	CNaviMarker* m_pMarker; // マーカーのポインタ
 

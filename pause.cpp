@@ -122,6 +122,7 @@ HRESULT CContinue::Init(void)
 {
 	CPause::Init();
 	CObject2D::SetTexIndx(CTextureManager::Instance()->Register(Config::FilePath));
+
 	return S_OK;
 }
 
@@ -162,7 +163,12 @@ void CContinue::Update(void)
 		CPause::SetCol(CPause::Config::SelectColor);
 		if (CManager::GetInputKeyboard()->GetTrigger(DIK_RETURN) == true || CManager::GetInputJoypad()->GetTrigger(CInputJoypad::JOYKEY_A) == true)
 		{
-			//CManager::GetSound()->Play(CSound::LABEL_ENTER);
+			// サウンドの取得
+			CSound* pSound = CManager::GetSound();
+
+			// SE
+			pSound->Play(CSound::LABEL_DECISION_SE);
+
 			CManager::OffPause();
 		}
 	}
@@ -250,7 +256,12 @@ void CRetry::Update(void)
 		{
 			if (CManager::GetScene()->GetMode() == CScene::MODE::MODE_GAME)
 			{
-				//CManager::GetSound()->Play(CSound::LABEL_ENTER);
+				// サウンドの取得
+				CSound* pSound = CManager::GetSound();
+
+				// SE
+				pSound->Play(CSound::LABEL_DECISION_SE);
+
 				CFade::SetFade(new CGame);
 			}
 			CManager::OffPause();
@@ -338,7 +349,12 @@ void CQuit::Update(void)
 		CPause::SetCol(CPause::Config::SelectColor);
 		if (CManager::GetInputKeyboard()->GetTrigger(DIK_RETURN) == true || CManager::GetInputJoypad()->GetTrigger(CInputJoypad::JOYKEY_A) == true)
 		{
-			//CManager::GetSound()->Play(CSound::LABEL_ENTER);
+			// サウンドの取得
+			CSound* pSound = CManager::GetSound();
+
+			// SE
+			pSound->Play(CSound::LABEL_DECISION_SE);
+
 			CFade::SetFade(new CTitle);
 			CManager::OffPause();
 		}

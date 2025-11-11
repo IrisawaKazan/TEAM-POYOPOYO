@@ -21,6 +21,7 @@ class CPauseManager;
 class CPlayerManager;
 class CMapManager;
 class CTutorialBoard;
+class CBlock;
 
 // ゲームシーンクラスを定義
 class CGame : public CScene
@@ -73,7 +74,7 @@ private:
 		"data/TEXTURE/UI/ArrowMark001.png",
 		"data/TEXTURE/UI/ArrowMark003.png",
 		"data/TEXTURE/UI/ArrowMark000.png",
-		"data/TEXTURE/UI/ClimbMark000.png",
+		"data/TEXTURE/UI/ClimbMark.png",
 		"data/TEXTURE/UI/JumpMark.png"
 	};
 
@@ -85,5 +86,7 @@ private:
 	static CTutorialBoard* m_pTutorialBoard;
 
 	static bool m_bGoal;
+
+	CBlock* m_pBlock; // スタートオブジェクト
 };
 #endif // !_GAME_H_

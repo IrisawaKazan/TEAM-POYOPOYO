@@ -12,7 +12,7 @@
 #include "sound.h"
 
 // 規定値を設定
-const D3DXVECTOR3 CTitleManager::Config::Menu::Bace = { 250.0f,450.0f,0.0f };
+const D3DXVECTOR3 CTitleManager::Config::Menu::Bace = { 250.0f,500.0f,0.0f };
 const D3DXVECTOR3 CTitleManager::Config::Logo::Apper = { 250.0f,0.0f,0.0f };
 const D3DXVECTOR3 CTitleManager::Config::Logo::Dest = { 250.0f,200.0f,0.0f };
 const D3DXVECTOR2 CTitleManager::Config::Logo::Size = { 200.0f,150.0f };
@@ -74,18 +74,25 @@ void CTitleManager::Uninit(void)
 //***************************************
 void CTitleManager::Update(void)
 {
+	// サウンドの取得
+	CSound* pSound = CManager::GetSound();
+
 	// メニューを選ぶ
 	if (CManager::GetInputKeyboard()->GetTrigger(DIK_W) == true || CManager::GetInputMouse()->GetMouseState().lZ < 0 ||
 		CManager::GetInputJoypad()->GetTrigger(CInputJoypad::JOYKEY_UP) == true)
 	{
-		//CManager::GetSound()->Play(CSound::LABEL_MOVESELECT);
 		m_SelectMenu = (CTitleMenu::Menu)Wrap(m_SelectMenu - 1, 0, (int)CTitleMenu::MAX - 1);
+
+		// SE
+		pSound->Play(CSound::LABEL_SELECT_SE);
 	}
 	else if (CManager::GetInputKeyboard()->GetTrigger(DIK_S) == true || CManager::GetInputMouse()->GetMouseState().lZ > 0 ||
 		CManager::GetInputJoypad()->GetTrigger(CInputJoypad::JOYKEY_DOWN) == true)
 	{
-		//CManager::GetSound()->Play(CSound::LABEL_MOVESELECT);
 		m_SelectMenu = (CTitleMenu::Menu)Wrap(m_SelectMenu + 1, 0, (int)CTitleMenu::MAX - 1);
+
+		// SE
+		pSound->Play(CSound::LABEL_SELECT_SE);
 	}
 }
 

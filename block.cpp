@@ -167,7 +167,7 @@ HRESULT CBlock::Init(void)
 void CBlock::InitRB(void)
 {
 	// メモリ確保OBBの大きさを設定
-	m_CollisionShape = std::make_unique<btBoxShape>(btVector3(m_size.x * GetScale().x, m_size.y * GetScale().y, m_size.z * GetScale().z));
+	m_CollisionShape = std::make_unique<btBoxShape>(btVector3(m_size.x, m_size.y, m_size.z));
 
 	// 質量
 	btScalar mass = 0.0f;
@@ -252,101 +252,38 @@ void CBlock::Update(void)
 {
 	if (m_RigitBody == nullptr) return;
 
-	// リジットボディーの更新
-	UpdateRB();
-
-	// トランス*フォーム
-	btTransform trans;
-
-	// ゲット
-	m_RigitBody->getMotionState()->getWorldTransform(trans);
-
-	// 回転行列を取得オフセット分掛ける
-	// 物理世界での位置からオフセット分ずらした現実世界での位置を計算する用の変数
-	btVector3 worldoffet = trans.getBasis() * btVector3(m_RBOffset.x, m_RBOffset.y, m_RBOffset.z);
-
-	// 物理世界の位置から回転行列をかけ合わせたオフセットを引く
-	btVector3 pos = trans.getOrigin() - worldoffet;
-
-	// 位置を設定
-	SetPosition(D3DXVECTOR3(pos.x(), pos.y(), pos.z()));
-
-	// ナビにレイキャストオブジェクトを登録 sato 仮
-	CModelManager* pModelTexManager = CModelManager::Instance();
-	CModelManager::ModelInfo modelinfo = pModelTexManager->GetAddress(GetIndx());
-	CNavi::GetInstance()->RegisterRayCastObject(modelinfo.pMesh, GetWorldMtx());
-}
-
-//***************************************
-// リジットボディーの更新処理
-//***************************************
-void CBlock::UpdateRB(void)
-{
-	// 剛体の削除
-	if (m_RigitBody)
-	{
-		// 物理世界から削除
-		CManager::GetDynamicsWorld()->removeRigidBody(m_RigitBody.get());
-
-		// モーションステートを取得nullチェック
-		if (m_RigitBody->getMotionState())
-		{
-			// モーションステートを削除
-			delete m_RigitBody->getMotionState();
-		}
-		// リジットボディをクリア
-		m_RigitBody.reset();
-	}
-
+	// スケールの更新
 	D3DXVECTOR3 Scale = GetScale();
 
-	// 当たり判定を再生成
-	m_CollisionShape.reset(new btBoxShape(btVector3(m_size.x * Scale.x, m_size.y * Scale.y, m_size.z * Scale.z)));
+	// CollisionShapeにスケールを適用
+	m_RigitBody->getCollisionShape()->setLocalScaling(btVector3(Scale.x, Scale.y, Scale.z));
+
+	// オフセットの更新
 	m_RBOffset.y = m_size.y * Scale.y;
 
-	// 質量を宣言
-	btScalar Mass = 0;
-
-	// 抗力を代入
-	btVector3 Inertia = { 0.0f,0.0f,0.0f };
-
-	// 抗力を設定
-	m_CollisionShape->calculateLocalInertia(Mass, Inertia);
-
-	// 物理世界の位置などを取得
-	btTransform transform, origin, offset;
-
-	// 初期化
+	// トランスフォームの更新
+	btTransform transform, Origin, Offset;
 	transform.setIdentity();
-	origin.setIdentity();
-	offset.setIdentity();
+	Origin.setIdentity();
+	Offset.setIdentity();
 
-	// OBBの回転（例：Y軸まわりに45度回転）
-	btQuaternion rotation;
-	rotation = CMath::ConvertQuat(GetQuad());
-	origin.setRotation(rotation);
-	origin.setOrigin(btVector3(GetPosition().x, GetPosition().y, GetPosition().z));
-	offset.setOrigin(btVector3(m_RBOffset.x, m_RBOffset.y, m_RBOffset.z));
-	transform.mult(origin, offset);
+	// 向きと位置でOriginを設定
+	btQuaternion rotation = CMath::ConvertQuat(GetQuad());
+	Origin.setRotation(rotation);
+	Origin.setOrigin(btVector3(GetPosition().x, GetPosition().y, GetPosition().z));
 
-	// インターフェイスを設定
-	btDefaultMotionState* motionState = new btDefaultMotionState(transform);
-	btRigidBody::btRigidBodyConstructionInfo info(Mass, motionState, m_CollisionShape.get());
+	// Offsetを設定
+	Offset.setOrigin(btVector3(m_RBOffset.x, m_RBOffset.y, m_RBOffset.z));
 
-	// リジットボディーを再生成
-	m_RigitBody.reset(new btRigidBody(info));
+	// トランスフォームを合成
+	transform.mult(Origin, Offset);
 
-	// 移動方向を制限
-	m_RigitBody->setLinearFactor(btVector3(1, 1, 1));
+	// トランスフォームを更新
+	m_RigitBody->setWorldTransform(transform);
+	m_RigitBody->getMotionState()->setWorldTransform(transform);
 
-	// ユーザーポインタを設定
-	m_RigitBody->setUserPointer(this);
-
-	// スリープ状態を設定
-	m_RigitBody->setActivationState(DISABLE_DEACTIVATION);
-
-	// 物理世界にリジットボディーを追加
-	CManager::GetDynamicsWorld()->addRigidBody(m_RigitBody.get());
+	// 物理ワールドにAABB更新通知
+	CManager::GetDynamicsWorld()->updateSingleAabb(m_RigitBody.get());
 }
 
 //***************************************

@@ -36,13 +36,13 @@ public:
 	void InitRB(void);
 	void Uninit(void);
 	void Update(void);
-	void UpdateRB(void);
 	void Draw(void);
 
 	D3DXVECTOR3 GetClosestPointOnSurface(D3DXVECTOR3 worldPoint) const; // sato Add
 
 	D3DXVECTOR3 GetSize(void) const { return m_size; }
 	btRigidBody* GetRB(void) const { return m_RigitBody.get(); }
+	std::string GetFilepath(void) const { return m_sNamePath; }
 
 	static CBlock* Create(std::string sName, D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 Scale = { 1.0f,1.0f,1.0f });
 

@@ -49,6 +49,12 @@ HRESULT CTitle::Init(void)
 		
 	m_pTitleManager = CTitleManager::CreateSingleton();
 
+	// ƒTƒEƒ“ƒh‚ÌŽæ“¾
+	CSound* pSound = CManager::GetSound();
+
+	// BGM
+	pSound->Play(CSound::LABEL_TITLE_BGM);
+
 	return S_OK;
 }
 

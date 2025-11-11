@@ -12,15 +12,17 @@
 CSound::SOUNDINFO CSound::m_aSoundInfo[CSound::LABEL_MAX] =
 {
 	// 0がループしない、-1だったらループする
-	{"data/SOUND/BGM/BGM.wav", -1},			// BGM1
-	{"data/SOUND/SE/ArrowShot.wav", 0},		// SE1
-	{"data/SOUND/SE/StuckArrow.wav", 0},	// SE1
-	{"data/SOUND/SE/WaterFall.wav", -1},	// SE1
-	{"data/SOUND/SE/MoveSelect.wav", 0}	,	// SE1
-	{"data/SOUND/SE/On_Ground.wav", 0}	,	// SE1
-	{"data/SOUND/SE/On_Grass.wav", 0}	,	// SE1
-	{"data/SOUND/SE/On_Water.wav", 0}	,	// SE1
-	{"data/SOUND/SE/Enter.wav", 0}	,		// SE1
+	{"data/BGM/titleBgm.wav", -1},			// タイトルBGM
+	{"data/BGM/gameBgm.wav", -1},			// ゲームBGM
+	{"data/BGM/rankingBgm.wav", -1},		// ランキングBGM
+
+	{"data/SE/selectSe.wav", 0},			// 選択移動SE
+	{"data/SE/decisionSe.wav", 0},			// 選択決定SE
+	{"data/SE/stampSe.wav", 0},				// 指示を配置SE
+	{"data/SE/changeSe.wav", 0},			// 指示を変更SE
+	{"data/SE/pauseSe.wav", 0},				// ポーズSE
+	{"data/SE/fallingSe.wav", 0},			// 落下SE
+	{"data/SE/switchSe.wav", 0},			// スイッチSE
 };	
 
 //*********************************************
