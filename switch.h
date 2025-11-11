@@ -32,7 +32,7 @@ public:
 	void Draw(void);
 
 	// ゲッター
-	bool IsPress(void) { return m_IsPressed; }
+	bool IsPress(void) { return m_IsFinish; }
 
 	// セッター
 	void SetPressed(const bool Condition) { m_IsPressed = Condition; }
@@ -41,6 +41,8 @@ public:
 	// 生成
 	static CSwitch* Create(std::string sName, D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 Scale = { 1.0f,1.0f,1.0f });
 private:
+	bool m_IsFinishOld;		// 前フレームで押し切られているかどうか
+	bool m_IsFinish;		// 押し切ったかどうか
 	bool m_IsPressed;		// 押されているかどうか
 	D3DXVECTOR3 m_ApperPos;	// 初期位置s
 };

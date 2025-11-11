@@ -130,6 +130,12 @@ HRESULT CGame::Init(void)
 	//	CManager::GetDynamicsWorld()->addRigidBody(m_RigitBody.get());
 	//}
 
+	// ƒTƒEƒ“ƒh‚ÌŽæ“¾
+	CSound* pSound = CManager::GetSound();
+
+	// BGM
+	pSound->Play(CSound::LABEL_GAME_BGM);
+
 	return S_OK;
 }
 

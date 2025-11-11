@@ -53,10 +53,16 @@ void CPauseManager::Uninit(void)
 //***************************************
 void CPauseManager::Update(void)
 {
+	// ƒTƒEƒ“ƒh‚Ìæ“¾
+	CSound* pSound = CManager::GetSound();
+
 	if (CManager::GetCamera()->IsAnim() == false && CFade::GetFadeSingle()->GetFade() == CFade::FADE_NONE)
 	{
 		if (CManager::GetInputKeyboard()->GetTrigger(DIK_P) == true || CManager::GetInputJoypad()->GetTrigger(CInputJoypad::JOYKEY_START) == true)
 		{
+			// SE
+			pSound->Play(CSound::LABEL_PAUSE_SE);
+
 			CManager::ChangePause();
 			m_SelectMenu = CPause::CONTINUE;
 		}
@@ -66,10 +72,16 @@ void CPauseManager::Update(void)
 	{
 		if (CManager::GetInputKeyboard()->GetTrigger(DIK_W) == true || CManager::GetInputJoypad()->GetTrigger(CInputJoypad::JOYKEY_UP) == true)
 		{
+			// SE
+			pSound->Play(CSound::LABEL_SELECT_SE);
+
 			m_SelectMenu = (CPause::Menu)Wrap(m_SelectMenu - 1, 0, (int)CPause::MAX - 1);
 		}
 		else if (CManager::GetInputKeyboard()->GetTrigger(DIK_S) == true || CManager::GetInputJoypad()->GetTrigger(CInputJoypad::JOYKEY_DOWN) == true)
 		{
+			// SE
+			pSound->Play(CSound::LABEL_SELECT_SE);
+
 			m_Singleton->m_SelectMenu = (CPause::Menu)Wrap(m_SelectMenu + 1, 0, (int)CPause::MAX - 1);
 		}
 		for (auto iter = m_apPauseMenu.begin(); iter != m_apPauseMenu.end(); iter++)

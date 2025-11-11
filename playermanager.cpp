@@ -88,6 +88,12 @@ void CPlayerManager::Update(void)
 		// —Ž‚¿‚Ä‚¢‚½‚ç
 		if ((*Players)->GetPos().y < Fall)
 		{
+			// ƒTƒEƒ“ƒh‚ÌŽæ“¾
+			CSound* pSound = CManager::GetSound();
+
+			// SE
+			pSound->Play(CSound::LABEL_FALLING_SE);
+
 			// ”jŠü
 			(*Players)->Uninit();
 			Players = m_pPlayer.erase(Players);

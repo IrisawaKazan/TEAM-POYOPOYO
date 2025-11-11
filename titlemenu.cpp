@@ -168,13 +168,18 @@ void CStart::Update(void)
 		if (CManager::GetInputKeyboard()->GetTrigger(DIK_RETURN) == true || CManager::GetInputMouse()->OnDown(0) == true ||
 			CManager::GetInputJoypad()->GetTrigger(CInputJoypad::JOYKEY_A) == true || CManager::GetInputJoypad()->GetTrigger(CInputJoypad::JOYKEY_START) == true)
 		{
+			// サウンドの取得
+			CSound* pSound = CManager::GetSound();
+
 			if (CTitleManager::GetLower() == false)
 			{
 				CTitleManager::GetSingleton()->GetTitleLogo()->Lower();
 			}
 			else
 			{
-				//CManager::GetSound()->Play(CSound::LABEL_ENTER);
+				// SE
+				pSound->Play(CSound::LABEL_DECISION_SE); // エンター連打で多重に鳴る
+
 				CFade::SetFade(new CGame);
 				CManager::OffPause();
 			}

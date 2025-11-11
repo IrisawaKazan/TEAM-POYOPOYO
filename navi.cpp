@@ -273,6 +273,9 @@ void CNavi::Update(void)
 	// レイを作成
 	CreateRay(m_screenPos);
 
+	// サウンドの取得
+	CSound* pSound = CManager::GetSound();
+
 	// 位置を更新
 	if (m_pMarker != nullptr)
 	{
@@ -281,6 +284,10 @@ void CNavi::Update(void)
 
 	if (CManager::GetInputKeyboard()->GetTrigger(DIK_Q) || CManager::GetInputMouse()->GetMouseState().lZ > 0 || CManager::GetInputJoypad()->GetTrigger(CInputJoypad::JOYKEY_L1))
 	{// Qキーでオブジェクトを変更、有効化されていないオブジェクトはスキップ
+
+		// SE
+		pSound->Play(CSound::LABEL_CHANGE_SE);
+
 		while (true)
 		{
 			m_list = static_cast<LIST>((static_cast<unsigned char>(m_list) + static_cast<unsigned char>(LIST::Max) - 1) % static_cast<unsigned char>(LIST::Max));
@@ -289,6 +296,10 @@ void CNavi::Update(void)
 	}
 	if (CManager::GetInputKeyboard()->GetTrigger(DIK_E) || CManager::GetInputMouse()->GetMouseState().lZ < 0 || CManager::GetInputJoypad()->GetTrigger(CInputJoypad::JOYKEY_R1))
 	{// Eキーでオブジェクトを変更、有効化されていないオブジェクトはスキップ
+
+		// SE
+		pSound->Play(CSound::LABEL_CHANGE_SE);
+
 		while (true)
 		{
 			m_list = static_cast<LIST>((static_cast<unsigned char>(m_list) + 1) % static_cast<unsigned char>(LIST::Max));
@@ -298,6 +309,10 @@ void CNavi::Update(void)
 
 	if (m_pos.y > (MARKER_OFFSET.y + 1.0f) && (CManager::GetInputMouse()->OnDown(0) || CManager::GetInputJoypad()->GetTrigger(CInputJoypad::JOYKEY_R2) || CManager::GetInputJoypad()->GetTrigger(CInputJoypad::JOYKEY_A)))
 	{// 左クリックしたとき
+
+		// SE
+		pSound->Play(CSound::LABEL_STAMP_SE);
+
 		m_clickPos = m_pos; // クリックした位置を保存
 
 		// オブジェクトごとの分岐
