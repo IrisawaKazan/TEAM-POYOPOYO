@@ -15,13 +15,14 @@ class CBlock;
 class CPlayer : public CModelCharacter
 {
 public:
-	static constexpr float CAPSULE_RADIUS = 7.0f;  // カプセルの半径 sato Add
-	static constexpr float CAPSULE_HEIGHT = 20.0f; // カプセルの高さ sato Add
-	static constexpr float MOVE_SPEED = 10.0f;     // 移動スピード sato Add
-	static constexpr float CLIMB_SPEED = 10.0f;    // 上るスピード sato Add
-	static constexpr float JUMP_POWER = 30.0f;     // ジャンプ力 sato Add
-	static constexpr float JUMP_SPEED_INA = 5.0f;  // ジャンプ中の移動係数 sato Add
-	static constexpr float GROUND_SPACE = 0.1f;    // 着地時の判定値 sato Add
+	static constexpr float CAPSULE_RADIUS = 7.0f;     // カプセルの半径 sato Add
+	static constexpr float CAPSULE_HEIGHT = 20.0f;    // カプセルの高さ sato Add
+	static constexpr float MOVE_SPEED = 10.0f;        // 移動スピード sato Add
+	static constexpr float CLIMB_SPEED = 5.0f;        // 上るスピード sato Add
+	static constexpr float JUMP_POWER = 30.0f;        // ジャンプ力(高さ) sato Add
+	static constexpr float JUMP_SPEED_INA = 15.0f;    // ジャンプ力(横移動) sato Add
+	static constexpr float GROUND_SPACE = 0.1f;       // 着地時の判定値 sato Add
+	static constexpr float AIR_CONTROL_FACTOR = 0.1f; // 空中制御係数 sato Add
 
 	// 状態
 	enum class STATE : unsigned char

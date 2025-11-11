@@ -203,12 +203,31 @@ void CPlayer::Update(void)
 
 	if (m_RigitBody == nullptr) return;
 
-	btVector3 moveDir(0, 0, 0); // 移動
+	btVector3 moveDir(0, 0, 0); // 最終的に setLinearVelocity に渡す速度
+	D3DXVECTOR3 rot = GetRot();
+	btVector3 currentVel = m_RigitBody->getLinearVelocity(); // 現在の物理速度
 
 	// 移動処理
-	D3DXVECTOR3 rot = GetRot();
-	moveDir.setX(-sinf(rot.y) * MOVE_SPEED);
-	moveDir.setZ(-cosf(rot.y) * MOVE_SPEED);
+	if (m_state==STATE::Jumping)
+	{// 空中
+		// 空中制御のための入力（目標）速度
+		btVector3 inputVel(0, 0, 0);
+		inputVel.setX(-sinf(rot.y) * MOVE_SPEED);
+		inputVel.setZ(-cosf(rot.y) * MOVE_SPEED);
+
+		// XZ速度を現在の速度から入力(inputVel)へ近づける
+		// 慣性を維持と空中制御
+		btVector3 blendedVel = currentVel.lerp(inputVel, AIR_CONTROL_FACTOR);
+		
+		moveDir.setX(blendedVel.x());
+		moveDir.setZ(blendedVel.z());
+
+	}
+	else
+	{
+		moveDir.setX(-sinf(rot.y) * MOVE_SPEED);
+		moveDir.setZ(-cosf(rot.y) * MOVE_SPEED);
+	}
 	moveDir.setY(m_RigitBody->getLinearVelocity().y());
 
 	// 状態処理
@@ -277,10 +296,8 @@ void CPlayer::Update(void)
 		}
 		break;
 	}
+	// 飛んでいる
 	case STATE::Jumping:
-		// 飛んでいる
-		moveDir.setX(moveDir.x() * JUMP_SPEED_INA);
-		moveDir.setZ(moveDir.z() * JUMP_SPEED_INA);
 		if (m_isGrounded)
 		{// 着地したら
 			m_state = STATE::Normal; // 通常に戻す
@@ -368,7 +385,7 @@ void CPlayer::UpdateGroundedState()
 	btVector3 rayFrom = m_RigitBody->getWorldTransform().getOrigin(); // プレイヤーの中心
 
 	// カプセルの高さの半分 + 坂道や段差用のマージン
-	const float rayLength = CAPSULE_HEIGHT + GROUND_SPACE;
+	const float rayLength = (CAPSULE_HEIGHT * 0.5f) + GROUND_SPACE;
 	btVector3 rayTo = rayFrom + btVector3(0, -rayLength, 0);
 
 	// レイキャストのコールバック
@@ -440,6 +457,8 @@ bool CPlayer::IsClimbingContact()
 // ジャンプ
 void CPlayer::Jump(btVector3& moveDir)
 {
-	moveDir.setY(moveDir.y() + JUMP_POWER);
+	moveDir.setX(moveDir.x() * JUMP_SPEED_INA);
+	moveDir.setZ(moveDir.y() * JUMP_SPEED_INA);
+	moveDir.setY(JUMP_POWER);
 	m_state = STATE::Jumping;
 }
