@@ -54,8 +54,10 @@ public:
 	void Uninit(void);
 	void Update(void);
 
-	void set() { SetMarker(); SetPointer(); SetDefaultEnable(); SetList(); }
-	void remove() { RemoveMarker(); RemovePointer(); RemoveObject(); }
+	void set() { SetMarker(); SetPointer(); SetDefaultEnable(); SetList(), SetEnable(true); }
+	void remove() { RemoveMarker(); RemovePointer(); RemoveObject(), SetEnable(false); }
+	void SetEnable(bool enable) { m_isEnable = enable; }
+	bool GetEnable() { return m_isEnable; }
 
 	bool SetEnable(LIST list, bool enable);
 	bool GetEnable(LIST list) const { return m_enableList.at(list); }
@@ -71,7 +73,7 @@ public:
 	D3DXVECTOR3 GetClickPos(void) const { return m_clickPos; }
 
 private:
-	CNavi() : m_screenPos{}, m_isController{}, m_pPointer{}, m_RayPos{ 0.0f,0.0f,0.0f }, m_RayDir{ 0.0f,0.0f,0.0f }, m_pos{ 0.0f,0.0f,0.0f }, m_clickPos{ 0.0f,0.0f,0.0f }, m_aRayCastTarget{}, m_aLatentTarget{}, m_pMarker{}, m_apObject{}, m_list{}, m_pNewObject{}, m_enableList{} {};
+	CNavi() : m_isEnable{}, m_screenPos{}, m_isController{}, m_pPointer{}, m_RayPos{ 0.0f,0.0f,0.0f }, m_RayDir{ 0.0f,0.0f,0.0f }, m_pos{ 0.0f,0.0f,0.0f }, m_clickPos{ 0.0f,0.0f,0.0f }, m_aRayCastTarget{}, m_aLatentTarget{}, m_pMarker{}, m_apObject{}, m_list{}, m_pNewObject{}, m_enableList{} {};
 	~CNavi() {};
 
 	void CheckController();
@@ -110,6 +112,8 @@ private:
 	{// Defaultの有効化状態
 		true,true,false,true,false,false
 	};
+
+	bool m_isEnable; // 有効状態
 
 	D3DXVECTOR2 m_screenPos; // スクリーン上の位置
 	bool m_isController;     // コントローラー操作

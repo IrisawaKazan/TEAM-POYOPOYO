@@ -261,107 +261,110 @@ void CNavi::Uninit(void)
 //--------------------------------
 void CNavi::Update(void)
 {
-	// 操作管理
-	CheckController();
-
-	// スクリーン座標
-	SetScreenPos();
-
-	// ポインター
-	UpdatePointer(m_isController && m_pos.y <= (MARKER_OFFSET.y + 1.0f));
-
-	// レイを作成
-	CreateRay(m_screenPos);
-
-	// サウンドの取得
-	CSound* pSound = CManager::GetSound();
-
-	// 位置を更新
-	if (m_pMarker != nullptr)
+	if (m_isEnable)
 	{
-		m_pMarker->SetPos(m_pos + D3DXVECTOR3(0.0f, MARKER_HEIGHT, 0.0f));
-	}
+		// 操作管理
+		CheckController();
 
-	if (CManager::GetInputKeyboard()->GetTrigger(DIK_Q) || CManager::GetInputMouse()->GetMouseState().lZ > 0 || CManager::GetInputJoypad()->GetTrigger(CInputJoypad::JOYKEY_L1))
-	{// Qキーでオブジェクトを変更、有効化されていないオブジェクトはスキップ
+		// スクリーン座標
+		SetScreenPos();
 
-		// SE
-		pSound->Play(CSound::LABEL_CHANGE_SE);
+		// ポインター
+		UpdatePointer(m_isController && m_pos.y <= (MARKER_OFFSET.y + 1.0f));
 
-		while (true)
+		// レイを作成
+		CreateRay(m_screenPos);
+
+		// サウンドの取得
+		CSound* pSound = CManager::GetSound();
+
+		// 位置を更新
+		if (m_pMarker != nullptr)
 		{
-			m_list = static_cast<LIST>((static_cast<unsigned char>(m_list) + static_cast<unsigned char>(LIST::Max) - 1) % static_cast<unsigned char>(LIST::Max));
-			if (GetEnable(m_list))break;
+			m_pMarker->SetPos(m_pos + D3DXVECTOR3(0.0f, MARKER_HEIGHT, 0.0f));
 		}
-	}
-	if (CManager::GetInputKeyboard()->GetTrigger(DIK_E) || CManager::GetInputMouse()->GetMouseState().lZ < 0 || CManager::GetInputJoypad()->GetTrigger(CInputJoypad::JOYKEY_R1))
-	{// Eキーでオブジェクトを変更、有効化されていないオブジェクトはスキップ
 
-		// SE
-		pSound->Play(CSound::LABEL_CHANGE_SE);
+		if (CManager::GetInputKeyboard()->GetTrigger(DIK_Q) || CManager::GetInputMouse()->GetMouseState().lZ > 0 || CManager::GetInputJoypad()->GetTrigger(CInputJoypad::JOYKEY_L1))
+		{// Qキーでオブジェクトを変更、有効化されていないオブジェクトはスキップ
 
-		while (true)
-		{
-			m_list = static_cast<LIST>((static_cast<unsigned char>(m_list) + 1) % static_cast<unsigned char>(LIST::Max));
-			if (GetEnable(m_list))break;
+			// SE
+			pSound->Play(CSound::LABEL_CHANGE_SE);
+
+			while (true)
+			{
+				m_list = static_cast<LIST>((static_cast<unsigned char>(m_list) + static_cast<unsigned char>(LIST::Max) - 1) % static_cast<unsigned char>(LIST::Max));
+				if (GetEnable(m_list))break;
+			}
 		}
-	}
+		if (CManager::GetInputKeyboard()->GetTrigger(DIK_E) || CManager::GetInputMouse()->GetMouseState().lZ < 0 || CManager::GetInputJoypad()->GetTrigger(CInputJoypad::JOYKEY_R1))
+		{// Eキーでオブジェクトを変更、有効化されていないオブジェクトはスキップ
 
-	if (m_pos.y > (MARKER_OFFSET.y + 1.0f) && (CManager::GetInputMouse()->OnDown(0) || CManager::GetInputJoypad()->GetTrigger(CInputJoypad::JOYKEY_R2) || CManager::GetInputJoypad()->GetTrigger(CInputJoypad::JOYKEY_A)))
-	{// 左クリックしたとき
+			// SE
+			pSound->Play(CSound::LABEL_CHANGE_SE);
 
-		// SE
-		pSound->Play(CSound::LABEL_STAMP_SE);
-
-		m_clickPos = m_pos; // クリックした位置を保存
-
-		// オブジェクトごとの分岐
-		switch (m_list)
-		{
-		case CNavi::LIST::RightArrow:
-			// 矢印を作成
-			m_apObject.push_back(CArrow::Create(m_clickPos + D3DXVECTOR3(0.0f, OBJECT_HEIGHT, 0.0f), m_pMarker->GetRotMtx(), D3DXToRadian(90.0f), OBJECT_TEXTURE_PATH[unsigned int(TYPE::Arrow)], m_pMarker->GetSize()));
-			break;
-		case CNavi::LIST::FrontArrow:
-			// 矢印を作成
-			m_apObject.push_back(CArrow::Create(m_clickPos + D3DXVECTOR3(0.0f, OBJECT_HEIGHT, 0.0f), m_pMarker->GetRotMtx(), D3DXToRadian(180.0f), OBJECT_TEXTURE_PATH[unsigned int(TYPE::Arrow)], m_pMarker->GetSize()));
-			break;
-		case CNavi::LIST::LeftArrow:
-			// 矢印を作成
-			m_apObject.push_back(CArrow::Create(m_clickPos + D3DXVECTOR3(0.0f, OBJECT_HEIGHT, 0.0f), m_pMarker->GetRotMtx(), D3DXToRadian(-90.0f), OBJECT_TEXTURE_PATH[unsigned int(TYPE::Arrow)], m_pMarker->GetSize()));
-			break;
-		case CNavi::LIST::BackArrow:
-			// 矢印を作成
-			m_apObject.push_back(CArrow::Create(m_clickPos + D3DXVECTOR3(0.0f, OBJECT_HEIGHT, 0.0f), m_pMarker->GetRotMtx(), D3DXToRadian(0.0f), OBJECT_TEXTURE_PATH[unsigned int(TYPE::Arrow)], m_pMarker->GetSize()));
-			break;
-		case CNavi::LIST::Climb:
-			// クライムを作成
-			m_apObject.push_back(CClimb::Create(m_clickPos + D3DXVECTOR3(0.0f, OBJECT_HEIGHT, 0.0f), m_pMarker->GetRotMtx(), D3DXToRadian(180.0f), OBJECT_TEXTURE_PATH[unsigned int(TYPE::Climb)], m_pMarker->GetSize()));
-			break;
-		case CNavi::LIST::Jump:
-			// ジャンプを作成
-			m_apObject.push_back(CJump::Create(m_clickPos + D3DXVECTOR3(0.0f, OBJECT_HEIGHT, 0.0f), m_pMarker->GetRotMtx(), D3DXToRadian(180.0f), OBJECT_TEXTURE_PATH[unsigned int(TYPE::Jump)], m_pMarker->GetSize()));
-			break;
+			while (true)
+			{
+				m_list = static_cast<LIST>((static_cast<unsigned char>(m_list) + 1) % static_cast<unsigned char>(LIST::Max));
+				if (GetEnable(m_list))break;
+			}
 		}
-		if (m_apObject.empty()) return;
 
-		m_pNewObject = m_apObject.back(); // 新しく作成したオブジェクトのポインタ
-	}
+		if (m_pos.y > (MARKER_OFFSET.y + 1.0f) && (CManager::GetInputMouse()->OnDown(0) || CManager::GetInputJoypad()->GetTrigger(CInputJoypad::JOYKEY_R2) || CManager::GetInputJoypad()->GetTrigger(CInputJoypad::JOYKEY_A)))
+		{// 左クリックしたとき
 
-	m_aRayCastTarget.clear(); // レイキャスト対象オブジェクト配列をクリア
-	m_aLatentTarget.clear();  // レイキャストを隠すオブジェクト配列をクリア
+			// SE
+			pSound->Play(CSound::LABEL_STAMP_SE);
+
+			m_clickPos = m_pos; // クリックした位置を保存
+
+			// オブジェクトごとの分岐
+			switch (m_list)
+			{
+			case CNavi::LIST::RightArrow:
+				// 矢印を作成
+				m_apObject.push_back(CArrow::Create(m_clickPos + D3DXVECTOR3(0.0f, OBJECT_HEIGHT, 0.0f), m_pMarker->GetRotMtx(), D3DXToRadian(90.0f), OBJECT_TEXTURE_PATH[unsigned int(TYPE::Arrow)], m_pMarker->GetSize()));
+				break;
+			case CNavi::LIST::FrontArrow:
+				// 矢印を作成
+				m_apObject.push_back(CArrow::Create(m_clickPos + D3DXVECTOR3(0.0f, OBJECT_HEIGHT, 0.0f), m_pMarker->GetRotMtx(), D3DXToRadian(180.0f), OBJECT_TEXTURE_PATH[unsigned int(TYPE::Arrow)], m_pMarker->GetSize()));
+				break;
+			case CNavi::LIST::LeftArrow:
+				// 矢印を作成
+				m_apObject.push_back(CArrow::Create(m_clickPos + D3DXVECTOR3(0.0f, OBJECT_HEIGHT, 0.0f), m_pMarker->GetRotMtx(), D3DXToRadian(-90.0f), OBJECT_TEXTURE_PATH[unsigned int(TYPE::Arrow)], m_pMarker->GetSize()));
+				break;
+			case CNavi::LIST::BackArrow:
+				// 矢印を作成
+				m_apObject.push_back(CArrow::Create(m_clickPos + D3DXVECTOR3(0.0f, OBJECT_HEIGHT, 0.0f), m_pMarker->GetRotMtx(), D3DXToRadian(0.0f), OBJECT_TEXTURE_PATH[unsigned int(TYPE::Arrow)], m_pMarker->GetSize()));
+				break;
+			case CNavi::LIST::Climb:
+				// クライムを作成
+				m_apObject.push_back(CClimb::Create(m_clickPos + D3DXVECTOR3(0.0f, OBJECT_HEIGHT, 0.0f), m_pMarker->GetRotMtx(), D3DXToRadian(180.0f), OBJECT_TEXTURE_PATH[unsigned int(TYPE::Climb)], m_pMarker->GetSize()));
+				break;
+			case CNavi::LIST::Jump:
+				// ジャンプを作成
+				m_apObject.push_back(CJump::Create(m_clickPos + D3DXVECTOR3(0.0f, OBJECT_HEIGHT, 0.0f), m_pMarker->GetRotMtx(), D3DXToRadian(180.0f), OBJECT_TEXTURE_PATH[unsigned int(TYPE::Jump)], m_pMarker->GetSize()));
+				break;
+			}
+			if (m_apObject.empty()) return;
+
+			m_pNewObject = m_apObject.back(); // 新しく作成したオブジェクトのポインタ
+		}
+
+		m_aRayCastTarget.clear(); // レイキャスト対象オブジェクト配列をクリア
+		m_aLatentTarget.clear();  // レイキャストを隠すオブジェクト配列をクリア
 
 #ifdef _DEBUG
-	if (CManager::GetInputKeyboard()->GetTrigger(DIK_J))
-	{
-		SetEnable(LIST::Jump, !GetEnable(LIST::Jump));
-	}
-	if (CManager::GetInputKeyboard()->GetTrigger(DIK_C))
-	{
-		SetEnable(LIST::Climb, !GetEnable(LIST::Climb));
-	}
+		if (CManager::GetInputKeyboard()->GetTrigger(DIK_J))
+		{
+			SetEnable(LIST::Jump, !GetEnable(LIST::Jump));
+		}
+		if (CManager::GetInputKeyboard()->GetTrigger(DIK_C))
+		{
+			SetEnable(LIST::Climb, !GetEnable(LIST::Climb));
+		}
 #endif // _DEBUG
 
+	}
 }
 
 //--------------------------------
