@@ -16,6 +16,8 @@ CSound::SOUNDINFO CSound::m_aSoundInfo[CSound::LABEL_MAX] =
 	{"data/BGM/gameBgm.wav", -1},			// ゲームBGM
 	{"data/BGM/rankingBgm.wav", -1},		// ランキングBGM
 
+	{"data/SE/selectSe.wav", 0},			// 選択移動SE
+	{"data/SE/decisionSe.wav", 0},			// 選択決定SE
 };	
 
 //*********************************************

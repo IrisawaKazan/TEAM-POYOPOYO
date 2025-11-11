@@ -23,6 +23,9 @@ public:
 		LABEL_GAME_BGM,				// ゲームBGM
 		LABEL_RANKING_BGM,			// ランキングBGM
 
+		LABEL_SELECT_SE,			// 選択移動SE
+		LABEL_DECISION_SE,			// 選択決定SE
+
 		LABEL_MAX					// 最大値
 	}LABEL;
 

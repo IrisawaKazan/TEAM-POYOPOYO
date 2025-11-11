@@ -168,6 +168,12 @@ void CStart::Update(void)
 		if (CManager::GetInputKeyboard()->GetTrigger(DIK_RETURN) == true || CManager::GetInputMouse()->OnDown(0) == true ||
 			CManager::GetInputJoypad()->GetTrigger(CInputJoypad::JOYKEY_A) == true || CManager::GetInputJoypad()->GetTrigger(CInputJoypad::JOYKEY_START) == true)
 		{
+			// ƒTƒEƒ“ƒh‚ÌŽæ“¾
+			CSound* pSound = CManager::GetSound();
+
+			// SE
+			pSound->Play(CSound::LABEL_DECISION_SE);
+
 			if (CTitleManager::GetLower() == false)
 			{
 				CTitleManager::GetSingleton()->GetTitleLogo()->Lower();
