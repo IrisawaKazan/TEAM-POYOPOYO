@@ -21,6 +21,7 @@ CSound::SOUNDINFO CSound::m_aSoundInfo[CSound::LABEL_MAX] =
 	{"data/SE/stampSe.wav", 0},				// 指示を配置SE
 	{"data/SE/changeSe.wav", 0},			// 指示を変更SE
 	{"data/SE/pauseSe.wav", 0},				// ポーズSE
+	{"data/SE/fallingSe.wav", 0},			// 落下SE
 };	
 
 //*********************************************

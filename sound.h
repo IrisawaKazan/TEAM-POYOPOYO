@@ -28,6 +28,7 @@ public:
 		LABEL_STAMP_SE,				// 指示を配置SE
 		LABEL_CHANGE_SE,			// 指示を変更SE
 		LABEL_PAUSE_SE,				// ポーズSE
+		LABEL_FALLING_SE,			// 落下SE
 
 		LABEL_MAX					// 最大値
 	}LABEL;
