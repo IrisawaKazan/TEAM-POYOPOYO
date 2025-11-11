@@ -20,13 +20,17 @@ public:
 	void Update(void);
 	void Draw(void);
 	static CNumber* Create(D3DXVECTOR3 pos);
+
+	// セッター
 	void SetNumber(int nNumber, int nAdd);
 
+	void ColAnim(void);
 
 private:
 	LPDIRECT3DVERTEXBUFFER9 m_pVtxBuff;		// 頂点バッファ
 	D3DXVECTOR3 m_pos;						// 位置
 	D3DXVECTOR3 m_move;						// 移動
+	D3DXCOLOR m_col;						// カラー
 	int m_nIdx;								// インデックス番号
 
 };
