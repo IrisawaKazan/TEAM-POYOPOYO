@@ -27,6 +27,7 @@ public:
 		LABEL_DECISION_SE,			// 選択決定SE
 		LABEL_STAMP_SE,				// 指示を配置SE
 		LABEL_CHANGE_SE,			// 指示を変更SE
+		LABEL_PAUSE_SE,				// ポーズSE
 
 		LABEL_MAX					// 最大値
 	}LABEL;

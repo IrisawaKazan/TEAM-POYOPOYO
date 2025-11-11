@@ -171,16 +171,15 @@ void CStart::Update(void)
 			// サウンドの取得
 			CSound* pSound = CManager::GetSound();
 
-			// SE
-			pSound->Play(CSound::LABEL_DECISION_SE); // エンター連打で多重に鳴る
-
 			if (CTitleManager::GetLower() == false)
 			{
 				CTitleManager::GetSingleton()->GetTitleLogo()->Lower();
 			}
 			else
 			{
-				//CManager::GetSound()->Play(CSound::LABEL_ENTER);
+				// SE
+				pSound->Play(CSound::LABEL_DECISION_SE); // エンター連打で多重に鳴る
+
 				CFade::SetFade(new CGame);
 				CManager::OffPause();
 			}
