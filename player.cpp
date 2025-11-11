@@ -39,7 +39,7 @@ HRESULT CPlayer::Init(void)
 
 	btTransform transform;
 	transform.setIdentity();
-	transform.setOrigin(btVector3(GetPos().x, GetPos().y + CAPSULE_HEIGHT + CAPSULE_RADIUS, GetPos().z));
+	transform.setOrigin(btVector3(GetPos().x, GetPos().y + CAPSULE_HALF_HEIGHT, GetPos().z));
 
 	btDefaultMotionState* motionState = new btDefaultMotionState(transform);
 	btRigidBody::btRigidBodyConstructionInfo info(mass, motionState, m_CollisionShape.get());
@@ -92,7 +92,165 @@ void CPlayer::Uninit(void)
 void CPlayer::Update(void)
 {
 	UpdateGroundedState(); // 着地更新
+	CheckNavigation();     // ナビゲーション
 
+	if (!m_isGrounded)
+	{// 空中
+		m_state = STATE::Jumping;
+	}
+
+	if (m_RigitBody == nullptr) return;
+
+	btVector3 moveDir(0, 0, 0); // 最終的に setLinearVelocity に渡す速度
+	D3DXVECTOR3 rot = GetRot();
+	btVector3 currentVel = m_RigitBody->getLinearVelocity(); // 現在の物理速度
+
+	// 移動処理
+	if (m_state==STATE::Jumping)
+	{// 空中
+		// 空中制御のための入力（目標）速度
+		btVector3 inputVel(0, 0, 0);
+		inputVel.setX(-sinf(rot.y) * MOVE_SPEED);
+		inputVel.setZ(-cosf(rot.y) * MOVE_SPEED);
+
+		// XZ速度を現在の速度から入力(inputVel)へ近づける
+		// 慣性を維持と空中制御
+		btVector3 blendedVel = currentVel.lerp(inputVel, AIR_CONTROL_FACTOR);
+		
+		moveDir.setX(blendedVel.x());
+		moveDir.setZ(blendedVel.z());
+	}
+	else
+	{
+		moveDir.setX(-sinf(rot.y) * MOVE_SPEED);
+		moveDir.setZ(-cosf(rot.y) * MOVE_SPEED);
+	}
+
+	if (m_isGrounded && m_state != STATE::Jumping && m_state != STATE::Climbing)
+	{// 地面にいる
+		// Y速度は0
+		moveDir.setY(0.0f);
+	}
+	else
+	{// 空中にいる
+		// Y速度を維持
+		moveDir.setY(m_RigitBody->getLinearVelocity().y());
+	}
+
+	// 状態処理
+	switch (m_state)
+	{
+		// 通常
+	case STATE::Normal:
+		break;
+		// ターン
+	case STATE::Turn:
+	{
+		D3DXVECTOR3 pos = GetPos();
+		D3DXVECTOR3 space = m_activePos - pos;
+		if (D3DXVec3Length(&space) <= TURN_RADIUS)
+		{// ターン位置に来たら
+			Turn();
+		}
+		else
+		{
+			D3DXVec3Normalize(&space, &space);
+			D3DXVECTOR3 movevec = D3DXVECTOR3(moveDir.normalized());
+			if (D3DXVec3Dot(&space, &movevec) <= 0.0f)
+			{// もう後ろの場合ターン
+				Turn();
+			}
+		}
+		break;
+	}
+		// 登る
+	case STATE::Climb:
+		if (IsClimbingContact())
+		{// 壁についた
+			FaceBlock();               // 改めて壁を向く
+			moveDir.setY(CLIMB_SPEED); // 登る
+			m_state = STATE::Climbing; // 登っている状態
+		}
+		break;
+		// 登っている
+	case STATE::Climbing:
+	{
+		if (IsClimbingContact())
+		{// 登り続けている
+			FaceBlock();               // 改めて壁を向く
+			moveDir.setY(CLIMB_SPEED); // 登る
+
+			if (m_isGrounded)
+			{// 着地(ブロックの上)
+				Landing();
+			}
+		}
+		else
+		{// 登ったまま少し浮いたか落ちた
+			m_state = STATE::Jumping;
+		}
+		break;
+	}
+		// 跳ぶ
+	case STATE::Jump:
+	{
+		// 真ん中に行ってから
+		D3DXVECTOR3 pos = GetPos();
+		D3DXVECTOR3 space = m_activePos - pos;
+		D3DXVec3Normalize(&space, &space);
+		D3DXVECTOR3 movevec = D3DXVECTOR3(moveDir.normalized());
+		if (D3DXVec3Dot(&space, &movevec) <= 0.0f)
+		{// もう後ろの場合ジャンプ
+			Jump(moveDir);
+		}
+		break;
+	}
+	// 飛んでいる
+	case STATE::Jumping:
+		if (m_isGrounded)
+		{// 着地したら
+			Landing();
+		}
+		break;
+	}
+
+	if (GetMotionInfo()->GetBlendMotion() == 2)
+	{
+		if (m_IsSlopeTrigger == false)
+		{
+			// 物理に移動値を渡す
+			m_RigitBody->applyCentralImpulse(moveDir);
+			m_IsSlopeTrigger = true;
+		}
+	}
+	else
+	{
+		// 物理に移動値を渡す
+		m_RigitBody->setLinearVelocity(moveDir);
+		m_IsSlopeTrigger = false;
+	}
+
+	btVector3 newPos;           // 位置
+	btTransform trans;          // トランスフォーム
+
+	// 物理の位置をモデルの位置に渡す
+	m_RigitBody->getMotionState()->getWorldTransform(trans);
+	newPos = trans.getOrigin();
+	SetPos(D3DXVECTOR3(newPos.x(), newPos.y(), newPos.z()));
+
+	// モデルの更新
+	CModelCharacter::Update();
+}
+
+// 描画
+void CPlayer::Draw(void)
+{
+	CModelCharacter::Draw();
+}
+
+// ナビゲーション処理
+void CPlayer::CheckNavigation()
+{
 	// ナビゲーションオブジェクトに触れる処理 sato Add
 	std::vector<size_t> naviObjectIdxListNew{}; // 今フレームで触れたナビゲーションオブジェクトのインデックスリスト
 	std::vector<CNaviObject*> pObjects = CNavi::GetInstance()->GetObjects(); // ナビゲーションオブジェクトを取得
@@ -147,16 +305,7 @@ void CPlayer::Update(void)
 				}
 
 				// ブロックに向かう
-				if (m_pClimbBlock != nullptr)
-				{
-					D3DXVECTOR3 climbPos = m_pClimbBlock->GetClosestPointOnSurface(myPos);
-					D3DXVECTOR3 space = climbPos - myPos;
-					D3DXVec3Normalize(&space, &space);
-					SetRotDest(D3DXVECTOR3(0.0f, atan2f(-space.x, -space.z), 0.0f));
-					SetRot(D3DXVECTOR3(0.0f, atan2f(-space.x, -space.z), 0.0f));
-
-					m_state = STATE::Climb; // クライム開始
-				}
+				FaceBlock();
 				break;
 			}
 			case CNavi::TYPE::Jump:
@@ -200,178 +349,6 @@ void CPlayer::Update(void)
 		}
 	}
 	m_naviObjectIdxListOld = naviObjectIdxListNew; // 今フレームで触れたナビゲーションオブジェクトリストを保存
-
-	if (m_RigitBody == nullptr) return;
-
-	btVector3 moveDir(0, 0, 0); // 最終的に setLinearVelocity に渡す速度
-	D3DXVECTOR3 rot = GetRot();
-	btVector3 currentVel = m_RigitBody->getLinearVelocity(); // 現在の物理速度
-
-	// 移動処理
-	if (m_state==STATE::Jumping)
-	{// 空中
-		// 空中制御のための入力（目標）速度
-		btVector3 inputVel(0, 0, 0);
-		inputVel.setX(-sinf(rot.y) * MOVE_SPEED);
-		inputVel.setZ(-cosf(rot.y) * MOVE_SPEED);
-
-		// XZ速度を現在の速度から入力(inputVel)へ近づける
-		// 慣性を維持と空中制御
-		btVector3 blendedVel = currentVel.lerp(inputVel, AIR_CONTROL_FACTOR);
-		
-		moveDir.setX(blendedVel.x());
-		moveDir.setZ(blendedVel.z());
-
-	}
-	else
-	{
-		moveDir.setX(-sinf(rot.y) * MOVE_SPEED);
-		moveDir.setZ(-cosf(rot.y) * MOVE_SPEED);
-	}
-	moveDir.setY(m_RigitBody->getLinearVelocity().y());
-
-	// 状態処理
-	switch (m_state)
-	{
-		// 通常
-	case STATE::Normal:
-		break;
-		// ターン
-	case STATE::Turn:
-	{
-		D3DXVECTOR3 pos = GetPos();
-		D3DXVECTOR3 space = m_activePos - pos;
-		if (D3DXVec3Length(&space) <= TURN_RADIUS)
-		{// ターン位置に来たら
-			Turn();
-		}
-		else
-		{
-			D3DXVec3Normalize(&space, &space);
-			D3DXVECTOR3 movevec = D3DXVECTOR3(moveDir.normalized());
-			if (D3DXVec3Dot(&space, &movevec) <= 0.0f)
-			{// もう後ろの場合ターン
-				Turn();
-			}
-		}
-		break;
-	}
-		// 登る
-	case STATE::Climb:
-		if (IsClimbingContact())
-		{// 壁についた
-			moveDir.setY(CLIMB_SPEED); // 登る
-			m_state = STATE::Climbing; // 登っている状態
-		}
-		break;
-		// 登っている
-	case STATE::Climbing:
-	{
-		if (IsClimbingContact())
-		{// 登り続けている
-			moveDir.setY(CLIMB_SPEED); // 登る
-
-			if (m_isGrounded)
-			{// 着地(ブロックの上)
-				m_state = STATE::Normal;
-			}
-		}
-		else
-		{// 登ったまま少し浮いたか落ちた
-			m_state = STATE::Jumping;
-		}
-		break;
-	}
-		// 跳ぶ
-	case STATE::Jump:
-	{
-		// 真ん中に行ってから
-		D3DXVECTOR3 pos = GetPos();
-		D3DXVECTOR3 space = m_activePos - pos;
-		D3DXVec3Normalize(&space, &space);
-		D3DXVECTOR3 movevec = D3DXVECTOR3(moveDir.normalized());
-		if (D3DXVec3Dot(&space, &movevec) <= 0.0f)
-		{// もう後ろの場合ジャンプ
-			Jump(moveDir);
-			GetMotionInfo()->SetMotion(3, true);
-		}
-		break;
-	}
-	// 飛んでいる
-	case STATE::Jumping:
-		if (m_isGrounded)
-		{// 着地したら
-			m_state = STATE::Normal; // 通常に戻す
-			GetMotionInfo()->SetMotion(4, false);
-		}
-		break;
-	}
-
-	if (GetMotionInfo()->GetBlendMotion() == 2)
-	{
-		if (m_IsSlopeTrigger == false)
-		{
-			// 物理に移動値を渡す
-			m_RigitBody->applyCentralImpulse(moveDir);
-			m_IsSlopeTrigger = true;
-		}
-	}
-	else
-	{
-		// 物理に移動値を渡す
-		m_RigitBody->setLinearVelocity(moveDir);
-		m_IsSlopeTrigger = false;
-	}
-
-	btVector3 newPos;           // 位置
-	btTransform trans;          // トランスフォーム
-
-	// 物理の位置をモデルの位置に渡す
-	m_RigitBody->getMotionState()->getWorldTransform(trans);
-	newPos = trans.getOrigin();
-	SetPos(D3DXVECTOR3(newPos.x(), newPos.y(), newPos.z()));
-
-	// モデルの更新
-	CModelCharacter::Update();
-}
-
-// 描画
-void CPlayer::Draw(void)
-{
-	CModelCharacter::Draw();
-}
-
-// 位置を設定
-void CPlayer::SetPos(D3DXVECTOR3 Pos)
-{
-	btVector3 newPos;
-
-	btTransform trans;
-	m_RigitBody->getMotionState()->getWorldTransform(trans);
-	trans.setOrigin(btVector3(Pos.x, Pos.y, Pos.z));
-	m_RigitBody->setWorldTransform(trans);
-	m_RigitBody->getMotionState()->setWorldTransform(trans);
-	CModelCharacter::SetPos(D3DXVECTOR3(Pos.x, Pos.y - 20.0f, Pos.z));
-}
-
-// 生成
-CPlayer* CPlayer::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
-{
-	CPlayer* pPlayer = nullptr;
-	pPlayer = new CPlayer;
-
-	if (pPlayer != nullptr)
-	{
-		pPlayer->SetRot(rot);
-		pPlayer->SetRotDest(rot);
-		pPlayer->Init();
-		pPlayer->SetPos(pos);
-		return pPlayer;
-	}
-	else
-	{
-		return nullptr;
-	}
 }
 
 // 着地確認
@@ -387,7 +364,7 @@ void CPlayer::UpdateGroundedState()
 	btVector3 rayFrom = m_RigitBody->getWorldTransform().getOrigin(); // プレイヤーの中心
 
 	// カプセルの高さの半分 + 坂道や段差用のマージン
-	const float rayLength = CAPSULE_HEIGHT + CAPSULE_RADIUS;
+	const float rayLength = CAPSULE_HALF_HEIGHT + GROUND_SPACE;
 	btVector3 rayTo = rayFrom + btVector3(0, -rayLength, 0);
 
 	// レイキャストのコールバック
@@ -426,7 +403,7 @@ void CPlayer::Turn()
 	m_state = STATE::Normal;
 }
 
-// クライム
+// クライムチェック
 bool CPlayer::IsClimbingContact()
 {
 	if (m_pClimbBlock == nullptr) return false;
@@ -463,4 +440,61 @@ void CPlayer::Jump(btVector3& moveDir)
 	moveDir.setZ(moveDir.y() * JUMP_SPEED_INA);
 	moveDir.setY(JUMP_POWER);
 	m_state = STATE::Jumping;
+	GetMotionInfo()->SetMotion(3, true);
+}
+
+// 着地
+void CPlayer::Landing()
+{
+	m_state = STATE::Normal;
+	GetMotionInfo()->SetMotion(4, false);
+}
+
+// ブロックに向かう
+void CPlayer::FaceBlock()
+{
+	if (m_pClimbBlock != nullptr)
+	{
+		D3DXVECTOR3 myPos = GetPos();
+		D3DXVECTOR3 climbPos = m_pClimbBlock->GetClosestPointOnSurface(myPos);
+		D3DXVECTOR3 space = climbPos - myPos;
+		D3DXVec3Normalize(&space, &space);
+		SetRotDest(D3DXVECTOR3(0.0f, atan2f(-space.x, -space.z), 0.0f));
+		SetRot(D3DXVECTOR3(0.0f, atan2f(-space.x, -space.z), 0.0f));
+
+		m_state = STATE::Climb; // クライム開始
+	}
+}
+
+// 位置を設定
+void CPlayer::SetPos(D3DXVECTOR3 Pos)
+{
+	btVector3 newPos;
+
+	btTransform trans;
+	m_RigitBody->getMotionState()->getWorldTransform(trans);
+	trans.setOrigin(btVector3(Pos.x, Pos.y, Pos.z));
+	m_RigitBody->setWorldTransform(trans);
+	m_RigitBody->getMotionState()->setWorldTransform(trans);
+	CModelCharacter::SetPos(D3DXVECTOR3(Pos.x, Pos.y - CAPSULE_HALF_HEIGHT, Pos.z));
+}
+
+// 生成
+CPlayer* CPlayer::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
+{
+	CPlayer* pPlayer = nullptr;
+	pPlayer = new CPlayer;
+
+	if (pPlayer != nullptr)
+	{
+		pPlayer->SetRot(rot);
+		pPlayer->SetRotDest(rot);
+		pPlayer->Init();
+		pPlayer->SetPos(pos);
+		return pPlayer;
+	}
+	else
+	{
+		return nullptr;
+	}
 }
