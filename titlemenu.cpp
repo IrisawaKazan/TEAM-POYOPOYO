@@ -172,7 +172,7 @@ void CStart::Update(void)
 			CSound* pSound = CManager::GetSound();
 
 			// SE
-			pSound->Play(CSound::LABEL_DECISION_SE);
+			pSound->Play(CSound::LABEL_DECISION_SE); // エンター連打で多重に鳴る
 
 			if (CTitleManager::GetLower() == false)
 			{
