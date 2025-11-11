@@ -29,6 +29,7 @@ public:
 		LABEL_CHANGE_SE,			// 指示を変更SE
 		LABEL_PAUSE_SE,				// ポーズSE
 		LABEL_FALLING_SE,			// 落下SE
+		LABEL_SWITCH_SE,			// スイッチSE
 
 		LABEL_MAX					// 最大値
 	}LABEL;
