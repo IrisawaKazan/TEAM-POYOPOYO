@@ -203,11 +203,6 @@ void CPlayer::Update(void)
 
 	if (m_RigitBody == nullptr) return;
 
-	if (CManager::GetInputKeyboard()->GetTrigger(DIK_SPACE) == true)
-	{
-		m_state = STATE::Jump;
-	}
-
 	btVector3 moveDir(0, 0, 0); // 移動
 
 	// 移動処理
@@ -253,15 +248,15 @@ void CPlayer::Update(void)
 		// 跳ぶ
 	case CPlayer::STATE::Jump:
 	{
-		//// 真ん中に行ってから
-		//D3DXVECTOR3 pos = GetPos();
-		//D3DXVECTOR3 space = m_activePos - pos;
-		//D3DXVec3Normalize(&space, &space);
-		//D3DXVECTOR3 movevec = D3DXVECTOR3(moveDir.normalized());
-		//if (D3DXVec3Dot(&space, &movevec) <= 0.0f)
-		//{// もう後ろの場合ジャンプ
+		// 真ん中に行ってから
+		D3DXVECTOR3 pos = GetPos();
+		D3DXVECTOR3 space = m_activePos - pos;
+		D3DXVec3Normalize(&space, &space);
+		D3DXVECTOR3 movevec = D3DXVECTOR3(moveDir.normalized());
+		if (D3DXVec3Dot(&space, &movevec) <= 0.0f)
+		{// もう後ろの場合ジャンプ
 			Jump(moveDir);
-		//}
+		}
 		break;
 	}
 	case CPlayer::STATE::Jumping:
