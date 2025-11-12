@@ -9,13 +9,13 @@
 #include "game.h"
 #include "navi.h"
 #include "arrow.h"
-#include "mapmanager.h"
 #include "block.h"
+#include "mapmanager.h"
 
 // 静的メンバ変数の定義
 
 // コンストラクタ
-CPlayer::CPlayer()
+CPlayer::CPlayer() : m_activePos{ 0,0,0 }, m_CollisionShape{}, m_isGrounded{}, m_IsSlopeTrigger{}, m_naviObjectCountMap{}, m_naviObjectIdxListOld{}, m_pClimbBlock{}, m_RigitBody{}, m_state{}, m_turnAngle{}
 {
 
 }
@@ -91,128 +91,25 @@ void CPlayer::Uninit(void)
 // 更新
 void CPlayer::Update(void)
 {
-	UpdateGroundedState(); // 着地更新
-	CheckNavigation();     // ナビゲーション
+	if (m_RigitBody == nullptr) return;
 
-	if (!m_isGrounded)
-	{// 空中
-		m_state = STATE::Jumping;
-	}
+	// ナビゲーションチェック
+	CheckNavigation();
 
 	if (m_RigitBody == nullptr) return;
+
+	// 着地チェック
+	UpdateGroundedState();
 
 	btVector3 moveDir(0, 0, 0); // 最終的に setLinearVelocity に渡す速度
 	D3DXVECTOR3 rot = GetRot();
 	btVector3 currentVel = m_RigitBody->getLinearVelocity(); // 現在の物理速度
 
-	// 移動処理
-	if (m_state==STATE::Jumping)
-	{// 空中
-		// 空中制御のための入力（目標）速度
-		btVector3 inputVel(0, 0, 0);
-		inputVel.setX(-sinf(rot.y) * MOVE_SPEED);
-		inputVel.setZ(-cosf(rot.y) * MOVE_SPEED);
+	// 移動
+	Move(moveDir, rot, currentVel);
 
-		// XZ速度を現在の速度から入力(inputVel)へ近づける
-		// 慣性を維持と空中制御
-		btVector3 blendedVel = currentVel.lerp(inputVel, AIR_CONTROL_FACTOR);
-		
-		moveDir.setX(blendedVel.x());
-		moveDir.setZ(blendedVel.z());
-	}
-	else
-	{
-		moveDir.setX(-sinf(rot.y) * MOVE_SPEED);
-		moveDir.setZ(-cosf(rot.y) * MOVE_SPEED);
-	}
-
-	if (m_isGrounded && m_state != STATE::Jumping && m_state != STATE::Climbing)
-	{// 地面にいる
-		// Y速度は0
-		moveDir.setY(0.0f);
-	}
-	else
-	{// 空中にいる
-		// Y速度を維持
-		moveDir.setY(m_RigitBody->getLinearVelocity().y());
-	}
-
-	// 状態処理
-	switch (m_state)
-	{
-		// 通常
-	case STATE::Normal:
-		break;
-		// ターン
-	case STATE::Turn:
-	{
-		D3DXVECTOR3 pos = GetPos();
-		D3DXVECTOR3 space = m_activePos - pos;
-		if (D3DXVec3Length(&space) <= TURN_RADIUS)
-		{// ターン位置に来たら
-			Turn();
-		}
-		else
-		{
-			D3DXVec3Normalize(&space, &space);
-			D3DXVECTOR3 movevec = D3DXVECTOR3(moveDir.normalized());
-			if (D3DXVec3Dot(&space, &movevec) <= 0.0f)
-			{// もう後ろの場合ターン
-				Turn();
-			}
-		}
-		break;
-	}
-		// 登る
-	case STATE::Climb:
-		if (IsClimbingContact())
-		{// 壁についた
-			FaceBlock();               // 改めて壁を向く
-			moveDir.setY(CLIMB_SPEED); // 登る
-			m_state = STATE::Climbing; // 登っている状態
-		}
-		break;
-		// 登っている
-	case STATE::Climbing:
-	{
-		if (IsClimbingContact())
-		{// 登り続けている
-			FaceBlock();               // 改めて壁を向く
-			moveDir.setY(CLIMB_SPEED); // 登る
-
-			if (m_isGrounded)
-			{// 着地(ブロックの上)
-				Landing();
-			}
-		}
-		else
-		{// 登ったまま少し浮いたか落ちた
-			m_state = STATE::Jumping;
-		}
-		break;
-	}
-		// 跳ぶ
-	case STATE::Jump:
-	{
-		// 真ん中に行ってから
-		D3DXVECTOR3 pos = GetPos();
-		D3DXVECTOR3 space = m_activePos - pos;
-		D3DXVec3Normalize(&space, &space);
-		D3DXVECTOR3 movevec = D3DXVECTOR3(moveDir.normalized());
-		if (D3DXVec3Dot(&space, &movevec) <= 0.0f)
-		{// もう後ろの場合ジャンプ
-			Jump(moveDir);
-		}
-		break;
-	}
-	// 飛んでいる
-	case STATE::Jumping:
-		if (m_isGrounded)
-		{// 着地したら
-			Landing();
-		}
-		break;
-	}
+	// 状態管理
+	UpdateState(moveDir);
 
 	if (GetMotionInfo()->GetBlendMotion() == 2)
 	{
@@ -230,10 +127,9 @@ void CPlayer::Update(void)
 		m_IsSlopeTrigger = false;
 	}
 
+	// 物理の位置をモデルの位置に渡す
 	btVector3 newPos;           // 位置
 	btTransform trans;          // トランスフォーム
-
-	// 物理の位置をモデルの位置に渡す
 	m_RigitBody->getMotionState()->getWorldTransform(trans);
 	newPos = trans.getOrigin();
 	SetPos(D3DXVECTOR3(newPos.x(), newPos.y(), newPos.z()));
@@ -253,99 +149,102 @@ void CPlayer::CheckNavigation()
 {
 	// ナビゲーションオブジェクトに触れる処理 sato Add
 	std::vector<size_t> naviObjectIdxListNew{}; // 今フレームで触れたナビゲーションオブジェクトのインデックスリスト
-	std::vector<CNaviObject*> pObjects = CNavi::GetInstance()->GetObjects(); // ナビゲーションオブジェクトを取得
-	for (const CNaviObject* pObject : pObjects)
-	{
-		// オブジェクトに触れているか
-		D3DXVECTOR3 pos{};
-		float angle{};
-		size_t idx = 0;
-		CNavi::TYPE naviType = pObject->ActivateTrigger(m_RigitBody.get(), &pos, &angle, &idx);
-
-		// 前のフレームで触れていなかった場合は接触回数をカウントアップ
-		if (std::find(m_naviObjectIdxListOld.begin(), m_naviObjectIdxListOld.end(), idx) == m_naviObjectIdxListOld.end())
+	if (m_isGrounded && m_state == STATE::Normal)
+	{// 地面にいるかつ通常状態
+		std::vector<CNaviObject*> pObjects = CNavi::GetInstance()->GetObjects(); // ナビゲーションオブジェクトを取得
+		for (const CNaviObject* pObject : pObjects)
 		{
-			// 触れたナビゲーションタイプによって処理を分岐
-			switch (naviType)
-			{
-			case CNavi::TYPE::Arrow:
-			{
-				// Playerの位置と方向
-				D3DXVECTOR3 myPos = GetPos();
-
-				// 矢印の位置と方向
-				D3DXVECTOR3 objectPos = pos;                                         // 矢印の中心座標
-				D3DXVECTOR3 objectDir = D3DXVECTOR3(sinf(angle), 0.0f, cosf(angle)); // 矢印の向き
-
-				m_activePos = CMath::GetNierToLineXZ(myPos, objectPos, objectDir); // 矢印のベクトル上の近い地点
-				m_turnAngle = angle;   // ターン方向
-				m_state = STATE::Turn; // ターン開始
-				break;
-			}
-			case CNavi::TYPE::Climb:
-			{
-				D3DXVECTOR3 myPos = GetPos(); // 自分の位置
-				std::vector<CBlock*> pBlocks = CMapManager::Instance()->GetBlocks(); // ブロック配列
-
-				float minLengthSq{ FLT_MAX };
-				for (const auto& pBlock : pBlocks)
-				{// ブロックを走査
-					D3DXVECTOR3 climbPos = pBlock->GetClosestPointOnSurface(myPos);
-					D3DXVECTOR3 blockPos = pBlock->GetPosition();
-					if (blockPos.y > myPos.y)
-					{
-						D3DXVECTOR3 space = climbPos - myPos;
-						float lengthSq = D3DXVec3LengthSq(&space);
-						if (lengthSq < minLengthSq)
-						{// より近いブロック
-							m_pClimbBlock = pBlock;
-							minLengthSq = lengthSq;
-						}
-					}
-				}
-
-				// ブロックに向かう
-				FaceBlock();
-				break;
-			}
-			case CNavi::TYPE::Jump:
-				// Playerの位置と方向
-				D3DXVECTOR3 myPos = GetPos();
-
-				D3DXVECTOR3 objectPos = pos; // 矢印の中心座標
-
-				// 進む方向に対して垂直なベクトル
-				float myAngle = GetRot().y;
-				D3DXVECTOR3 verticalDir = D3DXVECTOR3(sinf(myAngle - D3DXToRadian(90.0f)), 0.0f, cosf(myAngle - D3DXToRadian(90.0f))); // 矢印の向き
-
-				m_activePos = CMath::GetNierToLineXZ(myPos, objectPos, verticalDir); // 矢印のベクトル上の近い地点
-
-				m_state = STATE::Jump;  // ジャンプ開始
-				break;
-			}
-
-		}
-
-		if (naviType != CNavi::TYPE::None && naviType != CNavi::TYPE::Max)
-		{
-			// 初めての接触の場合はマップに登録
-			m_naviObjectCountMap.try_emplace(idx, short(0));
+			// オブジェクトに触れているか
+			D3DXVECTOR3 pos{};
+			float angle{};
+			size_t idx = 0;
+			CNavi::TYPE naviType = pObject->ActivateTrigger(m_RigitBody.get(), &pos, &angle, &idx);
 
 			// 前のフレームで触れていなかった場合は接触回数をカウントアップ
 			if (std::find(m_naviObjectIdxListOld.begin(), m_naviObjectIdxListOld.end(), idx) == m_naviObjectIdxListOld.end())
 			{
-				m_naviObjectCountMap[idx]++;
+				// 触れたナビゲーションタイプによって処理を分岐
+				switch (naviType)
+				{
+				case CNavi::TYPE::Arrow:
+				{
+					// Playerの位置と方向
+					D3DXVECTOR3 myPos = GetPos();
+
+					// 矢印の位置と方向
+					D3DXVECTOR3 objectPos = pos;                                         // 矢印の中心座標
+					D3DXVECTOR3 objectDir = D3DXVECTOR3(sinf(angle), 0.0f, cosf(angle)); // 矢印の向き
+
+					m_activePos = CMath::GetNierToLineXZ(myPos, objectPos, objectDir); // 矢印のベクトル上の近い地点
+					m_turnAngle = angle;   // ターン方向
+					m_state = STATE::Turn; // ターン開始
+					break;
+				}
+				case CNavi::TYPE::Climb:
+				{
+					D3DXVECTOR3 myPos = GetPos(); // 自分の位置
+					std::vector<CBlock*> pBlocks = CMapManager::Instance()->GetBlocks(); // ブロック配列
+
+					float minLengthSq{ FLT_MAX };
+					for (const auto& pBlock : pBlocks)
+					{// ブロックを走査
+						if (IsClimbingTarget(pBlock))
+						{// 登れる
+							D3DXVECTOR3 climbPos = pBlock->GetClosestPointOnSurface(myPos);
+							D3DXVECTOR3 space = climbPos - myPos;
+							float lengthSq = D3DXVec3LengthSq(&space);
+							if (lengthSq < minLengthSq)
+							{// より近いブロック
+								m_pClimbBlock = pBlock;
+								minLengthSq = lengthSq;
+							}
+						}
+					}
+
+					// ブロックに向かう
+					FaceBlock();
+					m_state = STATE::Climb; // クライム開始
+					break;
+				}
+				case CNavi::TYPE::Jump:
+					// Playerの位置と方向
+					D3DXVECTOR3 myPos = GetPos();
+
+					D3DXVECTOR3 objectPos = pos; // 矢印の中心座標
+
+					// 進む方向に対して垂直なベクトル
+					float myAngle = GetRot().y;
+					D3DXVECTOR3 verticalDir = D3DXVECTOR3(sinf(myAngle - D3DXToRadian(90.0f)), 0.0f, cosf(myAngle - D3DXToRadian(90.0f))); // 矢印の向き
+
+					m_activePos = CMath::GetNierToLineXZ(myPos, objectPos, verticalDir); // 矢印のベクトル上の近い地点
+
+					m_state = STATE::Jump;  // ジャンプ開始
+					break;
+				}
+
 			}
 
-			// 5回以上になったら死んでしまう
-			if (m_naviObjectCountMap[idx] >= 5)
+			if (naviType != CNavi::TYPE::None && naviType != CNavi::TYPE::Max)
 			{
-				CGame::GetPlayerManager()->DethMessage(this);
-				Uninit();
-				Release();
-				return;
+				// 初めての接触の場合はマップに登録
+				m_naviObjectCountMap.try_emplace(idx, short(0));
+
+				// 前のフレームで触れていなかった場合は接触回数をカウントアップ
+				if (std::find(m_naviObjectIdxListOld.begin(), m_naviObjectIdxListOld.end(), idx) == m_naviObjectIdxListOld.end())
+				{
+					m_naviObjectCountMap[idx]++;
+				}
+
+				// 5回以上になったら死んでしまう
+				if (m_naviObjectCountMap[idx] >= 5)
+				{
+					CGame::GetPlayerManager()->DethMessage(this);
+					Uninit();
+					Release();
+					return;
+				}
+				naviObjectIdxListNew.push_back(idx); // リストに追加
 			}
-			naviObjectIdxListNew.push_back(idx); // リストに追加
 		}
 	}
 	m_naviObjectIdxListOld = naviObjectIdxListNew; // 今フレームで触れたナビゲーションオブジェクトリストを保存
@@ -390,6 +289,127 @@ void CPlayer::UpdateGroundedState()
 	}
 }
 
+// 移動
+void CPlayer::Move(btVector3& moveDir, D3DXVECTOR3& rot, btVector3& currentVel)
+{
+	// 移動処理
+	if (m_state == STATE::Jumping || (!m_isGrounded && m_state != STATE::Climbing))
+	{// 空中
+		// 空中制御のための入力（目標）速度
+		btVector3 inputVel(0, 0, 0);
+		inputVel.setX(-sinf(rot.y) * MOVE_SPEED);
+		inputVel.setZ(-cosf(rot.y) * MOVE_SPEED);
+
+		// XZ速度を現在の速度から入力(inputVel)へ近づける
+		// 慣性を維持と空中制御
+		btVector3 blendedVel = currentVel.lerp(inputVel, AIR_CONTROL_FACTOR);
+
+		moveDir.setX(blendedVel.x());
+		moveDir.setZ(blendedVel.z());
+	}
+	else
+	{
+		moveDir.setX(-sinf(rot.y) * MOVE_SPEED);
+		moveDir.setZ(-cosf(rot.y) * MOVE_SPEED);
+	}
+
+	if (m_isGrounded && m_state != STATE::Jumping && m_state != STATE::Climbing)
+	{// 地面にいる
+		// Y速度は0
+		moveDir.setY(0.0f);
+	}
+	else
+	{// 空中にいる
+		// Y速度を維持
+		moveDir.setY(m_RigitBody->getLinearVelocity().y());
+	}
+}
+
+// 状態管理
+void CPlayer::UpdateState(btVector3& moveDir)
+{
+	if (!m_isGrounded && m_state != STATE::Jumping && m_state != STATE::Climbing)
+	{
+		m_state = STATE::Jumping;
+	}
+
+	switch (m_state)
+	{
+		// 通常
+	case STATE::Normal:
+		break;
+		// ターン
+	case STATE::Turn:
+	{
+		D3DXVECTOR3 pos = GetPos();
+		D3DXVECTOR3 space = m_activePos - pos;
+		if (D3DXVec3Length(&space) <= TURN_RADIUS)
+		{// ターン位置に来たら
+			Turn();
+		}
+		else
+		{
+			D3DXVec3Normalize(&space, &space);
+			D3DXVECTOR3 movevec = D3DXVECTOR3(moveDir.normalized());
+			if (D3DXVec3Dot(&space, &movevec) <= 0.0f)
+			{// もう後ろの場合ターン
+				Turn();
+			}
+		}
+		break;
+	}
+	// 登る
+	case STATE::Climb:
+		if (IsClimbingContact())
+		{// 壁についた
+			FaceBlock();               // 改めて壁を向く
+			moveDir.setY(CLIMB_SPEED); // 登る
+			m_state = STATE::Climbing; // 登っている状態
+		}
+		break;
+		// 登っている
+	case STATE::Climbing:
+	{
+		if (IsClimbingContact())
+		{// 登り続けている
+			FaceBlock();               // 改めて壁を向く
+			moveDir.setY(CLIMB_SPEED); // 登る
+
+			if (IsClimbingEnd())
+			{// ブロックの上
+				m_state = STATE::Jumping;
+			}
+		}
+		else
+		{// 登ったまま少し浮いたか落ちた
+			m_state = STATE::Jumping;
+		}
+		break;
+	}
+	// 跳ぶ
+	case STATE::Jump:
+	{
+		// 真ん中に行ってから
+		D3DXVECTOR3 pos = GetPos();
+		D3DXVECTOR3 space = m_activePos - pos;
+		D3DXVec3Normalize(&space, &space);
+		D3DXVECTOR3 movevec = D3DXVECTOR3(moveDir.normalized());
+		if (D3DXVec3Dot(&space, &movevec) <= 0.0f)
+		{// もう後ろの場合ジャンプ
+			Jump(moveDir);
+		}
+		break;
+	}
+	// 飛んでいる
+	case STATE::Jumping:
+		if (m_isGrounded)
+		{// 着地したら
+			Landing();
+		}
+		break;
+	}
+}
+
 // ターン
 void CPlayer::Turn()
 {
@@ -401,6 +421,36 @@ void CPlayer::Turn()
 	m_activePos = { 0.0f,-1000.0f,0.0f };
 	m_turnAngle = 0.0f;
 	m_state = STATE::Normal;
+}
+
+// クライムターゲットチェック
+bool CPlayer::IsClimbingTarget(const CBlock* pBlock)
+{
+	if (pBlock == nullptr) return false;
+
+	// 自分の足元
+	float myY = GetPos().y;
+
+	// ブロックのあたり判定
+	btCollisionObject* pBlockObject = pBlock->GetRB();
+
+	// ブロックの半分のサイズ
+	btVector3 baseHalfExtents = static_cast<btBoxShape*>(pBlockObject->getCollisionShape())->getHalfExtentsWithMargin();
+
+	// ブロックのスケール
+	btVector3 currentScale = pBlockObject->getCollisionShape()->getLocalScaling();
+
+	// ブロックの実際の半分のサイズ
+	btVector3 actualHalfExtents = baseHalfExtents * currentScale;
+
+	// ブロックの実際のサイズ
+	btVector3 actuaExtents = actualHalfExtents * 2.0f;
+
+	// ブロックの中心Y座標 + ブロックの高さの半分 = ブロックの天面のY座標
+	float blockTopY = pBlock->GetPosition().y + actuaExtents.y();
+
+	// プレイヤーの足元よりブロックの天面が一定値以上高ければ登る
+	return (blockTopY - myY >= CLIMB_HEIGHT_MIN);
 }
 
 // クライムチェック
@@ -433,6 +483,36 @@ bool CPlayer::IsClimbingContact()
 	return false;
 }
 
+// 登り切った?
+bool CPlayer::IsClimbingEnd()
+{
+	if (m_pClimbBlock == nullptr) return false;
+
+	// 自分の足元
+	float myY = GetPos().y;
+
+	// ブロックのあたり判定
+	btCollisionObject* pBlockObject = m_pClimbBlock->GetRB();
+
+	// ブロックの半分のサイズ
+	btVector3 baseHalfExtents = static_cast<btBoxShape*>(pBlockObject->getCollisionShape())->getHalfExtentsWithMargin();
+
+	// ブロックのスケール
+	btVector3 currentScale = pBlockObject->getCollisionShape()->getLocalScaling();
+
+	// ブロックの実際の半分のサイズ
+	btVector3 actualHalfExtents = baseHalfExtents * currentScale;
+
+	// ブロックの実際のサイズ
+	btVector3 actuaExtents = actualHalfExtents * 2.0f;
+
+	// ブロックの中心Y座標 + ブロックの高さの半分 = ブロックの天面のY座標
+	float blockTopY = m_pClimbBlock->GetPosition().y + actuaExtents.y();
+
+	// プレイヤーの足元がブロックの天面より上に来たら着地
+	return (myY >= blockTopY);
+}
+
 // ジャンプ
 void CPlayer::Jump(btVector3& moveDir)
 {
@@ -458,11 +538,30 @@ void CPlayer::FaceBlock()
 		D3DXVECTOR3 myPos = GetPos();
 		D3DXVECTOR3 climbPos = m_pClimbBlock->GetClosestPointOnSurface(myPos);
 		D3DXVECTOR3 space = climbPos - myPos;
+
+		// XZ平面での距離の2乗
+		float lengthSqXZ = (space.x * space.x) + (space.z * space.z);
+
+		if (lengthSqXZ < 0.0001f)
+		{// めり込んでいる
+			// ブロックの底面の中心
+			D3DXVECTOR3 blockBottomPos = m_pClimbBlock->GetPosition();
+
+			// プレイヤーからブロックの中心へのベクトル
+			space.x = blockBottomPos.x - myPos.x;
+			space.z = blockBottomPos.z - myPos.z;
+			space.y = 0.0f;
+
+			lengthSqXZ = (space.x * space.x) + (space.z * space.z);
+			if (lengthSqXZ < 0.0001f)
+			{// ブロックの中心とも重なっている
+				return;
+			}
+		}
+
 		D3DXVec3Normalize(&space, &space);
 		SetRotDest(D3DXVECTOR3(0.0f, atan2f(-space.x, -space.z), 0.0f));
 		SetRot(D3DXVECTOR3(0.0f, atan2f(-space.x, -space.z), 0.0f));
-
-		m_state = STATE::Climb; // クライム開始
 	}
 }
 

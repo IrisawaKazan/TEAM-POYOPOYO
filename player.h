@@ -20,7 +20,8 @@ public:
 	static constexpr float CAPSULE_HALF_HEIGHT =      // カプセルの中心から底
 		(CAPSULE_HEIGHT * 0.5f) + CAPSULE_RADIUS;     //
 	static constexpr float MOVE_SPEED = 10.0f;        // 移動スピード sato Add
-	static constexpr float CLIMB_SPEED = 5.0f;        // 上るスピード sato Add
+	static constexpr float CLIMB_SPEED = 5.0f;        // 登るスピード sato Add
+	static constexpr float CLIMB_HEIGHT_MIN = 3.0f;   // 登る最小の高さ sato Add
 	static constexpr float JUMP_POWER = 30.0f;        // ジャンプ力(高さ) sato Add
 	static constexpr float JUMP_SPEED_INA = 15.0f;    // ジャンプ力(横移動) sato Add
 	static constexpr float AIR_CONTROL_FACTOR = 0.1f; // 空中制御係数 sato Add
@@ -47,6 +48,8 @@ public:
 	bool IsGround(void) { return m_isGrounded; }
 	btRigidBody* GetRB(void) { return m_RigitBody.get(); }
 
+	STATE GetState() { return m_state; }
+
 	// セッター
 	void SetPos(D3DXVECTOR3 Pos);
 
@@ -56,8 +59,12 @@ public:
 private:
 	void UpdateGroundedState();
 	void CheckNavigation();
+	void Move(btVector3& moveDir, D3DXVECTOR3& rot, btVector3& currentVel);
+	void UpdateState(btVector3& moveDir);
 	void Turn();
+	bool IsClimbingTarget(const CBlock* pBlock);
 	bool IsClimbingContact();
+	bool IsClimbingEnd();
 	void Jump(btVector3& moveDir);
 	void Landing();
 	void FaceBlock();

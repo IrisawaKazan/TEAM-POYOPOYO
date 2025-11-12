@@ -143,16 +143,19 @@ HRESULT CBlock::Init(void)
 		pVtxBuff += sizeFVF;
 	}
 
-	// サイズを代入する
-	m_size.x = Max.x;			// sizeのx
-	m_size.y = Max.y * 0.5f;	// sizeのy
-	m_size.z = Max.z;			// sizeのz
-
-	// リジットボディーのオフセットを設定
-	m_RBOffset.y = m_size.y * GetScale().y;
-
 	// アンロック
 	pMesh->UnlockVertexBuffer();
+
+	// 1. モデルの実際の半分のサイズ sato 変更
+	m_size.x = (Max.x - Min.x) * 0.5f;
+	m_size.y = (Max.y - Min.y) * 0.5f;
+	m_size.z = (Max.z - Min.z) * 0.5f;
+
+	// 2. モデル原点(0,0,0)から実際の中心までのオフセット
+	//    Y軸は、CBlockのGetPosition()が底面
+	m_RBOffset.x = (Max.x + Min.x) * 0.5f;
+	m_RBOffset.y = (Max.y + Min.y) * 0.5f - Min.y;
+	m_RBOffset.z = (Max.z + Min.z) * 0.5f;
 
 	InitRB();
 
@@ -196,8 +199,9 @@ void CBlock::InitRB(void)
 	Origin.setRotation(rotation);
 	Origin.setOrigin(btVector3(GetPosition().x, GetPosition().y, GetPosition().z));
 
-	// オフセットを設定
-	Offset.setOrigin(btVector3(m_RBOffset.x, m_RBOffset.y, m_RBOffset.z));
+	// オフセットを設定 sato 変更
+	D3DXVECTOR3 Scale = GetScale();
+	Offset.setOrigin(btVector3(m_RBOffset.x * Scale.x, m_RBOffset.y * Scale.y, m_RBOffset.z * Scale.z));
 
 	// 合成
 	transform.mult(Origin, Offset);
@@ -258,9 +262,6 @@ void CBlock::Update(void)
 	// CollisionShapeにスケールを適用
 	m_RigitBody->getCollisionShape()->setLocalScaling(btVector3(Scale.x, Scale.y, Scale.z));
 
-	// オフセットの更新
-	m_RBOffset.y = m_size.y * Scale.y;
-
 	// トランスフォームの更新
 	btTransform transform, Origin, Offset;
 	transform.setIdentity();
@@ -273,7 +274,8 @@ void CBlock::Update(void)
 	Origin.setOrigin(btVector3(GetPosition().x, GetPosition().y, GetPosition().z));
 
 	// Offsetを設定
-	Offset.setOrigin(btVector3(m_RBOffset.x, m_RBOffset.y, m_RBOffset.z));
+	btVector3 scaledOffset = btVector3(m_RBOffset.x * Scale.x, m_RBOffset.y * Scale.y, m_RBOffset.z * Scale.z);
+	Offset.setOrigin(scaledOffset);
 
 	// トランスフォームを合成
 	transform.mult(Origin, Offset);
