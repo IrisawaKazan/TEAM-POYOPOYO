@@ -325,6 +325,10 @@ void CMapManager::CollisionSlopetoPlayers(void)
 			}
 		}
 
+		//-------------------------------------
+		// «Œã‚ÅPlayer‚ÌState‚É“‡‚µ‚Ü‚· sato
+		//-------------------------------------
+		
 		// ŠÜ‚Ü‚ê‚Ä‚¢‚½‚ç
 		if (isCollidingWithSlope)
 		{
@@ -335,6 +339,10 @@ void CMapManager::CollisionSlopetoPlayers(void)
 		{
 			if ((*Players)->GetMotionInfo()->GetBlendMotion() != 1 && (*Players)->IsGround() == true)(*Players)->GetMotionInfo()->SetMotion(1, false);
 		}
+
+		//-------------------------------------
+        // ªŒã‚ÅPlayer‚ÌState‚É“‡‚µ‚Ü‚· sato
+        //-------------------------------------
 	}
 }
 

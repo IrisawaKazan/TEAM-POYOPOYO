@@ -337,6 +337,10 @@ void CPlayer::UpdateState(btVector3& moveDir)
 	{
 		// 通常
 	case STATE::Normal:
+		if (m_isGrounded && GetMotionInfo()->GetMotion() == 4 && GetMotionInfo()->GetBlendMotion() != 1)
+		{// 着地が終わったら歩きに戻す
+			GetMotionInfo()->SetMotion(1, false);
+		}
 		break;
 		// ターン
 	case STATE::Turn:
