@@ -48,8 +48,8 @@ CCamera::CCamera()
 	// ƒ‚[ƒh‰Šú’l sato Add
 	m_mode = MODE::NORMAL;
 
-	// “Ç‚İ‚İ
-	LoadMotion("data\\TEXT\\CameraWork\\CameraWork.txt");
+	//// “Ç‚İ‚İ
+	//LoadMotion("data\\TEXT\\CameraWork\\CameraWork.txt");
 }
 
 //***************************************
