@@ -15,6 +15,7 @@ class CNumber;
 
 // マクロ定義
 #define MAX_TIMER (2)
+#define MAX_HOUR (216000)
 
 // タイマークラス
 class CTimer : public CObject
@@ -55,6 +56,7 @@ private:
 	int m_nTime;							// 値
 	int m_nNs;								// 秒
 	int m_nMin;								// 分
+	int m_nHour;							// 時
 	static int m_nTimer;					// タイマーの取得
 };
 

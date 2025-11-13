@@ -25,6 +25,7 @@ CTimer::CTimer(int nPriority) : CObject(nPriority)
 	m_nTime = NULL;
 	m_nNs = NULL;
 	m_nMin = NULL;
+	m_nHour = NULL;
 	Init();
 }
 
@@ -61,10 +62,9 @@ CTimer* CTimer::Create(D3DXVECTOR3 pos)
 HRESULT CTimer::Init(void)
 {
 	m_pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-
 	m_nMin = 0;
-
 	m_nTimer = 0;
+	m_nHour = 0;
 
 	for (int nCnt = 0; nCnt < MAX_TIMER; nCnt++)
 	{
@@ -139,6 +139,9 @@ void CTimer::Update(void)
 	// ïbÇÃâ¡éZ
 	m_nNs++;
 
+	// éûÇÃåvéZ
+	m_nHour++;
+
 	// 1ïbåoâﬂ
 	if (m_nNs > 60)
 	{
@@ -154,6 +157,14 @@ void CTimer::Update(void)
 		SubMin(1);
 
 		m_nTime = 0;
+	}
+
+	if (m_nHour >= MAX_HOUR)
+	{
+		SubNs(-60);
+		SubMin(-60);
+
+		m_nHour = 0;
 	}
 
 	// ÉSÅ[ÉãÇµÇƒÇ¢Ç»Ç©Ç¡ÇΩÇÁ
