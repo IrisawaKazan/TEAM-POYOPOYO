@@ -89,7 +89,7 @@ private:
 	void RemovePointer(void) { m_pPointer = nullptr; }
 	void RemoveObject(void) { m_apObject.clear(); m_pNewObject = nullptr; }
 	void SetDefaultEnable();
-	void SetList() { m_list = LIST::LeftArrow; }
+	void SetList() { m_list = LIST::RightArrow; }
 
 	static constexpr float MARKER_HEIGHT = 0.1f;                                           // 地面からマーカーをオフセットする高さ
 	static constexpr float OBJECT_HEIGHT = 0.05f;                                          // 地面からオブジェクトをオフセットする高さ

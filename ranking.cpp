@@ -24,6 +24,11 @@ CRanking::CRanking()
 		m_nMin[nCnt] = NULL;
 		m_nSec[nCnt] = NULL;
 	}
+
+	m_nMinutes = NULL;
+	m_nSeconds = NULL;
+	m_nData = NULL;
+	m_bAct = false;
 }
 
 //****************************************************************
@@ -39,6 +44,8 @@ CRanking::~CRanking()
 //****************************************************************
 HRESULT CRanking::Init(void)
 {
+	m_bAct = false;
+
 	// ì«Ç›çûÇ›
 	LoadFile();
 
@@ -98,7 +105,37 @@ void CRanking::Uninit(void)
 //****************************************************************
 void CRanking::Update(void)
 {
+	// ç°ÇÃëçêî
+	int nNowTime = CTimer::GetTimer();
+	
+	// åªç›ÇÃï™ïbÇÃåvéZ
+	m_nMinutes = nNowTime / MAX_MINUTES;
+	m_nSeconds = (nNowTime % MAX_MINUTES) / MAX_SECOND;
 
+	for (int nNum = 0; nNum < MAX_NUM; nNum++)
+	{
+		if (m_bAct != true)
+		{
+			// åªç›ÇÃï™ïbÇ∆àÍívÇµÇƒÇ¢ÇΩÇÁ
+			if (m_nMin[nNum] == m_nMinutes && m_nSec[nNum] == m_nSeconds)
+			{
+				m_bAct = true;
+				m_nData = nNum;
+			}
+		}
+	}
+
+	for (int nCnt = 0; nCnt < MAX_TIMER; nCnt++)
+	{
+		m_pNumber1[nCnt][MAX_NUM - 1]->ColAnim();
+		m_pNumber2[nCnt][MAX_NUM - 1]->ColAnim();
+
+		m_pNumber1[nCnt][m_nData]->ColAnim();
+		m_pNumber2[nCnt][m_nData]->ColAnim();
+	}
+
+	m_pNumber3[MAX_NUM - 1]->ColAnim();
+	m_pNumber3[m_nData]->ColAnim();
 }
 
 //****************************************************************

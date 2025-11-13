@@ -103,26 +103,48 @@ void CItem::Update(void)
 	D3DXVECTOR3 pos = VEC3_NULL;
 	// カウント
 	static int nCount = 0;
+	static int test = 0;
 
 	// クオータニオンの取得
 	pQuat = GetQuad();
 	// 位置の取得
 	pos = GetPosition();
 
-
-	if (m_bTake == false)
-	{// 入手していない場合
-
-		// 回転量を加算
-		fAngle += 0.05f;
-
-		// クオータニオンの計算
-		D3DXQuaternionRotationAxis(&pQuat, &Axis, fAngle);
-
-		// 更新したクオータニオンを引数に代入
-		SetQuad(pQuat);
+	if (m_type == ITEM_CLIMB)
+	{
+		Axis = { 0.0f,1.0f,0.0f };
 	}
-	else if (m_bTake == true)
+	if (m_type != ITEM_JUMP)
+	{
+		if (m_bTake == false)
+		{// 入手していない場合
+
+			// 回転量を加算
+			fAngle += 0.05f;
+
+			// クオータニオンの計算
+			D3DXQuaternionRotationAxis(&pQuat, &Axis, fAngle);
+
+			// 更新したクオータニオンを引数に代入
+			SetQuad(pQuat);
+		}
+	}
+	else
+	{
+		if (m_bTake == false)
+		{// 入手していない場合
+
+			test++;
+			float testsinf;
+			testsinf = sinf(0.05f * test);
+
+			D3DXVECTOR3 set;
+			set = GetPosition();
+			set.y = 50.0f + (testsinf * 10.0f);
+			SetPosition(set);
+		}
+	}
+	if (m_bTake == true)
 	{// 入手した場合
 
 		// 回転量を加算
@@ -166,7 +188,7 @@ void CItem::Update(void)
 				CGame::GetTutorialBoard()->SetUp("data\\TEXTURE\\tutorial_002.png");
 
 				// アイテムの有効化
-				CNavi::GetInstance()->SetEnable(CNavi::LIST::LeftArrow, true);
+				CNavi::GetInstance()->SetEnable(CNavi::LIST::Jump, true);
 			}
 			else if (m_type == ITEM_CLIMB)
 			{
@@ -174,7 +196,7 @@ void CItem::Update(void)
 				CGame::GetTutorialBoard()->SetUp("data\\TEXTURE\\tutorial_004.png");
 
 				// アイテムの有効化
-				CNavi::GetInstance()->SetEnable(CNavi::LIST::LeftArrow, true);
+				CNavi::GetInstance()->SetEnable(CNavi::LIST::Climb, true);
 			}
 
 		}

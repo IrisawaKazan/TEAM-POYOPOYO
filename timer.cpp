@@ -195,37 +195,6 @@ D3DXVECTOR3 CTimer::GetPos(void)
 }
 
 //****************************************************************
-// タイマーの設定処理
-//****************************************************************
-void CTimer::SetTime(int nTime)
-{
-	// 秒数
-	int aPosTexU[MAX_TIMER] = {};	// 各桁の数字を格納
-	int nData = 100;				// 3桁
-	int nData1 = 10;				// 2桁
-
-	m_nTime += nTime;
-	
-	for (int nCnt = 0; nCnt < MAX_TIMER; nCnt++)
-	{
-		if (nCnt == 0)
-		{
-			// 0番目だったら
-			aPosTexU[0] = m_nMin / nData;
-		}
-		else
-		{
-			// 0番目以外
-			aPosTexU[nCnt] = (m_nMin % nData) / nData1;
-			nData = nData / 10;
-			nData1 = nData1 / 10;
-		}
-
-		m_pNumber1[nCnt]->SetNumber(aPosTexU[nCnt], 4);
-	}
-}
-
-//****************************************************************
 // タイマーの秒減算処理
 //****************************************************************
 void CTimer::SubNs(int nValue)

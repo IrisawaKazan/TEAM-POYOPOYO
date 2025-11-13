@@ -20,32 +20,33 @@ class CNumber;
 class CTimer : public CObject
 {
 public:
+
 	CTimer(int nPriority = 7);
 	~CTimer();
-
-	static CTimer* Create(D3DXVECTOR3 pos);
-
 	HRESULT Init(void);
 	void Uninit(void);
 	void Update(void);
 	void Draw(void);
+	static CTimer* Create(D3DXVECTOR3 pos);
 
+	// セッター
 	void SetPosition(D3DXVECTOR3 pos);
-	D3DXVECTOR3 GetPos(void);
-
-	void SetTime(int nTime);
 	void SubNs(int nValue);
 	void SubMin(int nValue);
 
+	// ゲッター
+	D3DXVECTOR3 GetPos(void);
 	int GetNs(void);
 	int GetMin(void);
-	int GetTime(void) { return m_nTime; }
-	static int GetTimer(void) { return m_nTimer; }
+	int GetTime(void) { return m_nTime; };
+	static int GetTimer(void) { return m_nTimer; };
 
+	// インスタンス生成
 	static CTimer* Instance(void) {
 		static CTimer* pInstance = new CTimer;
 		return pInstance;
 	}
+
 private:
 	static CNumber* m_pNumber1[MAX_TIMER];	// ナンバーのポインタ(秒)
 	static CNumber* m_pNumber2[MAX_TIMER];	// ナンバーのポインタ(分)

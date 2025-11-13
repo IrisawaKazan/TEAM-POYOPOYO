@@ -353,7 +353,7 @@ void CNavi::Update(void)
 		m_aRayCastTarget.clear(); // レイキャスト対象オブジェクト配列をクリア
 		m_aLatentTarget.clear();  // レイキャストを隠すオブジェクト配列をクリア
 
-#ifdef _DEBUG
+//#ifdef _DEBUG
 		if (CManager::GetInputKeyboard()->GetTrigger(DIK_J))
 		{
 			SetEnable(LIST::Jump, !GetEnable(LIST::Jump));
@@ -362,7 +362,7 @@ void CNavi::Update(void)
 		{
 			SetEnable(LIST::Climb, !GetEnable(LIST::Climb));
 		}
-#endif // _DEBUG
+//#endif // _DEBUG
 
 	}
 }

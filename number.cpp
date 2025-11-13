@@ -17,6 +17,9 @@ CNumber::CNumber()
 	m_pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	m_move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	m_nIdx = NULL;
+	m_nColTime = NULL;
+	m_bChange = false;
+
 }
 
 //****************************************************************
@@ -41,6 +44,7 @@ CNumber* CNumber::Create(D3DXVECTOR3 pos)
 HRESULT CNumber::Init(float fX1, float fX2, float fY1, float fY2, int nCnt, int nCnt2, float fNum1, float fNum2, float fNum3, int nNum, int nAdd, const char* FileName, float fx)
 {
 	m_nIdx = CTextureManager::Instance()->Register(FileName);
+	m_nColTime = 0;
 
 	//デバイス取得
 	LPDIRECT3DDEVICE9 pD3DDevice = CManager::GetRenderer()->GetDevice();
@@ -166,15 +170,38 @@ void CNumber::ColAnim(void)
 	VERTEX_2D* pVtx = nullptr;
 
 
+	if (m_nColTime >= 30)
+	{
+		m_bChange = true;
+	}
+	else if(m_nColTime < 0)
+	{
+		m_bChange = false;
+	}
+
 	// バッファのロック
 	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 
-	// 頂点カラー
-	pVtx[0].col = D3DXCOLOR(1.0f,1.0f,1.0f,1.0f);
-	pVtx[1].col = D3DXCOLOR(1.0f,1.0f,1.0f,1.0f);
-	pVtx[2].col = D3DXCOLOR(1.0f,1.0f,1.0f,1.0f);
-	pVtx[3].col = D3DXCOLOR(1.0f,1.0f,1.0f,1.0f);
+	if (m_bChange == true)
+	{
+		m_nColTime--;
 
+		// 頂点カラー
+		pVtx[0].col = D3DXCOLOR(0.3f, 1.0f, 0.3f, 1.0f);
+		pVtx[1].col = D3DXCOLOR(0.3f, 1.0f, 0.3f, 1.0f);
+		pVtx[2].col = D3DXCOLOR(0.3f, 1.0f, 0.3f, 1.0f);
+		pVtx[3].col = D3DXCOLOR(0.3f, 1.0f, 0.3f, 1.0f);
+	}
+	else
+	{
+		m_nColTime++;
+
+		// 頂点カラー
+		pVtx[0].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+		pVtx[1].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+		pVtx[2].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+		pVtx[3].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+	}
 	// バッファをアンロック
 	m_pVtxBuff->Unlock();
 }
