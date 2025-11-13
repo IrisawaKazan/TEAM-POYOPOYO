@@ -121,12 +121,14 @@ void CMapManager::Update(void)
 			modelinfo = pModelManager->GetAddress(pObject->GetIndx());
 			CNavi::GetInstance()->RegisterLatentObject(modelinfo.pMesh, pObject->GetWorldMtx());
 		}
+		for (const auto& pSlope : m_vMapSlopes)
+		{// スロープも隠すだけ
+			modelinfo = pModelManager->GetAddress(pSlope->GetIndx());
+			CNavi::GetInstance()->RegisterLatentObject(modelinfo.pMesh, pSlope->GetWorldMtx());
+		}
 		// ドアは隠すだけ
 		modelinfo = pModelManager->GetAddress(m_Door->GetIndx());
 		CNavi::GetInstance()->RegisterLatentObject(modelinfo.pMesh, m_Door->GetWorldMtx());
-		// スロープも隠すだけ
-		modelinfo = pModelManager->GetAddress(m_Slope->GetIndx());
-		CNavi::GetInstance()->RegisterLatentObject(modelinfo.pMesh, m_Slope->GetWorldMtx());
 	}
 	// ナビにレイキャストオブジェクトを登録 end
 }

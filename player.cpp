@@ -284,8 +284,16 @@ void CPlayer::UpdateGroundedState()
 			m_isGrounded = true;
 
 			// 衝突したオブジェクトが坂道かチェック
-			const CBlock* pSlope = CMapManager::Instance()->GetSlope();
-			if (pSlope != nullptr && rayCallback.m_collisionObject == pSlope->GetRB())
+			bool isSlope{};
+			const std::vector<CBlock*> pSlopes = CMapManager::Instance()->GetSlope();
+			for (const auto& pSlope : pSlopes)
+			{
+				if (pSlope != nullptr && rayCallback.m_collisionObject == pSlope->GetRB())
+				{// 坂道に着地した
+					isSlope = true;
+				}
+			}
+			if (isSlope)
 			{// 坂道に着地した
 				m_state = STATE::Sliding;
 			}
