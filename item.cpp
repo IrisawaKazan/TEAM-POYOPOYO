@@ -110,7 +110,11 @@ void CItem::Update(void)
 	// 位置の取得
 	pos = GetPosition();
 
-	if (m_type == ITEM_LEFT)
+	if (m_type == ITEM_CLIMB)
+	{
+		Axis = { 0.0f,1.0f,0.0f };
+	}
+	if (m_type != ITEM_JUMP)
 	{
 		if (m_bTake == false)
 		{// 入手していない場合
@@ -125,7 +129,7 @@ void CItem::Update(void)
 			SetQuad(pQuat);
 		}
 	}
-	else if (m_type == ITEM_JUMP)
+	else
 	{
 		if (m_bTake == false)
 		{// 入手していない場合
@@ -192,7 +196,7 @@ void CItem::Update(void)
 				CGame::GetTutorialBoard()->SetUp("data\\TEXTURE\\tutorial_004.png");
 
 				// アイテムの有効化
-				CNavi::GetInstance()->SetEnable(CNavi::LIST::LeftArrow, true);
+				CNavi::GetInstance()->SetEnable(CNavi::LIST::Climb, true);
 			}
 
 		}

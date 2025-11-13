@@ -393,11 +393,11 @@ void CMapManager::Load(std::string Path)
 	}
 
 	// アイテムの生成処理 Misaki
-	m_Item = CItem::Create(CItem::ITEM_LEFT,	// 種類
+	m_Item = CItem::Create(CItem::ITEM_CLIMB,	// 種類
 		D3DXVECTOR3(800.0f, 50.0f, 150.0f), 	// 位置
 		D3DXVECTOR3(0.0f, 0.0f, 0.0f), 			// 向き
 		D3DXVECTOR3(1.2f, 1.2f, 1.2f),			// 拡大率
-		"data\\Model\\item\\item001.x");		// テキストファイル
+		"data\\Model\\item\\item003.x");		// テキストファイル
 
 	// 連結
 	m_vMapItem.push_back(m_Item);
