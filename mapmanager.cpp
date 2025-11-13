@@ -399,6 +399,9 @@ void CMapManager::Load(std::string Path)
 		D3DXVECTOR3(1.2f, 1.2f, 1.2f),			// 拡大率
 		"data\\MODEL\\item\\item002.x");		// テキストファイル
 
+		// 連結
+	m_vMapItem.push_back(m_Item);
+
 	// アイテムの生成処理 Misaki
 	m_Item = CItem::Create(CItem::ITEM_CLIMB,	// 種類
 		D3DXVECTOR3(-350.0f, 50.0f, -300.0f), 	// 位置
@@ -406,7 +409,10 @@ void CMapManager::Load(std::string Path)
 		D3DXVECTOR3(1.2f, 1.2f, 1.2f),			// 拡大率
 		"data\\MODEL\\item\\item003.x");		// テキストファイル
 
-			// アイテムの生成処理 Misaki
+		// 連結
+	m_vMapItem.push_back(m_Item);
+
+	// アイテムの生成処理 Misaki
 	m_Item = CItem::Create(CItem::ITEM_LEFT,	// 種類
 		D3DXVECTOR3(300.0f, 50.0f, 300.0f), 	// 位置
 		D3DXVECTOR3(0.0f, 0.0f, 0.0f), 			// 向き
