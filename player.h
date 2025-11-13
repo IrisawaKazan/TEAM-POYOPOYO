@@ -22,6 +22,7 @@ public:
 	static constexpr float MOVE_SPEED = 10.0f;        // 移動スピード sato Add
 	static constexpr float CLIMB_SPEED = 5.0f;        // 登るスピード sato Add
 	static constexpr float CLIMB_HEIGHT_MIN = 3.0f;   // 登る最小の高さ sato Add
+	static constexpr float CLIMB_LENGTH_MIN = 200.0f; // 登る最小の距離 sato Add
 	static constexpr float JUMP_POWER = 30.0f;        // ジャンプ力(高さ) sato Add
 	static constexpr float JUMP_SPEED_INA = 15.0f;    // ジャンプ力(横移動) sato Add
 	static constexpr float AIR_CONTROL_FACTOR = 0.1f; // 空中制御係数 sato Add

@@ -347,14 +347,15 @@ void CPlayer::UpdateState(btVector3& moveDir)
 		m_state = STATE::Jumping;
 	}
 
+	if (m_state != STATE::Sliding && (m_isGrounded && GetMotionInfo()->GetMotion() == 4 || m_isGrounded && GetMotionInfo()->GetMotion() == 2) && GetMotionInfo()->GetBlendMotion() != 1)
+	{// 着地やスライディング終わったら歩きに戻す
+		GetMotionInfo()->SetMotion(1, false);
+	}
+
 	switch (m_state)
 	{
 		// 通常
 	case STATE::Normal:
-		if ((m_isGrounded && GetMotionInfo()->GetMotion() == 4 || m_isGrounded && GetMotionInfo()->GetMotion() == 2) && GetMotionInfo()->GetBlendMotion() != 1)
-		{// 着地やスライディング終わったら歩きに戻す
-			GetMotionInfo()->SetMotion(1, false);
-		}
 		break;
 		// ターン
 	case STATE::Turn:
@@ -562,9 +563,14 @@ void CPlayer::FaceBlock()
 		D3DXVECTOR3 space = climbPos - myPos;
 
 		// XZ平面での距離の2乗
-		float lengthSqXZ = (space.x * space.x) + (space.z * space.z);
+		float lengthXZ = hypotf(space.x, space.z);
+		if (lengthXZ > CLIMB_LENGTH_MIN)
+		{// 登れるブロックが遠い
+			m_pClimbBlock = nullptr;
+			return;
+		}
 
-		if (lengthSqXZ < 0.0001f)
+		if (lengthXZ < 0.0001f)
 		{// めり込んでいる
 			// ブロックの底面の中心
 			D3DXVECTOR3 blockBottomPos = m_pClimbBlock->GetPosition();
@@ -574,9 +580,10 @@ void CPlayer::FaceBlock()
 			space.z = blockBottomPos.z - myPos.z;
 			space.y = 0.0f;
 
-			lengthSqXZ = (space.x * space.x) + (space.z * space.z);
-			if (lengthSqXZ < 0.0001f)
+			lengthXZ = (space.x * space.x) + (space.z * space.z);
+			if (lengthXZ < 0.0001f)
 			{// ブロックの中心とも重なっている
+				m_pClimbBlock = nullptr;
 				return;
 			}
 		}
