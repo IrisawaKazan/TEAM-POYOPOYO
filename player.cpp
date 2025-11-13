@@ -170,6 +170,9 @@ void CPlayer::CheckNavigation()
 				{
 				case CNavi::TYPE::Arrow:
 				{
+					// 同じ方向は無視
+					if (std::abs(GetRot().y - angle) < 0.0001f)break;
+
 					// Playerの位置と方向
 					D3DXVECTOR3 myPos = GetPos();
 
@@ -481,6 +484,21 @@ bool CPlayer::IsClimbingTarget(const CBlock* pBlock)
 	// ブロックのあたり判定
 	btCollisionObject* pBlockObject = pBlock->GetRB();
 
+	// 剛体のマトリックスを取得
+	btMatrix3x3 basis = pBlockObject->getWorldTransform().getBasis();
+
+	// Y列(インデックス1)のベクトル
+	btVector3 blockUpVector = basis.getColumn(1);
+
+	// ほぼ垂直な壁だけ
+	const float verticalThreshold = 0.99f;
+	bool isVertical = (blockUpVector.y() >= verticalThreshold);
+
+	if (!isVertical)
+	{// 傾いている
+		return false;
+	}
+
 	// ブロックの半分のサイズ
 	btVector3 baseHalfExtents = static_cast<btBoxShape*>(pBlockObject->getCollisionShape())->getHalfExtentsWithMargin();
 
@@ -538,14 +556,8 @@ bool CPlayer::IsClimbingEnd()
 	// ブロックの半分のサイズ
 	btVector3 baseHalfExtents = static_cast<btBoxShape*>(pBlockObject->getCollisionShape())->getHalfExtentsWithMargin();
 
-	// ブロックのスケール
-	btVector3 currentScale = pBlockObject->getCollisionShape()->getLocalScaling();
-
-	// ブロックの実際の半分のサイズ
-	btVector3 actualHalfExtents = baseHalfExtents * currentScale;
-
 	// ブロックの実際のサイズ
-	btVector3 actuaExtents = actualHalfExtents * 2.0f;
+	btVector3 actuaExtents = baseHalfExtents * 2.0f;
 
 	// ブロックの中心Y座標 + ブロックの高さの半分 = ブロックの天面のY座標
 	float blockTopY = m_pClimbBlock->GetPosition().y + actuaExtents.y();
