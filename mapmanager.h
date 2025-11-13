@@ -52,8 +52,7 @@ public:
 	const std::vector<CBlock*>& GetBlocks() const { return m_vMapObject; }
 
 	// スロープの取得
-	const CBlock* GetSlope() { return m_Slope; }
-
+	const std::vector<CBlock*>& GetSlope() { return m_vMapSlopes; }
 private:
 	// コンストラクタ
 	CMapManager() { Init(); }
@@ -62,7 +61,7 @@ private:
 	std::vector<CBlock*> m_vMapObject;					// マップに置くオブジェクト
 	CDoor* m_Door;										// ドア
 	CGoal* m_Goal;										// ゴール
-	CBlock* m_Slope;									// 滑り台
+	std::vector<CBlock*> m_vMapSlopes;					// 滑り台
 	std::vector<CSwitch*> m_vMapSwitch;					// マップに置くスイッチ
 	// アイテムの当たり判定 Misaki
 	CItem* m_Item;

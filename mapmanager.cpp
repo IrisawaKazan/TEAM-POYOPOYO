@@ -374,10 +374,13 @@ void CMapManager::Load(std::string Path)
 		}
 		else if (LocalPath.find("slope") != string::npos)
 		{
-			m_Slope = CBlock::Create(LocalPath, Pos, VEC3_NULL);
-			m_Slope->SetScale(Scale);
-			m_Slope->SetQuat(CMath::ConvertQuat(Quad));
-			m_Slope->SetIdx(LocalPath);
+			CBlock* Local;
+			Local = CBlock::Create(LocalPath, Pos, VEC3_NULL);
+			Local->SetScale(Scale);
+			Local->SetQuat(CMath::ConvertQuat(Quad));
+			Local->SetIdx(LocalPath);
+			// ˜AŒ‹
+			m_vMapSlopes.push_back(Local);
 		}
 		else
 		{
