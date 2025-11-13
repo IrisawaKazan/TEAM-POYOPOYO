@@ -202,8 +202,7 @@ void CPlayer::CheckNavigation()
 					}
 
 					// ブロックに向かう
-					FaceBlock();
-					m_state = STATE::Climb; // クライム開始
+					if (FaceBlock())m_state = STATE::Climb; // クライム開始
 					break;
 				}
 				case CNavi::TYPE::Jump:
@@ -554,7 +553,7 @@ void CPlayer::Landing()
 }
 
 // ブロックに向かう
-void CPlayer::FaceBlock()
+bool CPlayer::FaceBlock()
 {
 	if (m_pClimbBlock != nullptr)
 	{
@@ -567,7 +566,7 @@ void CPlayer::FaceBlock()
 		if (lengthXZ > CLIMB_LENGTH_MIN)
 		{// 登れるブロックが遠い
 			m_pClimbBlock = nullptr;
-			return;
+			return false;
 		}
 
 		if (lengthXZ < 0.0001f)
@@ -584,14 +583,17 @@ void CPlayer::FaceBlock()
 			if (lengthXZ < 0.0001f)
 			{// ブロックの中心とも重なっている
 				m_pClimbBlock = nullptr;
-				return;
+				return false;
 			}
 		}
 
 		D3DXVec3Normalize(&space, &space);
 		SetRotDest(D3DXVECTOR3(0.0f, atan2f(-space.x, -space.z), 0.0f));
 		SetRot(D3DXVECTOR3(0.0f, atan2f(-space.x, -space.z), 0.0f));
+
+		return true;
 	}
+	return false;
 }
 
 // 位置を設定

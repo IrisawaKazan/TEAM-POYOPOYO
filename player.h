@@ -69,7 +69,7 @@ private:
 	bool IsClimbingEnd();
 	void Jump(btVector3& moveDir);
 	void Landing();
-	void FaceBlock();
+	bool FaceBlock();
 
 	static constexpr float TURN_RADIUS = 8.0f; // ターンの中心軸からのずれの許容範囲
 
