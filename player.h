@@ -27,6 +27,8 @@ public:
 	static constexpr float JUMP_SPEED_INA = 15.0f;    // ジャンプ力(横移動) sato Add
 	static constexpr float AIR_CONTROL_FACTOR = 0.1f; // 空中制御係数 sato Add
 	static constexpr float GROUND_SPACE = 0.5f;       // 着地制御 sato Add
+	static constexpr float LANDING_MOTION_HEIGHT_MIN = 5.0f; // 着地モーションをする最低の落下速度 sato Add
+
 
 	// 状態
 	enum class STATE : unsigned char
@@ -87,5 +89,7 @@ private:
 
 	bool m_isGrounded;     // 着地しているか?
 	bool m_IsSlopeTrigger;	// スロープに乗った瞬間のフラグ
+
+	float m_peakFallSpeed; // 着地速度
 };
 #endif

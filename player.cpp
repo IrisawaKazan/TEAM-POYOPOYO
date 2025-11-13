@@ -15,7 +15,7 @@
 // 静的メンバ変数の定義
 
 // コンストラクタ
-CPlayer::CPlayer() : m_activePos{ 0,0,0 }, m_CollisionShape{}, m_isGrounded{}, m_IsSlopeTrigger{}, m_naviObjectCountMap{}, m_naviObjectIdxListOld{}, m_pClimbBlock{}, m_RigitBody{}, m_state{}, m_turnAngle{}
+CPlayer::CPlayer() : m_activePos{ 0,0,0 }, m_CollisionShape{}, m_isGrounded{}, m_IsSlopeTrigger{}, m_naviObjectCountMap{}, m_naviObjectIdxListOld{}, m_pClimbBlock{}, m_RigitBody{}, m_state{}, m_turnAngle{}, m_peakFallSpeed{}
 {
 
 }
@@ -65,6 +65,8 @@ HRESULT CPlayer::Init(void)
 	m_pClimbBlock = nullptr;
 
 	m_isGrounded = false;
+
+	m_peakFallSpeed = 0.0f;
 	return S_OK;
 }
 
@@ -344,6 +346,7 @@ void CPlayer::UpdateState(btVector3& moveDir)
 	if (!m_isGrounded && m_state != STATE::Jumping && m_state != STATE::Climbing)
 	{
 		m_state = STATE::Jumping;
+		m_peakFallSpeed = 0.0f;
 	}
 
 	if (m_state != STATE::Sliding && (m_isGrounded && GetMotionInfo()->GetMotion() == 4 || m_isGrounded && GetMotionInfo()->GetMotion() == 2) && GetMotionInfo()->GetBlendMotion() != 1)
@@ -423,11 +426,19 @@ void CPlayer::UpdateState(btVector3& moveDir)
 	}
 	// 飛んでいる
 	case STATE::Jumping:
+	{
+		float fallSpeed = m_RigitBody->getLinearVelocity().y();
+		if (std::abs(fallSpeed) > m_peakFallSpeed)
+		{// 最大落下速度
+			m_peakFallSpeed = std::abs(fallSpeed);
+		}
+
 		if (m_isGrounded)
 		{// 着地したら
 			Landing();
 		}
 		break;
+	}
 		// 滑っている
 	case STATE::Sliding:
 		if (GetMotionInfo()->GetBlendMotion() != 2)
@@ -549,7 +560,18 @@ void CPlayer::Jump(btVector3& moveDir)
 void CPlayer::Landing()
 {
 	m_state = STATE::Normal;
-	GetMotionInfo()->SetMotion(4, false);
+	if (std::abs(m_peakFallSpeed) >= LANDING_MOTION_HEIGHT_MIN)
+	{
+		GetMotionInfo()->SetMotion(4, false);
+	}
+	else
+	{
+		if (GetMotionInfo()->GetMotion() != 1)
+		{// スライディングモーション
+			GetMotionInfo()->SetMotion(1, false);
+		}
+	}
+	m_peakFallSpeed = 0.0f;
 }
 
 // ブロックに向かう
