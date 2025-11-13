@@ -31,7 +31,7 @@ public:
 	void CollisionGoaltoPlayers(void);
 	void CollisionSwitchtoPlayers(void);
 	void CollisionItemtoPlayers(void); // Misaki
-	void CollisionSlopetoPlayers(void);
+
 	// 生成
 	void CreateObject(D3DXVECTOR3 Pos, D3DXVECTOR3 Rot, std::string Path);
 
@@ -50,6 +50,9 @@ public:
 
 	// ブロック配列の取得
 	const std::vector<CBlock*>& GetBlocks() const { return m_vMapObject; }
+
+	// スロープの取得
+	const CBlock* GetSlope() { return m_Slope; }
 
 private:
 	// コンストラクタ

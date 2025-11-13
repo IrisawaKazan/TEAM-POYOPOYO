@@ -111,7 +111,7 @@ void CPlayer::Update(void)
 	// 状態管理
 	UpdateState(moveDir);
 
-	if (GetMotionInfo()->GetBlendMotion() == 2)
+	if (m_state == STATE::Sliding)
 	{
 		if (m_IsSlopeTrigger == false)
 		{
@@ -281,6 +281,20 @@ void CPlayer::UpdateGroundedState()
 		else
 		{// 自分以外
 			m_isGrounded = true;
+
+			// 衝突したオブジェクトが坂道かチェック
+			const CBlock* pSlope = CMapManager::Instance()->GetSlope();
+			if (pSlope != nullptr && rayCallback.m_collisionObject == pSlope->GetRB())
+			{// 坂道に着地した
+				m_state = STATE::Sliding;
+			}
+			else
+			{// 通常の地面
+				if (m_state == STATE::Sliding)
+				{
+					m_state = STATE::Normal;
+				}
+			}
 		}
 	}
 	else
@@ -337,8 +351,8 @@ void CPlayer::UpdateState(btVector3& moveDir)
 	{
 		// 通常
 	case STATE::Normal:
-		if (m_isGrounded && GetMotionInfo()->GetMotion() == 4 && GetMotionInfo()->GetBlendMotion() != 1)
-		{// 着地が終わったら歩きに戻す
+		if ((m_isGrounded && GetMotionInfo()->GetMotion() == 4 || m_isGrounded && GetMotionInfo()->GetMotion() == 2) && GetMotionInfo()->GetBlendMotion() != 1)
+		{// 着地やスライディング終わったら歩きに戻す
 			GetMotionInfo()->SetMotion(1, false);
 		}
 		break;
@@ -369,6 +383,7 @@ void CPlayer::UpdateState(btVector3& moveDir)
 			FaceBlock();               // 改めて壁を向く
 			moveDir.setY(CLIMB_SPEED); // 登る
 			m_state = STATE::Climbing; // 登っている状態
+			GetMotionInfo()->SetMotion(5, false);
 		}
 		break;
 		// 登っている
@@ -382,11 +397,13 @@ void CPlayer::UpdateState(btVector3& moveDir)
 			if (IsClimbingEnd())
 			{// ブロックの上
 				m_state = STATE::Jumping;
+				m_pClimbBlock = nullptr;
 			}
 		}
 		else
 		{// 登ったまま少し浮いたか落ちた
 			m_state = STATE::Jumping;
+			m_pClimbBlock = nullptr;
 		}
 		break;
 	}
@@ -409,6 +426,13 @@ void CPlayer::UpdateState(btVector3& moveDir)
 		if (m_isGrounded)
 		{// 着地したら
 			Landing();
+		}
+		break;
+		// 滑っている
+	case STATE::Sliding:
+		if (GetMotionInfo()->GetBlendMotion() != 2)
+		{// スライディングモーション
+			GetMotionInfo()->SetMotion(2, false);
 		}
 		break;
 	}
@@ -441,14 +465,8 @@ bool CPlayer::IsClimbingTarget(const CBlock* pBlock)
 	// ブロックの半分のサイズ
 	btVector3 baseHalfExtents = static_cast<btBoxShape*>(pBlockObject->getCollisionShape())->getHalfExtentsWithMargin();
 
-	// ブロックのスケール
-	btVector3 currentScale = pBlockObject->getCollisionShape()->getLocalScaling();
-
-	// ブロックの実際の半分のサイズ
-	btVector3 actualHalfExtents = baseHalfExtents * currentScale;
-
 	// ブロックの実際のサイズ
-	btVector3 actuaExtents = actualHalfExtents * 2.0f;
+	btVector3 actuaExtents = baseHalfExtents * 2.0f;
 
 	// ブロックの中心Y座標 + ブロックの高さの半分 = ブロックの天面のY座標
 	float blockTopY = pBlock->GetPosition().y + actuaExtents.y();
@@ -521,7 +539,7 @@ bool CPlayer::IsClimbingEnd()
 void CPlayer::Jump(btVector3& moveDir)
 {
 	moveDir.setX(moveDir.x() * JUMP_SPEED_INA);
-	moveDir.setZ(moveDir.y() * JUMP_SPEED_INA);
+	moveDir.setZ(moveDir.z() * JUMP_SPEED_INA);
 	moveDir.setY(JUMP_POWER);
 	m_state = STATE::Jumping;
 	GetMotionInfo()->SetMotion(3, true);
