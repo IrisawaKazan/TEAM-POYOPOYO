@@ -45,7 +45,7 @@ public:
 
 protected:
 	static constexpr float CHENGE_LENGTH_MAGNIFICATION = 0.5f;  // ƒvƒŒƒCƒ„[‚ª”½‰‚·‚é”ÍˆÍ‚Ì”{—¦
-	static constexpr float RELEASE_LENGTH_MAGNIFICATION = 0.8f; // d‚È‚è–h~”»’è‚ª”½‰‚·‚é”ÍˆÍ‚Ì”{—¦
+	static constexpr float RELEASE_LENGTH_MAGNIFICATION = 0.7f; // d‚È‚è–h~”»’è‚ª”½‰‚·‚é”ÍˆÍ‚Ì”{—¦
 	static constexpr float CHENGE_HEIGHT = 0.2f;                // ”½‰‚·‚é‚‚³‚Ì·
 
 	virtual void Activate(D3DXVECTOR3* outPos, float* outAngle) const = 0;
