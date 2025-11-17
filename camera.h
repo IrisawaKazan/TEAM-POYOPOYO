@@ -36,10 +36,12 @@ public:
 		static constexpr float DistanceFar = 200.0f;
 		static constexpr float MoveRDist = -8.0f;
 		static constexpr float MoveSpeedR = 0.03f;
-		static constexpr float MoveSpeedSide = 20.0f;       // sato Add
+		static constexpr float MoveSpeedParallel = 20.0f;   // sato Add
 		static constexpr float CatchSpeedSide = 0.1f;       // sato Add
-		static constexpr float SideMoveMin = -2000.0f;      // sato Add
-		static constexpr float SideMoveMax = 2000.0f;       // sato Add
+		static constexpr float ParallelMoveMinX = -2000.0f; // sato Add
+		static constexpr float ParallelMoveMaxX = 2000.0f;  // sato Add
+		static constexpr float ParallelMoveMinZ = -800.0f;  // sato Add
+		static constexpr float ParallelMoveMaxZ = 0.0f;     // sato Add
 		static constexpr MODE startMode = MODE::BELTSCROLL; // sato Add
 		static const D3DXVECTOR3 OffSetR;
 		static const D3DXVECTOR3 OffSetRot;
@@ -97,15 +99,15 @@ public:
 	void UpdateMove(void);
 	void UpdateMouseMove(void);
 	void UpdateJoyPadMove(void);
-	void UpdateKeyboardMoveSide(void);
-	void UpdateJoyPadMoveSide(void);
+	void UpdateKeyboardMoveParallel(void);
+	void UpdateJoyPadMoveParallel(void);
 	void UpdateCameraPosition(void);
 	void UpdateCameraPositionV(void);
 	void UpdateCameraPositionR(void);
 	void UpdateCameraPositionVNormal(void);
 	void UpdateCameraPositionRNormal(void);
-	void UpdateCameraPositionVSide(void);
-	void UpdateCameraPositionRSide(void);
+	void UpdateCameraPositionVParallel(void);
+	void UpdateCameraPositionRParallel(void);
 	void UpdateMotion(void);
 
 	void NormalizeCameraRot(void);

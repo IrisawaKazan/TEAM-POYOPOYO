@@ -17,7 +17,7 @@
 using namespace std;
 
 // 規定値を設定
-const D3DXVECTOR3 CCamera::Config::OffSetR = { 0.0f, 50.0f, 0.0f };
+const D3DXVECTOR3 CCamera::Config::OffSetR = { 1800.0f, 0.0f, 0.0f };
 const D3DXVECTOR3 CCamera::Config::OffSetRot = { D3DX_PI * 0.15f, 0.0f, 0.0f }; // sato Add
 const D3DXVECTOR3 CCamera::Config::CatchSpeedR = { 0.3f, 0.3f, 0.3f };
 
@@ -195,9 +195,9 @@ void CCamera::SetBelt(void)
 	// 角度を決めて
 	m_rot = Config::OffSetRot;
 
-	// 注視点は0
-	m_posR = { 1800.0f,0.0f,0.0f };
-	m_posRDest = { 1800.0f,0.0f,0.0f };
+	// 注視点
+	m_posR = Config::OffSetR;
+	m_posRDest = Config::OffSetR;
 
 	// 角度と距離で視点を算出
 	m_posV.x = m_posR.x + cosf(m_rot.x) * sinf(m_rot.y) * m_fDistance;
@@ -229,8 +229,8 @@ void CCamera::UpdateMove(void)
 		break;
 	case MODE::BELTSCROLL:
 		// 横移動 sato Add
-		UpdateKeyboardMoveSide();
-		UpdateJoyPadMoveSide();
+		UpdateKeyboardMoveParallel();
+		UpdateJoyPadMoveParallel();
 		break;
 	}
 }
@@ -338,24 +338,36 @@ void CCamera::UpdateJoyPadMove(void)
 //***************************************
 // カメラのキーボード移動 sato Add
 //***************************************
-void CCamera::UpdateKeyboardMoveSide(void)
+void CCamera::UpdateKeyboardMoveParallel(void)
 {
 	// キーボードの入力を取得
+	bool Front = m_pInputKeyboard->GetPress(DIK_W);
 	bool Left = m_pInputKeyboard->GetPress(DIK_A);
+	bool Back = m_pInputKeyboard->GetPress(DIK_S);
 	bool Right = m_pInputKeyboard->GetPress(DIK_D);
 
 	// 左右に動かす
 	if (Left == true)
 	{
-		m_posRDest.x += Config::MoveSpeedSide;
+		m_posRDest.x += Config::MoveSpeedParallel;
 	}
 	if (Right == true)
 	{
-		m_posRDest.x -= Config::MoveSpeedSide;
+		m_posRDest.x -= Config::MoveSpeedParallel;
+	}
+	// 前後に動かす
+	if (Front == true)
+	{
+		m_posRDest.z -= Config::MoveSpeedParallel;
+	}
+	if (Back == true)
+	{
+		m_posRDest.z += Config::MoveSpeedParallel;
 	}
 
 	// Clampで範囲内に収める
-	m_posRDest.x = Clamp(m_posRDest.x, Config::SideMoveMin, Config::SideMoveMax);
+	m_posRDest.x = Clamp(m_posRDest.x, Config::ParallelMoveMinX, Config::ParallelMoveMaxX);
+	m_posRDest.z = Clamp(m_posRDest.z, Config::ParallelMoveMinZ, Config::ParallelMoveMaxZ);
 
 	// 座標を更新
 	UpdateCameraPosition();
@@ -364,26 +376,38 @@ void CCamera::UpdateKeyboardMoveSide(void)
 //***************************************
 // カメラのキーボード移動 sato Add
 //***************************************
-void CCamera::UpdateJoyPadMoveSide(void)
+void CCamera::UpdateJoyPadMoveParallel(void)
 {
 	// コントローラーの入力を取得
 	XINPUT_STATE* pState;
 	pState = m_pInputJoypad->GetJoyStickAngle();
+	bool Front = m_pInputJoypad->GetPress(CInputJoypad::JOYKEY_UP) || (m_pInputJoypad->GetJoyStickL() && pState->Gamepad.sThumbLY < 0);
 	bool Left = m_pInputJoypad->GetPress(CInputJoypad::JOYKEY_LEFT) || (m_pInputJoypad->GetJoyStickL() && pState->Gamepad.sThumbLX < 0);
+	bool Back = m_pInputJoypad->GetPress(CInputJoypad::JOYKEY_DOWN) || (m_pInputJoypad->GetJoyStickL() && pState->Gamepad.sThumbLY > 0);
 	bool Right = m_pInputJoypad->GetPress(CInputJoypad::JOYKEY_RIGET) || (m_pInputJoypad->GetJoyStickL() && pState->Gamepad.sThumbLX > 0);
 
 	// 左右に動かす
 	if (Left == true)
 	{
-		m_posRDest.x += Config::MoveSpeedSide;
+		m_posRDest.x += Config::MoveSpeedParallel;
 	}
 	if (Right == true)
 	{
-		m_posRDest.x -= Config::MoveSpeedSide;
+		m_posRDest.x -= Config::MoveSpeedParallel;
+	}
+	// 前後に動かす
+	if (Front == true)
+	{
+		m_posRDest.z -= Config::MoveSpeedParallel;
+	}
+	if (Back == true)
+	{
+		m_posRDest.z += Config::MoveSpeedParallel;
 	}
 
 	// Clampで範囲内に収める
-	m_posRDest.x = Clamp(m_posRDest.x, Config::SideMoveMin, Config::SideMoveMax);
+	m_posRDest.x = Clamp(m_posRDest.x, Config::ParallelMoveMinX, Config::ParallelMoveMaxX);
+	m_posRDest.z = Clamp(m_posRDest.z, Config::ParallelMoveMinZ, Config::ParallelMoveMaxZ);
 
 	// 座標を更新
 	UpdateCameraPosition();
@@ -642,7 +666,7 @@ void CCamera::UpdateCameraPositionV()
 		UpdateCameraPositionVNormal();
 		break;
 	case MODE::BELTSCROLL:
-		UpdateCameraPositionVSide();
+		UpdateCameraPositionVParallel();
 		break;
 	}
 }
@@ -659,7 +683,7 @@ void CCamera::UpdateCameraPositionR()
 		UpdateCameraPositionRNormal();
 		break;
 	case MODE::BELTSCROLL:
-		UpdateCameraPositionRSide();
+		UpdateCameraPositionRParallel();
 		break;
 	}
 }
@@ -698,21 +722,24 @@ void CCamera::UpdateCameraPositionRNormal()
 //***************************************
 // PosVの座標更新Side sato Add
 //***************************************
-void CCamera::UpdateCameraPositionVSide()
+void CCamera::UpdateCameraPositionVParallel()
 {
 	// 視点の座標更新
 	m_posVDest.x = m_posRDest.x + cosf(m_rot.x) * sinf(m_rot.y) * m_fDistance;
+	m_posVDest.z = m_posRDest.z + cosf(m_rot.x) * cosf(m_rot.y) * m_fDistance;
 
 	m_posV.x += (m_posVDest.x - m_posV.x) * Config::CatchSpeedSide;
+	m_posV.z += (m_posVDest.z - m_posV.z) * Config::CatchSpeedSide;
 }
 
 //***************************************
 // PosRの座標更新Side sato Add
 //***************************************
-void CCamera::UpdateCameraPositionRSide()
+void CCamera::UpdateCameraPositionRParallel()
 {
 	// 注視点の更新
 	m_posR.x += (m_posRDest.x - m_posR.x) * Config::CatchSpeedSide;
+	m_posR.z += (m_posRDest.z - m_posR.z) * Config::CatchSpeedSide;
 }
 
 //***************************************

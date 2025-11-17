@@ -169,60 +169,16 @@ void CPlayer::CheckNavigation()
 				switch (naviType)
 				{
 				case CNavi::TYPE::Arrow:
-				{
-					// 同じ方向は無視
-					if (std::abs(GetRot().y - angle) < 0.0001f)break;
-
-					// Playerの位置と方向
-					D3DXVECTOR3 myPos = GetPos();
-
-					// 矢印の位置と方向
-					D3DXVECTOR3 objectPos = pos;                                         // 矢印の中心座標
-					D3DXVECTOR3 objectDir = D3DXVECTOR3(sinf(angle), 0.0f, cosf(angle)); // 矢印の向き
-
-					m_activePos = CMath::GetNierToLineXZ(myPos, objectPos, objectDir); // 矢印のベクトル上の近い地点
-					m_turnAngle = angle;   // ターン方向
-					m_state = STATE::Turn; // ターン開始
+					// ターンの準備
+					PreparationTrun(pos, angle);
 					break;
-				}
 				case CNavi::TYPE::Climb:
-				{
-					D3DXVECTOR3 myPos = GetPos(); // 自分の位置
-					std::vector<CBlock*> pBlocks = CMapManager::Instance()->GetBlocks(); // ブロック配列
-
-					float minLengthSq{ FLT_MAX };
-					for (const auto& pBlock : pBlocks)
-					{// ブロックを走査
-						if (IsClimbingTarget(pBlock))
-						{// 登れる
-							D3DXVECTOR3 climbPos = pBlock->GetClosestPointOnSurface(myPos);
-							D3DXVECTOR3 space = climbPos - myPos;
-							float lengthSq = D3DXVec3LengthSq(&space);
-							if (lengthSq < minLengthSq)
-							{// より近いブロック
-								m_pClimbBlock = pBlock;
-								minLengthSq = lengthSq;
-							}
-						}
-					}
-
-					// ブロックに向かう
-					if (FaceBlock())m_state = STATE::Climb; // クライム開始
+					// クライムの準備
+					PreparationClimb();
 					break;
-				}
 				case CNavi::TYPE::Jump:
-					// Playerの位置と方向
-					D3DXVECTOR3 myPos = GetPos();
-
-					D3DXVECTOR3 objectPos = pos; // 矢印の中心座標
-
-					// 進む方向に対して垂直なベクトル
-					float myAngle = GetRot().y;
-					D3DXVECTOR3 verticalDir = D3DXVECTOR3(sinf(myAngle - D3DXToRadian(90.0f)), 0.0f, cosf(myAngle - D3DXToRadian(90.0f))); // 矢印の向き
-
-					m_activePos = CMath::GetNierToLineXZ(myPos, objectPos, verticalDir); // 矢印のベクトル上の近い地点
-
-					m_state = STATE::Jump;  // ジャンプ開始
+					// ジャンプの準備
+					PreparationJump(pos);
 					break;
 				}
 
@@ -252,6 +208,64 @@ void CPlayer::CheckNavigation()
 		}
 	}
 	m_naviObjectIdxListOld = naviObjectIdxListNew; // 今フレームで触れたナビゲーションオブジェクトリストを保存
+}
+
+// ターン準備
+void CPlayer::PreparationTrun(D3DXVECTOR3 objectPos, float objectAngle)
+{
+	// 同じ方向は無視
+	if (std::abs(GetRot().y - objectAngle) < 0.0001f)return;
+
+	// Playerの位置と方向
+	D3DXVECTOR3 myPos = GetPos();
+
+	// 矢印の位置と方向
+	D3DXVECTOR3 objectDir = D3DXVECTOR3(sinf(objectAngle), 0.0f, cosf(objectAngle)); // 矢印の向き
+
+	m_activePos = CMath::GetNierToLineXZ(myPos, objectPos, objectDir); // 矢印のベクトル上の近い地点
+	m_turnAngle = objectAngle; // ターン方向
+	m_state = STATE::Turn;     // ターン開始
+}
+
+// クライム準備
+void CPlayer::PreparationClimb()
+{
+	D3DXVECTOR3 myPos = GetPos(); // 自分の位置
+	std::vector<CBlock*> pBlocks = CMapManager::Instance()->GetBlocks(); // ブロック配列
+
+	float minLengthSq{ FLT_MAX };
+	for (const auto& pBlock : pBlocks)
+	{// ブロックを走査
+		if (IsClimbingTarget(pBlock))
+		{// 登れる
+			D3DXVECTOR3 climbPos = pBlock->GetClosestPointOnSurface(myPos);
+			D3DXVECTOR3 space = climbPos - myPos;
+			float lengthSq = D3DXVec3LengthSq(&space);
+			if (lengthSq < minLengthSq)
+			{// より近いブロック
+				m_pClimbBlock = pBlock;
+				minLengthSq = lengthSq;
+			}
+		}
+	}
+
+	// ブロックに向かう
+	if (FaceBlock())m_state = STATE::Climb; // クライム開始
+}
+
+// ジャンプ準備
+void CPlayer::PreparationJump(D3DXVECTOR3 objectPos)
+{
+	// Playerの位置と方向
+	D3DXVECTOR3 myPos = GetPos();
+
+	// 進む方向に対して垂直なベクトル
+	float myAngle = GetRot().y;
+	D3DXVECTOR3 verticalDir = D3DXVECTOR3(sinf(myAngle - D3DXToRadian(90.0f)), 0.0f, cosf(myAngle - D3DXToRadian(90.0f))); // 矢印の向き
+
+	m_activePos = CMath::GetNierToLineXZ(myPos, objectPos, verticalDir); // 矢印のベクトル上の近い地点
+
+	m_state = STATE::Jump;  // ジャンプ開始
 }
 
 // 着地確認

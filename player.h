@@ -62,6 +62,9 @@ public:
 private:
 	void UpdateGroundedState();
 	void CheckNavigation();
+	void PreparationTrun(D3DXVECTOR3 objectPos,float objectAngle);
+	void PreparationClimb();
+	void PreparationJump(D3DXVECTOR3 objectPos);
 	void Move(btVector3& moveDir, D3DXVECTOR3& rot, btVector3& currentVel);
 	void UpdateState(btVector3& moveDir);
 	void Turn();
@@ -87,7 +90,7 @@ private:
 	const CBlock* m_pClimbBlock; // 登るブロック
 
 	bool m_isGrounded;     // 着地しているか?
-	bool m_IsSlopeTrigger;	// スロープに乗った瞬間のフラグ
+	bool m_IsSlopeTrigger; // スロープに乗った瞬間のフラグ
 
 	float m_peakFallSpeed; // 着地速度
 };
