@@ -599,60 +599,6 @@
             "Mass": 100.0
         },
         "Assets": {
-            "Path": "data/MODEL/Switch-Plate.x"
-        },
-        "Transform": {
-            "Pos": {
-                "x": -100.0,
-                "y": 0.0,
-                "z": 625.0
-            },
-            "Rot": {
-                "w": 1.0,
-                "x": 0.0,
-                "y": 0.0,
-                "z": 0.0
-            },
-            "Scale": {
-                "x": 1.0,
-                "y": 1.0,
-                "z": 1.0
-            }
-        }
-    },
-    {
-        "RigitBody": {
-            "IsStatic": true,
-            "Mass": 100.0
-        },
-        "Assets": {
-            "Path": "data/MODEL/Switch-Button.x"
-        },
-        "Transform": {
-            "Pos": {
-                "x": -100.0,
-                "y": 0.0,
-                "z": 620.0
-            },
-            "Rot": {
-                "w": 1.0,
-                "x": 0.0,
-                "y": 0.0,
-                "z": 0.0
-            },
-            "Scale": {
-                "x": 1.0,
-                "y": 1.0,
-                "z": 1.0
-            }
-        }
-    },
-    {
-        "RigitBody": {
-            "IsStatic": true,
-            "Mass": 100.0
-        },
-        "Assets": {
             "Path": "data/MODEL/floor_block.x"
         },
         "Transform": {
@@ -1049,6 +995,87 @@
                 "x": 15.0,
                 "y": 1.0,
                 "z": 30.0
+            }
+        }
+    },
+    {
+        "RigitBody": {
+            "IsStatic": true,
+            "Mass": 100.0
+        },
+        "Assets": {
+            "Path": "data/MODEL/floor_block.x"
+        },
+        "Transform": {
+            "Pos": {
+                "x": -580.0,
+                "y": -20.0,
+                "z": 50.0
+            },
+            "Rot": {
+                "w": 1.0,
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "Scale": {
+                "x": 8.0,
+                "y": 1.0,
+                "z": 15.0
+            }
+        }
+    },
+    {
+        "RigitBody": {
+            "IsStatic": true,
+            "Mass": 100.0
+        },
+        "Assets": {
+            "Path": "data/MODEL/Switch-Plate.x"
+        },
+        "Transform": {
+            "Pos": {
+                "x": -580.0,
+                "y": 0.0,
+                "z": 50.0
+            },
+            "Rot": {
+                "w": 1.0,
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "Scale": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            }
+        }
+    },
+    {
+        "RigitBody": {
+            "IsStatic": true,
+            "Mass": 100.0
+        },
+        "Assets": {
+            "Path": "data/MODEL/Switch-Button.x"
+        },
+        "Transform": {
+            "Pos": {
+                "x": -580.0,
+                "y": 0.0,
+                "z": 50.0
+            },
+            "Rot": {
+                "w": 1.0,
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "Scale": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
             }
         }
     }
