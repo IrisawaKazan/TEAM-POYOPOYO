@@ -168,7 +168,7 @@ void CObjectBillBoard::Draw(void)
 	// 頂点バッファをデバイスからデータストリームに設定
 	pDevice->SetStreamSource(0, m_pVertex, 0, sizeof(VERTEX_3D));
 	// テクスチャの設定
-	pDevice->SetTexture(0, NULL);
+	//pDevice->SetTexture(0, NULL);
 	// 頂点フォーマットの設定
 	pDevice->SetFVF(FVF_VERTEX_3D);
 	// ポリゴンの描画
