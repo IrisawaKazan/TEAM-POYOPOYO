@@ -24,7 +24,6 @@ public:
 		float fAlphaDef;		// 1フレームで減るアルファ値
 		float fSizeDef;			// 1フレームで減る大きさ
 		int nLife;				// 寿命
-		const char* FilePath;	// テクスチャへのパス
 	};
 
 	// テクスチャのパスを設定
@@ -47,6 +46,7 @@ public:
 	static CEffect3D* Create(D3DXVECTOR3 Pos, D3DXVECTOR3 Move, D3DXCOLOR Col, D3DXVECTOR2 Size, float Gravity, int Life, const char* FilePath,const int Priority = 3);
 private:
 	// メンバ変数
+	int m_nIdx;				// テクスチャの番号 Misaki
 	EffectModule m_Module;	// モジュール
 };
 #endif // !_EFFECT3D_H_

@@ -7,7 +7,7 @@
 
 // インクルード
 #include "effect3d.h"
-#include "texmanager.h"
+#include "texturemanager.h"
 
 //*********************************************
 // コンストラクタ
@@ -97,9 +97,6 @@ void CEffect3D::Draw(void)
 	// デバイスの取得
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
 
-	// フォグを切る
-	CManager::GetRenderer()->offFog();
-
 	// ゼットテスト
 	pDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
 	pDevice->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
@@ -114,8 +111,8 @@ void CEffect3D::Draw(void)
 	pDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
 	pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
 
-	// テクスチャを設定
-	pDevice->SetTexture(0, CLoadTexture::GetTex(m_Module.FilePath));
+	//テクスチャの設定
+	pDevice->SetTexture(0, CTextureManager::Instance()->GetAddress(m_nIdx));
 
 	// 描画
 	CObjectBillBoard::Draw();
@@ -131,9 +128,6 @@ void CEffect3D::Draw(void)
 	pDevice->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
 	pDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
 	pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
-
-	// フォグをつける
-	CManager::GetRenderer()->onFog();
 }
 
 //*********************************************
@@ -148,13 +142,13 @@ CEffect3D* CEffect3D::Create(D3DXVECTOR3 Pos, D3DXVECTOR3 Move, D3DXCOLOR Col, D
 	pEffect = new CEffect3D(Priority);
 
 	// 情報を代入
+	pEffect->m_nIdx = CTextureManager::Instance()->Register(FilePath);
 	pEffect->m_Module.Move = Move;
 	pEffect->m_Module.nLife = Life;
 	pEffect->SetPosition(Pos);
 	pEffect->SetCol(Col);
 	pEffect->SetSize(Size);
 	pEffect->m_Module.fGravity = Gravity;
-	pEffect->m_Module.FilePath = FilePath;
 
 	// 初期化処理
 	pEffect->Init();
