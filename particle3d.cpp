@@ -85,7 +85,7 @@ void CParticle3D::Update(void)
 				if (m_ParticleInfo.Bece.nPriority < 0 || m_ParticleInfo.Bece.nPriority > CObject::Config::Priority) m_ParticleInfo.Bece.nPriority = 3;
 
 				// ê∂ê¨
-				CEffect3D::Create(m_ParticleInfo.Bece.Pos, Move, m_ParticleInfo.Bece.Col, D3DXVECTOR2(fRadius, fRadius), Gravity, Life, m_ParticleInfo.Bece.FilePath,m_ParticleInfo.Bece.nPriority);
+				CEffect3D::Create(m_ParticleInfo.Bece.Pos, Move, m_ParticleInfo.Bece.Col, D3DXVECTOR2(fRadius, fRadius), Gravity, Life, m_ParticleInfo.Bece.FilePath);
 			}
 		}
 		else

@@ -133,13 +133,13 @@ void CEffect3D::Draw(void)
 //*********************************************
 // 生成
 //*********************************************
-CEffect3D* CEffect3D::Create(D3DXVECTOR3 Pos, D3DXVECTOR3 Move, D3DXCOLOR Col, D3DXVECTOR2 Size, float Gravity, int Life, const char* FilePath,const int Priority)
+CEffect3D* CEffect3D::Create(D3DXVECTOR3 Pos, D3DXVECTOR3 Move, D3DXCOLOR Col, D3DXVECTOR2 Size, float Gravity, int Life, const char* FilePath)
 {
 	// インスタンスを宣言
 	CEffect3D* pEffect = NULL;
 
 	// メモリ確保
-	pEffect = new CEffect3D(Priority);
+	pEffect = new CEffect3D();
 
 	// 情報を代入
 	pEffect->m_nIdx = CTextureManager::Instance()->Register(FilePath);
