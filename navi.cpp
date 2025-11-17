@@ -285,12 +285,6 @@ void CNavi::Update(void)
 		// サウンドの取得
 		CSound* pSound = CManager::GetSound();
 
-		// 位置を更新
-		if (m_pMarker != nullptr)
-		{
-			m_pMarker->SetPos(m_pos + D3DXVECTOR3(0.0f, MARKER_HEIGHT, 0.0f));
-		}
-
 		if (CManager::GetInputMouse()->OnDown(1) || CManager::GetInputJoypad()->GetTrigger(CInputJoypad::JOYKEY_R3))
 		{// 右クリックとコントローラーのR3で切替モード変更
 			ToggleArrowMode();
@@ -500,6 +494,7 @@ void CNavi::CalculateIntersection(void)
 	D3DXVECTOR3 closestHitPos = MARKER_OFFSET; // 無効なヒット位置で初期化
 	float closestDistSq = -1.0f;               // 最も近い距離の「2乗」
 	D3DXMATRIX mtxRot{};                       // 回転行列
+	D3DXMatrixIdentity(&mtxRot);               //
 
 	// 登録されたオブジェクトをループ
 	for (const RayCastTarget& target : m_aRayCastTarget)
@@ -535,10 +530,11 @@ void CNavi::CalculateIntersection(void)
 	}
 
 	// 最終的に最も近かった座標を登録
-	m_pos = closestHitPos;            // 位置
+	m_pos = closestHitPos;
 	if (m_pMarker != nullptr)
 	{
-		m_pMarker->SetRotMtx(mtxRot); // 角度
+		m_pMarker->SetPos(m_pos + D3DXVECTOR3(0.0f, MARKER_HEIGHT, 0.0f)); // 座標
+		m_pMarker->SetRotMtx(mtxRot);                                      // 回転
 	}
 }
 
