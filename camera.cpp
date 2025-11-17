@@ -398,11 +398,11 @@ void CCamera::UpdateJoyPadMoveParallel(void)
 	// ‘OŒã‚É“®‚©‚·
 	if (Front == true)
 	{
-		m_posRDest.z -= Config::MoveSpeedParallel;
+		m_posRDest.z += Config::MoveSpeedParallel;
 	}
 	if (Back == true)
 	{
-		m_posRDest.z += Config::MoveSpeedParallel;
+		m_posRDest.z -= Config::MoveSpeedParallel;
 	}
 
 	// Clamp‚Å”ÍˆÍ“à‚ÉŽû‚ß‚é
