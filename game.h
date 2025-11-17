@@ -68,14 +68,20 @@ public:
 	static bool GetGoal(void) { return m_bGoal; };
 private:
 	// ナビゲーションオブジェクトUIのテクスチャリスト
-	static constexpr std::array<const char*, 6u> NAVI_UI_TEXTURES =
+	static constexpr std::array<const char*, 4u> NAVI_UI_TEXTURES =
+	{
+		nullptr,
+		nullptr,
+		"data/TEXTURE/UI/ClimbMark.png",
+		"data/TEXTURE/UI/JumpMark.png"
+	};
+	// ナビゲーションオブジェクトUI(やじるし)のテクスチャリスト
+	static constexpr std::array<const char*, 4u> NAVI_UI_ARROW_TEXTURES =
 	{
 		"data/TEXTURE/UI/ArrowMark002.png",
 		"data/TEXTURE/UI/ArrowMark001.png",
 		"data/TEXTURE/UI/ArrowMark003.png",
-		"data/TEXTURE/UI/ArrowMark000.png",
-		"data/TEXTURE/UI/ClimbMark.png",
-		"data/TEXTURE/UI/JumpMark.png"
+		"data/TEXTURE/UI/ArrowMark000.png"
 	};
 
 	// 静的メンバ変数

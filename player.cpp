@@ -181,7 +181,6 @@ void CPlayer::CheckNavigation()
 					PreparationJump(pos);
 					break;
 				}
-
 			}
 
 			if (naviType != CNavi::TYPE::None && naviType != CNavi::TYPE::Max)
