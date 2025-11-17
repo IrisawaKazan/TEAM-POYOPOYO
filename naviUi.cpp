@@ -21,7 +21,7 @@
 //--------------------------------
 // 生成
 //--------------------------------
-CNaviUI* CNaviUI::Create(const char* frameTexturePath, std::vector<const char*> objectTexturePaths, D3DXVECTOR3 pos, D3DXVECTOR2 size)
+CNaviUI* CNaviUI::Create(const char* frameTexturePath, std::vector<const char*> objectTexturePaths, std::vector<const char*> arrowTexturePaths, D3DXVECTOR3 pos, D3DXVECTOR2 size)
 {
 	// インスタンスの生成
 	CNaviUI* pNaviUI = new CNaviUI;
@@ -32,6 +32,7 @@ CNaviUI* CNaviUI::Create(const char* frameTexturePath, std::vector<const char*> 
 
 	pNaviUI->SetFrameTexturePath(frameTexturePath);
 	pNaviUI->SetObjectTexturePaths(objectTexturePaths);
+	pNaviUI->SetArrowTexturePaths(arrowTexturePaths);
 	pNaviUI->SetPos(pos);
 	pNaviUI->SetSize(size);
 
@@ -103,14 +104,30 @@ void CNaviUI::Draw(void)
 void CNaviUI::SetObjectUI(void)
 {
 	CTextureManager* textureManager = CTextureManager::Instance();
+	CNavi* pNavi = CNavi::GetInstance();
+
+	// モード
+	bool isArrowMode = pNavi->GetArrowMode();
+
+	// モードで使用するTextureを変える
+	std::vector<const char*>& texturePaths = isArrowMode ? m_arrowTexturePaths : m_objectTexturePaths;
 
 	// 今のオブジェクト
-	unsigned int listID = static_cast<int>(CNavi::GetInstance()->GetList());
-	if (!m_objectTexturePaths.empty() && m_objectTexturePaths.size() > listID)
+	unsigned int listID = isArrowMode ? static_cast<int>(pNavi->GetArrowType()) : static_cast<int>(pNavi->GetType());
+
+	// 範囲
+	int listMax = isArrowMode ? int(CNavi::ARROW::Max) : int(CNavi::TYPE::Max);
+
+	if (!isArrowMode)
+	{// やじるしのテクスチャに今選ばれているやじるしのテクスチャで上書きする
+		texturePaths[1] = m_arrowTexturePaths[static_cast<int>(pNavi->GetArrowType())];
+	}
+
+	if (!texturePaths.empty() && texturePaths.size() > listID)
 	{// テクスチャがあればセット
 		if (m_pObjects[0] != nullptr)
 		{
-			m_pObjects[0]->SetTexIndx(textureManager->Register(m_objectTexturePaths[listID]));
+			m_pObjects[0]->SetTexIndx(textureManager->Register(texturePaths[listID]));
 		}
 	}
 
@@ -118,14 +135,14 @@ void CNaviUI::SetObjectUI(void)
 	unsigned int lastListID{ listID };
 	while (true)
 	{// 無効化オブジェクトをスキップ
-		lastListID = Wrap(int(lastListID - 1), int(0), int(CNavi::LIST::Max) - 1);
-		if (CNavi::GetInstance()->GetEnable(CNavi::LIST(lastListID)))break;
+		lastListID = Wrap(int(lastListID - 1), int(0), listMax - 1);
+		if ((isArrowMode && pNavi->GetEnable(CNavi::ARROW(lastListID))) || (!isArrowMode && pNavi->GetEnable(CNavi::TYPE(lastListID))))break;
 	}
-	if (!m_objectTexturePaths.empty() && m_objectTexturePaths.size() > lastListID)
+	if (!texturePaths.empty() && texturePaths.size() > lastListID)
 	{// テクスチャがあればセット
 		if (m_pObjects[1] != nullptr)
 		{
-			m_pObjects[1]->SetTexIndx(textureManager->Register(m_objectTexturePaths[lastListID]));
+			m_pObjects[1]->SetTexIndx(textureManager->Register(texturePaths[lastListID]));
 		}
 	}
 
@@ -133,14 +150,14 @@ void CNaviUI::SetObjectUI(void)
 	unsigned int nextListID{ listID };
 	while (true)
 	{// 無効化オブジェクトをスキップ
-		nextListID = Wrap(int(nextListID + 1), int(0), int(CNavi::LIST::Max) - 1);
-		if (CNavi::GetInstance()->GetEnable(CNavi::LIST(nextListID)))break;
+		nextListID = Wrap(int(nextListID + 1), int(0), listMax - 1);
+		if ((isArrowMode && pNavi->GetEnable(CNavi::ARROW(nextListID))) || (!isArrowMode && pNavi->GetEnable(CNavi::TYPE(nextListID))))break;
 	}
-	if (!m_objectTexturePaths.empty() && m_objectTexturePaths.size() > nextListID)
+	if (!texturePaths.empty() && texturePaths.size() > nextListID)
 	{// テクスチャがあればセット
 		if (m_pObjects[2] != nullptr)
 		{
-			m_pObjects[2]->SetTexIndx(textureManager->Register(m_objectTexturePaths[nextListID]));
+			m_pObjects[2]->SetTexIndx(textureManager->Register(texturePaths[nextListID]));
 		}
 	}
 }
