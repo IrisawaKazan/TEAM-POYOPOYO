@@ -25,6 +25,8 @@
 #include "mapmanager.h"
 #include "item.h"
 #include "tutorialBoard.h"
+#include "particle3d.h"
+#include "effect3d.h"
 
 // 規定値を設定
 // プレイヤー
@@ -97,6 +99,29 @@ HRESULT CGame::Init(void)
 	
 	//CTimer::Instance()->SetPosition(D3DXVECTOR3(640.0f, 360.0f, 0.0f));
 	CTimer::Create(D3DXVECTOR3(640.0f,360.0f,0.0f));
+
+	//// 火の情報を設定
+	//CParticle3D::DefoultEffectInfo FireInfo;
+	//FireInfo.Bece.Col = FIRE;
+	//FireInfo.Bece.fMaxSpeed = 1.0f;
+	//FireInfo.Bece.fMinSpeed = 1.0f;
+	//FireInfo.Bece.MaxDir = { 0.1f,0.5f,0.1f };
+	//FireInfo.Bece.MinDir = { -0.1f,0.5f,-0.1f };
+	//FireInfo.Bece.nLife = 1;
+	//FireInfo.Bece.nMaxLife = 30;
+	//FireInfo.Bece.nMinLife = 30;
+	//FireInfo.Bece.nNumEffect = 5;
+	//FireInfo.Bece.Pos = VEC3_NULL;
+	//FireInfo.MaxRadius = 15.0f;
+	//FireInfo.MinRadius = 15.0f;
+	//FireInfo.Bece.bLoop = true;
+	//FireInfo.Bece.nCoolDown = 2;
+	//FireInfo.Bece.Gravity = 0.0f;
+	//memcpy(FireInfo.Bece.FilePath, CEffect3D::Config::Smoke, sizeof(FireInfo.Bece.FilePath));
+	//FireInfo.Bece.nPriority = 1;
+
+	//// 生成
+	//CParticle3D::Create(FireInfo);
 
 	//// アイテムの生成処理 Misaki
 	//CItem::Create(CItem::ITEM_LEFT, D3DXVECTOR3(0.0f, 50.0f, 100.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(1.2f, 1.2f, 1.2f), "data\\Model\\item\\item000.x");

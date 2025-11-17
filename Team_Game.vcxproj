@@ -168,6 +168,7 @@
     <ClCompile Include="character.cpp" />
     <ClCompile Include="climb.cpp" />
     <ClCompile Include="debugproc.cpp" />
+    <ClCompile Include="effect3d.cpp" />
     <ClCompile Include="fade.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="gimmick.cpp" />
@@ -194,6 +195,7 @@
     <ClCompile Include="objectbillboard.cpp" />
     <ClCompile Include="objectpool.cpp" />
     <ClCompile Include="objectX.cpp" />
+    <ClCompile Include="particle3d.cpp" />
     <ClCompile Include="pause.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
@@ -235,6 +237,7 @@
     <ClInclude Include="character.h" />
     <ClInclude Include="climb.h" />
     <ClInclude Include="debugproc.h" />
+    <ClInclude Include="effect3d.h" />
     <ClInclude Include="fade.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="gimmick.h" />
@@ -263,6 +266,7 @@
     <ClInclude Include="objectbillboard.h" />
     <ClInclude Include="objectpool.h" />
     <ClInclude Include="objectX.h" />
+    <ClInclude Include="particle3d.h" />
     <ClInclude Include="pause.h" />
     <ClInclude Include="pausemanager.h" />
     <ClInclude Include="pch.h" />

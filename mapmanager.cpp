@@ -314,6 +314,8 @@ void CMapManager::Load(std::string Path)
 	// クリア
 	m_vMapObject.clear();
 	m_vMapSwitch.clear();
+	m_vMapItem.clear();
+	m_vMapSlopes.clear();
 
 	// jsonデータを宣言
 	ordered_json jsonData;
@@ -398,32 +400,33 @@ void CMapManager::Load(std::string Path)
 	}
 
 	// アイテムの生成処理 Misaki
-	m_Item = CItem::Create(CItem::ITEM_JUMP,	// 種類
+	CItem* Instanfce;
+	Instanfce = CItem::Create(CItem::ITEM_JUMP,	// 種類
 		D3DXVECTOR3(1250.0f, 50.0f, -800.0f), 	// 位置
 		D3DXVECTOR3(0.0f, 0.0f, 0.0f), 			// 向き
 		D3DXVECTOR3(1.2f, 1.2f, 1.2f),			// 拡大率
 		"data\\MODEL\\item\\item002.x");		// テキストファイル
 
 		// 連結
-	m_vMapItem.push_back(m_Item);
+	m_vMapItem.push_back(Instanfce);
 
 	// アイテムの生成処理 Misaki
-	m_Item = CItem::Create(CItem::ITEM_CLIMB,	// 種類
+	Instanfce = CItem::Create(CItem::ITEM_CLIMB,	// 種類
 		D3DXVECTOR3(-350.0f, 50.0f, -300.0f), 	// 位置
 		D3DXVECTOR3(0.0f, 0.0f, 0.0f), 			// 向き
 		D3DXVECTOR3(1.2f, 1.2f, 1.2f),			// 拡大率
 		"data\\MODEL\\item\\item003.x");		// テキストファイル
 
 		// 連結
-	m_vMapItem.push_back(m_Item);
+	m_vMapItem.push_back(Instanfce);
 
 	// アイテムの生成処理 Misaki
-	m_Item = CItem::Create(CItem::ITEM_LEFT,	// 種類
+	Instanfce = CItem::Create(CItem::ITEM_LEFT,	// 種類
 		D3DXVECTOR3(300.0f, 50.0f, 300.0f), 	// 位置
 		D3DXVECTOR3(0.0f, 0.0f, 0.0f), 			// 向き
 		D3DXVECTOR3(1.2f, 1.2f, 1.2f),			// 拡大率
 		"data\\MODEL\\item\\item001.x");		// テキストファイル
 
 	// 連結
-	m_vMapItem.push_back(m_Item);
+	m_vMapItem.push_back(Instanfce);
 }

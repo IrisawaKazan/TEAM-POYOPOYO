@@ -16,6 +16,7 @@
 
 //	マクロ定義
 #define MAX_TIME (2)
+#define MAX_RANKING (5)
 #define MAX_NUM (6)
 #define MAX_SECOND (60)
 #define MAX_MINUTES (3600)
@@ -49,6 +50,7 @@ private:
 	CNumber* m_pNumber1[MAX_TIME][MAX_NUM];		// タイムの変数(秒)
 	CNumber* m_pNumber2[MAX_TIME][MAX_NUM];		// タイムの変数(分)
 	CNumber* m_pNumber3[MAX_NUM];				// タイムの変数(：)
+	CNumber* m_pNumber4[MAX_RANKING];
 	int m_nTime[MAX_NUM];						// 総時間
 	int m_nMin[MAX_NUM];						// 分
 	int m_nSec[MAX_NUM];						// 秒

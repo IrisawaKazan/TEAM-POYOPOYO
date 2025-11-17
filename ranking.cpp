@@ -25,6 +25,11 @@ CRanking::CRanking()
 		m_nSec[nCnt] = NULL;
 	}
 
+	for (int nCnt = 0; nCnt < MAX_RANKING; nCnt++)
+	{
+		m_pNumber4[nCnt] = nullptr;
+	}
+
 	m_nMinutes = NULL;
 	m_nSeconds = NULL;
 	m_nData = NULL;
@@ -71,6 +76,7 @@ void CRanking::Uninit(void)
 {
 	for (int nNum = 0; nNum < MAX_NUM; nNum++)
 	{
+		// 分秒
 		for (int nCnt = 0; nCnt < MAX_TIMER; nCnt++)
 		{
 			if (m_pNumber1[nCnt][nNum] != nullptr)
@@ -90,12 +96,25 @@ void CRanking::Uninit(void)
 			}
 		}
 
+		// コロン
 		if (m_pNumber3[nNum] != nullptr)
 		{
 			m_pNumber3[nNum]->Uninit();
 
 			delete m_pNumber3[nNum];
 			m_pNumber3[nNum] = nullptr;
+		}
+	}
+
+	// ランキング
+	for (int nCnt = 0; nCnt < MAX_RANKING; nCnt++)
+	{
+		if (m_pNumber4[nCnt] != nullptr)
+		{
+			m_pNumber4[nCnt]->Uninit();
+
+			delete m_pNumber4[nCnt];
+			m_pNumber4[nCnt] = nullptr;
 		}
 	}
 }
@@ -153,6 +172,11 @@ void CRanking::Draw(void)
 		}
 
 		m_pNumber3[nNum]->Draw();
+	}
+
+	for (int nCnt = 0; nCnt < MAX_RANKING; nCnt++)
+	{
+		m_pNumber4[nCnt]->Draw();
 	}
 }
 
@@ -298,6 +322,20 @@ void CRanking::Change(void)
 
 		m_pNumber2[nCnt][MAX_NUM - 1]->SetNumber(aPosTexU[nCnt], 4);
 	}
+
+	for (int nCnt = 0; nCnt < MAX_RANKING; nCnt++)
+	{
+		int aPosTexU[MAX_RANKING] = {};
+		int nRank = 10;
+		int nRank1 = 1;
+
+		// 0番目以外(秒)
+		aPosTexU[nCnt] = (nCnt + 1 % nRank) / nRank1;
+		nRank = nRank / 10;
+		nRank1 = nRank1 / 10;
+
+		m_pNumber4[nCnt]->SetNumber(aPosTexU[nCnt], 4);
+	}
 	
 }
 
@@ -355,6 +393,7 @@ void CRanking::WriteFile(void)
 //****************************************************************
 void CRanking::InitNum(void)
 {
+	// 全体のランキング
 	for (int nNum = 0; nNum < MAX_NUM - 1; nNum++)
 	{
 		for (int nCnt = 0; nCnt < MAX_TIMER; nCnt++)
@@ -382,6 +421,7 @@ void CRanking::InitNum(void)
 		}
 	}
 
+	// 今回のスコア
 	for (int nCnt = 0; nCnt < MAX_TIMER; nCnt++)
 	{
 		m_pNumber1[nCnt][MAX_NUM - 1] = new CNumber;
@@ -404,5 +444,16 @@ void CRanking::InitNum(void)
 	if (m_pNumber3[MAX_NUM - 1] != nullptr)
 	{
 		m_pNumber3[MAX_NUM - 1]->Init(615.0f, 665.0f, 100.0f, 150.0f, 0, 0, 1.0f, 0.0f, 75.0f, 1, 0, "data\\TEXTURE\\coron.png", 1.0f);
+	}
+
+	// ランキング
+	for (int nCnt = 0; nCnt < MAX_RANKING; nCnt++)
+	{
+		m_pNumber4[nCnt] = new CNumber;
+
+		if (m_pNumber4[nCnt] != nullptr)
+		{
+			m_pNumber4[nCnt]->Init(450.0f, 450.0f, 300.0f, 350.0f, 0, nCnt, 50.0f, 50.0f, 75.0f, MAX_TIMER, 4, "data\\TEXTURE\\RankNum.png", 0.1f);
+		}
 	}
 }
