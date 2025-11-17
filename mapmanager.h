@@ -64,7 +64,6 @@ private:
 	std::vector<CBlock*> m_vMapSlopes;					// 滑り台
 	std::vector<CSwitch*> m_vMapSwitch;					// マップに置くスイッチ
 	// アイテムの当たり判定 Misaki
-	CItem* m_Item;
 	std::vector<CItem*> m_vMapItem;					// マップに置くアイテム
 
 	static bool m_bGoal;							// ゴールの判定(タイム用)
