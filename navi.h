@@ -67,9 +67,9 @@ public:
 	void CalculateIntersection(void);
 	void HitCheckObject();
 
-	void SetArrowMode(bool isArrowMode) { m_isArrowMode = isArrowMode; }
+	void SetArrowMode(bool isArrowMode) { if (GetEnable(TYPE::Arrow)) { m_isArrowMode = isArrowMode; if (isArrowMode)m_type = TYPE::Arrow; } }
 	bool GetArrowMode() { return m_isArrowMode; }
-	void ToggleArrowMode() { m_isArrowMode = !GetArrowMode(); }
+	void ToggleArrowMode() { SetArrowMode(!GetArrowMode()); }
 
 	const std::vector<CNaviObject*>& GetObjects(void) const { return m_apObject; }
 	TYPE GetType(void) const { return m_type; }
