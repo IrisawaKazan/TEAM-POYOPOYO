@@ -93,11 +93,20 @@ void CTutorialBoard::Update(void)
 		}
 
 		if (CManager::GetInputKeyboard()->GetTrigger(DIK_RETURN) == true || CManager::GetInputJoypad()->GetTrigger(CInputJoypad::JOYKEY_B) == true)
-		{
-			m_Isprogress = false;
+		{// 決定ボタンを押した時
 
-			m_pBackground->SetCol({ 0.0f, 0.0f, 0.0f, 0.0f });
-			m_pBoard->SetCol({ 0.0f, 0.0f, 0.0f, 0.0f });
+			if (m_fCountFrame < m_fMaxFrame)
+			{// 上がりきっていなかった場合
+				// フレームを最大にする
+				m_fCountFrame = m_fMaxFrame - 1.0f;
+			}
+			else
+			{// 上がりきっていた場合
+				m_Isprogress = false;
+
+				m_pBackground->SetCol({ 0.0f, 0.0f, 0.0f, 0.0f });
+				m_pBoard->SetCol({ 0.0f, 0.0f, 0.0f, 0.0f });
+			}
 		}
 	}
 
