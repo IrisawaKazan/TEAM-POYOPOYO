@@ -34,23 +34,25 @@ public:
 
 	// セッター
 	void SetNumber(int nNumber, int nAdd);
-	void SetPos(D3DXVECTOR3 pos) { pos = m_pos; };
+	void SetPos(void);
 
 	// ゲッター
-	D3DXVECTOR3 GetPos(void) { return m_pos; };
+	static bool GetEasing(void) { return m_bEasing; };
 
 	void ColAnim(void);
-	void MovePos(float move);
-	void ChangePos(float fX1, float fX2, float fY1, float fY2, float move);
 
 private:
 	LPDIRECT3DVERTEXBUFFER9 m_pVtxBuff;		// 頂点バッファ
-	D3DXVECTOR3 m_pos;						// 位置
-	D3DXVECTOR3 m_move;						// 移動
-	TYPE m_Type;								// タイプ
+	D3DXVECTOR3 m_pos[2];						// 位置
+	D3DXVECTOR3 m_Dest;						// 目的値
+	TYPE m_Type;							// タイプ
 	bool m_bChange;							// カラー判定用
 	int m_nColTime;							// カラー用の計算
 	int m_nIdx;								// インデックス番号
-
+	float m_fX[2];
+	float m_fY[2];
+	int m_MaxFrame;							// フレームカウンター
+	int m_nAnimCounter;						// アニメーションカウンター
+	static bool m_bEasing;					//　イージングが終わっているかどうか
 };
 #endif

@@ -50,15 +50,15 @@ private:
 	CNumber* m_pNumber1[MAX_TIME][MAX_NUM];		// タイムの変数(秒)
 	CNumber* m_pNumber2[MAX_TIME][MAX_NUM];		// タイムの変数(分)
 	CNumber* m_pNumber3[MAX_NUM];				// タイムの変数(：)
-	CNumber* m_pNumber4[MAX_RANKING];
+	CNumber* m_pNumber4[MAX_RANKING];			// ランキング用の変数
+	D3DXVECTOR3 m_pos;							// 位置
+	D3DXVECTOR3 m_Dest;							// 目標の位置
 	int m_nTime[MAX_NUM];						// 総時間
 	int m_nMin[MAX_NUM];						// 分
 	int m_nSec[MAX_NUM];						// 秒
 	int m_nData;								// カラー用の数値の保存用変数
 	int m_nMinutes;								// 現在の分の計算用変数
 	int m_nSeconds;								// 現在の秒の計算用変数
-	int m_Frame;								// フレームカウンター
-	int m_nAnimCounter;							// アニメーションカウンター
 	bool m_bAct;								// 発動したかどうか
 };
 

@@ -15,6 +15,7 @@ class CNumber;
 
 // マクロ定義
 #define MAX_TIMER (2)
+#define MAX_TIMEOVER (10800)
 #define MAX_HOUR (216000)
 
 // タイマークラス
@@ -58,6 +59,7 @@ private:
 	int m_nMin;								// 分
 	int m_nHour;							// 時
 	static int m_nTimer;					// タイマーの取得
+	bool m_bFinish;							// 終了処理
 };
 
 #endif
