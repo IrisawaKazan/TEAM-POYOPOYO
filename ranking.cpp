@@ -6,6 +6,7 @@
 //****************************************************************
 #include "ranking.h"
 #include "timer.h"
+#include "math_T.h"
 
 using namespace std;
 
@@ -33,6 +34,8 @@ CRanking::CRanking()
 	m_nMinutes = NULL;
 	m_nSeconds = NULL;
 	m_nData = NULL;
+	m_nAnimCounter = NULL;
+	m_Frame = NULL;
 	m_bAct = false;
 }
 
@@ -50,6 +53,8 @@ CRanking::~CRanking()
 HRESULT CRanking::Init(void)
 {
 	m_bAct = false;
+
+	m_Frame = 120;
 
 	// 読み込み
 	LoadFile();
@@ -126,7 +131,7 @@ void CRanking::Update(void)
 {
 	// 今の総数
 	int nNowTime = CTimer::GetTimer();
-	
+
 	// 現在の分秒の計算
 	m_nMinutes = nNowTime / MAX_MINUTES;
 	m_nSeconds = (nNowTime % MAX_MINUTES) / MAX_SECOND;
@@ -153,8 +158,28 @@ void CRanking::Update(void)
 		m_pNumber2[nCnt][m_nData]->ColAnim();
 	}
 
+	// カラーの設定
 	m_pNumber3[MAX_NUM - 1]->ColAnim();
 	m_pNumber3[m_nData]->ColAnim();
+
+
+	for (int nNum = 0; nNum < MAX_NUM; nNum++)
+	{
+		// アニメーションカウンターを進める
+		m_nAnimCounter++;
+
+		float fFrame = EaseOutBounce((float)(m_nAnimCounter) / (float)(m_Frame));
+
+		for (int nCnt = 0; nCnt < MAX_TIMER; nCnt++)
+		{
+
+			m_pNumber1[nCnt][nNum]->MovePos(fFrame);
+			m_pNumber2[nCnt][nNum]->MovePos(fFrame);
+		}
+
+		m_pNumber3[nNum]->MovePos(fFrame);
+	}
+
 }
 
 //****************************************************************
@@ -402,14 +427,14 @@ void CRanking::InitNum(void)
 
 			if (m_pNumber1[nCnt][nNum] != nullptr)
 			{
-				m_pNumber1[nCnt][nNum]->Init(650.0f, 650.0f, 300.0f, 350.0f, nCnt, nNum, 50.0f, 50.0f, 75.0f, MAX_TIMER, 4, "data\\TEXTURE\\number005.png", 0.1f);
+				m_pNumber1[nCnt][nNum]->Init(650.0f, 650.0f, 300.0f, 350.0f, nCnt, nNum, 50.0f, 50.0f, 75.0f, MAX_TIMER, 4, "data\\TEXTURE\\number005.png", 0.1f,CNumber::TYPE_MIN);
 			}
 
 			m_pNumber2[nCnt][nNum] = new CNumber;
 
 			if (m_pNumber2[nCnt][nNum] != nullptr)
 			{
-				m_pNumber2[nCnt][nNum]->Init(520.0f, 520.0f, 300.0f, 350.0f, nCnt, nNum, 50.0f, 50.0f, 75.0f, MAX_TIMER, 4, "data\\TEXTURE\\number005.png", 0.1f);
+				m_pNumber2[nCnt][nNum]->Init(520.0f, 520.0f, 300.0f, 350.0f, nCnt, nNum, 50.0f, 50.0f, 75.0f, MAX_TIMER, 4, "data\\TEXTURE\\number005.png", 0.1f,CNumber::TYPE_SEC);
 			}
 		}
 
@@ -417,7 +442,7 @@ void CRanking::InitNum(void)
 
 		if (m_pNumber3[nNum] != nullptr)
 		{
-			m_pNumber3[nNum]->Init(615.0f, 665.0f, 300.0f, 350.0f, 0, nNum, 1.0f, 0.0f, 75.0f, 1, 0, "data\\TEXTURE\\coron.png", 1.0f);
+			m_pNumber3[nNum]->Init(615.0f, 665.0f, 300.0f, 350.0f, 0, nNum, 1.0f, 0.0f, 75.0f, 1, 0, "data\\TEXTURE\\coron.png", 1.0f,CNumber::TYPE_CORON);
 		}
 	}
 
@@ -428,14 +453,14 @@ void CRanking::InitNum(void)
 
 		if (m_pNumber1[nCnt][MAX_NUM - 1] != nullptr)
 		{
-			m_pNumber1[nCnt][MAX_NUM - 1]->Init(650.0f, 650.0f, 100.0f, 150.0f, nCnt, 0, 50.0f, 50.0f, 75.0f, MAX_TIMER, 4, "data\\TEXTURE\\number005.png", 0.1f);
+			m_pNumber1[nCnt][MAX_NUM - 1]->Init(650.0f, 650.0f, 100.0f, 150.0f, nCnt, 0, 50.0f, 50.0f, 75.0f, MAX_TIMER, 4, "data\\TEXTURE\\number005.png", 0.1f,CNumber::TYPE_MIN1);
 		}
 
 		m_pNumber2[nCnt][MAX_NUM - 1] = new CNumber;
 
 		if (m_pNumber2[nCnt][MAX_NUM - 1] != nullptr)
 		{
-			m_pNumber2[nCnt][MAX_NUM - 1]->Init(520.0f, 520.0f, 100.0f, 150.0f, nCnt, 0, 50.0f, 50.0f, 75.0f, MAX_TIMER, 4, "data\\TEXTURE\\number005.png", 0.1f);
+			m_pNumber2[nCnt][MAX_NUM - 1]->Init(520.0f, 520.0f, 100.0f, 150.0f, nCnt, 0, 50.0f, 50.0f, 75.0f, MAX_TIMER, 4, "data\\TEXTURE\\number005.png", 0.1f, CNumber::TYPE_SEC1);
 		}
 	}
 
@@ -443,7 +468,7 @@ void CRanking::InitNum(void)
 
 	if (m_pNumber3[MAX_NUM - 1] != nullptr)
 	{
-		m_pNumber3[MAX_NUM - 1]->Init(615.0f, 665.0f, 100.0f, 150.0f, 0, 0, 1.0f, 0.0f, 75.0f, 1, 0, "data\\TEXTURE\\coron.png", 1.0f);
+		m_pNumber3[MAX_NUM - 1]->Init(615.0f, 665.0f, 100.0f, 150.0f, 0, 0, 1.0f, 0.0f, 75.0f, 1, 0, "data\\TEXTURE\\coron.png", 1.0f, CNumber::TYPE_CORON1);
 	}
 
 	// ランキング
@@ -453,7 +478,7 @@ void CRanking::InitNum(void)
 
 		if (m_pNumber4[nCnt] != nullptr)
 		{
-			m_pNumber4[nCnt]->Init(450.0f, 450.0f, 300.0f, 350.0f, 0, nCnt, 50.0f, 50.0f, 75.0f, MAX_TIMER, 4, "data\\TEXTURE\\RankNum.png", 0.1f);
+			m_pNumber4[nCnt]->Init(450.0f, 450.0f, 300.0f, 350.0f, 0, nCnt, 50.0f, 50.0f, 75.0f, MAX_TIMER, 4, "data\\TEXTURE\\RankNum.png", 0.1f, CNumber::TYPE_NONE);
 		}
 	}
 }

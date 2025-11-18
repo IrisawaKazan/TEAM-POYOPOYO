@@ -19,6 +19,7 @@ CNumber::CNumber()
 	m_nIdx = NULL;
 	m_nColTime = NULL;
 	m_bChange = false;
+	m_Type = TYPE_NONE;
 
 }
 
@@ -33,7 +34,7 @@ CNumber::~CNumber()
 //****************************************************************
 // 生成
 //****************************************************************
-CNumber* CNumber::Create(D3DXVECTOR3 pos)
+CNumber* CNumber::Create()
 {
 	return NULL;
 }
@@ -41,10 +42,11 @@ CNumber* CNumber::Create(D3DXVECTOR3 pos)
 //****************************************************************
 // 初期化
 //****************************************************************
-HRESULT CNumber::Init(float fX1, float fX2, float fY1, float fY2, int nCnt, int nCnt2, float fNum1, float fNum2, float fNum3, int nNum, int nAdd, const char* FileName, float fx)
+HRESULT CNumber::Init(float fX1, float fX2, float fY1, float fY2, int nCnt, int nCnt2, float fNum1, float fNum2, float fNum3, int nNum, int nAdd, const char* FileName, float fx,TYPE type)
 {
 	m_nIdx = CTextureManager::Instance()->Register(FileName);
 	m_nColTime = 0;
+	m_Type = type;
 
 	//デバイス取得
 	LPDIRECT3DDEVICE9 pD3DDevice = CManager::GetRenderer()->GetDevice();
@@ -202,6 +204,65 @@ void CNumber::ColAnim(void)
 		pVtx[2].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
 		pVtx[3].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
 	}
+	// バッファをアンロック
+	m_pVtxBuff->Unlock();
+}
+
+//****************************************************************
+// ランキング用move関数
+//****************************************************************
+void CNumber::MovePos(float move)
+{
+	switch (m_Type)
+	{
+	// なんでもない
+	case TYPE_NONE:	
+		break;
+	// 分
+	case TYPE_MIN:
+		ChangePos(650.0f, 650.0f, 300.0f, 350.0f, move);
+		break;
+	// 秒
+	case TYPE_SEC:
+		ChangePos(520.0f, 520.0f, 300.0f, 350.0f, move);
+		break;
+	// コロン
+	case TYPE_CORON:
+		ChangePos(615.0f, 665.0f, 300.0f, 350.0f, move);
+		break;
+	// 今回の分
+	case TYPE_MIN1:
+		ChangePos(650.0f, 650.0f, 100.0f, 150.0f, move);
+		break;
+	// 今回の秒
+	case TYPE_SEC1:
+		ChangePos(520.0f, 520.0f, 100.0f, 150.0f, move);
+		break;
+	// 今回のコロン
+	case TYPE_CORON1:
+		ChangePos(615.0f, 665.0f, 100.0f, 150.0f, move);
+		break;
+	default:
+		break;
+	}
+}
+
+//****************************************************************
+//	Pos移動用関数
+//****************************************************************
+void CNumber::ChangePos(float fX1, float fX2, float fY1, float fY2, float move)
+{
+	VERTEX_2D* pVtx = nullptr;
+
+	// バッファのロック
+	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
+
+	// 頂点カラー
+	pVtx[0].pos = D3DXVECTOR3(fX1 - move, fY1, 0.0f);
+	pVtx[1].pos = D3DXVECTOR3(fX2 - move, fY1, 0.0f);
+	pVtx[2].pos = D3DXVECTOR3(fX1 - move, fY2, 0.0f);
+	pVtx[3].pos = D3DXVECTOR3(fX2 - move, fY2, 0.0f);
+
 	// バッファをアンロック
 	m_pVtxBuff->Unlock();
 }
