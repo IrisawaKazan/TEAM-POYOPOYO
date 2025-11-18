@@ -33,7 +33,7 @@ CJump* CJump::Create(D3DXVECTOR3 pos, D3DXMATRIX rotMtx, float angle, const char
 	pJump->SetPos(pos);
 	pJump->SetRotMtx(rotMtx);
 	pJump->SetAngle(angle);
-	pJump->SetLength(D3DXVec2Length(&size));
+	pJump->SetLength(D3DXVec2Length(&size) * RELEASE_LENGTH_MAGNIFICATION);
 	pJump->SetChengeLength(D3DXVec2Length(&size) * CHENGE_LENGTH_MAGNIFICATION);
 
 	// ‰Šú‰»

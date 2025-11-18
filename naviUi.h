@@ -15,9 +15,9 @@ class CObject2D;
 class CNaviUI : public CObject
 {
 public:
-	CNaviUI() : CObject(3), m_pFrames{}, m_pObjects{}, m_objectTexturePaths{}, m_pos{}, m_size{} {};
+	CNaviUI() : CObject(3), m_pFrames{}, m_pObjects{}, m_objectTexturePaths{}, m_arrowTexturePaths{}, m_pos{}, m_size{} {};
 	~CNaviUI() {};
-	static CNaviUI* Create(const char* frameTexturePath, std::vector<const char*> objectTexturePaths, D3DXVECTOR3 pos, D3DXVECTOR2 size);
+	static CNaviUI* Create(const char* frameTexturePath, std::vector<const char*> objectTexturePaths, std::vector<const char*> arrowTexturePaths, D3DXVECTOR3 pos, D3DXVECTOR2 size);
 
 	HRESULT Init(void) override;
 	void Uninit(void) override;
@@ -26,6 +26,7 @@ public:
 
 	void SetFrameTexturePath(const char* frameTexturePath) { m_frameTexturePath = frameTexturePath; }
 	void SetObjectTexturePaths(std::vector<const char*> objectTexturePaths) { m_objectTexturePaths = objectTexturePaths; }
+	void SetArrowTexturePaths(std::vector<const char*> arrowTexturePaths) { m_arrowTexturePaths = arrowTexturePaths; }
 	void SetPos(D3DXVECTOR3 pos) { m_pos = pos; }
 	void SetSize(D3DXVECTOR2 size) { m_size = size; }
 
@@ -36,6 +37,7 @@ private:
 	std::array<CObject2D*, 3u> m_pObjects;         // 2Dオブジェクト配列
 	const char* m_frameTexturePath;                // フレームのテクスチャ
 	std::vector<const char*> m_objectTexturePaths; // ナビゲーションオブジェクトのテクスチャ配列
+	std::vector<const char*> m_arrowTexturePaths;  // ナビゲーションオブジェクトのテクスチャ配列
 	D3DXVECTOR3 m_pos;                             // 基準位置
 	D3DXVECTOR2 m_size;                            // 基準サイズ
 

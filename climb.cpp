@@ -33,7 +33,7 @@ CClimb* CClimb::Create(D3DXVECTOR3 pos, D3DXMATRIX rotMtx, float angle, const ch
 	pClimb->SetPos(pos);
 	pClimb->SetRotMtx(rotMtx);
 	pClimb->SetAngle(angle);
-	pClimb->SetLength(D3DXVec2Length(&size));
+	pClimb->SetLength(D3DXVec2Length(&size) * RELEASE_LENGTH_MAGNIFICATION);
 	pClimb->SetChengeLength(D3DXVec2Length(&size) * CHENGE_LENGTH_MAGNIFICATION);
 
 	// ‰Šú‰»

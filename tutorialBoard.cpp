@@ -9,6 +9,7 @@
 #include "object2D.h"
 #include "input.h"
 #include "fade.h"
+#include "math_T.h"
 
 //----------------------------------------
 // コンストラクタ
@@ -31,18 +32,32 @@ CTutorialBoard::~CTutorialBoard()
 //----------------------------------------
 HRESULT CTutorialBoard::Init(void)
 {
-	m_pBackground = CObject2D::Create({ 640.0f,360.0f,0.0f }, VEC3_NULL, { 640.0f,360.0f });
+	// 位置 Misaki
+	m_Dest = { SCREEN_WIDTH * 0.5f,SCREEN_HEIGHT * 0.5f,0.0f };	// 目標位置
+	m_pos = { SCREEN_WIDTH * 0.5f,SCREEN_HEIGHT * 1.5f,0.0f };	// 初期位置
 
-	m_pBoard = CObject2D::Create({ 640.0f,360.0f,0.0f }, VEC3_NULL, { 640.0f,360.0f });
+	m_pBackground = CObject2D::Create({ SCREEN_WIDTH * 0.5f,SCREEN_HEIGHT * 0.5f,0.0f }, VEC3_NULL, { SCREEN_WIDTH * 0.5f,SCREEN_HEIGHT * 0.5f });
+
+	m_pBoard = CObject2D::Create(m_pos, VEC3_NULL, { SCREEN_WIDTH * 0.5f,SCREEN_HEIGHT * 0.5f });
 
 	m_pBoard->SetTexIndx(CTextureManager::Instance()->Register("data\\TEXTURE\\tutorial_001.png"));
 	m_pBackground->SetCol({ 0.0f, 0.0f, 0.0f, 0.4f });
 	m_pBoard->SetCol({ 1.0f, 1.0f, 1.0f, 1.0f });
 
 	m_Isprogress = true;
+
+	// 現在のフレーム数 Misaki
+	m_fCountFrame = 0.0f;
+	// 最大フレーム数 Misaki
+	m_fMaxFrame = 60.0f;
+
+
 	return S_OK;
 }
 
+//----------------------------------------
+// 終了処理
+//----------------------------------------
 void CTutorialBoard::Uninit(void)
 {
 	delete this;
@@ -53,8 +68,30 @@ void CTutorialBoard::Uninit(void)
 //----------------------------------------
 void CTutorialBoard::Update(void)
 {
+	// イージングした後の位置
+	D3DXVECTOR3 Setpos = {};
+
 	if (m_Isprogress == true)
 	{
+		// イージングの処理　Misaki
+		if (m_fCountFrame < m_fMaxFrame)
+		{
+			// カウントを進める
+			m_fCountFrame++;
+
+			// 目標位置から初期位置の差を求める
+			D3DXVECTOR3 Diff = m_Dest - m_pos;
+
+			// イージング
+			float fEasing = EaseInOutSine(m_fCountFrame / m_fMaxFrame);
+
+			// 初期位置に加算する
+			Setpos = m_pos + (Diff * fEasing);
+
+			// 位置を設定
+			m_pBoard->SetPosition(Setpos);
+		}
+
 		if (CManager::GetInputKeyboard()->GetTrigger(DIK_RETURN) == true || CManager::GetInputJoypad()->GetTrigger(CInputJoypad::JOYKEY_B) == true)
 		{
 			m_Isprogress = false;
@@ -98,4 +135,10 @@ void CTutorialBoard::SetUp(std::string boardpath)
 	m_pBoard->SetTexIndx(CTextureManager::Instance()->Register(boardpath));
 
 	m_Isprogress = true;
+
+	// 位置を設定 Misaki
+	m_pBoard->SetPosition(m_pos);
+
+	// フレーム
+	m_fCountFrame = 0;
 }
