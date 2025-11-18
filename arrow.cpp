@@ -33,7 +33,7 @@ CArrow* CArrow::Create(D3DXVECTOR3 pos, D3DXMATRIX rotMtx, float angle, const ch
 	pArrow->SetPos(pos);
 	pArrow->SetRotMtx(rotMtx);
 	pArrow->SetAngle(angle);
-	pArrow->SetLength(D3DXVec2Length(&size));
+	pArrow->SetLength(D3DXVec2Length(&size) * RELEASE_LENGTH_MAGNIFICATION);
 	pArrow->SetChengeLength(D3DXVec2Length(&size) * CHENGE_LENGTH_MAGNIFICATION);
 
 	// ‰Šú‰»

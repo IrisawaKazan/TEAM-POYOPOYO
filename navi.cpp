@@ -226,11 +226,16 @@ HRESULT CNavi::Init(void)
 	m_pos = MARKER_OFFSET;
 
 	// 選ばれているオブジェクト
-	m_list = LIST::RightArrow;
+	m_type = TYPE::Arrow;
 
-	for (LIST idx = LIST(0); idx < LIST::Max; idx = LIST(unsigned char(idx) + unsigned char(1)))
+	for (TYPE idx = TYPE(0); idx < TYPE::Max; idx = TYPE(unsigned char(idx) + unsigned char(1)))
 	{// 有効化リストの作成と初期化
 		m_enableList.try_emplace(idx, false);
+	}
+
+	for (ARROW idx = ARROW(0); idx < ARROW::Max; idx = ARROW(unsigned char(idx) + unsigned char(1)))
+	{// 有効化リストの作成と初期化 やじるし
+		m_enableArrow.try_emplace(idx, false);
 	}
 
 	// ナビマーカーを初期化
@@ -238,6 +243,8 @@ HRESULT CNavi::Init(void)
 
 	m_isController = false;
 	m_pPointer = nullptr;
+
+	m_isArrowMode = true;
 	return S_OK;
 }
 
@@ -278,10 +285,9 @@ void CNavi::Update(void)
 		// サウンドの取得
 		CSound* pSound = CManager::GetSound();
 
-		// 位置を更新
-		if (m_pMarker != nullptr)
-		{
-			m_pMarker->SetPos(m_pos + D3DXVECTOR3(0.0f, MARKER_HEIGHT, 0.0f));
+		if (CManager::GetInputMouse()->OnDown(1) || CManager::GetInputJoypad()->GetTrigger(CInputJoypad::JOYKEY_R3))
+		{// 右クリックとコントローラーのR3で切替モード変更
+			ToggleArrowMode();
 		}
 
 		if (CManager::GetInputKeyboard()->GetTrigger(DIK_Q) || CManager::GetInputMouse()->GetMouseState().lZ > 0 || CManager::GetInputJoypad()->GetTrigger(CInputJoypad::JOYKEY_L1))
@@ -290,10 +296,51 @@ void CNavi::Update(void)
 			// SE
 			pSound->Play(CSound::LABEL_CHANGE_SE);
 
-			while (true)
-			{
-				m_list = static_cast<LIST>((static_cast<unsigned char>(m_list) + static_cast<unsigned char>(LIST::Max) - 1) % static_cast<unsigned char>(LIST::Max));
-				if (GetEnable(m_list))break;
+			if (GetArrowMode())
+			{// やじるし切替
+				ARROW originalType = m_arrowType;
+				ARROW nextType = m_arrowType;
+
+				for (int cnt = 0; cnt < static_cast<int>(ARROW::Max); ++cnt)
+				{
+					// 次のタイプ
+					nextType = static_cast<ARROW>((static_cast<unsigned char>(nextType) + static_cast<unsigned char>(ARROW::Max) - 1) % static_cast<unsigned char>(ARROW::Max));
+
+					if (GetEnable(nextType))
+					{// 次のタイプが有効
+						m_arrowType = nextType;
+						break;
+					}
+
+					if (nextType == originalType)
+					{// 有効なものがない
+						break;
+					}
+				}
+			}
+			else
+			{// オブジェクト切替
+				TYPE originalType = m_type;
+				TYPE nextType = m_type;
+
+				for (int cnt = 0; cnt < static_cast<int>(TYPE::Max); ++cnt)
+				{
+					do
+					{// 次のタイプ
+						nextType = static_cast<TYPE>((static_cast<unsigned char>(nextType) + static_cast<unsigned char>(TYPE::Max) - 1) % static_cast<unsigned char>(TYPE::Max));
+					} while (nextType == TYPE::None);
+
+					if (GetEnable(nextType))
+					{// 次のタイプが有効
+						m_type = nextType;
+						break;
+					}
+
+					if (nextType == originalType)
+					{// 有効なものがない
+						break;
+					}
+				}
 			}
 		}
 		if (CManager::GetInputKeyboard()->GetTrigger(DIK_E) || CManager::GetInputMouse()->GetMouseState().lZ < 0 || CManager::GetInputJoypad()->GetTrigger(CInputJoypad::JOYKEY_R1))
@@ -302,10 +349,51 @@ void CNavi::Update(void)
 			// SE
 			pSound->Play(CSound::LABEL_CHANGE_SE);
 
-			while (true)
-			{
-				m_list = static_cast<LIST>((static_cast<unsigned char>(m_list) + 1) % static_cast<unsigned char>(LIST::Max));
-				if (GetEnable(m_list))break;
+			if (GetArrowMode())
+			{// やじるし切替
+				ARROW originalType = m_arrowType;
+				ARROW nextType = m_arrowType;
+
+				for (int cnt = 0; cnt < static_cast<int>(ARROW::Max); ++cnt)
+				{
+					// 次のタイプ
+					nextType = static_cast<ARROW>((static_cast<unsigned char>(nextType) + 1) % static_cast<unsigned char>(ARROW::Max));
+
+					if (GetEnable(nextType))
+					{// 次のタイプが有効
+						m_arrowType = nextType;
+						break;
+					}
+
+					if (nextType == originalType)
+					{// 有効なものがない
+						break;
+					}
+				}
+			}
+			else
+			{// オブジェクト切替
+				TYPE originalType = m_type;
+				TYPE nextType = m_type;
+
+				for (int cnt = 0; cnt < static_cast<int>(TYPE::Max); ++cnt)
+				{
+					do
+					{// 次のタイプ
+						nextType = static_cast<TYPE>((static_cast<unsigned char>(nextType) + 1) % static_cast<unsigned char>(TYPE::Max));
+					} while (nextType == TYPE::None);
+
+					if (GetEnable(nextType))
+					{// 次のタイプが有効
+						m_type = nextType;
+						break;
+					}
+
+					if (nextType == originalType)
+					{// 有効なものがない
+						break;
+					}
+				}
 			}
 		}
 
@@ -318,31 +406,33 @@ void CNavi::Update(void)
 			m_clickPos = m_pos; // クリックした位置を保存
 
 			// オブジェクトごとの分岐
-			switch (m_list)
+			switch (m_type)
 			{
-			case CNavi::LIST::RightArrow:
+			case CNavi::TYPE::Arrow:
 				// 矢印を作成
-				m_apObject.push_back(CArrow::Create(m_clickPos + D3DXVECTOR3(0.0f, OBJECT_HEIGHT, 0.0f), m_pMarker->GetRotMtx(), D3DXToRadian(90.0f), OBJECT_TEXTURE_PATH[unsigned int(TYPE::Arrow)], m_pMarker->GetSize()));
+				switch (m_arrowType)
+				{
+				case CNavi::ARROW::Right:
+					m_apObject.push_back(CArrow::Create(m_clickPos + D3DXVECTOR3(0.0f, OBJECT_HEIGHT, 0.0f), m_pMarker->GetRotMtx(), RIGHT, OBJECT_TEXTURE_PATH[unsigned int(TYPE::Arrow)], m_pMarker->GetSize()));
+					break;
+				case CNavi::ARROW::Front:
+					m_apObject.push_back(CArrow::Create(m_clickPos + D3DXVECTOR3(0.0f, OBJECT_HEIGHT, 0.0f), m_pMarker->GetRotMtx(), FRONT, OBJECT_TEXTURE_PATH[unsigned int(TYPE::Arrow)], m_pMarker->GetSize()));
+					break;
+				case CNavi::ARROW::Left:
+					m_apObject.push_back(CArrow::Create(m_clickPos + D3DXVECTOR3(0.0f, OBJECT_HEIGHT, 0.0f), m_pMarker->GetRotMtx(), LEFT, OBJECT_TEXTURE_PATH[unsigned int(TYPE::Arrow)], m_pMarker->GetSize()));
+					break;
+				case CNavi::ARROW::Back:
+					m_apObject.push_back(CArrow::Create(m_clickPos + D3DXVECTOR3(0.0f, OBJECT_HEIGHT, 0.0f), m_pMarker->GetRotMtx(), BACK, OBJECT_TEXTURE_PATH[unsigned int(TYPE::Arrow)], m_pMarker->GetSize()));
+					break;
+				}
 				break;
-			case CNavi::LIST::FrontArrow:
-				// 矢印を作成
-				m_apObject.push_back(CArrow::Create(m_clickPos + D3DXVECTOR3(0.0f, OBJECT_HEIGHT, 0.0f), m_pMarker->GetRotMtx(), D3DXToRadian(180.0f), OBJECT_TEXTURE_PATH[unsigned int(TYPE::Arrow)], m_pMarker->GetSize()));
-				break;
-			case CNavi::LIST::LeftArrow:
-				// 矢印を作成
-				m_apObject.push_back(CArrow::Create(m_clickPos + D3DXVECTOR3(0.0f, OBJECT_HEIGHT, 0.0f), m_pMarker->GetRotMtx(), D3DXToRadian(-90.0f), OBJECT_TEXTURE_PATH[unsigned int(TYPE::Arrow)], m_pMarker->GetSize()));
-				break;
-			case CNavi::LIST::BackArrow:
-				// 矢印を作成
-				m_apObject.push_back(CArrow::Create(m_clickPos + D3DXVECTOR3(0.0f, OBJECT_HEIGHT, 0.0f), m_pMarker->GetRotMtx(), D3DXToRadian(0.0f), OBJECT_TEXTURE_PATH[unsigned int(TYPE::Arrow)], m_pMarker->GetSize()));
-				break;
-			case CNavi::LIST::Climb:
+			case CNavi::TYPE::Climb:
 				// クライムを作成
-				m_apObject.push_back(CClimb::Create(m_clickPos + D3DXVECTOR3(0.0f, OBJECT_HEIGHT, 0.0f), m_pMarker->GetRotMtx(), D3DXToRadian(180.0f), OBJECT_TEXTURE_PATH[unsigned int(TYPE::Climb)], m_pMarker->GetSize()));
+				m_apObject.push_back(CClimb::Create(m_clickPos + D3DXVECTOR3(0.0f, OBJECT_HEIGHT, 0.0f), m_pMarker->GetRotMtx(), FRONT, OBJECT_TEXTURE_PATH[unsigned int(TYPE::Climb)], m_pMarker->GetSize()));
 				break;
-			case CNavi::LIST::Jump:
+			case CNavi::TYPE::Jump:
 				// ジャンプを作成
-				m_apObject.push_back(CJump::Create(m_clickPos + D3DXVECTOR3(0.0f, OBJECT_HEIGHT, 0.0f), m_pMarker->GetRotMtx(), D3DXToRadian(180.0f), OBJECT_TEXTURE_PATH[unsigned int(TYPE::Jump)], m_pMarker->GetSize()));
+				m_apObject.push_back(CJump::Create(m_clickPos + D3DXVECTOR3(0.0f, OBJECT_HEIGHT, 0.0f), m_pMarker->GetRotMtx(), FRONT, OBJECT_TEXTURE_PATH[unsigned int(TYPE::Jump)], m_pMarker->GetSize()));
 				break;
 			}
 			if (m_apObject.empty()) return;
@@ -353,17 +443,16 @@ void CNavi::Update(void)
 		m_aRayCastTarget.clear(); // レイキャスト対象オブジェクト配列をクリア
 		m_aLatentTarget.clear();  // レイキャストを隠すオブジェクト配列をクリア
 
-//#ifdef _DEBUG
+#ifdef _DEBUG
 		if (CManager::GetInputKeyboard()->GetTrigger(DIK_J))
 		{
-			SetEnable(LIST::Jump, !GetEnable(LIST::Jump));
+			SetEnable(TYPE::Jump, !GetEnable(TYPE::Jump));
 		}
 		if (CManager::GetInputKeyboard()->GetTrigger(DIK_C))
 		{
-			SetEnable(LIST::Climb, !GetEnable(LIST::Climb));
+			SetEnable(TYPE::Climb, !GetEnable(TYPE::Climb));
 		}
-//#endif // _DEBUG
-
+#endif // _DEBUG
 	}
 }
 
@@ -405,6 +494,7 @@ void CNavi::CalculateIntersection(void)
 	D3DXVECTOR3 closestHitPos = MARKER_OFFSET; // 無効なヒット位置で初期化
 	float closestDistSq = -1.0f;               // 最も近い距離の「2乗」
 	D3DXMATRIX mtxRot{};                       // 回転行列
+	D3DXMatrixIdentity(&mtxRot);               //
 
 	// 登録されたオブジェクトをループ
 	for (const RayCastTarget& target : m_aRayCastTarget)
@@ -440,20 +530,39 @@ void CNavi::CalculateIntersection(void)
 	}
 
 	// 最終的に最も近かった座標を登録
-	m_pos = closestHitPos;            // 位置
+	m_pos = closestHitPos;
 	if (m_pMarker != nullptr)
 	{
-		m_pMarker->SetRotMtx(mtxRot); // 角度
+		m_pMarker->SetPos(m_pos + D3DXVECTOR3(0.0f, MARKER_HEIGHT, 0.0f)); // 座標
+		m_pMarker->SetRotMtx(mtxRot);                                      // 回転
 	}
 }
 
 //-----------------------------
 // オブジェクトの有効化
 //-----------------------------
-bool CNavi::SetEnable(LIST list, bool enable)
+bool CNavi::SetEnable(TYPE type, bool enable)
 {
-	auto it = m_enableList.find(list);
+	auto it = m_enableList.find(type);
 	if (it != m_enableList.end())
+	{// キーが存在する場合
+		// 値を更新
+		it->second = enable;
+		return true;
+	}
+	else
+	{// キーが存在しない場合
+		return false;
+	}
+}
+
+//-----------------------------
+// オブジェクトの有効化
+//-----------------------------
+bool CNavi::SetEnable(ARROW type, bool enable)
+{
+	auto it = m_enableArrow.find(type);
+	if (it != m_enableArrow.end())
 	{// キーが存在する場合
 		// 値を更新
 		it->second = enable;
@@ -855,9 +964,15 @@ void CNavi::SetPointer(void)
 //--------------------------------
 void CNavi::SetDefaultEnable()
 {
-	for (LIST idx = LIST(0); idx < LIST::Max; idx = LIST(unsigned char(idx) + unsigned char(1)))
+	for (TYPE idx = TYPE(0); idx < TYPE::Max; idx = TYPE(unsigned char(idx) + unsigned char(1)))
 	{// 有効化リストの初期化
 		auto& enable = m_enableList.at(idx);
 		enable = DEFAULT_ENABLE[unsigned int(idx)];
+	}
+
+	for (ARROW idx = ARROW(0); idx < ARROW::Max; idx = ARROW(unsigned char(idx) + unsigned char(1)))
+	{// 有効化リストの初期化
+		auto& enable = m_enableArrow.at(idx);
+		enable = DEFAULT_ARROW_ENABLE[unsigned int(idx)];
 	}
 }

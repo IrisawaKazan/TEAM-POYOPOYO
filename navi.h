@@ -15,18 +15,6 @@ class CObject2D;
 class CNavi
 {
 public:
-	// ナビゲーションオブジェクトリスト
-	enum class LIST : unsigned char
-	{
-		RightArrow,
-		FrontArrow,
-		LeftArrow,
-		BackArrow,
-		Climb,
-		Jump,
-		Max
-	};
-
 	// ナビゲーションオブジェクトのタイプ
 	enum class TYPE : unsigned char
 	{
@@ -34,6 +22,16 @@ public:
 		Arrow,
 		Climb,
 		Jump,
+		Max
+	};
+
+	// ナビゲーションオブジェクトのタイプ
+	enum class ARROW : unsigned char
+	{
+		Right,
+		Front,
+		Left,
+		Back,
 		Max
 	};
 
@@ -54,26 +52,33 @@ public:
 	void Uninit(void);
 	void Update(void);
 
-	void set() { SetMarker(); SetPointer(); SetDefaultEnable(); SetList(), SetEnable(true); }
+	void set() { SetMarker(); SetPointer(); SetDefaultEnable(); SetObject(); SetEnable(true), SetArrowMode(true); }
 	void remove() { RemoveMarker(); RemovePointer(); RemoveObject(), SetEnable(false); }
 	void SetEnable(bool enable) { m_isEnable = enable; }
 	bool GetEnable() { return m_isEnable; }
 
-	bool SetEnable(LIST list, bool enable);
-	bool GetEnable(LIST list) const { return m_enableList.at(list); }
+	bool SetEnable(TYPE type, bool enable);
+	bool GetEnable(TYPE type) const { return m_enableList.at(type); }
+	bool SetEnable(ARROW type, bool enable);
+	bool GetEnable(ARROW type) const { return m_enableArrow.at(type); }
 
 	void RegisterRayCastObject(LPD3DXMESH pMesh, const D3DXMATRIX& mtxWorld);
 	void RegisterLatentObject(LPD3DXMESH pMesh, const D3DXMATRIX& mtxWorld);
 	void CalculateIntersection(void);
 	void HitCheckObject();
 
+	void SetArrowMode(bool isArrowMode) { m_isArrowMode = isArrowMode; }
+	bool GetArrowMode() { return m_isArrowMode; }
+	void ToggleArrowMode() { m_isArrowMode = !GetArrowMode(); }
+
 	const std::vector<CNaviObject*>& GetObjects(void) const { return m_apObject; }
-	LIST GetList(void) const { return m_list; }
+	TYPE GetType(void) const { return m_type; }
+	ARROW GetArrowType(void) const { return m_arrowType; }
 
 	D3DXVECTOR3 GetClickPos(void) const { return m_clickPos; }
 
 private:
-	CNavi() : m_isEnable{}, m_screenPos{}, m_isController{}, m_pPointer{}, m_RayPos{ 0.0f,0.0f,0.0f }, m_RayDir{ 0.0f,0.0f,0.0f }, m_pos{ 0.0f,0.0f,0.0f }, m_clickPos{ 0.0f,0.0f,0.0f }, m_aRayCastTarget{}, m_aLatentTarget{}, m_pMarker{}, m_apObject{}, m_list{}, m_pNewObject{}, m_enableList{} {};
+	CNavi() : m_isEnable{}, m_screenPos{}, m_isController{}, m_pPointer{}, m_RayPos{ 0.0f,0.0f,0.0f }, m_RayDir{ 0.0f,0.0f,0.0f }, m_pos{ 0.0f,0.0f,0.0f }, m_clickPos{ 0.0f,0.0f,0.0f }, m_aRayCastTarget{}, m_aLatentTarget{}, m_pMarker{}, m_apObject{}, m_isArrowMode{}, m_type{}, m_arrowType{}, m_pNewObject{}, m_enableList{}, m_enableArrow{} {};
 	~CNavi() {};
 
 	void CheckController();
@@ -89,7 +94,7 @@ private:
 	void RemovePointer(void) { m_pPointer = nullptr; }
 	void RemoveObject(void) { m_apObject.clear(); m_pNewObject = nullptr; }
 	void SetDefaultEnable();
-	void SetList() { m_list = LIST::RightArrow; }
+	void SetObject() { m_type = TYPE::Arrow; m_arrowType = ARROW::Right; }
 
 	static constexpr float MARKER_HEIGHT = 0.1f;                                           // 地面からマーカーをオフセットする高さ
 	static constexpr float OBJECT_HEIGHT = 0.05f;                                          // 地面からオブジェクトをオフセットする高さ
@@ -108,9 +113,20 @@ private:
 	static const D3DXVECTOR2 POINTER_SIZE;                                                // ポインターのサイズ
 	static constexpr float CONTROLLER_SPEED = 10.0f;                                      // コントローラーのスピード
 
-	static constexpr std::array<bool, unsigned int(LIST::Max)> DEFAULT_ENABLE =
+	// 角度
+	static constexpr float RIGHT = D3DXToRadian(90.0f);
+	static constexpr float FRONT = D3DXToRadian(180.0f);
+	static constexpr float LEFT = D3DXToRadian(-90.0f);
+	static constexpr float BACK = D3DXToRadian(0.0f);
+
+	static constexpr std::array<bool, unsigned int(TYPE::Max)> DEFAULT_ENABLE =
 	{// Defaultの有効化状態
-		true,true,false,true,false,false
+		false,true,false,false
+	};
+
+	static constexpr std::array<bool, unsigned int(TYPE::Max)> DEFAULT_ARROW_ENABLE =
+	{// Defaultの有効化状態 やじるし
+		true,true,false,true
 	};
 
 	bool m_isEnable; // 有効状態
@@ -133,8 +149,12 @@ private:
 	std::vector<CNaviObject*> m_apObject; // オブジェクトの配列
 	CNaviObject* m_pNewObject;            // 新しいオブジェクト
 
-	LIST m_list;                                 // 今選ばれているオブジェクト
-	std::unordered_map<LIST, bool> m_enableList; // オブジェクトリストの有効化状態
+	bool m_isArrowMode; // やじるし切替モード
+
+	TYPE m_type;                                   // 今選ばれているオブジェクトタイプ
+	ARROW m_arrowType;                             // 今選ばれているやじるしタイプ
+	std::unordered_map<TYPE, bool> m_enableList;   // オブジェクトリストの有効化状態
+	std::unordered_map<ARROW, bool> m_enableArrow; // オブジェクトリストの有効化状態
 };
 
 //-----------------------
