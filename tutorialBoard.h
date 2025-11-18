@@ -33,7 +33,8 @@ private:
 	CObject2D* m_pBackground;	// 
 	CObject2D* m_pBoard;		// 
 	bool m_Isprogress;			// 
-	int m_nCountFrame;			// フレームをカウントする Misaki
+	float m_fCountFrame;		// 現在のフレーム数 Misaki
+	float m_fMaxFrame;			// 最大フレーム数
 	D3DXVECTOR3 m_Dest;			// 目標位置 Misaki
 	D3DXVECTOR3 m_pos;			// 初期位置 Misaki
 

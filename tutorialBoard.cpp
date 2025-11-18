@@ -46,7 +46,11 @@ HRESULT CTutorialBoard::Init(void)
 
 	m_Isprogress = true;
 
-	m_nCountFrame = 0;
+	// 現在のフレーム数 Misaki
+	m_fCountFrame = 0.0f;
+	// 最大フレーム数 Misaki
+	m_fMaxFrame = 60.0f;
+
 
 	return S_OK;
 }
@@ -70,16 +74,16 @@ void CTutorialBoard::Update(void)
 	if (m_Isprogress == true)
 	{
 		// イージングの処理　Misaki
-		if (m_nCountFrame < 60.0f)
+		if (m_fCountFrame < m_fMaxFrame)
 		{
 			// カウントを進める
-			m_nCountFrame++;
+			m_fCountFrame++;
 
 			// 目標位置から初期位置の差を求める
 			D3DXVECTOR3 Diff = m_Dest - m_pos;
 
 			// イージング
-			float fEasing = EaseInOutSine((float)m_nCountFrame / 60.0f);
+			float fEasing = EaseInOutSine(m_fCountFrame / m_fMaxFrame);
 
 			// 初期位置に加算する
 			Setpos = m_pos + (Diff * fEasing);
@@ -136,5 +140,5 @@ void CTutorialBoard::SetUp(std::string boardpath)
 	m_pBoard->SetPosition(m_pos);
 
 	// フレーム
-	m_nCountFrame = 0;
+	m_fCountFrame = 0;
 }
