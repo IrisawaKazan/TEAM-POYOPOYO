@@ -9,6 +9,8 @@
 #include"manager.h"
 #include "mapmanager.h"
 #include "game.h"
+#include "fade.h"
+#include "result.h"
 
 // 静的メンバ変数宣言
 CNumber* CTimer::m_pNumber1[MAX_TIMER] = {};
@@ -26,6 +28,7 @@ CTimer::CTimer(int nPriority) : CObject(nPriority)
 	m_nNs = NULL;
 	m_nMin = NULL;
 	m_nHour = NULL;
+	m_bFinish = false;
 	Init();
 }
 
@@ -43,17 +46,18 @@ CTimer::~CTimer()
 CTimer* CTimer::Create(D3DXVECTOR3 pos)
 {
 	CTimer* pTimer = nullptr;
+	pTimer = new CTimer;
 
-	if (pTimer == nullptr)
+	if (pTimer != nullptr)
 	{
-		pTimer = new CTimer;
+		pTimer->m_pos = pos;
+		pTimer->Init();
+		return pTimer;
 	}
-
-	pTimer->m_pos = pos;
-
-	pTimer->Init();
-
-	return pTimer;
+	else
+	{
+		return nullptr;
+	}
 }
 
 //****************************************************************
@@ -65,6 +69,7 @@ HRESULT CTimer::Init(void)
 	m_nMin = 0;
 	m_nTimer = 0;
 	m_nHour = 0;
+	m_bFinish = false;
 
 	for (int nCnt = 0; nCnt < MAX_TIMER; nCnt++)
 	{
@@ -72,14 +77,14 @@ HRESULT CTimer::Init(void)
 
 		if (m_pNumber1[nCnt] != nullptr)
 		{
-			m_pNumber1[nCnt]->Init(200.0f, 200.0f, 0.0f, 50.0f, nCnt, 0, 50.0f, 50.0f, 0.0f, MAX_TIMER, 4, "data\\TEXTURE\\number005.png", 0.1f, CNumber::TYPE_NONE);
+			m_pNumber1[nCnt]->Init(200.0f, 200.0f, 0.0f, 50.0f, nCnt, 0, 50.0f, 50.0f, 0.0f, MAX_TIMER, 4, "data\\TEXTURE\\number000.png", 0.1f, CNumber::TYPE_NONE);
 		}
 
 		m_pNumber2[nCnt] = new CNumber;
 
 		if (m_pNumber2[nCnt] != nullptr)
 		{
-			m_pNumber2[nCnt]->Init(50.0f, 50.0f, 0.0f, 50.0f, nCnt, 0, 50.0f, 50.0f, 0.0f, MAX_TIMER, 4, "data\\TEXTURE\\number005.png", 0.1f, CNumber::TYPE_NONE);
+			m_pNumber2[nCnt]->Init(50.0f, 50.0f, 0.0f, 50.0f, nCnt, 0, 50.0f, 50.0f, 0.0f, MAX_TIMER, 4, "data\\TEXTURE\\number000.png", 0.1f, CNumber::TYPE_NONE);
 		}
 	}
 
@@ -87,7 +92,7 @@ HRESULT CTimer::Init(void)
 
 	if (m_pNumber3 != nullptr)
 	{
-		m_pNumber3->Init(150.0f, 200.0f, 0.0f, 50.0f ,0, 0, 1.0f, 0.0f, 0.0f, 1, 0, "data\\TEXTURE\\coron.png", 1.0f, CNumber::TYPE_NONE);
+		m_pNumber3->Init(150.0f, 200.0f, 0.0f, 50.0f ,0, 0, 1.0f, 0.0f, 0.0f, 1, 0, "data\\TEXTURE\\coron000.png", 1.0f, CNumber::TYPE_NONE);
 	}
 
 	return S_OK;
@@ -168,10 +173,17 @@ void CTimer::Update(void)
 	}
 
 	// ゴールしていなかったら
-	if (bTime != true || bTime1 != true)
+	if (bTime != true || bTime1 != true || m_bFinish != true)
 	{
 		// 総タイムを加算
 		m_nTimer++;
+	}
+
+	//　3分たったら
+	if (m_nTimer >= MAX_TIMEOVER)
+	{
+		m_bFinish = true;
+		CFade::SetFade(new CResult);
 	}
 }
 

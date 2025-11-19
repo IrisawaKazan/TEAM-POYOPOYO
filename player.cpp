@@ -237,17 +237,30 @@ void CPlayer::PreparationClimb()
 	float minLengthSq{ FLT_MAX };
 	for (const auto& pBlock : pBlocks)
 	{// ブロックを走査
-		if (IsClimbingTarget(pBlock))
-		{// 登れる
-			D3DXVECTOR3 climbPos = pBlock->GetClosestPointOnSurface(myPos);
-			D3DXVECTOR3 space = climbPos - myPos;
-			float lengthSq = D3DXVec3LengthSq(&space);
-			if (lengthSq < minLengthSq)
-			{// より近いブロック
-				m_pClimbBlock = pBlock;
-				minLengthSq = lengthSq;
-			}
+		if (!IsClimbingTarget(pBlock)) continue;
+
+		// 登れる
+		D3DXVECTOR3 climbPos = pBlock->GetClosestPointOnSurface(myPos);
+		D3DXVECTOR3 space = climbPos - myPos;
+		float lengthSq = D3DXVec3LengthSq(&space);
+
+		// めり込み防止
+		if (lengthSq < 0.0001f) continue;
+
+		if (lengthSq < minLengthSq)
+		{// より近いブロック
+			m_pClimbBlock = pBlock;
+			minLengthSq = lengthSq;
 		}
+	}
+
+	// 距離が近いか
+	D3DXVECTOR3 climbPos = m_pClimbBlock->GetClosestPointOnSurface(myPos);
+	D3DXVECTOR3 space = climbPos - myPos;
+	float length = hypotf(space.x, space.z);
+	if (length > CLIMB_LENGTH_MIN)
+	{// 登れるブロックが遠い
+		m_pClimbBlock = nullptr;
 	}
 
 	// ブロックに向かう
@@ -370,7 +383,7 @@ void CPlayer::Move(btVector3& moveDir, D3DXVECTOR3& rot, btVector3& currentVel)
 void CPlayer::UpdateState(btVector3& moveDir)
 {
 	if (!m_isGrounded && m_state != STATE::Jumping && m_state != STATE::Climbing)
-	{
+	{// 空中
 		m_state = STATE::Jumping;
 		m_peakFallSpeed = 0.0f;
 	}
@@ -407,12 +420,14 @@ void CPlayer::UpdateState(btVector3& moveDir)
 	}
 	// 登る
 	case STATE::Climb:
-		if (IsClimbingContact())
+		if (IsClimbingContact() && !IsClimbingEnd())
 		{// 壁についた
-			FaceBlock();               // 改めて壁を向く
-			moveDir.setY(CLIMB_SPEED); // 登る
-			m_state = STATE::Climbing; // 登っている状態
-			GetMotionInfo()->SetMotion(5, false);
+			if (FaceBlock())
+			{// 改めて壁を向く
+				moveDir.setY(CLIMB_SPEED); // 登る
+				m_state = STATE::Climbing; // 登っている状態
+				GetMotionInfo()->SetMotion(5, false);
+			}
 		}
 		break;
 		// 登っている
@@ -420,13 +435,15 @@ void CPlayer::UpdateState(btVector3& moveDir)
 	{
 		if (IsClimbingContact())
 		{// 登り続けている
-			FaceBlock();               // 改めて壁を向く
-			moveDir.setY(CLIMB_SPEED); // 登る
+			if (FaceBlock())
+			{// 改めて壁を向く
+				moveDir.setY(CLIMB_SPEED); // 登る
 
-			if (IsClimbingEnd())
-			{// ブロックの上
-				m_state = STATE::Jumping;
-				m_pClimbBlock = nullptr;
+				if (IsClimbingEnd())
+				{// ブロックの上
+					m_state = STATE::Jumping;
+					m_pClimbBlock = nullptr;
+				}
 			}
 		}
 		else
@@ -517,8 +534,17 @@ bool CPlayer::IsClimbingTarget(const CBlock* pBlock)
 	if (pBlock == nullptr) return false;
 
 	// 自分の足元
-	float myY = GetPos().y;
+	float myBottomY = GetPos().y;
 
+	// 自分の頭
+	float myTopY = myBottomY + CAPSULE_ALL_HEIGHT;
+
+	// ブロックの底面
+	float blockBottomY = pBlock->GetPosition().y;
+
+	// プレイヤーの頭よりブロックの底面が一定値以上高ければ登らない
+	if (blockBottomY - myTopY >= CLIMB_HEIGHT_MIN_BOTTOM) return false;
+	
 	// ブロックのあたり判定
 	btCollisionObject* pBlockObject = pBlock->GetRB();
 
@@ -538,16 +564,16 @@ bool CPlayer::IsClimbingTarget(const CBlock* pBlock)
 	}
 
 	// ブロックの半分のサイズ
-	btVector3 baseHalfExtents = static_cast<btBoxShape*>(pBlockObject->getCollisionShape())->getHalfExtentsWithMargin();
+	btVector3 HalfExtents = static_cast<btBoxShape*>(pBlockObject->getCollisionShape())->getHalfExtentsWithMargin();
 
 	// ブロックの実際のサイズ
-	btVector3 actuaExtents = baseHalfExtents * 2.0f;
+	btVector3 actuaExtents = HalfExtents * 2.0f;
 
-	// ブロックの中心Y座標 + ブロックの高さの半分 = ブロックの天面のY座標
-	float blockTopY = pBlock->GetPosition().y + actuaExtents.y();
+	// ブロックの底面Y座標 + ブロックの高さ = ブロックの天面のY座標
+	float blockTopY = blockBottomY + actuaExtents.y();
 
 	// プレイヤーの足元よりブロックの天面が一定値以上高ければ登る
-	return (blockTopY - myY >= CLIMB_HEIGHT_MIN);
+	return (blockTopY - myBottomY >= CLIMB_HEIGHT_MIN_TOP);
 }
 
 // クライムチェック
@@ -571,7 +597,7 @@ bool CPlayer::IsClimbingContact()
 		const btCollisionObject* objA = manifold->getBody0();
 		const btCollisionObject* objB = manifold->getBody1();
 
-		// プレイヤーとゴールが当たっていたら
+		// プレイヤーと壁が当たっていたら
 		const bool Condition = (objA == m_RigitBody.get() && objB == pBlockObject) || (objA == pBlockObject && objB == m_RigitBody.get());
 
 		// 切り上げ
@@ -586,22 +612,22 @@ bool CPlayer::IsClimbingEnd()
 	if (m_pClimbBlock == nullptr) return false;
 
 	// 自分の足元
-	float myY = GetPos().y;
+	float myBottomY = GetPos().y;
 
 	// ブロックのあたり判定
 	btCollisionObject* pBlockObject = m_pClimbBlock->GetRB();
 
 	// ブロックの半分のサイズ
-	btVector3 baseHalfExtents = static_cast<btBoxShape*>(pBlockObject->getCollisionShape())->getHalfExtentsWithMargin();
+	btVector3 HalfExtents = static_cast<btBoxShape*>(pBlockObject->getCollisionShape())->getHalfExtentsWithMargin();
 
 	// ブロックの実際のサイズ
-	btVector3 actuaExtents = baseHalfExtents * 2.0f;
+	btVector3 actuaExtents = HalfExtents * 2.0f;
 
 	// ブロックの中心Y座標 + ブロックの高さの半分 = ブロックの天面のY座標
 	float blockTopY = m_pClimbBlock->GetPosition().y + actuaExtents.y();
 
 	// プレイヤーの足元がブロックの天面より上に来たら着地
-	return (myY >= blockTopY);
+	return (myBottomY >= blockTopY);
 }
 
 // ジャンプ
@@ -619,13 +645,13 @@ void CPlayer::Landing()
 {
 	m_state = STATE::Normal;
 	if (std::abs(m_peakFallSpeed) >= LANDING_MOTION_HEIGHT_MIN)
-	{
+	{// 着地モーション
 		GetMotionInfo()->SetMotion(4, false);
 	}
 	else
 	{
 		if (GetMotionInfo()->GetMotion() != 1)
-		{// スライディングモーション
+		{// 歩きモーション
 			GetMotionInfo()->SetMotion(1, false);
 		}
 	}
@@ -640,18 +666,11 @@ bool CPlayer::FaceBlock()
 		D3DXVECTOR3 myPos = GetPos();
 		D3DXVECTOR3 climbPos = m_pClimbBlock->GetClosestPointOnSurface(myPos);
 		D3DXVECTOR3 space = climbPos - myPos;
+		float length = D3DXVec3LengthSq(&space);
 
-		// XZ平面での距離の2乗
-		float lengthXZ = hypotf(space.x, space.z);
-		if (lengthXZ > CLIMB_LENGTH_MIN)
-		{// 登れるブロックが遠い
-			m_pClimbBlock = nullptr;
-			return false;
-		}
-
-		if (lengthXZ < 0.0001f)
+		if (length < 0.0001f)
 		{// めり込んでいる
-			// ブロックの底面の中心
+		    // ブロックの底面の中心
 			D3DXVECTOR3 blockBottomPos = m_pClimbBlock->GetPosition();
 
 			// プレイヤーからブロックの中心へのベクトル
@@ -659,8 +678,8 @@ bool CPlayer::FaceBlock()
 			space.z = blockBottomPos.z - myPos.z;
 			space.y = 0.0f;
 
-			lengthXZ = (space.x * space.x) + (space.z * space.z);
-			if (lengthXZ < 0.0001f)
+			length = D3DXVec3LengthSq(&space);
+			if (length < 0.0001f)
 			{// ブロックの中心とも重なっている
 				m_pClimbBlock = nullptr;
 				return false;

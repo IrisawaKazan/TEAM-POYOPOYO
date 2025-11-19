@@ -78,7 +78,7 @@ HRESULT CGame::Init(void)
 	m_pPauseManager = CPauseManager::CreateSingleton();
 
 	m_pMapManager = CMapManager::Instance();
-	m_pMapManager->Load("data\\TEXT\\stage100.json");
+	m_pMapManager->Load("data\\TEXT\\stage99.json");
 
 	// ƒJƒƒ‰‚Ì‰Šú‰»
 	CManager::GetCamera()->Init();
