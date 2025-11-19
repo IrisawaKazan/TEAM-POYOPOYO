@@ -176,7 +176,7 @@ void CItem::Update(void)
 			if (m_type == ITEM_LEFT)
 			{// 左向きのアイテムの場合
 				// チュートリアル表示
-				CGame::GetTutorialBoard()->SetUp("data\\TEXTURE\\tutorial_003.png");
+				CGame::GetTutorialBoard()->SetUp("data\\TEXTURE\\tutorial_003.png", false);
 
 				// アイテムの有効化
 				CNavi::GetInstance()->SetEnable(CNavi::ARROW::Left, true);
@@ -185,7 +185,7 @@ void CItem::Update(void)
 			else if (m_type == ITEM_JUMP)
 			{
 				// チュートリアル表示
-				CGame::GetTutorialBoard()->SetUp("data\\TEXTURE\\tutorial_002.png");
+				CGame::GetTutorialBoard()->SetUp("data\\TEXTURE\\tutorial_002.png", true);
 
 				// アイテムの有効化
 				CNavi::GetInstance()->SetEnable(CNavi::TYPE::Jump, true);
@@ -193,7 +193,7 @@ void CItem::Update(void)
 			else if (m_type == ITEM_CLIMB)
 			{
 				// チュートリアル表示
-				CGame::GetTutorialBoard()->SetUp("data\\TEXTURE\\tutorial_004.png");
+				CGame::GetTutorialBoard()->SetUp("data\\TEXTURE\\tutorial_004.png", false);
 
 				// アイテムの有効化
 				CNavi::GetInstance()->SetEnable(CNavi::TYPE::Climb, true);

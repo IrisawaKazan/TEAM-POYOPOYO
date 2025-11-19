@@ -50,7 +50,8 @@ HRESULT CTutorialBoard::Init(void)
 	m_fCountFrame = 0.0f;
 	// 最大フレーム数 Misaki
 	m_fMaxFrame = 60.0f;
-
+	// 次のボードがあるかどうか
+	m_bNextBoard = true;
 
 	return S_OK;
 }
@@ -70,6 +71,7 @@ void CTutorialBoard::Update(void)
 {
 	// イージングした後の位置
 	D3DXVECTOR3 Setpos = {};
+	static int nCount = 0;
 
 	if (m_Isprogress == true)
 	{
@@ -96,12 +98,31 @@ void CTutorialBoard::Update(void)
 		{// 決定ボタンを押した時
 
 			if (m_fCountFrame < m_fMaxFrame)
-			{// 上がりきっていなかった場合
+			{// 上がりきっていなかった場合 Misaki
 				// フレームを最大にする
 				m_fCountFrame = m_fMaxFrame - 1.0f;
 			}
+			else if (m_bNextBoard == true)
+			{// 次のチュートリアルを表示する場合
+
+				switch (nCount)
+				{
+				case 0:
+					// チュートリアルを表示
+					SetUp("data\\TEXTURE\\tutorial_006.png", false);
+					break;
+
+				case 1:
+					// チュートリアルを表示
+					SetUp("data\\TEXTURE\\tutorial_005.png", false);
+					break;
+				}
+
+				// カウントを一つ増やす
+				nCount++;
+			}
 			else
-			{// 上がりきっていた場合
+			{// 上がりきっていた場合 Misaki
 				m_Isprogress = false;
 
 				m_pBackground->SetCol({ 0.0f, 0.0f, 0.0f, 0.0f });
@@ -135,7 +156,7 @@ CTutorialBoard* CTutorialBoard::Create(void)
 	}
 }
 
-void CTutorialBoard::SetUp(std::string boardpath)
+void CTutorialBoard::SetUp(std::string boardpath, const bool bNextBoard)
 {
 	if (CFade::GetFadeSingle()->GetFade() != CFade::FADE_NONE) return;
 
@@ -145,9 +166,21 @@ void CTutorialBoard::SetUp(std::string boardpath)
 
 	m_Isprogress = true;
 
-	// 位置を設定 Misaki
-	m_pBoard->SetPosition(m_pos);
+	if (m_bNextBoard == false)
+	{// 次のチュートリアルがない場合
+		// 位置を設定 Misaki
+		m_pBoard->SetPosition(m_pos);
 
-	// フレーム
-	m_fCountFrame = 0;
+		// 現在のフレームを初期化
+		m_fCountFrame = 0;
+	}
+	else
+	{// 次のチュートリアルがある場合
+		// 位置を設定 Misaki
+		m_pBoard->SetPosition(m_Dest);
+	}
+
+	// 次があるかどうかを代入
+	m_bNextBoard = bNextBoard;
+
 }

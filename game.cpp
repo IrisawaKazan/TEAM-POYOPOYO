@@ -185,7 +185,7 @@ void CGame::Update(void)
 	{
 		if (CManager::GetInputKeyboard()->GetTrigger(DIK_F3) == true && m_pTutorialBoard->GetProgress() == false)
 		{
-			m_pTutorialBoard->SetUp("data\\TEXTURE\\tutorial_001.png");
+			m_pTutorialBoard->SetUp("data\\TEXTURE\\tutorial_001.png", true);
 		}
 	}
 	if (m_pMapManager != nullptr)
