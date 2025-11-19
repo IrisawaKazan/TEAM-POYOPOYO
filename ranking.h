@@ -51,6 +51,7 @@ public:
 	void SetNumUpdate(int nCntNum);
 
 private:
+	CObject2D* m_pBrackboard;
 	CNumber* m_pNumber1[MAX_TIME][MAX_NUM];		// タイムの変数(秒)
 	CNumber* m_pNumber2[MAX_TIME][MAX_NUM];		// タイムの変数(分)
 	CNumber* m_pNumber3[MAX_NUM];				// タイムの変数(：)
