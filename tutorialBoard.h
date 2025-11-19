@@ -38,6 +38,7 @@ private:
 	D3DXVECTOR3 m_Dest;			// 目標位置 Misaki
 	D3DXVECTOR3 m_pos;			// 初期位置 Misaki
 	bool m_bNextBoard;			// 次のボードがあるかどうか Misaki
+	int m_nCount;				// 
 };
 
 #endif

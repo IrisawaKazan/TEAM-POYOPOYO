@@ -52,6 +52,8 @@ HRESULT CTutorialBoard::Init(void)
 	m_fMaxFrame = 60.0f;
 	// 次のボードがあるかどうか
 	m_bNextBoard = true;
+	// カウント
+	m_nCount = 0;
 
 	return S_OK;
 }
@@ -71,7 +73,6 @@ void CTutorialBoard::Update(void)
 {
 	// イージングした後の位置
 	D3DXVECTOR3 Setpos = {};
-	static int nCount = 0;
 
 	if (m_Isprogress == true)
 	{
@@ -105,7 +106,7 @@ void CTutorialBoard::Update(void)
 			else if (m_bNextBoard == true)
 			{// 次のチュートリアルを表示する場合
 
-				switch (nCount)
+				switch (m_nCount)
 				{
 				case 0:
 					// チュートリアルを表示
@@ -119,7 +120,7 @@ void CTutorialBoard::Update(void)
 				}
 
 				// カウントを一つ増やす
-				nCount++;
+				m_nCount++;
 			}
 			else
 			{// 上がりきっていた場合 Misaki
