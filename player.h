@@ -15,18 +15,21 @@ class CBlock;
 class CPlayer : public CModelCharacter
 {
 public:
-	static constexpr float CAPSULE_RADIUS = 7.0f;     // カプセルの半径 sato Add
-	static constexpr float CAPSULE_HEIGHT = 20.0f;    // カプセルの高さ sato Add
-	static constexpr float CAPSULE_HALF_HEIGHT =      // カプセルの中心から底
-		(CAPSULE_HEIGHT * 0.5f) + CAPSULE_RADIUS;     //
-	static constexpr float MOVE_SPEED = 10.0f;        // 移動スピード sato Add
-	static constexpr float CLIMB_SPEED = 5.0f;        // 登るスピード sato Add
-	static constexpr float CLIMB_HEIGHT_MIN = 3.0f;   // 登る最小の高さ sato Add
-	static constexpr float CLIMB_LENGTH_MIN = 200.0f; // 登る最小の距離 sato Add
-	static constexpr float JUMP_POWER = 30.0f;        // ジャンプ力(高さ) sato Add
-	static constexpr float JUMP_SPEED_INA = 15.0f;    // ジャンプ力(横移動) sato Add
-	static constexpr float AIR_CONTROL_FACTOR = 0.1f; // 空中制御係数 sato Add
-	static constexpr float GROUND_SPACE = 0.5f;       // 着地制御 sato Add
+	static constexpr float CAPSULE_RADIUS = 7.0f;            // カプセルの半径 sato Add
+	static constexpr float CAPSULE_HEIGHT = 20.0f;           // カプセルの円柱部分の高さ sato Add
+	static constexpr float CAPSULE_HALF_HEIGHT =             // カプセルの中心から底の高さ
+		(CAPSULE_HEIGHT * 0.5f) + CAPSULE_RADIUS;            //
+	static constexpr float CAPSULE_ALL_HEIGHT =              // カプセル全体の高さ
+		CAPSULE_HALF_HEIGHT * 2.0f;                          //
+	static constexpr float MOVE_SPEED = 10.0f;               // 移動スピード sato Add
+	static constexpr float CLIMB_SPEED = 5.0f;               // 登るスピード sato Add
+	static constexpr float CLIMB_HEIGHT_MIN_TOP = 10.0f;     // 登る最小の天面の高さ(プレイヤーの足元からオブジェクトの天面はこれを超えていること) sato Add
+	static constexpr float CLIMB_HEIGHT_MIN_BOTTOM = -0.5f;  // 登る最小の底面の高さ(プレイヤーの頭からオブジェクトの底面はこれを超えていること) sato Add
+	static constexpr float CLIMB_LENGTH_MIN = 200.0f;        // 登る最小の距離 sato Add
+	static constexpr float JUMP_POWER = 30.0f;               // ジャンプ力(高さ) sato Add
+	static constexpr float JUMP_SPEED_INA = 15.0f;           // ジャンプ力(横移動) sato Add
+	static constexpr float AIR_CONTROL_FACTOR = 0.1f;        // 空中制御係数 sato Add
+	static constexpr float GROUND_SPACE = 0.5f;              // 着地制御 sato Add
 	static constexpr float LANDING_MOTION_HEIGHT_MIN = 8.0f; // 着地モーションをする最低の落下速度 sato Add
 
 	// 状態

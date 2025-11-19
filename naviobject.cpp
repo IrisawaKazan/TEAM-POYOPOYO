@@ -239,7 +239,7 @@ void CNaviObject::SetTriggerObject()
 {
 	// 円柱の設定
 	float radius = m_chengeLength;
-	float halfHeight = CHENGE_HEIGHT;
+	float halfHeight = CHENGE_HEIGHT * 0.5f;
 	btVector3 cylinderHalfExtents(radius, halfHeight, radius);
 	m_triggerShape = std::make_unique<btCylinderShape>(cylinderHalfExtents);
 
@@ -247,7 +247,7 @@ void CNaviObject::SetTriggerObject()
 	m_triggerObject->setCollisionShape(m_triggerShape.get());
 
 	// 座標と回転
-	btVector3 bulletPos(m_pos.x, m_pos.y, m_pos.z);
+	btVector3 bulletPos(m_pos.x, m_pos.y + CHENGE_HEIGHT, m_pos.z);
 
 	// Bullet用の3x3行列（Basis）を作成
 	btMatrix3x3 bulletBasis;
@@ -280,7 +280,7 @@ void CNaviObject::SetReleaseObject()
 {
 	// 円柱の設定
 	float radius = m_length;
-	float halfHeight = CHENGE_HEIGHT;
+	float halfHeight = CHENGE_HEIGHT * 0.5f;
 	btVector3 cylinderHalfExtents(radius, halfHeight, radius);
 	m_releaseShape = std::make_unique<btCylinderShape>(cylinderHalfExtents);
 
@@ -288,7 +288,7 @@ void CNaviObject::SetReleaseObject()
 	m_releaseObject->setCollisionShape(m_releaseShape.get());
 
 	// 座標と回転
-	btVector3 bulletPos(m_pos.x, m_pos.y, m_pos.z);
+	btVector3 bulletPos(m_pos.x, m_pos.y + CHENGE_HEIGHT, m_pos.z);
 
 	// Bullet用の3x3行列（Basis）を作成
 	btMatrix3x3 bulletBasis;

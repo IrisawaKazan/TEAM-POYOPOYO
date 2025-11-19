@@ -46,7 +46,7 @@ public:
 protected:
 	static constexpr float CHENGE_LENGTH_MAGNIFICATION = 0.5f;  // プレイヤーが反応する範囲の倍率
 	static constexpr float RELEASE_LENGTH_MAGNIFICATION = 0.7f; // 重なり防止判定が反応する範囲の倍率
-	static constexpr float CHENGE_HEIGHT = 0.2f;                // 反応する高さの差y
+	static constexpr float CHENGE_HEIGHT = 0.5f;                // 反応する高さの差
 
 	virtual void Activate(D3DXVECTOR3* outPos, float* outAngle) const = 0;
 
