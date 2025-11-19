@@ -109,17 +109,30 @@ void CTutorialBoard::Update(void)
 				{
 				case 0:
 					// チュートリアルを表示
-					SetUp("data\\TEXTURE\\tutorial_006.png", false);
+					SetUp("data\\TEXTURE\\tutorial_006.png", true);
+
+					m_nCount = 1;
+
 					break;
 
 				case 1:
 					// チュートリアルを表示
-					SetUp("data\\TEXTURE\\tutorial_005.png", false);
+					SetUp("data\\TEXTURE\\tutorial_007.png", false);
+
+					m_nCount = 2;
+
 					break;
+
+				case 2:
+					// チュートリアルを表示
+					SetUp("data\\TEXTURE\\tutorial_005.png", false);
+
+					m_nCount = 0;
+
+					break;
+
 				}
 
-				// カウントを一つ増やす
-				m_nCount++;
 			}
 			else
 			{// 上がりきっていた場合 Misaki
