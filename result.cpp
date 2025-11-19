@@ -33,7 +33,7 @@ HRESULT CResult::Init(void)
     //  CObject2D::Create(D3DXVECTOR3(640.0f, 370.0f, 0.0f), VEC3_NULL);
     m_pRanking->Init();
     
-    CMapManager::Instance()->Load("data\\TEXT\\stage99.json");
+    CMapManager::Instance()->Load("data\\TEXT\\stage98.json");
 
     CManager::GetCamera()->Init();
     CManager::GetCamera()->SetPosRDest({0.0f,35.0f,0.0f});

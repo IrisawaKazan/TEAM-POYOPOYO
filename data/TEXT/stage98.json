@@ -1,0 +1,191 @@
+[
+    {
+        "RigitBody": {
+            "IsStatic": true,
+            "Mass": 100.0
+        },
+        "Assets": {
+            "Path": "data/MODEL/floor_block.x"
+        },
+        "Transform": {
+            "Pos": {
+                "x": 0.0,
+                "y": -20.0,
+                "z": 0.0
+            },
+            "Rot": {
+                "w": 1.0,
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "Scale": {
+                "x": 32.5,
+                "y": 1.0,
+                "z": 20.0
+            }
+        }
+    },
+    {
+        "RigitBody": {
+            "IsStatic": true,
+            "Mass": 100.0
+        },
+        "Assets": {
+            "Path": "data/MODEL/bg.x"
+        },
+        "Transform": {
+            "Pos": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": -200.0
+            },
+            "Rot": {
+                "w": 1.0,
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "Scale": {
+                "x": 1.5,
+                "y": 1.2000000476837158,
+                "z": 1.0
+            }
+        }
+    },
+    {
+        "RigitBody": {
+            "IsStatic": true,
+            "Mass": 100.0
+        },
+        "Assets": {
+            "Path": "data/MODEL/chest.x"
+        },
+        "Transform": {
+            "Pos": {
+                "x": -150.0,
+                "y": 0.0,
+                "z": -100.0
+            },
+            "Rot": {
+                "w": 0.9747940897941589,
+                "x": 0.0,
+                "y": 0.22310635447502136,
+                "z": 0.0
+            },
+            "Scale": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            }
+        }
+    },
+    {
+        "RigitBody": {
+            "IsStatic": true,
+            "Mass": 100.0
+        },
+        "Assets": {
+            "Path": "data/MODEL/ore000.x"
+        },
+        "Transform": {
+            "Pos": {
+                "x": -75.0,
+                "y": 0.0,
+                "z": -150.0
+            },
+            "Rot": {
+                "w": 0.9747940897941589,
+                "x": 0.0,
+                "y": -0.0,
+                "z": -0.22310635447502136
+            },
+            "Scale": {
+                "x": 1.0,
+                "y": 1.5,
+                "z": 1.0
+            }
+        }
+    },
+    {
+        "RigitBody": {
+            "IsStatic": true,
+            "Mass": 100.0
+        },
+        "Assets": {
+            "Path": "data/MODEL/ore000.x"
+        },
+        "Transform": {
+            "Pos": {
+                "x": -175.0,
+                "y": 0.0,
+                "z": -125.0
+            },
+            "Rot": {
+                "w": 0.7259756922721863,
+                "x": 0.08498360216617584,
+                "y": -0.6763250231742859,
+                "z": 0.09122245013713837
+            },
+            "Scale": {
+                "x": 1.0,
+                "y": 2.0,
+                "z": 1.0
+            }
+        }
+    },
+    {
+        "RigitBody": {
+            "IsStatic": true,
+            "Mass": 100.0
+        },
+        "Assets": {
+            "Path": "data/MODEL/ore000.x"
+        },
+        "Transform": {
+            "Pos": {
+                "x": 125.0,
+                "y": 0.0,
+                "z": -100.0
+            },
+            "Rot": {
+                "w": 1.0,
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "Scale": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            }
+        }
+    },
+    {
+        "RigitBody": {
+            "IsStatic": true,
+            "Mass": 100.0
+        },
+        "Assets": {
+            "Path": "data/MODEL/chest001.x"
+        },
+        "Transform": {
+            "Pos": {
+                "x": 65.0,
+                "y": 0.0,
+                "z": 100.0
+            },
+            "Rot": {
+                "w": 0.9921976923942566,
+                "x": 0.0,
+                "y": -0.1246747300028801,
+                "z": 0.0
+            },
+            "Scale": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            }
+        }
+    }
+]
