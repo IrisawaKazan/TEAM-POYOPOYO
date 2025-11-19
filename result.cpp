@@ -28,10 +28,8 @@ CResult::~CResult()
 //  ‰Šú‰»
 HRESULT CResult::Init(void)
 {
-    m_pRanking = CRanking::Instance();
-
     //  CObject2D::Create(D3DXVECTOR3(640.0f, 370.0f, 0.0f), VEC3_NULL);
-    m_pRanking->Init();
+    CRanking::Instance()->Init();
     
     CMapManager::Instance()->Load("data\\TEXT\\stage98.json");
 
@@ -48,7 +46,7 @@ HRESULT CResult::Init(void)
 //  XV
 void CResult::Update(void)
 {
-    m_pRanking->Update();
+    CRanking::Instance()->Update();
 
     if (CManager::GetInputKeyboard()->GetTrigger(DIK_RETURN) == true)
     {
@@ -60,12 +58,12 @@ void CResult::Update(void)
 //  I—¹
 void CResult::Uninit(void)
 {
-    m_pRanking->Uninit();
+    CRanking::Instance()->Uninit();
     delete this;
 }
 
 //  •`‰æ
 void CResult::Draw(void)
 {
-    m_pRanking->Draw();
+    CRanking::Instance()->Draw();
 }

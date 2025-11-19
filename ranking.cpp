@@ -125,7 +125,6 @@ void CRanking::Uninit(void)
 			m_pNumber4[nCnt] = nullptr;
 		}
 	}
-	delete this;
 }
 
 //****************************************************************
