@@ -29,7 +29,7 @@ CNumber::CNumber()
 
 	for (int nCnt = 0; nCnt < 2; nCnt++)
 	{
-		m_pos[nCnt] = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+		m_pos[nCnt] = VEC3_NULL;
 		m_fX[nCnt] = NULL;
 		m_fY[nCnt] = NULL;
 	}

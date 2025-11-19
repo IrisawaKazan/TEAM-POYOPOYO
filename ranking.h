@@ -46,6 +46,10 @@ public:
 	void WriteFile(void);
 
 	void InitNum(void);
+
+	// セッター
+	void SetNumUpdate(int nCntNum);
+
 private:
 	CNumber* m_pNumber1[MAX_TIME][MAX_NUM];		// タイムの変数(秒)
 	CNumber* m_pNumber2[MAX_TIME][MAX_NUM];		// タイムの変数(分)

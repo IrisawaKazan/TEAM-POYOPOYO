@@ -17,19 +17,18 @@ CNumber* CTimer::m_pNumber1[MAX_TIMER] = {};
 CNumber* CTimer::m_pNumber2[MAX_TIMER] = {};
 CNumber* CTimer::m_pNumber3 = {};
 int CTimer::m_nTimer = NULL;
+int CTimer::m_nTime = NULL;
+int CTimer::m_nMin = NULL;
 
 //****************************************************************
 // コンストラクタ
 //****************************************************************
 CTimer::CTimer(int nPriority) : CObject(nPriority)
 {
-	m_pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	m_nTime = NULL;
+	m_pos = VEC3_NULL;
 	m_nNs = NULL;
-	m_nMin = NULL;
 	m_nHour = NULL;
-	m_bFinish = false;
-	Init();
+	//Init();
 }
 
 //****************************************************************
@@ -65,11 +64,11 @@ CTimer* CTimer::Create(D3DXVECTOR3 pos)
 //****************************************************************
 HRESULT CTimer::Init(void)
 {
-	m_pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	m_nMin = 0;
-	m_nTimer = 0;
-	m_nHour = 0;
-	m_bFinish = false;
+	m_pos = VEC3_NULL;
+	m_nMin = NULL;
+	m_nTime = NULL;
+	m_nTimer = NULL;
+	m_nHour = NULL;
 
 	for (int nCnt = 0; nCnt < MAX_TIMER; nCnt++)
 	{
@@ -138,9 +137,6 @@ void CTimer::Uninit(void)
 //****************************************************************
 void CTimer::Update(void)
 {
-	bool bTime = CMapManager::GetGoal();
-	bool bTime1 = CGame::GetGoal();
-
 	// 秒の加算
 	m_nNs++;
 
@@ -172,17 +168,10 @@ void CTimer::Update(void)
 		m_nHour = 0;
 	}
 
-	// ゴールしていなかったら
-	if (bTime != true || bTime1 != true || m_bFinish != true)
+	//　4分たったら
+	if (m_nMin >= MAX_TIMEOVER)
 	{
-		// 総タイムを加算
-		m_nTimer++;
-	}
-
-	//　3分たったら
-	if (m_nTimer >= MAX_TIMEOVER)
-	{
-		m_bFinish = true;
+		// リザルトに
 		CFade::SetFade(new CResult);
 	}
 }
@@ -199,22 +188,6 @@ void CTimer::Draw(void)
 	}
 
 	m_pNumber3->Draw();
-}
-
-//****************************************************************
-// タイマーの位置の設定処理
-//****************************************************************
-void CTimer::SetPosition(D3DXVECTOR3 pos)
-{
-	m_pos = pos;
-}
-
-//****************************************************************
-// タイマーの位置の取得処理
-//****************************************************************
-D3DXVECTOR3 CTimer::GetPos(void)
-{
-	return m_pos;
 }
 
 //****************************************************************
@@ -262,17 +235,17 @@ void CTimer::SubMin(int nValue)
 }
 
 //****************************************************************
-// タイマーの秒数取得処理
+// 総タイムの取得
 //****************************************************************
-int CTimer::GetNs(void)
+int CTimer::GetTimer(void)
 {
-	return m_nNs;
-}
+	int nMin = GetMin();
+	int nSec = GetTime();
 
-//****************************************************************
-// タイマーの分数取得処理
-//****************************************************************
-int CTimer::GetMin(void)
-{
-	return m_nMin;
+	nMin = nMin * 3600;
+	nSec = nSec * 60;
+	m_nTimer = nMin + nSec;
+
+	return m_nTimer;
+
 }
