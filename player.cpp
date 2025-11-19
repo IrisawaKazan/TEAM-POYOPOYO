@@ -95,6 +95,7 @@ void CPlayer::Uninit(void)
 // 更新
 void CPlayer::Update(void)
 {
+	if (CManager::GetScene()->GetMode() == CScene::MODE_RESULT) return;
 	if (m_RigitBody == nullptr) return;
 
 	// ナビゲーションチェック

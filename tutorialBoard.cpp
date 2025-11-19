@@ -105,7 +105,6 @@ void CTutorialBoard::Update(void)
 			}
 			else if (m_bNextBoard == true)
 			{// 次のチュートリアルを表示する場合
-
 				switch (m_nCount)
 				{
 				case 0:
