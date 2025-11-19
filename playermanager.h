@@ -20,7 +20,11 @@ public:
 	static constexpr float SPAWN_RANGE = 50.0f; // NPC‚ÌoŒ»ŠÔŠu sato Add
 	static constexpr float Fall = -100.0f;		// —‰º‚Æ‚µ‚Äˆµ‚¤‚‚³
 	static constexpr int SPAWN_TIME = 30;		// NPC‚ÌoŒ»ŠÔ
+#ifdef _DEBUG
+	static constexpr int CAPACITY = 1;		    // Å‘å”
+#else
 	static constexpr int CAPACITY = 500;		// Å‘å”
+#endif // _DEBUG
 
 	CPlayerManager();
 	~CPlayerManager();

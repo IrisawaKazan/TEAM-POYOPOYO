@@ -17,7 +17,7 @@
 // 静的メンバ変数の定義
 
 // コンストラクタ
-CPlayer::CPlayer() : m_activePos{ 0,0,0 }, m_CollisionShape{}, m_isGrounded{}, m_IsSlopeTrigger{}, m_naviObjectCountMap{}, m_naviObjectIdxListOld{}, m_pClimbBlock{}, m_RigitBody{}, m_state{}, m_turnAngle{}, m_peakFallSpeed{}
+CPlayer::CPlayer() : m_activePos{ 0,0,0 }, m_CollisionShape{}, m_isGrounded{}, m_IsSlopeTrigger{}, m_naviObjectCountMap{}, m_naviObjectLastTimeMap{}, m_naviObjectIdxListOld{}, m_pClimbBlock{}, m_RigitBody{}, m_state{}, m_turnAngle{}, m_peakFallSpeed{}
 {
 
 }
@@ -58,6 +58,7 @@ HRESULT CPlayer::Init(void)
 
 	// ナビゲーションオブジェクトの接触回数管理用マップの初期化 sato Add
 	m_naviObjectCountMap = std::unordered_map<size_t, unsigned short>();
+	m_naviObjectLastTimeMap = std::unordered_map<size_t, std::chrono::steady_clock::time_point>();
 	m_naviObjectIdxListOld = std::vector<size_t>();
 
 	m_state = STATE::Normal;              // 通常
@@ -164,29 +165,42 @@ void CPlayer::CheckNavigation()
 			size_t idx = 0;
 			CNavi::TYPE naviType = pObject->ActivateTrigger(m_RigitBody.get(), &pos, &angle, &idx);
 
-			// 前のフレームで触れていなかった場合は接触回数をカウントアップ
-			if (std::find(m_naviObjectIdxListOld.begin(), m_naviObjectIdxListOld.end(), idx) == m_naviObjectIdxListOld.end())
-			{
-				// 触れたナビゲーションタイプによって処理を分岐
-				switch (naviType)
-				{
-				case CNavi::TYPE::Arrow:
-					// ターンの準備
-					PreparationTrun(pos, angle);
-					break;
-				case CNavi::TYPE::Climb:
-					// クライムの準備
-					PreparationClimb();
-					break;
-				case CNavi::TYPE::Jump:
-					// ジャンプの準備
-					PreparationJump(pos);
-					break;
-				}
-			}
-
 			if (naviType != CNavi::TYPE::None && naviType != CNavi::TYPE::Max)
 			{
+				// 前のフレームで触れていなかった場合は接触回数をカウントアップ
+				if (std::find(m_naviObjectIdxListOld.begin(), m_naviObjectIdxListOld.end(), idx) == m_naviObjectIdxListOld.end())
+				{
+					// 初めての接触の場合はマップに登録
+					m_naviObjectLastTimeMap.try_emplace(idx, std::chrono::steady_clock::time_point());
+
+					// 前回ヒットからの経過時間
+					std::chrono::steady_clock::time_point now = std::chrono::steady_clock::now();
+					float delta = std::chrono::duration<float>(now - m_naviObjectLastTimeMap.at(idx)).count();
+
+					// 前回ヒットしてから早過ぎる
+					if (delta < HIT_NAVI_OBJECT_TIME) continue;
+
+					// 今回当たった時間を記録
+					m_naviObjectLastTimeMap[idx] = now;
+
+					// 触れたナビゲーションタイプによって処理を分岐
+					switch (naviType)
+					{
+					case CNavi::TYPE::Arrow:
+						// ターンの準備
+						PreparationTrun(pos, angle);
+						break;
+					case CNavi::TYPE::Climb:
+						// クライムの準備
+						PreparationClimb();
+						break;
+					case CNavi::TYPE::Jump:
+						// ジャンプの準備
+						PreparationJump(pos);
+						break;
+					}
+				}
+
 				// 初めての接触の場合はマップに登録
 				m_naviObjectCountMap.try_emplace(idx, short(0));
 
@@ -445,6 +459,11 @@ void CPlayer::UpdateState(btVector3& moveDir)
 					m_pClimbBlock = nullptr;
 				}
 			}
+			else
+			{// ブロックの中にいる
+				m_state = STATE::Jumping;
+				m_pClimbBlock = nullptr;
+			}
 		}
 		else
 		{// 登ったまま少し浮いたか落ちた
@@ -609,7 +628,7 @@ bool CPlayer::IsClimbingContact()
 // 登り切った?
 bool CPlayer::IsClimbingEnd()
 {
-	if (m_pClimbBlock == nullptr) return false;
+	if (m_pClimbBlock == nullptr) return true;
 
 	// 自分の足元
 	float myBottomY = GetPos().y;
@@ -650,7 +669,7 @@ void CPlayer::Landing()
 	}
 	else
 	{
-		if (GetMotionInfo()->GetMotion() != 1)
+		if (GetMotionInfo()->GetBlendMotion() != 1)
 		{// 歩きモーション
 			GetMotionInfo()->SetMotion(1, false);
 		}

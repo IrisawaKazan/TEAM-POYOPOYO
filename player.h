@@ -8,6 +8,7 @@
 #ifndef _PLAYER_H_
 #define _PLAYER_H_
 
+#include <chrono>
 #include <unordered_map>
 #include "character.h"
 
@@ -31,6 +32,7 @@ public:
 	static constexpr float AIR_CONTROL_FACTOR = 0.1f;        // 空中制御係数 sato Add
 	static constexpr float GROUND_SPACE = 0.5f;              // 着地制御 sato Add
 	static constexpr float LANDING_MOTION_HEIGHT_MIN = 8.0f; // 着地モーションをする最低の落下速度 sato Add
+	static constexpr float HIT_NAVI_OBJECT_TIME = 1.0f;      // ナビゲーションオブジェクトに再度当たるまでの最低秒数(これ以上短い期間で連続であたっても無視します) sato Add
 
 	// 状態
 	enum class STATE : unsigned char
@@ -83,8 +85,9 @@ private:
 	std::unique_ptr<btCollisionShape> m_CollisionShape;
 	std::unique_ptr<btRigidBody> m_RigitBody;		// リジットボディー
 
-	std::unordered_map<size_t, unsigned short> m_naviObjectCountMap; // ナビゲーションオブジェクトの接触回数管理用マップ
-	std::vector<size_t> m_naviObjectIdxListOld;                      // 前のフレームで触れていたナビゲーションオブジェクトのインデックスリスト
+	std::unordered_map<size_t, unsigned short> m_naviObjectCountMap;                                 // ナビゲーションオブジェクトの接触回数管理用マップ
+	std::unordered_map<size_t, std::chrono::steady_clock::time_point> m_naviObjectLastTimeMap;       // ナビゲーションオブジェクトに前回触れてからの経過時間管理用マップ
+	std::vector<size_t> m_naviObjectIdxListOld;                                                      // 前のフレームで触れていたナビゲーションオブジェクトのインデックスリスト
 
 	STATE m_state;            // 状態 sato Add
 	D3DXVECTOR3 m_activePos;  // 行動位置 sato Add
