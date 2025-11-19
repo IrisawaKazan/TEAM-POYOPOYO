@@ -104,6 +104,8 @@ void CItem::Update(void)
 	// カウント
 	static int nCount = 0;
 	static int test = 0;
+	// 特別な指示を取ったかどうか
+	static bool bTutorial = true;
 
 	// クオータニオンの取得
 	pQuat = GetQuad();
@@ -172,33 +174,45 @@ void CItem::Update(void)
 			// 終了処理
 			Uninit();
 
-			// アイテムの種類で分ける
-			if (m_type == ITEM_LEFT)
-			{// 左向きのアイテムの場合
+			switch (m_type)
+			{
+			case ITEM_LEFT:
+
 				// チュートリアル表示
-				CGame::GetTutorialBoard()->SetUp("data\\TEXTURE\\tutorial_003.png");
+				CGame::GetTutorialBoard()->SetUp("data\\TEXTURE\\tutorial_003.png", false);
 
 				// アイテムの有効化
 				CNavi::GetInstance()->SetEnable(CNavi::ARROW::Left, true);
 
-			}
-			else if (m_type == ITEM_JUMP)
-			{
+				break;
+
+			case ITEM_JUMP:
+
 				// チュートリアル表示
-				CGame::GetTutorialBoard()->SetUp("data\\TEXTURE\\tutorial_002.png");
+				CGame::GetTutorialBoard()->SetUp("data\\TEXTURE\\tutorial_002.png", bTutorial);
 
 				// アイテムの有効化
 				CNavi::GetInstance()->SetEnable(CNavi::TYPE::Jump, true);
-			}
-			else if (m_type == ITEM_CLIMB)
-			{
+
+				// チュートリアルを見ない状態にする
+				bTutorial = false;
+
+				break;
+
+			case ITEM_CLIMB:
+
 				// チュートリアル表示
-				CGame::GetTutorialBoard()->SetUp("data\\TEXTURE\\tutorial_004.png");
+				CGame::GetTutorialBoard()->SetUp("data\\TEXTURE\\tutorial_004.png", bTutorial);
 
 				// アイテムの有効化
 				CNavi::GetInstance()->SetEnable(CNavi::TYPE::Climb, true);
-			}
 
+				// チュートリアルを見ない状態にする
+				bTutorial = false;
+
+				break;
+
+			}
 		}
 	}
 
