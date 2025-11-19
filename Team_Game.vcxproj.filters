@@ -163,8 +163,10 @@
     <ClCompile Include="titlebg.cpp">
       <Filter>ソース</Filter>
     </ClCompile>
-    <ClCompile Include="particle3d.cpp" />
     <ClCompile Include="effect3d.cpp">
+      <Filter>ソース</Filter>
+    </ClCompile>
+    <ClCompile Include="particle3d.cpp">
       <Filter>ソース</Filter>
     </ClCompile>
   </ItemGroup>
