@@ -158,26 +158,26 @@ void CRanking::Update(void)
 	m_pNumber3[MAX_NUM - 1]->ColAnim();
 	m_pNumber3[m_nData]->ColAnim();
 
-	static int nCnt = 0;
-	static int nNum = MAX_NUM - 1;
-	static int nData = 0;
+	//static int nCnt = 0;
+	//static int nNum = MAX_NUM - 1;
+	//static int nData = 0;
 
-	if (nCnt >= 30)
-	{
-		SetNumUpdate(nNum);
-		nData++;
+	//if (nCnt >= 30)
+	//{
+	//	SetNumUpdate(nNum);
+	//	nData++;
 
-		if (nData >= 60)
-		{
-			nCnt = 0;
-			nNum--;
-			nData = 0;
-		}
-	}
-	else
-	{
-		nCnt++;
-	}
+	//	if (nData >= 60)
+	//	{
+	//		nCnt = 0;
+	//		nNum--;
+	//		nData = 0;
+	//	}
+	//}
+	//else
+	//{
+	//	nCnt++;
+	//}
 	
 	
 	
