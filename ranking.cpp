@@ -6,6 +6,7 @@
 //****************************************************************
 #include "ranking.h"
 #include "timer.h"
+#include "math_T.h"
 
 using namespace std;
 
@@ -126,7 +127,7 @@ void CRanking::Update(void)
 {
 	// ç°ÇÃëçêî
 	int nNowTime = CTimer::GetTimer();
-	
+
 	// åªç›ÇÃï™ïbÇÃåvéZ
 	m_nMinutes = nNowTime / MAX_MINUTES;
 	m_nSeconds = (nNowTime % MAX_MINUTES) / MAX_SECOND;
@@ -153,8 +154,20 @@ void CRanking::Update(void)
 		m_pNumber2[nCnt][m_nData]->ColAnim();
 	}
 
+	// ÉJÉâÅ[ÇÃê›íË
 	m_pNumber3[MAX_NUM - 1]->ColAnim();
 	m_pNumber3[m_nData]->ColAnim();
+
+	for (int nNum = 0; nNum < MAX_NUM; nNum++)
+	{
+		for (int nCnt = 0; nCnt < MAX_TIMER; nCnt++)
+		{
+			m_pNumber1[nCnt][nNum]->Update();
+			m_pNumber2[nCnt][nNum]->Update();
+		}
+
+		m_pNumber3[nNum]->Update();
+	}
 }
 
 //****************************************************************
@@ -191,53 +204,56 @@ void CRanking::Sort(void)
 	// É\Å[ÉgópÉçÅ[ÉJÉãïœêî
 	int nData = 0;
 
-	// 0ïbÇ∂Ç·Ç»Ç©Ç¡ÇΩÇÁ
-	if (m_nTime[MAX_NUM - 2] >= 60)
+	if (nNowTime <= 10800 && nNowTime > 60)
 	{
-		// îzóÒÇÃç≈å„ÇÃêîílÇ™ç°ÇÃêîílÇÊÇËëÂÇ´Ç©Ç¡ÇΩÇÁ
-		if (m_nTime[MAX_NUM - 2] > nNowTime)
+		// 0ïbÇ∂Ç·Ç»Ç©Ç¡ÇΩÇÁ
+		if (m_nTime[MAX_NUM - 2] >= 60)
 		{
-			m_nTime[MAX_NUM - 2] = nNowTime;
-		}
-	}
-	else
-	{
-		if (m_nTime[MAX_NUM - 2] < nNowTime)
-		{
-			m_nTime[MAX_NUM - 2] = nNowTime;
-		}
-	}
-
-	for (int nCnt1 = 0; nCnt1 < MAX_NUM - 1; nCnt1++)
-	{
-		for (int nCnt2 = nCnt1 + 1; nCnt2 < MAX_NUM - 1; nCnt2++)
-		{
-			// î‰ärå≥0ïbÇ∂Ç·Ç»Ç©Ç¡ÇΩÇÁ
-			if (m_nTime[nCnt1] >= 60)
+			// îzóÒÇÃç≈å„ÇÃêîílÇ™ç°ÇÃêîílÇÊÇËëÂÇ´Ç©Ç¡ÇΩÇÁ
+			if (m_nTime[MAX_NUM - 2] > nNowTime)
 			{
-				// î‰ärå≥Ç™î‰ärêÊÇÊÇËëÂÇ´Ç©Ç¡ÇΩÇÁ
-				if (m_nTime[nCnt1] >= m_nTime[nCnt2])
+				m_nTime[MAX_NUM - 2] = nNowTime;
+			}
+		}
+		else
+		{
+			if (m_nTime[MAX_NUM - 2] < nNowTime)
+			{
+				m_nTime[MAX_NUM - 2] = nNowTime;
+			}
+		}
+
+		for (int nCnt1 = 0; nCnt1 < MAX_NUM - 1; nCnt1++)
+		{
+			for (int nCnt2 = nCnt1 + 1; nCnt2 < MAX_NUM - 1; nCnt2++)
+			{
+				// î‰ärå≥0ïbÇ∂Ç·Ç»Ç©Ç¡ÇΩÇÁ
+				if (m_nTime[nCnt1] >= 60)
 				{
-					// î‰ärêÊÇ™0ïbÇ∂Ç·Ç»Ç©Ç¡ÇΩÇÁ
-					if (m_nTime[nCnt2] >= 60)
+					// î‰ärå≥Ç™î‰ärêÊÇÊÇËëÂÇ´Ç©Ç¡ÇΩÇÁ
+					if (m_nTime[nCnt1] >= m_nTime[nCnt2])
 					{
-						nData = m_nTime[nCnt1];
-						m_nTime[nCnt1] = m_nTime[nCnt2];
-						m_nTime[nCnt2] = nData;
+						// î‰ärêÊÇ™0ïbÇ∂Ç·Ç»Ç©Ç¡ÇΩÇÁ
+						if (m_nTime[nCnt2] >= 60)
+						{
+							nData = m_nTime[nCnt1];
+							m_nTime[nCnt1] = m_nTime[nCnt2];
+							m_nTime[nCnt2] = nData;
+						}
 					}
 				}
-			}
-			else
-			{
-				nData = m_nTime[nCnt2];
-				m_nTime[nCnt2] = m_nTime[nCnt1];
-				m_nTime[nCnt1] = nData;
+				else
+				{
+					nData = m_nTime[nCnt2];
+					m_nTime[nCnt2] = m_nTime[nCnt1];
+					m_nTime[nCnt1] = nData;
+				}
 			}
 		}
-	}
 
-	// èëÇ´çûÇ›
-	WriteFile();
+		// èëÇ´çûÇ›
+		WriteFile();
+	}
 }
 
 //****************************************************************
@@ -296,7 +312,7 @@ void CRanking::Change(void)
 	m_nMin[MAX_NUM - 1] = nNowTime / MAX_MINUTES;
 	m_nSec[MAX_NUM - 1] = (nNowTime % MAX_MINUTES) / MAX_SECOND;
 
-	int aPosTexU[MAX_TIMER] = {};
+	int aPosTexU3[MAX_TIMER] = {};
 	int nData[MAX_TIMER] = {};
 	int nData1[MAX_TIMER] = {};
 
@@ -309,32 +325,32 @@ void CRanking::Change(void)
 	for (int nCnt = 0; nCnt < MAX_TIMER; nCnt++)
 	{
 		// 0î‘ñ⁄à»äO(ïb)
-		aPosTexU[nCnt] = (m_nSec[MAX_NUM - 1] % nData[0]) / nData1[0];
+		aPosTexU3[nCnt] = (m_nSec[MAX_NUM - 1] % nData[0]) / nData1[0];
 		nData[0] = nData[0] / 10;
 		nData1[0] = nData1[0] / 10;
 
-		m_pNumber1[nCnt][MAX_NUM - 1]->SetNumber(aPosTexU[nCnt], 4);
+		m_pNumber1[nCnt][MAX_NUM - 1]->SetNumber(aPosTexU3[nCnt], 4);
 
 		// 0î‘ñ⁄à»äO(ï™)
-		aPosTexU[nCnt] = (m_nMin[MAX_NUM - 1] % nData[1]) / nData1[1];
+		aPosTexU3[nCnt] = (m_nMin[MAX_NUM - 1] % nData[1]) / nData1[1];
 		nData[1] = nData[1] / 10;
 		nData1[1] = nData1[1] / 10;
 
-		m_pNumber2[nCnt][MAX_NUM - 1]->SetNumber(aPosTexU[nCnt], 4);
+		m_pNumber2[nCnt][MAX_NUM - 1]->SetNumber(aPosTexU3[nCnt], 4);
 	}
 
 	for (int nCnt = 0; nCnt < MAX_RANKING; nCnt++)
 	{
-		int aPosTexU[MAX_RANKING] = {};
+		int aPosTexU4[MAX_RANKING] = {};
 		int nRank = 10;
 		int nRank1 = 1;
 
 		// 0î‘ñ⁄à»äO(ïb)
-		aPosTexU[nCnt] = (nCnt + 1 % nRank) / nRank1;
+		aPosTexU4[nCnt] = (nCnt + 1 % nRank) / nRank1;
 		nRank = nRank / 10;
 		nRank1 = nRank1 / 10;
 
-		m_pNumber4[nCnt]->SetNumber(aPosTexU[nCnt], 4);
+		m_pNumber4[nCnt]->SetNumber(aPosTexU4[nCnt], 4);
 	}
 	
 }
@@ -393,6 +409,10 @@ void CRanking::WriteFile(void)
 //****************************************************************
 void CRanking::InitNum(void)
 {
+	float fMinX = 370.0f;
+	float fSecX = 210.0f;
+	float fRankX = 125.0f;
+
 	// ëSëÃÇÃÉâÉìÉLÉìÉO
 	for (int nNum = 0; nNum < MAX_NUM - 1; nNum++)
 	{
@@ -402,14 +422,14 @@ void CRanking::InitNum(void)
 
 			if (m_pNumber1[nCnt][nNum] != nullptr)
 			{
-				m_pNumber1[nCnt][nNum]->Init(650.0f, 650.0f, 300.0f, 350.0f, nCnt, nNum, 50.0f, 50.0f, 75.0f, MAX_TIMER, 4, "data\\TEXTURE\\number005.png", 0.1f);
+				m_pNumber1[nCnt][nNum]->Init(fMinX, fMinX, 300.0f, 350.0f, nCnt, nNum, 55.0f, 50.0f, 75.0f, MAX_TIMER, 4, "data\\TEXTURE\\number000.png", 0.1f,CNumber::TYPE_MIN);
 			}
 
 			m_pNumber2[nCnt][nNum] = new CNumber;
 
 			if (m_pNumber2[nCnt][nNum] != nullptr)
 			{
-				m_pNumber2[nCnt][nNum]->Init(520.0f, 520.0f, 300.0f, 350.0f, nCnt, nNum, 50.0f, 50.0f, 75.0f, MAX_TIMER, 4, "data\\TEXTURE\\number005.png", 0.1f);
+				m_pNumber2[nCnt][nNum]->Init(fSecX, fSecX, 300.0f, 350.0f, nCnt, nNum, 55.0f, 50.0f, 75.0f, MAX_TIMER, 4, "data\\TEXTURE\\number000.png", 0.1f,CNumber::TYPE_SEC);
 			}
 		}
 
@@ -417,7 +437,7 @@ void CRanking::InitNum(void)
 
 		if (m_pNumber3[nNum] != nullptr)
 		{
-			m_pNumber3[nNum]->Init(615.0f, 665.0f, 300.0f, 350.0f, 0, nNum, 1.0f, 0.0f, 75.0f, 1, 0, "data\\TEXTURE\\coron.png", 1.0f);
+			m_pNumber3[nNum]->Init(320.0f, 350.0f, 300.0f, 350.0f, 0, nNum, 1.0f, 0.0f, 75.0f, 1, 0, "data\\TEXTURE\\coron000.png", 1.0f,CNumber::TYPE_CORON);
 		}
 	}
 
@@ -428,14 +448,14 @@ void CRanking::InitNum(void)
 
 		if (m_pNumber1[nCnt][MAX_NUM - 1] != nullptr)
 		{
-			m_pNumber1[nCnt][MAX_NUM - 1]->Init(650.0f, 650.0f, 100.0f, 150.0f, nCnt, 0, 50.0f, 50.0f, 75.0f, MAX_TIMER, 4, "data\\TEXTURE\\number005.png", 0.1f);
+			m_pNumber1[nCnt][MAX_NUM - 1]->Init(fMinX, fMinX, 100.0f, 150.0f, nCnt, 0, 55.0f, 50.0f, 75.0f, MAX_TIMER, 4, "data\\TEXTURE\\number000.png", 0.1f,CNumber::TYPE_MIN1);
 		}
 
 		m_pNumber2[nCnt][MAX_NUM - 1] = new CNumber;
 
 		if (m_pNumber2[nCnt][MAX_NUM - 1] != nullptr)
 		{
-			m_pNumber2[nCnt][MAX_NUM - 1]->Init(520.0f, 520.0f, 100.0f, 150.0f, nCnt, 0, 50.0f, 50.0f, 75.0f, MAX_TIMER, 4, "data\\TEXTURE\\number005.png", 0.1f);
+			m_pNumber2[nCnt][MAX_NUM - 1]->Init(fSecX, fSecX, 100.0f, 150.0f, nCnt, 0, 55.0f, 50.0f, 75.0f, MAX_TIMER, 4, "data\\TEXTURE\\number000.png", 0.1f, CNumber::TYPE_SEC1);
 		}
 	}
 
@@ -443,7 +463,7 @@ void CRanking::InitNum(void)
 
 	if (m_pNumber3[MAX_NUM - 1] != nullptr)
 	{
-		m_pNumber3[MAX_NUM - 1]->Init(615.0f, 665.0f, 100.0f, 150.0f, 0, 0, 1.0f, 0.0f, 75.0f, 1, 0, "data\\TEXTURE\\coron.png", 1.0f);
+		m_pNumber3[MAX_NUM - 1]->Init(320.0f, 350.0f, 100.0f, 150.0f, 0, 0, 1.0f, 0.0f, 75.0f, 1, 0, "data\\TEXTURE\\coron000.png", 1.0f, CNumber::TYPE_CORON1);
 	}
 
 	// ÉâÉìÉLÉìÉO
@@ -453,7 +473,7 @@ void CRanking::InitNum(void)
 
 		if (m_pNumber4[nCnt] != nullptr)
 		{
-			m_pNumber4[nCnt]->Init(450.0f, 450.0f, 300.0f, 350.0f, 0, nCnt, 50.0f, 50.0f, 75.0f, MAX_TIMER, 4, "data\\TEXTURE\\RankNum.png", 0.1f);
+			m_pNumber4[nCnt]->Init(fRankX, fRankX, 300.0f, 350.0f, 0, nCnt, 50.0f, 50.0f, 75.0f, MAX_TIMER, 4, "data\\TEXTURE\\RankNum.png", 0.1f, CNumber::TYPE_NONE);
 		}
 	}
 }

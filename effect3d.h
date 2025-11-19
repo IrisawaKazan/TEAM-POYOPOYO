@@ -43,7 +43,14 @@ public:
 
 	// 静的メンバ関数
 	// 生成
-	static CEffect3D* Create(D3DXVECTOR3 Pos, D3DXVECTOR3 Move, D3DXCOLOR Col, D3DXVECTOR2 Size, float Gravity, int Life, const char* FilePath,const int Priority = 3);
+	static CEffect3D* Create(D3DXVECTOR3 Pos, 
+		D3DXVECTOR3 Move, 
+		D3DXCOLOR Col, 
+		D3DXVECTOR2 Size, 
+		float Gravity, 
+		int Life, 
+		const char* FilePath);
+
 private:
 	// メンバ変数
 	int m_nIdx;				// テクスチャの番号 Misaki

@@ -11,6 +11,8 @@
 #include "arrow.h"
 #include "block.h"
 #include "mapmanager.h"
+#include "effect3d.h"
+#include "particle3d.h"
 
 // 静的メンバ変数の定義
 
@@ -482,6 +484,29 @@ void CPlayer::UpdateState(btVector3& moveDir)
 	}
 		// 滑っている
 	case STATE::Sliding:
+		// 火の情報を設定
+		CParticle3D::DefoultEffectInfo FireInfo;
+		FireInfo.Bece.Col = FIRE;
+		FireInfo.Bece.fMaxSpeed = 1.2f;
+		FireInfo.Bece.fMinSpeed = 1.2f;
+		FireInfo.Bece.MaxDir = { 0.1f,0.5f,0.1f };
+		FireInfo.Bece.MinDir = { -0.1f,0.5f,-0.1f };
+		FireInfo.Bece.nLife = 1;
+		FireInfo.Bece.nMaxLife = 3;
+		FireInfo.Bece.nMinLife = 3;
+		FireInfo.Bece.nNumEffect = 1;
+		FireInfo.Bece.Pos = { GetPos().x,GetPos().y + 5.0f ,GetPos().z };
+		FireInfo.MaxRadius = 15.0f;
+		FireInfo.MinRadius = 15.0f;
+		FireInfo.Bece.bLoop = false;
+		FireInfo.Bece.nCoolDown = 2;
+		FireInfo.Bece.Gravity = 0.01f;
+		memcpy(FireInfo.Bece.FilePath, CEffect3D::Config::Smoke, sizeof(FireInfo.Bece.FilePath));
+		FireInfo.Bece.nPriority = 5;
+
+		// 生成
+		CParticle3D::Create(FireInfo);
+
 		if (GetMotionInfo()->GetBlendMotion() != 2)
 		{// スライディングモーション
 			GetMotionInfo()->SetMotion(2, false);

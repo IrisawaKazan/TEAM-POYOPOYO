@@ -402,7 +402,7 @@ void CMapManager::Load(std::string Path)
 	// アイテムの生成処理 Misaki
 	CItem* Instanfce;
 	Instanfce = CItem::Create(CItem::ITEM_JUMP,	// 種類
-		D3DXVECTOR3(1250.0f, 50.0f, -800.0f), 	// 位置
+		D3DXVECTOR3(300.0f, 50.0f, 600.0f), 	// 位置
 		D3DXVECTOR3(0.0f, 0.0f, 0.0f), 			// 向き
 		D3DXVECTOR3(1.2f, 1.2f, 1.2f),			// 拡大率
 		"data\\MODEL\\item\\item002.x");		// テキストファイル
@@ -412,7 +412,7 @@ void CMapManager::Load(std::string Path)
 
 	// アイテムの生成処理 Misaki
 	Instanfce = CItem::Create(CItem::ITEM_CLIMB,	// 種類
-		D3DXVECTOR3(-350.0f, 50.0f, -300.0f), 	// 位置
+		D3DXVECTOR3(700.0f, 200.0f, -500.0f), 	// 位置
 		D3DXVECTOR3(0.0f, 0.0f, 0.0f), 			// 向き
 		D3DXVECTOR3(1.2f, 1.2f, 1.2f),			// 拡大率
 		"data\\MODEL\\item\\item003.x");		// テキストファイル
@@ -422,7 +422,7 @@ void CMapManager::Load(std::string Path)
 
 	// アイテムの生成処理 Misaki
 	Instanfce = CItem::Create(CItem::ITEM_LEFT,	// 種類
-		D3DXVECTOR3(300.0f, 50.0f, 300.0f), 	// 位置
+		D3DXVECTOR3(300.0f, 50.0f, -75.0f), 	// 位置
 		D3DXVECTOR3(0.0f, 0.0f, 0.0f), 			// 向き
 		D3DXVECTOR3(1.2f, 1.2f, 1.2f),			// 拡大率
 		"data\\MODEL\\item\\item001.x");		// テキストファイル

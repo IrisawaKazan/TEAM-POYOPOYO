@@ -50,7 +50,9 @@ private:
 	CNumber* m_pNumber1[MAX_TIME][MAX_NUM];		// タイムの変数(秒)
 	CNumber* m_pNumber2[MAX_TIME][MAX_NUM];		// タイムの変数(分)
 	CNumber* m_pNumber3[MAX_NUM];				// タイムの変数(：)
-	CNumber* m_pNumber4[MAX_RANKING];
+	CNumber* m_pNumber4[MAX_RANKING];			// ランキング用の変数
+	D3DXVECTOR3 m_pos;							// 位置
+	D3DXVECTOR3 m_Dest;							// 目標の位置
 	int m_nTime[MAX_NUM];						// 総時間
 	int m_nMin[MAX_NUM];						// 分
 	int m_nSec[MAX_NUM];						// 秒
