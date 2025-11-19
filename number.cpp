@@ -60,6 +60,7 @@ HRESULT CNumber::Init(float fX1, float fX2, float fY1, float fY2, int nCnt, int 
 	m_nIdx = CTextureManager::Instance()->Register(FileName);
 	m_nColTime = 0;
 	m_MaxFrame = 240;
+	m_nAnimCounter = NULL;
 	m_Type = type;
 	m_bEasing = false;
 

@@ -61,7 +61,7 @@ HRESULT CRanking::Init(void)
 	InitNum();
 
 	// 黒ポリゴン
-	m_pBrackboard = CObject2D::Create(D3DXVECTOR3(1280.0f,0.0f,0.0f), VEC3_NULL, { SCREEN_WIDTH * 0.5f,SCREEN_HEIGHT * 1.0f });
+	m_pBrackboard = CObject2D::Create(D3DXVECTOR3(SCREEN_WIDTH,0.0f,0.0f), VEC3_NULL, { SCREEN_WIDTH * 0.5f,SCREEN_HEIGHT * 1.0f });
 
 	m_pBrackboard->SetCol({ 0.0f, 0.0f, 0.0f, 0.5f });
 
@@ -125,7 +125,6 @@ void CRanking::Uninit(void)
 			m_pNumber4[nCnt] = nullptr;
 		}
 	}
-	delete this;
 }
 
 //****************************************************************
@@ -166,26 +165,31 @@ void CRanking::Update(void)
 	m_pNumber3[MAX_NUM - 1]->ColAnim();
 	m_pNumber3[m_nData]->ColAnim();
 
-	//static int nCnt = 0;
-	//static int nNum = MAX_NUM - 1;
-	//static int nData = 0;
+	bool bPerception[MAX_NUM] = {};
 
-	//if (nCnt >= 30)
-	//{
-	//	SetNumUpdate(nNum);
-	//	nData++;
 
-	//	if (nData >= 60)
-	//	{
-	//		nCnt = 0;
-	//		nNum--;
-	//		nData = 0;
-	//	}
-	//}
-	//else
-	//{
-	//	nCnt++;
-	//}
+
+
+	static int nCnt = 0;
+	static int nNum = MAX_NUM - 1;
+	static int nData = 0;
+
+	if (nCnt >= 30)
+	{
+		SetNumUpdate(nNum);
+		nData++;
+
+		if (nData >= 60)
+		{
+			nCnt = 0;
+			nNum--;
+			nData = 0;
+		}
+	}
+	else
+	{
+		nCnt++;
+	}
 	
 	SetNumUpdate(5);
 	
@@ -226,7 +230,7 @@ void CRanking::Sort(void)
 	// ソート用ローカル変数
 	int nData = 0;
 
-	if (nNowTime <= 14400 && nNowTime > 60)
+	if (nNowTime < 14400 && nNowTime > 60)
 	{
 		// 0秒じゃなかったら
 		if (m_nTime[MAX_NUM - 2] >= 60)

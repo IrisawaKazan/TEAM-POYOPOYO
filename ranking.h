@@ -31,8 +31,8 @@ public:
 
 	//	ƒƒ“ƒoŠÖ”
 	static CRanking* Instance(void) {
-		static CRanking* pInstance = new CRanking;
-		return pInstance;
+		static std::unique_ptr<CRanking> pInstance = std::make_unique<CRanking>();
+		return pInstance.get();
 	}
 
 	HRESULT Init(void);
