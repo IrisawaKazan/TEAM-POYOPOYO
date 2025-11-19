@@ -230,7 +230,7 @@ void CRanking::Sort(void)
 	// ソート用ローカル変数
 	int nData = 0;
 
-	if (nNowTime < 14400 && nNowTime > 60)
+	if (nNowTime < 14400 && nNowTime >= 60)
 	{
 		// 0秒じゃなかったら
 		if (m_nTime[MAX_NUM - 2] >= 60)
