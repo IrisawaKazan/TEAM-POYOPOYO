@@ -270,6 +270,8 @@ void CNavi::Update(void)
 {
 	if (m_isEnable)
 	{
+		if (!SafetyCheck())return;
+
 		// 操作管理
 		CheckController();
 
@@ -442,17 +444,6 @@ void CNavi::Update(void)
 
 		m_aRayCastTarget.clear(); // レイキャスト対象オブジェクト配列をクリア
 		m_aLatentTarget.clear();  // レイキャストを隠すオブジェクト配列をクリア
-
-#ifdef _DEBUG
-		if (CManager::GetInputKeyboard()->GetTrigger(DIK_J))
-		{
-			SetEnable(TYPE::Jump, !GetEnable(TYPE::Jump));
-		}
-		if (CManager::GetInputKeyboard()->GetTrigger(DIK_C))
-		{
-			SetEnable(TYPE::Climb, !GetEnable(TYPE::Climb));
-		}
-#endif // _DEBUG
 	}
 }
 
@@ -975,4 +966,69 @@ void CNavi::SetDefaultEnable()
 		auto& enable = m_enableArrow.at(idx);
 		enable = DEFAULT_ARROW_ENABLE[unsigned int(idx)];
 	}
+}
+
+//--------------------------------
+// 切替モードの設定
+//--------------------------------
+void CNavi::SetArrowMode(bool isArrowMode)
+{
+	if (isArrowMode || (!isArrowMode && (GetEnable(TYPE::Climb) || GetEnable(TYPE::Jump))))
+	{
+		m_isArrowMode = isArrowMode;
+		if (m_isArrowMode)
+		{
+			m_lastType = m_type; m_type = TYPE::Arrow;
+		}
+		else if (m_lastType != TYPE::Climb && m_lastType != TYPE::Jump)
+		{
+			if (GetEnable(TYPE::Climb))m_type = TYPE::Climb;
+			else if (GetEnable(TYPE::Jump))m_type = TYPE::Jump;
+			else m_isArrowMode = false;
+		}
+		else if (GetEnable(m_lastType)) m_type = m_lastType;
+		else
+		{
+			if (GetEnable(TYPE::Climb))m_type = TYPE::Climb;
+			else if (GetEnable(TYPE::Jump))m_type = TYPE::Jump;
+			else m_isArrowMode = false;
+		}
+	}
+}
+
+//--------------------------------
+// 異常検知
+//--------------------------------
+bool CNavi::SafetyCheck()
+{
+	if (GetArrowMode())
+	{
+		for (auto it = m_enableArrow.begin(); it != m_enableArrow.end(); ++it)
+		{
+			if (it->second)return true;
+		}
+	}
+	else
+	{
+		for (auto it = m_enableList.begin(); it != m_enableList.end(); ++it)
+		{
+			if (it->second)return true;
+		}
+	}
+	ToggleArrowMode();
+	if (GetArrowMode())
+	{
+		for (auto it = m_enableArrow.begin(); it != m_enableArrow.end(); ++it)
+		{
+			if (it->second)return true;
+		}
+	}
+	else
+	{
+		for (auto it = m_enableList.begin(); it != m_enableList.end(); ++it)
+		{
+			if (it->second)return true;
+		}
+	}
+	return false;
 }

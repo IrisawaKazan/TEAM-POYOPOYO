@@ -118,14 +118,9 @@ void CNaviUI::SetObjectUI(void)
 	// 範囲
 	int listMax = isArrowMode ? int(CNavi::ARROW::Max) : int(CNavi::TYPE::Max);
 
-	if (!isArrowMode)
-	{// やじるしのテクスチャに今選ばれているやじるしのテクスチャで上書きする
-		texturePaths[1] = m_arrowTexturePaths[static_cast<int>(pNavi->GetArrowType())];
-	}
-
 	if (!texturePaths.empty() && texturePaths.size() > listID)
 	{// テクスチャがあればセット
-		if (m_pObjects[0] != nullptr)
+		if (m_pObjects[0] != nullptr && texturePaths[listID] != nullptr)
 		{
 			m_pObjects[0]->SetTexIndx(textureManager->Register(texturePaths[listID]));
 		}
@@ -140,7 +135,7 @@ void CNaviUI::SetObjectUI(void)
 	}
 	if (!texturePaths.empty() && texturePaths.size() > lastListID)
 	{// テクスチャがあればセット
-		if (m_pObjects[1] != nullptr)
+		if (m_pObjects[1] != nullptr && texturePaths[lastListID] != nullptr)
 		{
 			m_pObjects[1]->SetTexIndx(textureManager->Register(texturePaths[lastListID]));
 		}
@@ -155,7 +150,7 @@ void CNaviUI::SetObjectUI(void)
 	}
 	if (!texturePaths.empty() && texturePaths.size() > nextListID)
 	{// テクスチャがあればセット
-		if (m_pObjects[2] != nullptr)
+		if (m_pObjects[2] != nullptr && texturePaths[nextListID] != nullptr)
 		{
 			m_pObjects[2]->SetTexIndx(textureManager->Register(texturePaths[nextListID]));
 		}

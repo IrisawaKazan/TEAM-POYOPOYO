@@ -67,7 +67,7 @@ public:
 	void CalculateIntersection(void);
 	void HitCheckObject();
 
-	void SetArrowMode(bool isArrowMode) { if (GetEnable(TYPE::Arrow)) { m_isArrowMode = isArrowMode; if (isArrowMode)m_type = TYPE::Arrow; } }
+	void SetArrowMode(bool isArrowMode);
 	bool GetArrowMode() { return m_isArrowMode; }
 	void ToggleArrowMode() { SetArrowMode(!GetArrowMode()); }
 
@@ -78,7 +78,7 @@ public:
 	D3DXVECTOR3 GetClickPos(void) const { return m_clickPos; }
 
 private:
-	CNavi() : m_isEnable{}, m_screenPos{}, m_isController{}, m_pPointer{}, m_RayPos{ 0.0f,0.0f,0.0f }, m_RayDir{ 0.0f,0.0f,0.0f }, m_pos{ 0.0f,0.0f,0.0f }, m_clickPos{ 0.0f,0.0f,0.0f }, m_aRayCastTarget{}, m_aLatentTarget{}, m_pMarker{}, m_apObject{}, m_isArrowMode{}, m_type{}, m_arrowType{}, m_pNewObject{}, m_enableList{}, m_enableArrow{} {};
+	CNavi() : m_isEnable{}, m_screenPos{}, m_isController{}, m_pPointer{}, m_RayPos{ 0.0f,0.0f,0.0f }, m_RayDir{ 0.0f,0.0f,0.0f }, m_pos{ 0.0f,0.0f,0.0f }, m_clickPos{ 0.0f,0.0f,0.0f }, m_aRayCastTarget{}, m_aLatentTarget{}, m_pMarker{}, m_apObject{}, m_isArrowMode{}, m_lastType{}, m_type{}, m_arrowType{}, m_pNewObject{}, m_enableList{}, m_enableArrow{} {};
 	~CNavi() {};
 
 	void CheckController();
@@ -95,6 +95,7 @@ private:
 	void RemoveObject(void) { m_apObject.clear(); m_pNewObject = nullptr; }
 	void SetDefaultEnable();
 	void SetObject() { m_type = TYPE::Arrow; m_arrowType = ARROW::Right; }
+	bool SafetyCheck();
 
 	static constexpr float MARKER_HEIGHT = 0.1f;                                           // 地面からマーカーをオフセットする高さ
 	static constexpr float OBJECT_HEIGHT = 0.05f;                                          // 地面からオブジェクトをオフセットする高さ
@@ -121,7 +122,7 @@ private:
 
 	static constexpr std::array<bool, unsigned int(TYPE::Max)> DEFAULT_ENABLE =
 	{// Defaultの有効化状態
-		false,true,false,false
+		false,false,false,false
 	};
 
 	static constexpr std::array<bool, unsigned int(TYPE::Max)> DEFAULT_ARROW_ENABLE =
@@ -150,6 +151,7 @@ private:
 	CNaviObject* m_pNewObject;            // 新しいオブジェクト
 
 	bool m_isArrowMode; // やじるし切替モード
+	TYPE m_lastType;    // 切り替え前のタイプ
 
 	TYPE m_type;                                   // 今選ばれているオブジェクトタイプ
 	ARROW m_arrowType;                             // 今選ばれているやじるしタイプ
