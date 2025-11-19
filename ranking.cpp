@@ -167,9 +167,6 @@ void CRanking::Update(void)
 
 	bool bPerception[MAX_NUM] = {};
 
-
-
-
 	static int nCnt = 0;
 	static int nNum = MAX_NUM - 1;
 	static int nData = 0;
@@ -509,6 +506,8 @@ void CRanking::InitNum(void)
 //****************************************************************
 void CRanking::SetNumUpdate(int nCntNum)
 {
+	if (nCntNum < 0)return;
+
 	for (int nCnt = 0; nCnt < MAX_TIMER; nCnt++)
 	{
 		m_pNumber1[nCnt][nCntNum]->Update();
