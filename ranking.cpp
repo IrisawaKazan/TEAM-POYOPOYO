@@ -15,6 +15,8 @@ using namespace std;
 //****************************************************************
 CRanking::CRanking()
 {
+	m_pBrackboard = nullptr;
+
 	for (int nCnt = 0; nCnt < MAX_NUM; nCnt++)
 	{
 		for (int nTime = 0; nTime < MAX_TIMER; nTime++)
@@ -57,6 +59,11 @@ HRESULT CRanking::Init(void)
 
 	// ナンバーの初期化
 	InitNum();
+
+	// 黒ポリゴン
+	m_pBrackboard = CObject2D::Create(D3DXVECTOR3(1280.0f,0.0f,0.0f), VEC3_NULL, { SCREEN_WIDTH * 0.5f,SCREEN_HEIGHT * 1.0f });
+
+	m_pBrackboard->SetCol({ 0.0f, 0.0f, 0.0f, 0.5f });
 
 	// 変換
 	Change();
@@ -118,6 +125,7 @@ void CRanking::Uninit(void)
 			m_pNumber4[nCnt] = nullptr;
 		}
 	}
+	delete this;
 }
 
 //****************************************************************
@@ -158,16 +166,30 @@ void CRanking::Update(void)
 	m_pNumber3[MAX_NUM - 1]->ColAnim();
 	m_pNumber3[m_nData]->ColAnim();
 
-	for (int nNum = 0; nNum < MAX_NUM; nNum++)
-	{
-		for (int nCnt = 0; nCnt < MAX_TIMER; nCnt++)
-		{
-			m_pNumber1[nCnt][nNum]->Update();
-			m_pNumber2[nCnt][nNum]->Update();
-		}
+	//static int nCnt = 0;
+	//static int nNum = MAX_NUM - 1;
+	//static int nData = 0;
 
-		m_pNumber3[nNum]->Update();
-	}
+	//if (nCnt >= 30)
+	//{
+	//	SetNumUpdate(nNum);
+	//	nData++;
+
+	//	if (nData >= 60)
+	//	{
+	//		nCnt = 0;
+	//		nNum--;
+	//		nData = 0;
+	//	}
+	//}
+	//else
+	//{
+	//	nCnt++;
+	//}
+	
+	SetNumUpdate(5);
+	
+	
 }
 
 //****************************************************************
@@ -204,7 +226,7 @@ void CRanking::Sort(void)
 	// ソート用ローカル変数
 	int nData = 0;
 
-	if (nNowTime <= 10800 && nNowTime > 60)
+	if (nNowTime <= 14400 && nNowTime > 60)
 	{
 		// 0秒じゃなかったら
 		if (m_nTime[MAX_NUM - 2] >= 60)
@@ -409,9 +431,9 @@ void CRanking::WriteFile(void)
 //****************************************************************
 void CRanking::InitNum(void)
 {
-	float fMinX = 370.0f;
-	float fSecX = 210.0f;
-	float fRankX = 125.0f;
+	float fMinX = 1010.0f;
+	float fSecX = 850.0f;
+	float fRankX = 750.0f;
 
 	// 全体のランキング
 	for (int nNum = 0; nNum < MAX_NUM - 1; nNum++)
@@ -437,7 +459,7 @@ void CRanking::InitNum(void)
 
 		if (m_pNumber3[nNum] != nullptr)
 		{
-			m_pNumber3[nNum]->Init(320.0f, 350.0f, 300.0f, 350.0f, 0, nNum, 1.0f, 0.0f, 75.0f, 1, 0, "data\\TEXTURE\\coron000.png", 1.0f,CNumber::TYPE_CORON);
+			m_pNumber3[nNum]->Init(960.0f, 990.0f, 300.0f, 350.0f, 0, nNum, 1.0f, 0.0f, 75.0f, 1, 0, "data\\TEXTURE\\coron000.png", 1.0f,CNumber::TYPE_CORON);
 		}
 	}
 
@@ -463,7 +485,7 @@ void CRanking::InitNum(void)
 
 	if (m_pNumber3[MAX_NUM - 1] != nullptr)
 	{
-		m_pNumber3[MAX_NUM - 1]->Init(320.0f, 350.0f, 100.0f, 150.0f, 0, 0, 1.0f, 0.0f, 75.0f, 1, 0, "data\\TEXTURE\\coron000.png", 1.0f, CNumber::TYPE_CORON1);
+		m_pNumber3[MAX_NUM - 1]->Init(960.0f, 990.0f, 100.0f, 150.0f, 0, 0, 1.0f, 0.0f, 75.0f, 1, 0, "data\\TEXTURE\\coron000.png", 1.0f, CNumber::TYPE_CORON1);
 	}
 
 	// ランキング
@@ -476,4 +498,18 @@ void CRanking::InitNum(void)
 			m_pNumber4[nCnt]->Init(fRankX, fRankX, 300.0f, 350.0f, 0, nCnt, 50.0f, 50.0f, 75.0f, MAX_TIMER, 4, "data\\TEXTURE\\RankNum.png", 0.1f, CNumber::TYPE_NONE);
 		}
 	}
+}
+
+//****************************************************************
+// ナンバーのイージングセット
+//****************************************************************
+void CRanking::SetNumUpdate(int nCntNum)
+{
+	for (int nCnt = 0; nCnt < MAX_TIMER; nCnt++)
+	{
+		m_pNumber1[nCnt][nCntNum]->Update();
+		m_pNumber2[nCnt][nCntNum]->Update();
+	}
+
+	m_pNumber3[nCntNum]->Update();
 }

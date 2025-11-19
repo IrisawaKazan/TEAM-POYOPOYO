@@ -43,7 +43,7 @@ public:
 
 private:
 	LPDIRECT3DVERTEXBUFFER9 m_pVtxBuff;		// 頂点バッファ
-	D3DXVECTOR3 m_pos[2];						// 位置
+	D3DXVECTOR3 m_pos[2];					// 位置
 	D3DXVECTOR3 m_Dest;						// 目的値
 	TYPE m_Type;							// タイプ
 	bool m_bChange;							// カラー判定用

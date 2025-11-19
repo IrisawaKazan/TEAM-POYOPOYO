@@ -15,7 +15,7 @@ class CNumber;
 
 // マクロ定義
 #define MAX_TIMER (2)
-#define MAX_TIMEOVER (10800)
+#define MAX_TIMEOVER (4)
 #define MAX_HOUR (216000)
 
 // タイマークラス
@@ -32,16 +32,17 @@ public:
 	static CTimer* Create(D3DXVECTOR3 pos);
 
 	// セッター
-	void SetPosition(D3DXVECTOR3 pos);
+	void SetPosition(D3DXVECTOR3 pos) { m_pos = pos; };
+
 	void SubNs(int nValue);
 	void SubMin(int nValue);
 
 	// ゲッター
-	D3DXVECTOR3 GetPos(void);
-	int GetNs(void);
-	int GetMin(void);
-	int GetTime(void) { return m_nTime; };
-	static int GetTimer(void) { return m_nTimer; };
+	D3DXVECTOR3 GetPos(void) { return m_pos; };
+	int GetNs(void) { return m_nNs; };
+	static int GetMin(void) { return m_nMin; };
+	static int GetTime(void) { return m_nTime; };
+	static int GetTimer(void);
 
 	// インスタンス生成
 	static CTimer* Instance(void) {
@@ -54,12 +55,11 @@ private:
 	static CNumber* m_pNumber2[MAX_TIMER];	// ナンバーのポインタ(分)
 	static CNumber* m_pNumber3;				// ナンバーのポインタ(:)
 	D3DXVECTOR3 m_pos;						// 位置
-	int m_nTime;							// 値
 	int m_nNs;								// 秒
-	int m_nMin;								// 分
 	int m_nHour;							// 時
 	static int m_nTimer;					// タイマーの取得
-	bool m_bFinish;							// 終了処理
+	static int m_nTime;							// 値
+	static int m_nMin;								// 分
 };
 
 #endif

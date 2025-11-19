@@ -169,7 +169,7 @@ HRESULT CGame::Init(void)
 //***************************************
 void CGame::Update(void)
 {
-#ifdef _DEBUG
+//#ifdef _DEBUG
 	if (CManager::GetInputKeyboard() != NULL)
 	{
 		if (CManager::GetInputKeyboard()->GetTrigger(DIK_SPACE) == true)
@@ -180,12 +180,12 @@ void CGame::Update(void)
 			}
 		}
 	}
-#endif // DEBUG
+//#endif // DEBUG
 	if (CManager::GetInputKeyboard() != NULL)
 	{
 		if (CManager::GetInputKeyboard()->GetTrigger(DIK_F3) == true && m_pTutorialBoard->GetProgress() == false)
 		{
-			m_pTutorialBoard->SetUp("data\\TEXTURE\\tutorial_001.png");
+			m_pTutorialBoard->SetUp("data\\TEXTURE\\tutorial_001.png", true);
 		}
 	}
 	if (m_pMapManager != nullptr)

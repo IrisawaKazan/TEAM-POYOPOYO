@@ -264,7 +264,6 @@ void CCamera::UpdateMouseMove(void)
 		// 向きを動かす
 		m_rot.y += DiffMouse.x;
 
-		UpdateCameraPositionV();
 	}
 	// 注視点を動かせるかどうか
 	else if (isMovePosR() == true)
@@ -282,9 +281,10 @@ void CCamera::UpdateMouseMove(void)
 		// 向きを動かす
 		m_rot.y += DiffMouse.x;
 
-		UpdateCameraPositionR();
 	}
 
+	UpdateCameraPositionV();
+	UpdateCameraPositionR();
 	// 正規化
 	NormalizeCameraRot();
 }
@@ -708,11 +708,6 @@ void CCamera::UpdateCameraPositionVNormal()
 //***************************************
 void CCamera::UpdateCameraPositionRNormal()
 {
-	// 視点の座標更新、高さだけ高く設定する
-	m_posRDest.x = cosf(m_rot.x) * sinf(m_rot.y) * m_fDistance;
-	m_posRDest.y = sinf(m_rot.x) * m_fDistance + 10.0f;
-	m_posRDest.z = cosf(m_rot.x) * cosf(m_rot.y) * m_fDistance;
-
 	// 注視点の更新
 	m_posR.x += (m_posRDest.x - m_posR.x) * Config::CatchSpeedR.x;
 	m_posR.y += (m_posRDest.y - m_posR.y) * Config::CatchSpeedR.y;

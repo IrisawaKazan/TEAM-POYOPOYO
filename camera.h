@@ -127,6 +127,7 @@ public:
 	void SetMovie(MOTIONTYPE Type);
 	static void ResetProjectionMtx(void);
 	void SetMode(MODE mode) { m_mode = mode; }
+	void SetPosRDest(D3DXVECTOR3 Set) { m_posRDest = Set; }
 
 	// ƒQƒbƒ^[
 	D3DXVECTOR2 MouseMove(void) { return m_pInputMouse->GetVelocity(); };
