@@ -61,7 +61,7 @@ HRESULT CRanking::Init(void)
 	InitNum();
 
 	// •ƒ|ƒŠƒSƒ“
-	m_pBrackboard = CObject2D::Create(D3DXVECTOR3(1280.0f,0.0f,0.0f), VEC3_NULL, { SCREEN_WIDTH * 0.5f,SCREEN_HEIGHT * 1.0f });
+	m_pBrackboard = CObject2D::Create(D3DXVECTOR3(SCREEN_WIDTH,0.0f,0.0f), VEC3_NULL, { SCREEN_WIDTH * 0.5f,SCREEN_HEIGHT * 1.0f });
 
 	m_pBrackboard->SetCol({ 0.0f, 0.0f, 0.0f, 0.5f });
 
