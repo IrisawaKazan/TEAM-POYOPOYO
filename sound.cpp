@@ -23,6 +23,7 @@ CSound::SOUNDINFO CSound::m_aSoundInfo[CSound::LABEL_MAX] =
 	{"data/SE/pauseSe.wav", 0},				// ポーズSE
 	{"data/SE/fallingSe.wav", 0},			// 落下SE
 	{"data/SE/switchSe.wav", 0},			// スイッチSE
+	{"data/SE/turn_over.wav", 0},			// チュートリアルのページめくりSE
 };	
 
 //*********************************************
