@@ -95,49 +95,51 @@ void CPlayer::Uninit(void)
 // 更新
 void CPlayer::Update(void)
 {
-	if (CManager::GetScene()->GetMode() == CScene::MODE_RESULT) return;
 	if (m_RigitBody == nullptr) return;
 
-	// ナビゲーションチェック
-	CheckNavigation();
-
-	if (m_RigitBody == nullptr) return;
-
-	// 着地チェック
-	UpdateGroundedState();
-
-	btVector3 moveDir(0, 0, 0); // 最終的に setLinearVelocity に渡す速度
-	D3DXVECTOR3 rot = GetRot();
-	btVector3 currentVel = m_RigitBody->getLinearVelocity(); // 現在の物理速度
-
-	// 移動
-	Move(moveDir, rot, currentVel);
-
-	// 状態管理
-	UpdateState(moveDir);
-
-	if (m_state == STATE::Sliding)
+	if (CManager::GetScene()->GetMode() != CScene::MODE_RESULT)
 	{
-		if (m_IsSlopeTrigger == false)
+		// ナビゲーションチェック
+		CheckNavigation();
+
+		if (m_RigitBody == nullptr) return;
+
+		// 着地チェック
+		UpdateGroundedState();
+
+		btVector3 moveDir(0, 0, 0); // 最終的に setLinearVelocity に渡す速度
+		D3DXVECTOR3 rot = GetRot();
+		btVector3 currentVel = m_RigitBody->getLinearVelocity(); // 現在の物理速度
+
+		// 移動
+		Move(moveDir, rot, currentVel);
+
+		// 状態管理
+		UpdateState(moveDir);
+
+		if (m_state == STATE::Sliding)
+		{
+			if (m_IsSlopeTrigger == false)
+			{
+				// 物理に移動値を渡す
+				m_RigitBody->applyCentralImpulse(moveDir);
+				m_IsSlopeTrigger = true;
+			}
+		}
+		else
 		{
 			// 物理に移動値を渡す
-			m_RigitBody->applyCentralImpulse(moveDir);
-			m_IsSlopeTrigger = true;
+			m_RigitBody->setLinearVelocity(moveDir);
+			m_IsSlopeTrigger = false;
 		}
-	}
-	else
-	{
-		// 物理に移動値を渡す
-		m_RigitBody->setLinearVelocity(moveDir);
-		m_IsSlopeTrigger = false;
-	}
 
-	// 物理の位置をモデルの位置に渡す
-	btVector3 newPos;           // 位置
-	btTransform trans;          // トランスフォーム
-	m_RigitBody->getMotionState()->getWorldTransform(trans);
-	newPos = trans.getOrigin();
-	SetPos(D3DXVECTOR3(newPos.x(), newPos.y(), newPos.z()));
+		// 物理の位置をモデルの位置に渡す
+		btVector3 newPos;           // 位置
+		btTransform trans;          // トランスフォーム
+		m_RigitBody->getMotionState()->getWorldTransform(trans);
+		newPos = trans.getOrigin();
+		SetPos(D3DXVECTOR3(newPos.x(), newPos.y(), newPos.z()));
+	}
 
 	// モデルの更新
 	CModelCharacter::Update();
