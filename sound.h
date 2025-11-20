@@ -31,6 +31,8 @@ public:
 		LABEL_FALLING_SE,			// 落下SE
 		LABEL_SWITCH_SE,			// スイッチSE
 		LABEL_TURN_OVER_SE,			// チュートリアルのページめくりSE
+		LABEL_JUMP_SE,				// ジャンプSE
+		//LABEL_ITEM_SE,				// アイテムSE
 
 		LABEL_MAX					// 最大値
 	}LABEL;

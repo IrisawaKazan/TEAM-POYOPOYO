@@ -297,6 +297,12 @@ void CPlayer::PreparationJump(D3DXVECTOR3 objectPos)
 	m_activePos = CMath::GetNierToLineXZ(myPos, objectPos, verticalDir); // 矢印のベクトル上の近い地点
 
 	m_state = STATE::Jump;  // ジャンプ開始
+
+	// サウンドの取得
+	CSound* pSound = CManager::GetSound();
+
+	// SE
+	pSound->Play(CSound::LABEL_JUMP_SE);
 }
 
 // 着地確認
