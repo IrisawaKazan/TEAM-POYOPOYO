@@ -21,7 +21,7 @@
 //--------------------------------
 // 生成
 //--------------------------------
-CNaviUI* CNaviUI::Create(const char* frameTexturePath, std::vector<const char*> objectTexturePaths, std::vector<const char*> arrowTexturePaths, D3DXVECTOR3 pos, D3DXVECTOR2 size)
+CNaviUI* CNaviUI::Create(const char* frameTexturePath, std::vector<const char*> objectTexturePaths, std::vector<const char*> arrowTexturePaths, std::vector<const char*> keyTexturePaths, D3DXVECTOR3 pos, D3DXVECTOR2 size)
 {
 	// インスタンスの生成
 	CNaviUI* pNaviUI = new CNaviUI;
@@ -33,6 +33,7 @@ CNaviUI* CNaviUI::Create(const char* frameTexturePath, std::vector<const char*> 
 	pNaviUI->SetFrameTexturePath(frameTexturePath);
 	pNaviUI->SetObjectTexturePaths(objectTexturePaths);
 	pNaviUI->SetArrowTexturePaths(arrowTexturePaths);
+	pNaviUI->SetKeyTexturePaths(keyTexturePaths);
 	pNaviUI->SetPos(pos);
 	pNaviUI->SetSize(size);
 
@@ -53,24 +54,31 @@ HRESULT CNaviUI::Init(void)
 	// フレームのセット
 	CTextureManager* textureManager = CTextureManager::Instance();
 	m_pFrames[0] = CObject2D::Create(m_pos, VEC3_NULL, m_size, GetPriority());
-	m_pFrames[1] = CObject2D::Create(m_pos + D3DXVECTOR3(-m_size.x * 0.7f, m_size.y * 0.7f, 0.0f), VEC3_NULL, m_size * 0.2f, GetPriority());
-	m_pFrames[2] = CObject2D::Create(m_pos + D3DXVECTOR3(m_size.x * 0.7f, m_size.y * 0.7f, 0.0f), VEC3_NULL, m_size * 0.2f, GetPriority());
+	m_pFrames[1] = CObject2D::Create(m_pos + D3DXVECTOR3(-m_size.x * SIDE_OBJECT_POS_MAGNIFICATION_X, m_size.y * SIDE_OBJECT_POS_MAGNIFICATION_Y, 0.0f), VEC3_NULL, m_size * MAIN_OBJECT_TO_SIDE_OBJECT_SIZE_MAGNIFICATION, GetPriority());
+	m_pFrames[2] = CObject2D::Create(m_pos + D3DXVECTOR3(m_size.x * SIDE_OBJECT_POS_MAGNIFICATION_X, m_size.y * SIDE_OBJECT_POS_MAGNIFICATION_Y, 0.0f), VEC3_NULL, m_size * MAIN_OBJECT_TO_SIDE_OBJECT_SIZE_MAGNIFICATION, GetPriority());
 	for (auto pFrame : m_pFrames)
 	{
 		pFrame->SetTexIndx(textureManager->Register(m_frameTexturePath));
 		pFrame->SetAlphaTest(true);
 	}
 
-	m_pObjects[0] = CObject2D::Create(m_pos, VEC3_NULL, m_size * 0.7f, GetPriority());
-	m_pObjects[1] = CObject2D::Create(m_pos + D3DXVECTOR3(-m_size.x * 0.7f, m_size.y * 0.7f, 0.0f), VEC3_NULL, m_size * 0.15f, GetPriority());
-	m_pObjects[2] = CObject2D::Create(m_pos + D3DXVECTOR3(m_size.x * 0.7f, m_size.y * 0.7f, 0.0f), VEC3_NULL, m_size * 0.15f, GetPriority());
+	m_pObjects[0] = CObject2D::Create(m_pos, VEC3_NULL, m_size * FARAME_TO_OBJECT_SIZE_MAGNIFICATION, GetPriority());
+	m_pObjects[1] = CObject2D::Create(m_pos + D3DXVECTOR3(-m_size.x * SIDE_OBJECT_POS_MAGNIFICATION_X, m_size.y * SIDE_OBJECT_POS_MAGNIFICATION_Y, 0.0f), VEC3_NULL, m_size * FARAME_TO_OBJECT_SIZE_MAGNIFICATION * MAIN_OBJECT_TO_SIDE_OBJECT_SIZE_MAGNIFICATION, GetPriority());
+	m_pObjects[2] = CObject2D::Create(m_pos + D3DXVECTOR3(m_size.x * SIDE_OBJECT_POS_MAGNIFICATION_X, m_size.y * SIDE_OBJECT_POS_MAGNIFICATION_Y, 0.0f), VEC3_NULL, m_size * FARAME_TO_OBJECT_SIZE_MAGNIFICATION * MAIN_OBJECT_TO_SIDE_OBJECT_SIZE_MAGNIFICATION, GetPriority());
 	for (auto pObject : m_pObjects)
 	{
 		pObject->SetAlphaTest(true);
 	}
 
-	SetObjectUI(); // オブジェクトUIのセット
+	m_pKeys[0] = CObject2D::Create(m_pos + D3DXVECTOR3(-m_size.x * SIDE_OBJECT_POS_MAGNIFICATION_X, m_size.y * SIDE_OBJECT_POS_MAGNIFICATION_Y, 0.0f) + D3DXVECTOR3(0.0f, -m_size.y * KEY_HEIGHT_MAGNIFICATION, 0.0f), VEC3_NULL, m_size * MAIN_OBJECT_TO_SIDE_OBJECT_SIZE_MAGNIFICATION * KEY_SIZE_MAGNIFICATION, GetPriority());
+	m_pKeys[1] = CObject2D::Create(m_pos + D3DXVECTOR3(m_size.x * SIDE_OBJECT_POS_MAGNIFICATION_X, m_size.y * SIDE_OBJECT_POS_MAGNIFICATION_Y, 0.0f) + D3DXVECTOR3(0.0f, -m_size.y * KEY_HEIGHT_MAGNIFICATION, 0.0f), VEC3_NULL, m_size * MAIN_OBJECT_TO_SIDE_OBJECT_SIZE_MAGNIFICATION * KEY_SIZE_MAGNIFICATION, GetPriority());
+	for (auto pKey : m_pKeys)
+	{
+		pKey->SetAlphaTest(true);
+	}
 
+	SetObjectUI(); // オブジェクトUIのセット
+	SetKeyUI();    // キーUIのセット
 	return S_OK;
 }
 
@@ -101,7 +109,7 @@ void CNaviUI::Draw(void)
 //--------------------------------
 // オブジェクトUIのセット
 //--------------------------------
-void CNaviUI::SetObjectUI(void)
+void CNaviUI::SetObjectUI()
 {
 	CTextureManager* textureManager = CTextureManager::Instance();
 	CNavi* pNavi = CNavi::GetInstance();
@@ -153,6 +161,27 @@ void CNaviUI::SetObjectUI(void)
 		if (m_pObjects[2] != nullptr && texturePaths[nextListID] != nullptr)
 		{
 			m_pObjects[2]->SetTexIndx(textureManager->Register(texturePaths[nextListID]));
+		}
+	}
+}
+
+//--------------------------------
+// キーUIのセット
+//--------------------------------
+void CNaviUI::SetKeyUI()
+{
+	if (m_pKeys.empty() || m_keyTexturePaths.empty())return; // キーのオブジェクトやテクスチャがない
+
+	CTextureManager* textureManager = CTextureManager::Instance();
+
+	for (size_t cnt = 0; cnt < m_pKeys.size(); ++cnt)
+	{// キー配列の走査
+		if (m_keyTexturePaths.size() > cnt)
+		{
+			if (m_pKeys[cnt] != nullptr && m_keyTexturePaths[cnt] != nullptr)
+			{// テクスチャがあればセット
+				m_pKeys[cnt]->SetTexIndx(textureManager->Register(m_keyTexturePaths[cnt]));
+			}
 		}
 	}
 }

@@ -36,9 +36,9 @@ HRESULT CTutorialBoard::Init(void)
 	m_Dest = { SCREEN_WIDTH * 0.5f,SCREEN_HEIGHT * 0.5f,0.0f };	// 目標位置
 	m_pos = { SCREEN_WIDTH * 0.5f,SCREEN_HEIGHT * 1.5f,0.0f };	// 初期位置
 
-	m_pBackground = CObject2D::Create({ SCREEN_WIDTH * 0.5f,SCREEN_HEIGHT * 0.5f,0.0f }, VEC3_NULL, { SCREEN_WIDTH * 0.5f,SCREEN_HEIGHT * 0.5f });
+	m_pBackground = CObject2D::Create({ SCREEN_WIDTH * 0.5f,SCREEN_HEIGHT * 0.5f,0.0f }, VEC3_NULL, { SCREEN_WIDTH * 0.5f,SCREEN_HEIGHT * 0.5f }, 7); // sato 変更
 
-	m_pBoard = CObject2D::Create(m_pos, VEC3_NULL, { SCREEN_WIDTH * 0.5f,SCREEN_HEIGHT * 0.5f });
+	m_pBoard = CObject2D::Create(m_pos, VEC3_NULL, { SCREEN_WIDTH * 0.5f,SCREEN_HEIGHT * 0.5f }, 7);                                                  // sato 変更
 
 	m_pBoard->SetTexIndx(CTextureManager::Instance()->Register("data\\TEXTURE\\tutorial_001.png"));
 	m_pBackground->SetCol({ 0.0f, 0.0f, 0.0f, 0.4f });

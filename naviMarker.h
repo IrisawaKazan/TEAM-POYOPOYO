@@ -14,7 +14,7 @@
 class CNaviMarker : public CObject
 {
 public:
-	CNaviMarker() : CObject(4), m_pVertex{}, m_texIdx{}, m_pos{}, m_mtxRot{}, m_size{} {};
+	CNaviMarker() : CObject(3), m_pVertex{}, m_texIdx{}, m_pos{}, m_mtxRot{}, m_size{} {};
 	~CNaviMarker() {};
 	static CNaviMarker* Create(const char* filePath, D3DXVECTOR2 size);
 

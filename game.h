@@ -83,6 +83,12 @@ private:
 		"data/TEXTURE/UI/ArrowMark003.png",
 		"data/TEXTURE/UI/ArrowMark000.png"
 	};
+	// ナビゲーションオブジェクトUI(キー)のテクスチャリスト
+	static constexpr std::array<const char*, 2u> NAVI_UI_KEY_TEXTURES =
+	{
+		"data/TEXTURE/UI/keyboard_q.png",
+		"data/TEXTURE/UI/keyboard_e.png"
+	};
 
 	// 静的メンバ変数
 	static CPauseManager* m_pPauseManager;				// ポーズマネージャーへのポインタ
