@@ -105,6 +105,12 @@ void CTutorialBoard::Update(void)
 			}
 			else if (m_bNextBoard == true)
 			{// 次のチュートリアルを表示する場合
+				// サウンドの取得
+				CSound* pSound = CManager::GetSound();
+
+				// SE
+				pSound->Play(CSound::LABEL_TURN_OVER_SE);
+
 				switch (m_nCount)
 				{
 				case 0:

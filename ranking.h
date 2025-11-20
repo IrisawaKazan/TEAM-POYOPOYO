@@ -64,6 +64,7 @@ private:
 	int m_nData;								// カラー用の数値の保存用変数
 	int m_nMinutes;								// 現在の分の計算用変数
 	int m_nSeconds;								// 現在の秒の計算用変数
+	int m_nRankIdx;								// アニメーション中のランキングのインデックス
 	bool m_bAct;								// 発動したかどうか
 };
 

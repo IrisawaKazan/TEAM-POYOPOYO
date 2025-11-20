@@ -254,6 +254,8 @@ void CNumber::ColAnim(void)
 
 void CNumber::SetPos(void)
 {
+	if (m_pVtxBuff == NULL) return;
+
 	D3DXVECTOR3 rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	VERTEX_2D* pVtx = NULL;
 
@@ -262,11 +264,7 @@ void CNumber::SetPos(void)
 	// 大きさを再設定
 	float fLength = sqrtf((SCREEN_WIDTH * 0.02f * SCREEN_HEIGHT * 0.02f) + (SCREEN_WIDTH * 0.02f * SCREEN_HEIGHT * 0.02f));
 
-
-	if (m_pVtxBuff != NULL)
-	{
-		m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
-	}
+	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 
 	if (pVtx != NULL)
 	{
@@ -284,4 +282,6 @@ void CNumber::SetPos(void)
 		pVtx[3].pos.y = m_fY[1]+ cosf(rot.z + (0.0f + fAngle)) * fLength;//pos.y + 25.0f;
 		pVtx[3].pos.z = 0.0f;
 	}
+	// バッファをアンロック
+	m_pVtxBuff->Unlock();
 }
