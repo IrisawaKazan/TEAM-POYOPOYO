@@ -177,8 +177,12 @@ void CStart::Update(void)
 			}
 			else
 			{
-				// SE
-				pSound->Play(CSound::LABEL_DECISION_SE); // エンター連打で多重に鳴る
+				// エンター連打で多重に鳴らないための処理
+				if (CFade::GetFadeSingle()->GetFade() == CFade::FADE_NONE)
+				{
+					// SE
+					pSound->Play(CSound::LABEL_DECISION_SE);
+				}
 
 				CFade::SetFade(new CGame);
 				CManager::OffPause();
