@@ -27,8 +27,11 @@ public:
 	void Uninit(void)	override;
 	void Draw(void)		override;
 
+	void LoadFile(void);
+
 private:
 	CRanking* m_pRanking;
+	bool m_IsGoal;
 
 };
 

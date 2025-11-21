@@ -427,8 +427,8 @@ void CRanking::WriteFile(void)
 //****************************************************************
 void CRanking::InitNum(void)
 {
-	float fMinX = 2010.0f;
-	float fSecX = 1850.0f;
+	float fMinX = 980.0f;
+	float fSecX = 880.0f;
 	float fRankX = 750.0f;
 
 	// 全体のランキング
@@ -455,7 +455,7 @@ void CRanking::InitNum(void)
 
 		if (m_pNumber3[nNum] != nullptr)
 		{
-			m_pNumber3[nNum]->Init(1960.0f, 1990.0f, 300.0f, 350.0f, 0, nNum, 1.0f, 0.0f, 75.0f, 1, 0, "data\\TEXTURE\\coron000.png", 1.0f,CNumber::TYPE_CORON);
+			m_pNumber3[nNum]->Init(960.0f, 1990.0f, 300.0f, 350.0f, 0, nNum, 1.0f, 0.0f, 75.0f, 1, 0, "data\\TEXTURE\\coron000.png", 1.0f,CNumber::TYPE_CORON);
 		}
 	}
 
@@ -481,7 +481,7 @@ void CRanking::InitNum(void)
 
 	if (m_pNumber3[MAX_NUM - 1] != nullptr)
 	{
-		m_pNumber3[MAX_NUM - 1]->Init(1960.0f, 1990.0f, 100.0f, 150.0f, 0, 0, 1.0f, 0.0f, 75.0f, 1, 0, "data\\TEXTURE\\coron000.png", 1.0f, CNumber::TYPE_CORON1);
+		m_pNumber3[MAX_NUM - 1]->Init(960.0f, 1990.0f, 100.0f, 150.0f, 0, 0, 1.0f, 0.0f, 75.0f, 1, 0, "data\\TEXTURE\\coron000.png", 1.0f, CNumber::TYPE_CORON1);
 	}
 
 	// ランキング
