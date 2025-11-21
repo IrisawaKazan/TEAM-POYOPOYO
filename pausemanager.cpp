@@ -10,6 +10,8 @@
 #include "manager.h"
 #include "math_T.h"
 #include "fade.h"
+#include "game.h"
+#include "tutorialBoard.h"
 
 // シングルトンを宣言
 CPauseManager* CPauseManager::m_Singleton = NULL;
@@ -56,7 +58,7 @@ void CPauseManager::Update(void)
 	// サウンドの取得
 	CSound* pSound = CManager::GetSound();
 
-	if (CManager::GetCamera()->IsAnim() == false && CFade::GetFadeSingle()->GetFade() == CFade::FADE_NONE)
+	if (CManager::GetCamera()->IsAnim() == false && CFade::GetFadeSingle()->GetFade() == CFade::FADE_NONE && CGame::GetTutorialBoard()->GetProgress() == false)
 	{
 		if (CManager::GetInputKeyboard()->GetTrigger(DIK_P) == true || CManager::GetInputJoypad()->GetTrigger(CInputJoypad::JOYKEY_START) == true)
 		{
