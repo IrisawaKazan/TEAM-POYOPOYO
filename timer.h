@@ -31,6 +31,8 @@ public:
 	void Draw(void);
 	static CTimer* Create(D3DXVECTOR3 pos);
 
+	void WriteFile(void);
+
 	// セッター
 	void SetPosition(D3DXVECTOR3 pos) { m_pos = pos; };
 
@@ -57,9 +59,10 @@ private:
 	D3DXVECTOR3 m_pos;						// 位置
 	int m_nNs;								// 秒
 	int m_nHour;							// 時
+	int m_nGoal;							// クリア時の書き込み用変数
 	static int m_nTimer;					// タイマーの取得
-	static int m_nTime;							// 値
-	static int m_nMin;								// 分
+	static int m_nTime;						// 値
+	static int m_nMin;						// 分
 };
 
 #endif
