@@ -69,7 +69,7 @@ HRESULT CTimer::Init(void)
 	m_nTime = NULL;
 	m_nTimer = NULL;
 	m_nHour = NULL;
-	m_nGoal = NULL;
+	m_nGoal = 1;
 
 	for (int nCnt = 0; nCnt < MAX_TIMER; nCnt++)
 	{
@@ -172,7 +172,7 @@ void CTimer::Update(void)
 	//Å@4ï™ÇΩÇ¡ÇΩÇÁ
 	if (m_nMin >= MAX_TIMEOVER)
 	{
-		m_nGoal = 1;
+		m_nGoal = 0;
 
 		// èëÇ´çûÇ›
 		WriteFile();
