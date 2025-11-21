@@ -257,7 +257,7 @@ void CRenderer::ToggleFullscreen(HWND hWnd, bool* isFullScrean)
 	{// ウインドウモードに戻す
 
 		// スタイルを戻す
-		SetWindowLong(hWnd, GWL_STYLE, dwStyle | WS_OVERLAPPEDWINDOW);
+		SetWindowLong(hWnd, GWL_STYLE, (dwStyle | WS_OVERLAPPEDWINDOW) & ~WS_THICKFRAME & ~WS_MAXIMIZEBOX);
 
 		// ウィンドウの状態を戻す
 		ShowWindow(hWnd, SW_NORMAL);
