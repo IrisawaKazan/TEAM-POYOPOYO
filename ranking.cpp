@@ -427,8 +427,8 @@ void CRanking::WriteFile(void)
 //****************************************************************
 void CRanking::InitNum(void)
 {
-	float fMinX = 980.0f;
-	float fSecX = 880.0f;
+	float fMinX = 1000.0f;
+	float fSecX = 870.0f;
 	float fRankX = 750.0f;
 
 	// ‘S‘Ì‚Ìƒ‰ƒ“ƒLƒ“ƒO
@@ -440,14 +440,14 @@ void CRanking::InitNum(void)
 
 			if (m_pNumber1[nCnt][nNum] != nullptr)
 			{
-				m_pNumber1[nCnt][nNum]->Init(fMinX, fMinX, 300.0f, 350.0f, nCnt, nNum, 55.0f, 50.0f, 75.0f, MAX_TIMER, 4, "data\\TEXTURE\\number000.png", 0.1f,CNumber::TYPE_MIN);
+				m_pNumber1[nCnt][nNum]->Init(fMinX, fMinX, 300.0f, 350.0f, nCnt, nNum, 45.0f, 50.0f, 75.0f, MAX_TIMER, 4, "data\\TEXTURE\\number000.png", 0.1f,CNumber::TYPE_MIN);
 			}
 
 			m_pNumber2[nCnt][nNum] = new CNumber;
 
 			if (m_pNumber2[nCnt][nNum] != nullptr)
 			{
-				m_pNumber2[nCnt][nNum]->Init(fSecX, fSecX, 300.0f, 350.0f, nCnt, nNum, 55.0f, 50.0f, 75.0f, MAX_TIMER, 4, "data\\TEXTURE\\number000.png", 0.1f,CNumber::TYPE_SEC);
+				m_pNumber2[nCnt][nNum]->Init(fSecX, fSecX, 300.0f, 350.0f, nCnt, nNum, 45.0f, 50.0f, 75.0f, MAX_TIMER, 4, "data\\TEXTURE\\number000.png", 0.1f,CNumber::TYPE_SEC);
 			}
 		}
 
@@ -466,14 +466,14 @@ void CRanking::InitNum(void)
 
 		if (m_pNumber1[nCnt][MAX_NUM - 1] != nullptr)
 		{
-			m_pNumber1[nCnt][MAX_NUM - 1]->Init(fMinX, fMinX, 100.0f, 150.0f, nCnt, 0, 55.0f, 50.0f, 75.0f, MAX_TIMER, 4, "data\\TEXTURE\\number000.png", 0.1f,CNumber::TYPE_MIN1);
+			m_pNumber1[nCnt][MAX_NUM - 1]->Init(fMinX, fMinX, 100.0f, 150.0f, nCnt, 0, 45.0f, 50.0f, 75.0f, MAX_TIMER, 4, "data\\TEXTURE\\number000.png", 0.1f,CNumber::TYPE_MIN1);
 		}
 
 		m_pNumber2[nCnt][MAX_NUM - 1] = new CNumber;
 
 		if (m_pNumber2[nCnt][MAX_NUM - 1] != nullptr)
 		{
-			m_pNumber2[nCnt][MAX_NUM - 1]->Init(fSecX, fSecX, 100.0f, 150.0f, nCnt, 0, 55.0f, 50.0f, 75.0f, MAX_TIMER, 4, "data\\TEXTURE\\number000.png", 0.1f, CNumber::TYPE_SEC1);
+			m_pNumber2[nCnt][MAX_NUM - 1]->Init(fSecX, fSecX, 100.0f, 150.0f, nCnt, 0, 45.0f, 50.0f, 75.0f, MAX_TIMER, 4, "data\\TEXTURE\\number000.png", 0.1f, CNumber::TYPE_SEC1);
 		}
 	}
 
