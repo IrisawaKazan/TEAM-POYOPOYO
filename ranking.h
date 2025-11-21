@@ -66,6 +66,7 @@ private:
 	int m_nSeconds;								// 現在の秒の計算用変数
 	int m_nRankIdx;								// アニメーション中のランキングのインデックス
 	bool m_bAct;								// 発動したかどうか
+	int m_nNum;									// 総数分の計算用変数
 };
 
 #endif // !_RANKING_H_

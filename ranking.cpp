@@ -37,6 +37,7 @@ CRanking::CRanking()
 	m_nSeconds = NULL;
 	m_nData = NULL;
 	m_bAct = false;
+	m_nNum = NULL;
 }
 
 //****************************************************************
@@ -140,15 +141,15 @@ void CRanking::Update(void)
 	m_nMinutes = nNowTime / MAX_MINUTES;
 	m_nSeconds = (nNowTime % MAX_MINUTES) / MAX_SECOND;
 
-	for (int nNum = 0; nNum < MAX_NUM; nNum++)
+	for (m_nNum = 0; m_nNum < MAX_NUM; m_nNum++)
 	{
 		if (m_bAct != true)
 		{
 			// Œ»Ý‚Ì•ª•b‚Æˆê’v‚µ‚Ä‚¢‚½‚ç
-			if (m_nMin[nNum] == m_nMinutes && m_nSec[nNum] == m_nSeconds)
+			if (m_nMin[m_nNum] == m_nMinutes && m_nSec[m_nNum] == m_nSeconds)
 			{
 				m_bAct = true;
-				m_nData = nNum;
+				m_nData = m_nNum;
 			}
 		}
 	}
