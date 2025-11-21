@@ -137,6 +137,11 @@ void CRanking::Update(void)
 	// ¡‚Ì‘”
 	int nNowTime = CTimer::GetTimer();
 
+	if (m_nRankIdx < 0)
+	{
+		m_nRankIdx = MAX_NUM - 1;
+	}
+
 	// Œ»İ‚Ì•ª•b‚ÌŒvZ
 	m_nMinutes = nNowTime / MAX_MINUTES;
 	m_nSeconds = (nNowTime % MAX_MINUTES) / MAX_SECOND;
