@@ -246,7 +246,7 @@ void CRenderer::offWireFrame()
 }
 
 //*************************************
-// フルスクリーンを切り替える
+// フルスクリーンを切り替える sato 一部変更
 //*************************************
 void CRenderer::ToggleFullscreen(HWND hWnd, bool* isFullScrean)
 {
@@ -254,26 +254,42 @@ void CRenderer::ToggleFullscreen(HWND hWnd, bool* isFullScrean)
 	DWORD dwStyle = GetWindowLong(hWnd, GWL_STYLE);
 
 	if (*isFullScrean)
-	{
-		// ウィンドウモードに切り替え
+	{// ウインドウモードに戻す
+
+		// スタイルを戻す
 		SetWindowLong(hWnd, GWL_STYLE, dwStyle | WS_OVERLAPPEDWINDOW);
-		SetWindowPos(hWnd, HWND_TOP, m_RectWindow.left, m_RectWindow.top,
-			m_RectWindow.right - m_RectWindow.left, m_RectWindow.bottom - m_RectWindow.top,
-			SWP_FRAMECHANGED | SWP_NOACTIVATE);
+
+		// ウィンドウの状態を戻す
 		ShowWindow(hWnd, SW_NORMAL);
+
+		// 位置とサイズを確定させる
+		SetWindowPos(hWnd, HWND_NOTOPMOST,
+			m_RectWindow.left, m_RectWindow.top,
+			m_RectWindow.right - m_RectWindow.left, m_RectWindow.bottom - m_RectWindow.top,
+			SWP_FRAMECHANGED | SWP_NOACTIVATE | SWP_SHOWWINDOW);
 	}
 	else
-	{
-		// フルスクリーンモードに切り替え
+	{// フルスクリーンにする
+
+		// 現在のウィンドウ位置・サイズを保存
 		GetWindowRect(hWnd, &m_RectWindow);
+
+		// 枠線を消す
 		SetWindowLong(hWnd, GWL_STYLE, dwStyle & ~WS_OVERLAPPEDWINDOW);
-		SetWindowPos(hWnd, HWND_TOP, 0, 0, GetSystemMetrics(SM_CXSCREEN), GetSystemMetrics(SM_CYSCREEN),
+
+		// 画面いっぱいに引き伸ばす
+		int screenW = GetSystemMetrics(SM_CXSCREEN);
+		int screenH = GetSystemMetrics(SM_CYSCREEN);
+
+		SetWindowPos(hWnd, HWND_TOP, 0, 0, screenW, screenH,
 			SWP_FRAMECHANGED | SWP_NOACTIVATE);
-		ShowWindow(hWnd, SW_MAXIMIZE);
+
+		// 4. 表示する
+		ShowWindow(hWnd, SW_SHOW);
 	}
 
-	bool isScrean = *isFullScrean;
-	*isFullScrean = !isScrean;
+	// フラグ反転
+	*isFullScrean = !(*isFullScrean);
 }
 
 //*************************************
@@ -327,10 +343,10 @@ bool CRenderer::GetBackBufferSize(D3DXVECTOR2* size) const
 		pBackBuffer->Release();  // 取得したら解放
 		pBackBuffer = nullptr;
 
-		return S_OK;
+		return true;
 	}
 	else
 	{
-		return E_FAIL;
+		return false;
 	}
 }
