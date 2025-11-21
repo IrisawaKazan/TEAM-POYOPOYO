@@ -95,7 +95,9 @@ HRESULT CGame::Init(void)
 	// スタートオブジェクト
 	m_pBlock = CBlock::Create("data\\Model\\mine_shaft.x", { 1800.0f,0.0f,-900.0f }, { 0.0f, -D3DX_PI * 0.5f,0.0f }, { 1.0f,1.0f,1.0f });
 
-	CNaviUI::Create("data/TEXTURE/UI/Frame001.png", { NAVI_UI_TEXTURES.begin(), NAVI_UI_TEXTURES.end() }, { NAVI_UI_ARROW_TEXTURES.begin(), NAVI_UI_ARROW_TEXTURES.end() }, { NAVI_UI_KEY_TEXTURES.begin(), NAVI_UI_KEY_TEXTURES.end() }, D3DXVECTOR3(SCREEN_WIDTH * 0.175f, SCREEN_HEIGHT * 0.82f, 0.0f), D3DXVECTOR2(SCREEN_WIDTH * 0.1f, SCREEN_WIDTH * 0.1f));
+	D3DXVECTOR2 screenSize{};
+	CManager::GetRenderer()->GetBackBufferSize(&screenSize);
+	CNaviUI::Create("data/TEXTURE/UI/Frame001.png", { NAVI_UI_TEXTURES.begin(), NAVI_UI_TEXTURES.end() }, { NAVI_UI_ARROW_TEXTURES.begin(), NAVI_UI_ARROW_TEXTURES.end() }, { NAVI_UI_KEY_TEXTURES.begin(), NAVI_UI_KEY_TEXTURES.end() }, D3DXVECTOR3(screenSize.x * 0.175f, screenSize.y * 0.82f, 0.0f), D3DXVECTOR2(screenSize.x * 0.1f, screenSize.x * 0.1f));
 
 	//CTimer::Instance()->SetPosition(D3DXVECTOR3(640.0f, 360.0f, 0.0f));
 	CTimer::Create(D3DXVECTOR3(640.0f,360.0f,0.0f));
