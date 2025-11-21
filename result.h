@@ -29,6 +29,9 @@ public:
 
 	void LoadFile(void);
 
+	// ÉQÉbÉ^Å[
+	bool IsGoal(void) { return m_IsGoal; }
+
 private:
 	CRanking* m_pRanking;
 	bool m_IsGoal;

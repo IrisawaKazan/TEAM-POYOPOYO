@@ -33,14 +33,22 @@ HRESULT CResult::Init(void)
     //  CObject2D::Create(D3DXVECTOR3(640.0f, 370.0f, 0.0f), VEC3_NULL);
     CRanking::Instance()->Init();
     
-    CMapManager::Instance()->Load("data\\TEXT\\stage98.json");
+    int nMotion = 0;
+    std::string Path;
+    if (m_IsGoal == true) nMotion = 6, Path = "data\\TEXT\\stage98.json";
+    else nMotion = 7,Path = "data\\TEXT\\stage97.json";
+
+    CMapManager::Instance()->Load(Path);
+
+    LoadFile();
 
     CManager::GetCamera()->Init();
     CManager::GetCamera()->SetPosRDest({0.0f,35.0f,0.0f});
     CManager::GetCamera()->SetMode(CCamera::MODE::NORMAL);
     CManager::GetCamera()->SetRot({ 0.0f,0.0f,0.0f });
     CManager::GetCamera()->SetDistance(200.0f);
-    CPlayer::Create({50.0f,20.0f,0.0f }, {0.0f,-D3DX_PI,0.0f})->GetMotionInfo()->SetMotion(6, false);
+
+    CPlayer::Create({50.0f,20.0f,0.0f }, {0.0f,-D3DX_PI,0.0f})->GetMotionInfo()->SetMotion(nMotion, false);
 
     return E_NOTIMPL;
 }
