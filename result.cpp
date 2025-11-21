@@ -13,6 +13,8 @@
 #include "player.h"
 #include "mapmanager.h"
 
+using namespace std;
+
 //  コンストラクタ
 CResult::CResult()  :CScene(MODE_RESULT)
 {
@@ -66,4 +68,24 @@ void CResult::Uninit(void)
 void CResult::Draw(void)
 {
     CRanking::Instance()->Draw();
+}
+
+//****************************************************************
+// ファイル読み込み
+//****************************************************************
+void CResult::LoadFile(void)
+{
+    ifstream pFile("data\\Goal.txt");
+    string line = {};
+
+    // ファイルが正常に開けたら
+    if (pFile.is_open())
+    {
+            istringstream iss(line);
+
+            iss >> m_IsGoal;
+
+        // ファイルを閉じる
+        pFile.close();
+    }
 }
