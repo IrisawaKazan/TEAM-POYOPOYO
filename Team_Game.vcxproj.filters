@@ -378,7 +378,4 @@
       <Filter>リソース</Filter>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <Manifest Include="app.manifest" />
-  </ItemGroup>
 </Project>
