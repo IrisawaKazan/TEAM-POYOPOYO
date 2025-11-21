@@ -44,6 +44,8 @@ public:
 	// ウィンドウのサイズを取得
 	RECT GetWindowsRect(void) { return m_RectWindow; }
 	bool NeedReset(void) { return (m_Width != NULL && m_Height != NULL); }
+
+	bool GetBackBufferSize(D3DXVECTOR2* size) const; // sato Add
 // プライベート
 private:
 	// 静的メンバ変数

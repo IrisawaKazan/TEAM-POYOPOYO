@@ -57,10 +57,13 @@ HRESULT CRenderer::Init(HWND hWnd, bool bWindow)
 		return E_FAIL;
 	}
 
+	RECT clientRect{};
+	if (!GetClientRect(hWnd, &clientRect)) return E_FAIL;
+
 	//デバイスのプレゼンテーションパラメータの設定
 	ZeroMemory(&m_d3dpp, sizeof(m_d3dpp));
-	m_d3dpp.BackBufferWidth = SCREEN_WIDTH;
-	m_d3dpp.BackBufferHeight = SCREEN_HEIGHT;
+	m_d3dpp.BackBufferWidth = (clientRect.right-clientRect.left);
+	m_d3dpp.BackBufferHeight = (clientRect.bottom - clientRect.top);
 	m_d3dpp.BackBufferFormat = d3ddm.Format;
 	m_d3dpp.BackBufferCount = 1;
 	m_d3dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;
@@ -306,4 +309,28 @@ void CRenderer::SetupVertexFog(DWORD Color, DWORD Mode, BOOL UseRange, FLOAT Den
 	//   than non-range-based fog.
 
 	if (UseRange) m_pD3DDevice->SetRenderState(D3DRS_RANGEFOGENABLE, TRUE);
+}
+
+//----------------------------
+// バックバッファサイズの取得
+//----------------------------
+bool CRenderer::GetBackBufferSize(D3DXVECTOR2* size) const
+{
+	// DirectXのサイズを取得する
+	LPDIRECT3DSURFACE9 pBackBuffer = nullptr;
+	if (SUCCEEDED(m_pD3DDevice->GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO, &pBackBuffer)))
+	{// バックバッファの取得
+		D3DSURFACE_DESC desc;
+		pBackBuffer->GetDesc(&desc);
+		size->x = (float)desc.Width;
+		size->y = (float)desc.Height;
+		pBackBuffer->Release();  // 取得したら解放
+		pBackBuffer = nullptr;
+
+		return S_OK;
+	}
+	else
+	{
+		return E_FAIL;
+	}
 }

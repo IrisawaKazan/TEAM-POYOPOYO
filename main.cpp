@@ -65,8 +65,11 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hInstancePrev, _
 	//ウインドウクラスの登録
 	RegisterClassEx(&wcex);
 
+	// 1. システムの現在のDPIを取得 sato Add
+	UINT dpi = GetDpiForSystem();
+
 	//クライアント領域を指定のサイズに調整
-	AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW, FALSE);
+	AdjustWindowRectExForDpi(&rect, WS_OVERLAPPEDWINDOW, FALSE, 0, dpi);
 
 	//ウインドウを生成
 	hWnd = CreateWindowEx(0,
