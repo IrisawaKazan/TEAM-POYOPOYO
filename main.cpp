@@ -71,11 +71,14 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hInstancePrev, _
 	//クライアント領域を指定のサイズに調整
 	AdjustWindowRectExForDpi(&rect, WS_OVERLAPPEDWINDOW, FALSE, 0, dpi);
 
+	// ウインドウのスタイルを設定
+	DWORD style = WS_OVERLAPPEDWINDOW & ~WS_THICKFRAME & ~WS_MAXIMIZEBOX;
+
 	//ウインドウを生成
 	hWnd = CreateWindowEx(0,
 		CLASS_NAME,
 		WINDOW_NAME,
-		WS_OVERLAPPEDWINDOW,
+		style,
 		CW_USEDEFAULT,
 		CW_USEDEFAULT,
 		(rect.right - rect.left),
