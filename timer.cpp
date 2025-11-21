@@ -4,9 +4,8 @@
 // Author: Irisawa Kazan
 //
 //****************************************************************
-#include"timer.h"
-#include"number.h"
-#include"manager.h"
+#include "timer.h"
+#include "manager.h"
 #include "mapmanager.h"
 #include "game.h"
 #include "fade.h"
@@ -28,6 +27,7 @@ CTimer::CTimer(int nPriority) : CObject(nPriority)
 	m_pos = VEC3_NULL;
 	m_nNs = NULL;
 	m_nHour = NULL;
+	m_nGoal = NULL;
 	//Init();
 }
 
@@ -69,6 +69,7 @@ HRESULT CTimer::Init(void)
 	m_nTime = NULL;
 	m_nTimer = NULL;
 	m_nHour = NULL;
+	m_nGoal = NULL;
 
 	for (int nCnt = 0; nCnt < MAX_TIMER; nCnt++)
 	{
@@ -171,9 +172,17 @@ void CTimer::Update(void)
 	//　4分たったら
 	if (m_nMin >= MAX_TIMEOVER)
 	{
+		m_nGoal = 1;
+
+		// 書き込み
+		WriteFile();
+
 		// リザルトに
 		CFade::SetFade(new CResult);
 	}
+
+	// 書き込み
+	WriteFile();
 }
 
 //****************************************************************
@@ -248,4 +257,23 @@ int CTimer::GetTimer(void)
 
 	return m_nTimer;
 
+}
+
+//****************************************************************
+// ファイル書き込み
+//****************************************************************
+void CTimer::WriteFile(void)
+{
+	std::ofstream outFile("data\\Goal.txt");
+
+	// ファイルが正常に開けたら
+	if (outFile.is_open())
+	{
+
+		outFile << m_nGoal <<std::endl;
+		
+
+		// ファイルを閉じる
+		outFile.close();
+	}
 }

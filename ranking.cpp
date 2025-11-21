@@ -167,8 +167,6 @@ void CRanking::Update(void)
 	m_pNumber3[MAX_NUM - 1]->ColAnim();
 	m_pNumber3[m_nData]->ColAnim();
 
-	bool bPerception[MAX_NUM] = {};
-
 	static int nCnt = 0;
 	static int nData = 0;
 
@@ -179,19 +177,15 @@ void CRanking::Update(void)
 
 		if (nData >= 60)
 		{
-			nCnt = 0;
-			if (m_nRankIdx >= 0)m_nRankIdx--;
+			//nCnt = 0;
 			nData = 0;
+			if (m_nRankIdx >= 0)m_nRankIdx--;
 		}
 	}
 	else
 	{
 		nCnt++;
 	}
-	
-	SetNumUpdate(5);
-	
-	
 }
 
 //****************************************************************

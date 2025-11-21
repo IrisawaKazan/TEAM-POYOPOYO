@@ -59,7 +59,7 @@ HRESULT CNumber::Init(float fX1, float fX2, float fY1, float fY2, int nCnt, int 
 {
 	m_nIdx = CTextureManager::Instance()->Register(FileName);
 	m_nColTime = 0;
-	m_MaxFrame = 240;
+	m_MaxFrame = 60;
 	m_nAnimCounter = NULL;
 	m_Type = type;
 	m_bEasing = false;
@@ -71,14 +71,22 @@ HRESULT CNumber::Init(float fX1, float fX2, float fY1, float fY2, int nCnt, int 
 	m_fY[1] = fY2 + nCnt2 * fNum3;
 
 	m_Dest = { m_fX[0] * 1.0f,SCREEN_HEIGHT * 0.5f,0.0f };	// 目標位置
-	m_pos[0] = { m_fX[0] * 8.425f,SCREEN_HEIGHT * 0.5f,0.0f };	// 初期位置
-	m_pos[1] = { m_fX[1] * 8.425f,SCREEN_HEIGHT * 0.5f,0.0f };	// 初期位置
+	m_Apper[0] = { m_fX[0] * 8.425f,SCREEN_HEIGHT * 0.5f,0.0f };	// 初期位置
+	m_Apper[1] = { m_fX[1] * 8.425f,SCREEN_HEIGHT * 0.5f,0.0f };	// 初期位置
+
+	if (m_Type != TYPE_NONE)
+	{
+		fX1 = 1280.0f;
+		fX2 = 1280.0f;
+		fY1 = 360.0f;
+		fY2 = 360.0f;
+	}
 
 	//デバイス取得
-	LPDIRECT3DDEVICE9 pD3DDevice = CManager::GetRenderer()->GetDevice();
+	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
 
 	// 頂点バッファの生成
-	pD3DDevice->CreateVertexBuffer(sizeof(VERTEX_2D) * 4 * nNum,
+	pDevice->CreateVertexBuffer(sizeof(VERTEX_2D) * 4 * nNum,
 		D3DUSAGE_WRITEONLY,
 		FVF_VERTEX_2D,
 		D3DPOOL_MANAGED,
@@ -88,7 +96,7 @@ HRESULT CNumber::Init(float fX1, float fX2, float fY1, float fY2, int nCnt, int 
 
 	// ロック
 	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
-
+	
 	// 頂点座標の設定
 	pVtx[0].pos = D3DXVECTOR3(fX1 + nCnt * fNum1, fY1 + nCnt2 * fNum3, 0.0f);
 	pVtx[1].pos = D3DXVECTOR3(fX2 + nCnt * fNum1 + fNum2, fY1 + nCnt2 * fNum3, 0.0f);
@@ -144,14 +152,14 @@ void CNumber::Update(void)
 		// カウントを進める
 		m_nAnimCounter++;
 
-		D3DXVECTOR3 Diff = m_Dest - m_pos[0];
-		D3DXVECTOR3 Diff1 = m_Dest - m_pos[1];
+		D3DXVECTOR3 Diff = m_Dest - m_Apper[0];
+		D3DXVECTOR3 Diff1 = m_Dest - m_Apper[1];
 
-		float fEasing = EaseOutBounce((float)m_nAnimCounter / (float)m_MaxFrame);
+		float fEasing = EaseOutSine((float)m_nAnimCounter / (float)m_MaxFrame);
 
 		// 初期位置に加算する
-		m_pos[0] = m_pos[0] + (Diff * fEasing);
-		m_pos[1] = m_pos[1] + (Diff1 * fEasing);
+		m_pos[0] = m_Apper[0] + (Diff * fEasing);
+		m_pos[1] = m_Apper[1] + (Diff1 * fEasing);
 		SetPos();
 	}
 	else
