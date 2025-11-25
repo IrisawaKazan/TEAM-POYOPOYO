@@ -271,9 +271,13 @@ void CExit::Update(void)
 
 		CObject2D::SetSize(Size);
 		CTitleMenu::SetCol(CTitleMenu::Config::SelectColor);
+		
+		const bool KeyCondition = CManager::GetInputKeyboard()->GetTrigger(DIK_RETURN) == true || CManager::GetInputMouse()->OnDown(0) == true ||
+			CManager::GetInputJoypad()->GetTrigger(CInputJoypad::JOYKEY_A) == true || CManager::GetInputJoypad()->GetTrigger(CInputJoypad::JOYKEY_START) == true;
 
-		if (CManager::GetInputKeyboard()->GetTrigger(DIK_RETURN) == true || CManager::GetInputMouse()->OnDown(0) == true ||
-			CManager::GetInputJoypad()->GetTrigger(CInputJoypad::JOYKEY_A) == true || CManager::GetInputJoypad()->GetTrigger(CInputJoypad::JOYKEY_START) == true)
+		const bool FadeCondition = CManager::GetFade()->GetFadeSingle()->GetFade() == CFade::FADE_NONE;
+
+		if (KeyCondition == true && FadeCondition == true)
 		{
 			if (CTitleManager::GetLower() == false)
 			{
