@@ -54,9 +54,11 @@ CRanking::~CRanking()
 HRESULT CRanking::Init(void)
 {
 	m_bAct = false;
-	m_nRankIdx = MAX_NUM - 1;
-	m_nAnimCount = 0;
 	m_nCoolDownCount = 0;
+	
+		m_nAnimCount = 0;
+	m_nCoolDownCount = 0;
+	m_nRankIdx = MAX_NUM - 1;
 
 	// ì«Ç›çûÇ›
 	LoadFile();
@@ -145,7 +147,7 @@ void CRanking::Update(void)
 	{
 		m_nRankIdx = MAX_NUM - 1;
 	}
-
+	
 	// åªç›ÇÃï™ïbÇÃåvéZ
 	m_nMinutes = nNowTime / MAX_MINUTES;
 	m_nSeconds = (nNowTime % MAX_MINUTES) / MAX_SECOND;
@@ -199,7 +201,6 @@ void CRanking::Update(void)
 //****************************************************************
 void CRanking::Draw(void)
 {
-
 	for (int nNum = 0; nNum < MAX_NUM; nNum++)
 	{
 		for (int nCnt = 0; nCnt < MAX_TIMER; nCnt++)

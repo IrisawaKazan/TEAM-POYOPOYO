@@ -21,6 +21,7 @@ CItem::CItem(int nPriority) :CObjectX(nPriority)
 	m_size = D3DXVECTOR3(50.0f, 50.0f, 50.0f);		// サイズ
 	m_bTake = false;								// 入手したかどうか
 	m_RBOffset = VEC3_NULL;							// リジットボディのオフセット
+	m_pShadow = NULL;
 }
 
 //***************************************
@@ -65,6 +66,12 @@ HRESULT CItem::Init(void)
 		btBroadphaseProxy::AllFilter
 	);
 
+	// 影の位置に変更
+	pos.y -= (Offset.y * 1.5f);
+
+	// 影の生成処理
+	m_pShadow = CShadow::Create(pos, D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.4f), m_size.x * 0.6f, m_size.z * 0.6f, "data\\TEXTURE\\Effect\\effect000.jpg");
+
 	return S_OK;
 }
 
@@ -82,6 +89,12 @@ void CItem::Uninit(void)
 
 	// 衝突形状の削除
 	m_CollisionShape.reset();
+
+	if (m_pShadow != nullptr)
+	{
+		m_pShadow->Uninit();
+		m_pShadow = nullptr;
+	}
 
 	// オブジェクトXの終了処理
 	CObjectX::Uninit();

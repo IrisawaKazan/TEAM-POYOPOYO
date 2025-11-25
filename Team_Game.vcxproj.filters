@@ -168,8 +168,7 @@
     </ClCompile>
     <ClCompile Include="particle3d.cpp">
       <Filter>ソース</Filter>
-    </ClCompile>
-    <ClCompile Include="file.cpp">
+        <ClCompile Include="shadow.cpp">
       <Filter>ソース</Filter>
     </ClCompile>
   </ItemGroup>
