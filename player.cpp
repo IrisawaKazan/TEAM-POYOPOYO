@@ -271,7 +271,8 @@ void CPlayer::PreparationClimb()
 		}
 	}
 
-	// 距離が近いか
+	if (m_pClimbBlock == nullptr) return;
+
 	D3DXVECTOR3 climbPos = m_pClimbBlock->GetClosestPointOnSurface(myPos);
 	D3DXVECTOR3 space = climbPos - myPos;
 	float length = hypotf(space.x, space.z);
