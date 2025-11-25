@@ -174,24 +174,21 @@ void CRanking::Update(void)
 	m_pNumber3[MAX_NUM - 1]->ColAnim();
 	m_pNumber3[m_nData]->ColAnim();
 
-	static int nCnt = 0;
-	static int nData = 0;
-
-	if (nCnt >= 30)
+	if (m_nAnimCount >= 30)
 	{
 		SetNumUpdate(m_nRankIdx);
-		nData++;
+		m_nCoolDownCount++;
 
-		if (nData >= 60)
+		if (m_nCoolDownCount >= 30)
 		{
-			//nCnt = 0;
-			nData = 0;
+			m_nAnimCount = 0;
+			m_nCoolDownCount = 0;
 			if (m_nRankIdx >= 0)m_nRankIdx--;
 		}
 	}
 	else
 	{
-		nCnt++;
+		m_nAnimCount++;
 	}
 }
 
@@ -200,7 +197,6 @@ void CRanking::Update(void)
 //****************************************************************
 void CRanking::Draw(void)
 {
-
 	for (int nNum = 0; nNum < MAX_NUM; nNum++)
 	{
 		for (int nCnt = 0; nCnt < MAX_TIMER; nCnt++)
