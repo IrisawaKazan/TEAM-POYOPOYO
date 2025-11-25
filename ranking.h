@@ -69,8 +69,6 @@ private:
 	int m_nCoolDownCount;						// クールダウン
 	bool m_bAct;								// 発動したかどうか
 	int m_nNum;									// 総数分の計算用変数
-	int m_nAnimCount;							// アニメーションカウンター
-	int m_nCoolDownCount;						// クールダウン
 };
 
 #endif // !_RANKING_H_
