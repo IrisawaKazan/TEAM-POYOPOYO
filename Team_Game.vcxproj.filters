@@ -160,9 +160,6 @@
     <ClCompile Include="ranking.cpp">
       <Filter>ソース</Filter>
     </ClCompile>
-    <ClCompile Include="rankingmanager.cpp">
-      <Filter>ソース</Filter>
-    </ClCompile>
     <ClCompile Include="renderer.cpp">
       <Filter>ソース</Filter>
     </ClCompile>
@@ -232,9 +229,6 @@
       <Filter>ヘッダ</Filter>
     </ClInclude>
     <ClInclude Include="ranking.h">
-      <Filter>ヘッダ</Filter>
-    </ClInclude>
-    <ClInclude Include="rankingmanager.h">
       <Filter>ヘッダ</Filter>
     </ClInclude>
     <ClInclude Include="playermanager.h">

@@ -230,7 +230,6 @@
     <ClCompile Include="player.cpp" />
     <ClCompile Include="playermanager.cpp" />
     <ClCompile Include="ranking.cpp" />
-    <ClCompile Include="rankingmanager.cpp" />
     <ClCompile Include="renderer.cpp" />
     <ClCompile Include="result.cpp" />
     <ClCompile Include="scene.cpp" />
@@ -293,7 +292,6 @@
     <ClInclude Include="player.h" />
     <ClInclude Include="playermanager.h" />
     <ClInclude Include="ranking.h" />
-    <ClInclude Include="rankingmanager.h" />
     <ClInclude Include="renderer.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="result.h" />
