@@ -70,9 +70,11 @@ HRESULT CNumber::Init(float fX1, float fX2, float fY1, float fY2, int nCnt, int 
 	m_fY[0] = fY1 + nCnt2 * fNum3;
 	m_fY[1] = fY2 + nCnt2 * fNum3;
 
-	m_Dest = { m_fX[0] * 1.0f,SCREEN_HEIGHT * 0.5f,0.0f };	// 目標位置
-	m_Apper[0] = { m_fX[0] * 8.425f,SCREEN_HEIGHT * 0.5f,0.0f };	// 初期位置
-	m_Apper[1] = { m_fX[1] * 8.425f,SCREEN_HEIGHT * 0.5f,0.0f };	// 初期位置
+	D3DXVECTOR2 screenSize{};
+	CManager::GetRenderer()->GetBackBufferSize(&screenSize);
+	m_Dest = { m_fX[0] * 1.0f,screenSize.y * 0.5f,0.0f };	    // 目標位置
+	m_Apper[0] = { m_fX[0] * 8.425f,screenSize.y * 0.5f,0.0f };	// 初期位置
+	m_Apper[1] = { m_fX[1] * 8.425f,screenSize.y * 0.5f,0.0f };	// 初期位置
 
 	if (m_Type != TYPE_NONE)
 	{
@@ -268,9 +270,11 @@ void CNumber::SetPos(void)
 	VERTEX_2D* pVtx = NULL;
 
 	// 幅を変更してポリゴンの中心点からの角度を再設定
-	float fAngle = atan2f((SCREEN_WIDTH * 0.02f),(SCREEN_HEIGHT * 0.02f));
+	D3DXVECTOR2 screenSize{};
+	CManager::GetRenderer()->GetBackBufferSize(&screenSize);
+	float fAngle = atan2f((screenSize.x * 0.02f),(screenSize.y * 0.02f));
 	// 大きさを再設定
-	float fLength = sqrtf((SCREEN_WIDTH * 0.02f * SCREEN_HEIGHT * 0.02f) + (SCREEN_WIDTH * 0.02f * SCREEN_HEIGHT * 0.02f));
+	float fLength = sqrtf((screenSize.x * 0.02f * screenSize.y * 0.02f) + (screenSize.x * 0.02f * screenSize.y * 0.02f));
 
 	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 
