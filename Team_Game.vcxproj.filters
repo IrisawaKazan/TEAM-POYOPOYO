@@ -169,6 +169,7 @@
     <ClCompile Include="particle3d.cpp">
       <Filter>ソース</Filter>
     </ClCompile>
+    <ClCompile Include="shadow.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="arrow.h">
@@ -351,6 +352,7 @@
     <ClInclude Include="effect3d.h">
       <Filter>ヘッダー</Filter>
     </ClInclude>
+    <ClInclude Include="shadow.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ソース">

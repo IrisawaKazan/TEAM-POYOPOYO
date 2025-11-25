@@ -10,6 +10,7 @@
 
 // インクルード
 #include "objectX.h"
+#include "shadow.h"
 
 // アイテムクラス
 class CItem : public CObjectX
@@ -57,7 +58,8 @@ private:
 	D3DXVECTOR3 m_RBOffset;									// オフセット
 	std::unique_ptr<btCollisionShape> m_CollisionShape;		// 当たり判定の形状
 	std::unique_ptr<btGhostObject> m_GhostObject;			// ゴーストオブジェクト
-
+	CShadow* m_pShadow;										// 影
+	
 };
 
 #endif
