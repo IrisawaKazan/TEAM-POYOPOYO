@@ -345,6 +345,7 @@ void CPlayer::UpdateGroundedState()
 				if (pSlope != nullptr && rayCallback.m_collisionObject == pSlope->GetRB())
 				{// â“¹‚É’…’n‚µ‚½
 					isSlope = true;
+					break;
 				}
 			}
 			if (isSlope)
