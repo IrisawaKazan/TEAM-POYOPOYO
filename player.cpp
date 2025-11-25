@@ -116,7 +116,7 @@ void CPlayer::Update(void)
 		Move(moveDir, rot, currentVel);
 
 		// 状態管理
-		UpdateState(moveDir);
+		if (!UpdateState(moveDir)) return;
 
 		if (m_state == STATE::Sliding)
 		{
@@ -216,9 +216,7 @@ void CPlayer::CheckNavigation()
 				// 5回以上になったら死んでしまう
 				if (m_naviObjectCountMap[idx] >= 5)
 				{
-					CGame::GetPlayerManager()->DethMessage(this);
-					Uninit();
-					Release();
+					m_state = STATE::Dead; // 死
 					return;
 				}
 				naviObjectIdxListNew.push_back(idx); // リストに追加
@@ -241,8 +239,8 @@ void CPlayer::PreparationTrun(D3DXVECTOR3 objectPos, float objectAngle)
 	D3DXVECTOR3 objectDir = D3DXVECTOR3(sinf(objectAngle), 0.0f, cosf(objectAngle)); // 矢印の向き
 
 	m_activePos = CMath::GetNierToLineXZ(myPos, objectPos, objectDir); // 矢印のベクトル上の近い地点
-	m_turnAngle = objectAngle; // ターン方向
-	m_state = STATE::Turn;     // ターン開始
+	m_turnAngle = objectAngle;                                         // ターン方向
+	m_state = STATE::Turn;                                             // ターン開始
 }
 
 // クライム準備
@@ -391,7 +389,7 @@ void CPlayer::Move(btVector3& moveDir, D3DXVECTOR3& rot, btVector3& currentVel)
 		moveDir.setX(blendedVel.x());
 		moveDir.setZ(blendedVel.z());
 	}
-	else
+	else if (m_state != STATE::Dead)
 	{
 		moveDir.setX(-sinf(rot.y) * MOVE_SPEED);
 		moveDir.setZ(-cosf(rot.y) * MOVE_SPEED);
@@ -410,7 +408,7 @@ void CPlayer::Move(btVector3& moveDir, D3DXVECTOR3& rot, btVector3& currentVel)
 }
 
 // 状態管理
-void CPlayer::UpdateState(btVector3& moveDir)
+bool CPlayer::UpdateState(btVector3& moveDir)
 {
 	if (!m_isGrounded && m_state != STATE::Jumping && m_state != STATE::Climbing)
 	{// 空中
@@ -519,6 +517,7 @@ void CPlayer::UpdateState(btVector3& moveDir)
 	}
 		// 滑っている
 	case STATE::Sliding:
+	{
 		// 火の情報を設定
 		CParticle3D::DefoultEffectInfo FireInfo;
 		FireInfo.Bece.Col = FIRE;
@@ -548,6 +547,22 @@ void CPlayer::UpdateState(btVector3& moveDir)
 		}
 		break;
 	}
+	case STATE::Dead:
+		if (GetMotionInfo()->GetBlendMotion() != 8 && GetMotionInfo()->GetMotion() != 8)
+		{// 死モーション
+			GetMotionInfo()->SetMotion(8, false);
+		}
+		if (GetMotionInfo()->GetFinishMotion())
+		{// モーション終了
+			CGame::GetPlayerManager()->DethMessage(this);
+			Uninit();
+			Release();
+			return false;
+		}
+		break;
+	}
+
+	return true;
 }
 
 // ターン

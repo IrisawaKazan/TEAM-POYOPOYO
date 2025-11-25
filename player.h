@@ -45,6 +45,7 @@ public:
 		Jump,
 		Jumping,
 		Sliding,
+		Dead,
 		Max
 	};
 
@@ -72,7 +73,7 @@ private:
 	void PreparationClimb();
 	void PreparationJump(D3DXVECTOR3 objectPos);
 	void Move(btVector3& moveDir, D3DXVECTOR3& rot, btVector3& currentVel);
-	void UpdateState(btVector3& moveDir);
+	bool UpdateState(btVector3& moveDir);
 	void Turn();
 	bool IsClimbingTarget(const CBlock* pBlock);
 	bool IsClimbingContact();
