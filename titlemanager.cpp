@@ -10,6 +10,8 @@
 #include "manager.h"
 #include "math_T.h"
 #include "sound.h"
+#include "manager.h"
+#include "fade.h"
 
 // 規定値を設定
 const D3DXVECTOR3 CTitleManager::Config::Menu::Bace = { 250.0f,500.0f,0.0f };
@@ -76,6 +78,12 @@ void CTitleManager::Update(void)
 {
 	// サウンドの取得
 	CSound* pSound = CManager::GetSound();
+
+	// フェード
+	const bool FadeCondition = CManager::GetFade()->GetFadeSingle()->GetFade() == CFade::FADE_NONE;
+
+	// フェード中なら早期リターン
+	if (FadeCondition == false) return;
 
 	// メニューを選ぶ
 	if (CManager::GetInputKeyboard()->GetTrigger(DIK_W) == true || CManager::GetInputMouse()->GetMouseState().lZ < 0 ||
