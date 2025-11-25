@@ -374,7 +374,7 @@ void CMapManager::Load(std::string Path)
 			m_Door->SetQuat(CMath::ConvertQuat(Quad));
 			m_Door->SetIdx(LocalPath);
 
-			D3DXVECTOR3 GoalSize = m_Door->GetScale();
+			D3DXVECTOR3 GoalSize = m_Door->GetSize();
 			GoalSize.x -= 1.0f;
 			GoalSize.z -= 1.0f;
 			m_Goal = CGoal::Create(Pos, GoalSize);
