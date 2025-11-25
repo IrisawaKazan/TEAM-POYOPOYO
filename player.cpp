@@ -318,7 +318,7 @@ void CPlayer::UpdateGroundedState()
 	btVector3 rayFrom = m_RigitBody->getWorldTransform().getOrigin(); // プレイヤーの中心
 
 	// カプセルの高さの半分 + 坂道や段差用のマージン
-	const float rayLength = CAPSULE_HALF_HEIGHT + GROUND_SPACE;
+	const float rayLength = CAPSULE_HALF_HEIGHT + CAPSULE_RADIUS;
 	btVector3 rayTo = rayFrom + btVector3(0, -rayLength, 0);
 
 	// レイキャストのコールバック
@@ -336,7 +336,7 @@ void CPlayer::UpdateGroundedState()
 		else
 		{// 自分以外
 			m_isGrounded = true;
-
+			
 			// 衝突したオブジェクトが坂道かチェック
 			bool isSlope{};
 			const std::vector<CBlock*> pSlopes = CMapManager::Instance()->GetSlope();
