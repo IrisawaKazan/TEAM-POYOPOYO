@@ -374,7 +374,10 @@ void CMapManager::Load(std::string Path)
 			m_Door->SetQuat(CMath::ConvertQuat(Quad));
 			m_Door->SetIdx(LocalPath);
 
-			m_Goal = CGoal::Create(Pos, m_Door->GetSize());
+			D3DXVECTOR3 GoalSize = m_Door->GetScale();
+			GoalSize.x -= 1.0f;
+			GoalSize.z -= 1.0f;
+			m_Goal = CGoal::Create(Pos, GoalSize);
 		}
 		else if (LocalPath.find("slope") != string::npos)
 		{
