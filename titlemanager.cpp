@@ -85,23 +85,26 @@ void CTitleManager::Update(void)
 	// フェード中なら早期リターン
 	if (FadeCondition == false) return;
 
+	// 選択肢を上に変える
+	const bool SelectUpCondition = CManager::GetInputKeyboard()->GetTrigger(DIK_W) == true || CManager::GetInputMouse()->GetMouseState().lZ < 0 ||
+		CManager::GetInputJoypad()->GetTrigger(CInputJoypad::JOYKEY_UP) == true;
+
+	// 選択肢を下に変える
+	const bool SelectDownCondition = CManager::GetInputKeyboard()->GetTrigger(DIK_S) == true || CManager::GetInputMouse()->GetMouseState().lZ > 0 ||
+		CManager::GetInputJoypad()->GetTrigger(CInputJoypad::JOYKEY_DOWN) == true;
+
 	// メニューを選ぶ
-	if (CManager::GetInputKeyboard()->GetTrigger(DIK_W) == true || CManager::GetInputMouse()->GetMouseState().lZ < 0 ||
-		CManager::GetInputJoypad()->GetTrigger(CInputJoypad::JOYKEY_UP) == true)
+	if (SelectUpCondition == true)
 	{
 		m_SelectMenu = (CTitleMenu::Menu)Wrap(m_SelectMenu - 1, 0, (int)CTitleMenu::MAX - 1);
-
-		// SE
-		pSound->Play(CSound::LABEL_SELECT_SE);
 	}
-	else if (CManager::GetInputKeyboard()->GetTrigger(DIK_S) == true || CManager::GetInputMouse()->GetMouseState().lZ > 0 ||
-		CManager::GetInputJoypad()->GetTrigger(CInputJoypad::JOYKEY_DOWN) == true)
+	else if (SelectDownCondition == true)
 	{
 		m_SelectMenu = (CTitleMenu::Menu)Wrap(m_SelectMenu + 1, 0, (int)CTitleMenu::MAX - 1);
-
-		// SE
-		pSound->Play(CSound::LABEL_SELECT_SE);
 	}
+
+	// 選択肢を動かしたらSE
+	if (SelectUpCondition || SelectDownCondition)pSound->Play(CSound::LABEL_SELECT_SE);
 }
 
 //***************************************
