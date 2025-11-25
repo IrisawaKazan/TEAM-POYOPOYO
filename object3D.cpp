@@ -102,35 +102,38 @@ void CObject3D::Uninit(void)
 //*********************************************
 void CObject3D::Update(void)
 {
-	// 頂点バッファをロック
-	VERTEX_3D* pVtx = NULL;
-	m_pVertex->Lock(0, 0, (void**)&pVtx, 0);
-
-	if (pVtx != NULL)
+	if (m_pVertex != NULL)
 	{
-		pVtx[0].pos = D3DXVECTOR3(-m_fWidth, 0.0f, m_fVertical);
-		pVtx[1].pos = D3DXVECTOR3(m_fWidth, 0.0f, m_fVertical);
-		pVtx[2].pos = D3DXVECTOR3(-m_fWidth, 0.0f, -m_fVertical);
-		pVtx[3].pos = D3DXVECTOR3(m_fWidth, 0.0f, -m_fVertical);
+		// 頂点バッファをロック
+		VERTEX_3D* pVtx = NULL;
+		m_pVertex->Lock(0, 0, (void**)&pVtx, 0);
 
-		pVtx[0].col = m_Col;
-		pVtx[1].col = m_Col;
-		pVtx[2].col = m_Col;
-		pVtx[3].col = m_Col;
+		if (pVtx != NULL)
+		{
+			pVtx[0].pos = D3DXVECTOR3(-m_fWidth, 0.0f, m_fVertical);
+			pVtx[1].pos = D3DXVECTOR3(m_fWidth, 0.0f, m_fVertical);
+			pVtx[2].pos = D3DXVECTOR3(-m_fWidth, 0.0f, -m_fVertical);
+			pVtx[3].pos = D3DXVECTOR3(m_fWidth, 0.0f, -m_fVertical);
 
-		pVtx[0].nor = D3DXVECTOR3(m_mtxWorld._21, m_mtxWorld._22, m_mtxWorld._23);
-		pVtx[1].nor = D3DXVECTOR3(m_mtxWorld._21, m_mtxWorld._22, m_mtxWorld._23);
-		pVtx[2].nor = D3DXVECTOR3(m_mtxWorld._21, m_mtxWorld._22, m_mtxWorld._23);
-		pVtx[3].nor = D3DXVECTOR3(m_mtxWorld._21, m_mtxWorld._22, m_mtxWorld._23);
+			pVtx[0].col = m_Col;
+			pVtx[1].col = m_Col;
+			pVtx[2].col = m_Col;
+			pVtx[3].col = m_Col;
 
-		pVtx[0].tex = D3DXVECTOR2(m_UVMin.x, m_UVMin.y);
-		pVtx[1].tex = D3DXVECTOR2(m_UVMax.x, m_UVMin.y);
-		pVtx[2].tex = D3DXVECTOR2(m_UVMin.x, m_UVMax.y);
-		pVtx[3].tex = D3DXVECTOR2(m_UVMax.x, m_UVMax.y);
+			pVtx[0].nor = D3DXVECTOR3(m_mtxWorld._21, m_mtxWorld._22, m_mtxWorld._23);
+			pVtx[1].nor = D3DXVECTOR3(m_mtxWorld._21, m_mtxWorld._22, m_mtxWorld._23);
+			pVtx[2].nor = D3DXVECTOR3(m_mtxWorld._21, m_mtxWorld._22, m_mtxWorld._23);
+			pVtx[3].nor = D3DXVECTOR3(m_mtxWorld._21, m_mtxWorld._22, m_mtxWorld._23);
+
+			pVtx[0].tex = D3DXVECTOR2(m_UVMin.x, m_UVMin.y);
+			pVtx[1].tex = D3DXVECTOR2(m_UVMax.x, m_UVMin.y);
+			pVtx[2].tex = D3DXVECTOR2(m_UVMin.x, m_UVMax.y);
+			pVtx[3].tex = D3DXVECTOR2(m_UVMax.x, m_UVMax.y);
+		}
+
+		// 頂点バッファをアンロック
+		m_pVertex->Unlock();
 	}
-
-	// 頂点バッファをアンロック
-	m_pVertex->Unlock();
 }
 
 //*********************************************
@@ -138,36 +141,39 @@ void CObject3D::Update(void)
 //*********************************************
 void CObject3D::Draw(void)
 {
-	CTextureManager* pTexmanager = CTextureManager::Instance();
-	CRenderer* pRenderer;
-	pRenderer = CManager::GetRenderer();
-	LPDIRECT3DDEVICE9 pDevice = pRenderer->GetDevice();
+	if (m_pVertex != NULL)
+	{
+		CTextureManager* pTexmanager = CTextureManager::Instance();
+		CRenderer* pRenderer;
+		pRenderer = CManager::GetRenderer();
+		LPDIRECT3DDEVICE9 pDevice = pRenderer->GetDevice();
 
-	//計算用マトリックス
-	D3DXMATRIX mtxRot, mtxTrans;
+		//計算用マトリックス
+		D3DXMATRIX mtxRot, mtxTrans;
 
-	//ワールドマトリックスの初期化
-	D3DXMatrixIdentity(&m_mtxWorld);
+		//ワールドマトリックスの初期化
+		D3DXMatrixIdentity(&m_mtxWorld);
 
-	//向きを反転
-	D3DXMatrixRotationYawPitchRoll(&mtxRot, m_Rot.y, m_Rot.x, m_Rot.z);
-	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxRot);
+		//向きを反転
+		D3DXMatrixRotationYawPitchRoll(&mtxRot, m_Rot.y, m_Rot.x, m_Rot.z);
+		D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxRot);
 
-	//位置を反映
-	D3DXMatrixTranslation(&mtxTrans, m_Pos.x, m_Pos.y, m_Pos.z);
-	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxTrans);
+		//位置を反映
+		D3DXMatrixTranslation(&mtxTrans, m_Pos.x, m_Pos.y, m_Pos.z);
+		D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxTrans);
 
-	// ワールドマトリックスの設定
-	pDevice->SetTransform(D3DTS_WORLD, &m_mtxWorld);
+		// ワールドマトリックスの設定
+		pDevice->SetTransform(D3DTS_WORLD, &m_mtxWorld);
 
-	// 頂点バッファをデバイスからデータストリームに設定
-	pDevice->SetStreamSource(0, m_pVertex, 0, sizeof(VERTEX_3D));
-	// テクスチャの設定
-	pDevice->SetTexture(0, pTexmanager->GetAddress(pTexmanager->Register(m_FilePath)));
-	// 頂点フォーマットの設定
-	pDevice->SetFVF(FVF_VERTEX_3D);
-	// ポリゴンの描画
-	pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
+		// 頂点バッファをデバイスからデータストリームに設定
+		pDevice->SetStreamSource(0, m_pVertex, 0, sizeof(VERTEX_3D));
+		// テクスチャの設定
+		pDevice->SetTexture(0, pTexmanager->GetAddress(pTexmanager->Register(m_FilePath)));
+		// 頂点フォーマットの設定
+		pDevice->SetFVF(FVF_VERTEX_3D);
+		// ポリゴンの描画
+		pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
+	}
 }
 
 //*********************************************

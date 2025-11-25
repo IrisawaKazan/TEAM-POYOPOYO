@@ -90,12 +90,10 @@ void CItem::Uninit(void)
 	// 衝突形状の削除
 	m_CollisionShape.reset();
 
-	// 影のポインタ破棄
 	if (m_pShadow != nullptr)
 	{
-		// 影の終了処理
 		m_pShadow->Uninit();
-		m_pShadow = NULL;
+		m_pShadow = nullptr;
 	}
 
 	// オブジェクトXの終了処理
