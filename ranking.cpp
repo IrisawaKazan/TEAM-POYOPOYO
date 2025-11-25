@@ -54,6 +54,8 @@ CRanking::~CRanking()
 HRESULT CRanking::Init(void)
 {
 	m_bAct = false;
+	m_nAnimCount = 0;
+	m_nCoolDownCount = 0;
 	m_nRankIdx = MAX_NUM - 1;
 
 	// ì«Ç›çûÇ›
@@ -139,11 +141,6 @@ void CRanking::Update(void)
 	// ç°ÇÃëçêî
 	int nNowTime = CTimer::GetTimer();
 
-	if (m_nRankIdx < 0)
-	{
-		m_nRankIdx = MAX_NUM - 1;
-	}
-
 	// åªç›ÇÃï™ïbÇÃåvéZ
 	m_nMinutes = nNowTime / MAX_MINUTES;
 	m_nSeconds = (nNowTime % MAX_MINUTES) / MAX_SECOND;
@@ -183,7 +180,7 @@ void CRanking::Update(void)
 		{
 			m_nAnimCount = 0;
 			m_nCoolDownCount = 0;
-			if (m_nRankIdx >= 0)m_nRankIdx--;
+			if (m_nRankIdx >= 0 && CNumber::GetEasing() == false)m_nRankIdx--;
 		}
 	}
 	else
