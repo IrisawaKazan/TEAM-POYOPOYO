@@ -158,9 +158,11 @@ void CCamera::SetCamera(void)
 	D3DXMatrixIdentity(&m_mtxProjection);
 
 	//プロジェクションマトリックスの作成
+	D3DXVECTOR2 screenSize{};
+	CManager::GetRenderer()->GetBackBufferSize(&screenSize);
 	D3DXMatrixPerspectiveFovLH(&m_mtxProjection,
 		D3DXToRadian(m_fFov),						//視野角
-		(float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, //アスペクト比
+		screenSize.x / screenSize.y,                //アスペクト比
 		m_fZnear,
 		m_fZfar);
 
@@ -295,7 +297,17 @@ void CCamera::UpdateMouseMove(void)
 void CCamera::UpdateJoyPadMove(void)
 {
 	// マウスカーソルの戻す位置
-	const POINT SetMousePos = { (LONG)SCREEN_WIDTH / (LONG)2.0f,(LONG)SCREEN_HEIGHT / (LONG)2.0f };
+	RECT clientRect{};
+	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
+	D3DDEVICE_CREATION_PARAMETERS creationParams{};
+	if (SUCCEEDED(pDevice->GetCreationParameters(&creationParams)))
+	{
+		if (creationParams.hFocusWindow != nullptr)
+		{
+			GetClientRect(creationParams.hFocusWindow, &clientRect);
+		}
+	}
+	const POINT SetMousePos = { LONG(float(clientRect.right - clientRect.left) * 0.5f),LONG(float(clientRect.bottom - clientRect.top) * 0.5f) };
 
 	// パッドのスティックの角度を取得
 	XINPUT_STATE* pStick = m_pInputJoypad->GetJoyStickAngle();
@@ -526,7 +538,9 @@ void CCamera::ResetProjectionMtx(void)
 	D3DXMATRIX ViewMtx, ProjectionMtx;
 
 	// アスペクト比を設定
-	float fAspect = (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT;
+	D3DXVECTOR2 screenSize{};
+	CManager::GetRenderer()->GetBackBufferSize(&screenSize);
+	float fAspect = screenSize.x / screenSize.y;
 
 	// デバイスを取得
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();

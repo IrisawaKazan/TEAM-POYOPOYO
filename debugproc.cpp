@@ -88,7 +88,9 @@ void CDebugProc::Draw(int X, int Y)
 	if (m_Enable == true)
 	{
 		// 指定された位置から描画
-		RECT rect = { X,Y,SCREEN_WIDTH,SCREEN_HEIGHT };
+		D3DXVECTOR2 screenSize{};
+		CManager::GetRenderer()->GetBackBufferSize(&screenSize);
+		RECT rect = { X,Y,LONG(screenSize.x),LONG(screenSize.y) };
 
 		// テキスト表示
 		m_pFont->DrawText(NULL, &m_aStr[0], -1, &rect, DT_LEFT, WHITE);

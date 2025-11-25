@@ -33,12 +33,14 @@ CTutorialBoard::~CTutorialBoard()
 HRESULT CTutorialBoard::Init(void)
 {
 	// 位置 Misaki
-	m_Dest = { SCREEN_WIDTH * 0.5f,SCREEN_HEIGHT * 0.5f,0.0f };	// 目標位置
-	m_pos = { SCREEN_WIDTH * 0.5f,SCREEN_HEIGHT * 1.5f,0.0f };	// 初期位置
+	D3DXVECTOR2 screenSize{};
+	CManager::GetRenderer()->GetBackBufferSize(&screenSize);
+	m_Dest = { screenSize.x * 0.5f,screenSize.y * 0.5f,0.0f };	// 目標位置
+	m_pos = { screenSize.x * 0.5f,screenSize.y * 1.5f,0.0f };	// 初期位置
 
-	m_pBackground = CObject2D::Create({ SCREEN_WIDTH * 0.5f,SCREEN_HEIGHT * 0.5f,0.0f }, VEC3_NULL, { SCREEN_WIDTH * 0.5f,SCREEN_HEIGHT * 0.5f }, 7); // sato 変更
+	m_pBackground = CObject2D::Create({ screenSize.x * 0.5f,screenSize.y * 0.5f,0.0f }, VEC3_NULL, { screenSize.x * 0.5f,screenSize.y * 0.5f }, 7); // sato 変更
 
-	m_pBoard = CObject2D::Create(m_pos, VEC3_NULL, { SCREEN_WIDTH * 0.5f,SCREEN_HEIGHT * 0.5f }, 7);                                                  // sato 変更
+	m_pBoard = CObject2D::Create(m_pos, VEC3_NULL, { screenSize.x * 0.5f,screenSize.y * 0.5f }, 7);                                                  // sato 変更
 
 	m_pBoard->SetTexIndx(CTextureManager::Instance()->Register("data\\TEXTURE\\tutorial_001.png"));
 	m_pBackground->SetCol({ 0.0f, 0.0f, 0.0f, 0.4f });

@@ -13,6 +13,9 @@
 #include "game.h"
 #include "tutorialBoard.h"
 
+// 位置 sato Add
+const D3DXVECTOR3 CPauseManager::Config::Bace = { 0.5f,0.4f,0.0f };
+
 // シングルトンを宣言
 CPauseManager* CPauseManager::m_Singleton = NULL;
 
@@ -29,9 +32,11 @@ CPauseManager::~CPauseManager()
 HRESULT CPauseManager::Init(void)
 {
 	m_SelectMenu = CPause::CONTINUE;
+	D3DXVECTOR2 screenSize{};
+	CManager::GetRenderer()->GetBackBufferSize(&screenSize);
 	for (int nCount = 0; nCount < CPause::MAX; nCount++)
 	{
-		CPause* pPause = CPause::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f + Config::OffSet * nCount, 0.0f), (CPause::Menu)nCount);
+		CPause* pPause = CPause::Create(D3DXVECTOR3(screenSize.x * Config::Bace.x, screenSize.y * (Config::Bace.y + Config::OffSet * nCount), 0.0f), (CPause::Menu)nCount);
 		m_apPauseMenu.push_back(pPause);
 	}
 	return S_OK;

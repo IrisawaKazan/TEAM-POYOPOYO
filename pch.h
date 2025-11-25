@@ -59,10 +59,6 @@
 #define FVF_VERTEX_3D (D3DFVF_XYZ | D3DFVF_NORMAL | D3DFVF_DIFFUSE | D3DFVF_TEX1)	// 座標・法線・カラー・テクスチャ
 #define FVF_VERTEX_LINE (D3DFVF_XYZ | D3DFVF_DIFFUSE)								// 座標・カラー
 
-// ゲームに使うマクロ
-#define CLASS_NAME "WindowsClass"
-#define WINDOW_NAME "TeamGame"
-
 // ウィンドウ
 #define SCREEN_WIDTH UINT(1280)
 #define SCREEN_HEIGHT UINT(720)

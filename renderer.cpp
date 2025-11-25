@@ -350,3 +350,37 @@ bool CRenderer::GetBackBufferSize(D3DXVECTOR2* size) const
 		return false;
 	}
 }
+
+//----------------------------
+// バックバッファサイズの取得
+//----------------------------
+D3DXVECTOR2 CRenderer::GetBackBufferSize() const
+{
+	D3DXVECTOR2 resultSize{ 0,0 };
+	// DirectXのサイズを取得する
+	LPDIRECT3DSURFACE9 pBackBuffer = nullptr;
+	if (SUCCEEDED(m_pD3DDevice->GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO, &pBackBuffer)))
+	{// バックバッファの取得
+		D3DSURFACE_DESC desc;
+		pBackBuffer->GetDesc(&desc);
+		resultSize.x = (float)desc.Width;
+		resultSize.y = (float)desc.Height;
+		pBackBuffer->Release();  // 取得したら解放
+		pBackBuffer = nullptr;
+	}
+
+	return resultSize;
+}
+
+//----------------------------
+// スクリーンの中心の取得
+//----------------------------
+D3DXVECTOR2 CRenderer::GetSenterPos() const
+{
+	D3DXVECTOR2 screenSize{};
+	if (GetBackBufferSize(&screenSize))
+	{
+		return D3DXVECTOR2(screenSize.x*0.5f, screenSize.y * 0.5f);
+	}
+	return D3DXVECTOR2(0.0f, 0.0f);
+}

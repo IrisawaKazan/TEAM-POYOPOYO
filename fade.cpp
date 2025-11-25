@@ -43,10 +43,12 @@ void CFade::Init(void)
 	if (pVtx != NULL)
 	{
 		//í∏ì_ç¿ïWÇÃê›íË
+		D3DXVECTOR2 screenSize{};
+		CManager::GetRenderer()->GetBackBufferSize(&screenSize);
 		pVtx[0].pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-		pVtx[1].pos = D3DXVECTOR3(SCREEN_WIDTH, 0.0f, 0.0f);
-		pVtx[2].pos = D3DXVECTOR3(0.0f, SCREEN_HEIGHT, 0.0f);
-		pVtx[3].pos = D3DXVECTOR3(SCREEN_WIDTH, SCREEN_HEIGHT, 0.0f);
+		pVtx[1].pos = D3DXVECTOR3(screenSize.x, 0.0f, 0.0f);
+		pVtx[2].pos = D3DXVECTOR3(0.0f, screenSize.y, 0.0f);
+		pVtx[3].pos = D3DXVECTOR3(screenSize.x, screenSize.y, 0.0f);
 		//rhwÇÃê›íË
 		pVtx[0].rhw = 1.0f;
 		pVtx[1].rhw = 1.0f;

@@ -93,7 +93,11 @@ CPause* CPause::Create(D3DXVECTOR3 Pos, Menu Menu)
 	}
 	pPause->Init();
 	pPause->SetPosition(Pos);
-	pPause->SetSize({ CPauseManager::Config::Width,CPauseManager::Config::Height });
+
+	// スクリーンのサイズ
+	D3DXVECTOR2 screenSize{};
+	CManager::GetRenderer()->GetBackBufferSize(&screenSize);
+	pPause->SetSize({ CPauseManager::Config::Width * screenSize.x,CPauseManager::Config::Height * screenSize.y });
 	return pPause;
 }
 
@@ -139,10 +143,13 @@ void CContinue::Uninit(void)
 //***************************************
 void CContinue::Update(void)
 {
+	// スクリーンのサイズ
+	D3DXVECTOR2 screenSize{};
+	CManager::GetRenderer()->GetBackBufferSize(&screenSize);
 	// 初期の大きさ
-	D3DXVECTOR2 Apper = { CPauseManager::Config::Width,CPauseManager::Config::Height };
+	D3DXVECTOR2 Apper = { CPauseManager::Config::Width * screenSize.x,CPauseManager::Config::Height * screenSize.y };
 	// 目標の大きさ
-	D3DXVECTOR2 Dest = { CPauseManager::Config::DestWidth,CPauseManager::Config::DestHeight };
+	D3DXVECTOR2 Dest = { CPauseManager::Config::DestWidth * screenSize.x,CPauseManager::Config::DestHeight * screenSize.y };
 
 	if (CManager::isPause() == false) return;
 	if (CPauseManager::GetSingleton()->GetSelectMenu() == CONTINUE)
@@ -230,10 +237,13 @@ void CRetry::Uninit(void)
 //***************************************
 void CRetry::Update(void)
 {
+	// スクリーンのサイズ
+	D3DXVECTOR2 screenSize{};
+	CManager::GetRenderer()->GetBackBufferSize(&screenSize);
 	// 初期の大きさ
-	D3DXVECTOR2 Apper = { CPauseManager::Config::Width,CPauseManager::Config::Height };
+	D3DXVECTOR2 Apper = { CPauseManager::Config::Width * screenSize.x,CPauseManager::Config::Height * screenSize.y };
 	// 目標の大きさ
-	D3DXVECTOR2 Dest = { CPauseManager::Config::DestWidth,CPauseManager::Config::DestHeight };
+	D3DXVECTOR2 Dest = { CPauseManager::Config::DestWidth * screenSize.x,CPauseManager::Config::DestHeight * screenSize.y };
 
 	if (CManager::isPause() == false) return;
 	if (CPauseManager::GetSingleton()->GetSelectMenu() == RETRY)
@@ -325,10 +335,13 @@ void CQuit::Uninit(void)
 //***************************************
 void CQuit::Update(void)
 {
+	// スクリーンのサイズ
+	D3DXVECTOR2 screenSize{};
+	CManager::GetRenderer()->GetBackBufferSize(&screenSize);
 	// 初期の大きさ
-	D3DXVECTOR2 Apper = { CPauseManager::Config::Width,CPauseManager::Config::Height };
+	D3DXVECTOR2 Apper = { CPauseManager::Config::Width * screenSize.x,CPauseManager::Config::Height * screenSize.y };
 	// 目標の大きさ
-	D3DXVECTOR2 Dest = { CPauseManager::Config::DestWidth,CPauseManager::Config::DestHeight };
+	D3DXVECTOR2 Dest = { CPauseManager::Config::DestWidth * screenSize.x,CPauseManager::Config::DestHeight * screenSize.y };
 
 	if (CManager::isPause() == false) return;
 	if (CPauseManager::GetSingleton()->GetSelectMenu() == QUIT)

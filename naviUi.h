@@ -17,17 +17,17 @@ class CNaviUI : public CObject
 public:
 	CNaviUI() : CObject(6), m_pFrames{}, m_pObjects{}, m_pKeys{}, m_objectTexturePaths{}, m_arrowTexturePaths{}, m_keyTexturePaths{}, m_pos{}, m_size{} {};
 	~CNaviUI() {};
-	static CNaviUI* Create(const char* frameTexturePath, std::vector<const char*> objectTexturePaths, std::vector<const char*> keyTexturePaths, std::vector<const char*> arrowTexturePaths, D3DXVECTOR3 pos, D3DXVECTOR2 size);
+	static CNaviUI* Create(const char* const frameTexturePath, std::span<const char* const> objectTexturePaths, std::span<const char* const> keyTexturePaths, std::span<const char* const> arrowTexturePaths, D3DXVECTOR3 pos, D3DXVECTOR2 size);
 
 	HRESULT Init(void) override;
 	void Uninit(void) override;
 	void Update(void) override;
 	void Draw(void) override;
 
-	void SetFrameTexturePath(const char* frameTexturePath) { m_frameTexturePath = frameTexturePath; }
-	void SetObjectTexturePaths(std::vector<const char*> objectTexturePaths) { m_objectTexturePaths = objectTexturePaths; }
-	void SetArrowTexturePaths(std::vector<const char*> arrowTexturePaths) { m_arrowTexturePaths = arrowTexturePaths; }
-	void SetKeyTexturePaths(std::vector<const char*> keyTexturePaths) { m_keyTexturePaths = keyTexturePaths; }
+	void SetFrameTexturePath(const char* const frameTexturePath) { m_frameTexturePath = frameTexturePath; }
+	void SetObjectTexturePaths(std::span<const char* const> objectTexturePaths) { m_objectTexturePaths = objectTexturePaths; }
+	void SetArrowTexturePaths(std::span<const char* const> arrowTexturePaths) { m_arrowTexturePaths = arrowTexturePaths; }
+	void SetKeyTexturePaths(std::span<const char* const> keyTexturePaths) { m_keyTexturePaths = keyTexturePaths; }
 	void SetPos(D3DXVECTOR3 pos) { m_pos = pos; }
 	void SetSize(D3DXVECTOR2 size) { m_size = size; }
 
@@ -42,13 +42,13 @@ private:
 	void SetObjectUI();
 	void SetKeyUI();
 
-	std::array<CObject2D*, 3u> m_pFrames;          // UIフレーム
-	std::array<CObject2D*, 3u> m_pObjects;         // UIオブジェクト
-	std::array<CObject2D*, 2u> m_pKeys;            // UIキー
-	const char* m_frameTexturePath;                // フレームのテクスチャ
-	std::vector<const char*> m_objectTexturePaths; // ナビゲーションオブジェクトのテクスチャ配列
-	std::vector<const char*> m_arrowTexturePaths;  // ナビゲーションオブジェクト(やじるし)のテクスチャ配列
-	std::vector<const char*> m_keyTexturePaths;    // キーのテクスチャ配列
-	D3DXVECTOR3 m_pos;                             // 基準位置
-	D3DXVECTOR2 m_size;                            // 基準サイズ
+	std::array<CObject2D*, 3u> m_pFrames;                // UIフレーム
+	std::array<CObject2D*, 3u> m_pObjects;               // UIオブジェクト
+	std::array<CObject2D*, 2u> m_pKeys;                  // UIキー
+	const char* m_frameTexturePath;                      // フレームのテクスチャ
+	std::span<const char* const> m_objectTexturePaths;   // ナビゲーションオブジェクトのテクスチャ配列
+	std::span<const char* const> m_arrowTexturePaths;    // ナビゲーションオブジェクト(やじるし)のテクスチャ配列
+	std::span<const char* const> m_keyTexturePaths;      // キーのテクスチャ配列
+	D3DXVECTOR3 m_pos;                                   // 基準位置
+	D3DXVECTOR2 m_size;                                  // 基準サイズ
 };

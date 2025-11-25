@@ -18,11 +18,12 @@ class CPauseManager
 public:
 	// ポーズメニューの規定値を設定
 	struct Config {
-		static constexpr float OffSet = 75.0f;		// メニューの隙間
-		static constexpr float Width = 100.0f;		// 横幅
-		static constexpr float Height = 25.0f;		// 立幅
-		static constexpr float DestWidth = 125.0f;	// 横幅
-		static constexpr float DestHeight = 50.0f;	// 立幅
+		static const D3DXVECTOR3 Bace;		        // 位置 sato Add
+		static constexpr float OffSet = 0.15f;		// メニューの隙間
+		static constexpr float Width = 0.1f;		// 横幅
+		static constexpr float Height = 0.04f;		// 立幅
+		static constexpr float DestWidth = 0.2f;	// 横幅
+		static constexpr float DestHeight = 0.1f;	// 立幅
 		static constexpr int Frame = 30;			// フレーム
 	};
 

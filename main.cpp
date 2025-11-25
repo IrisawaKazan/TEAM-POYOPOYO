@@ -10,12 +10,40 @@
 #include "manager.h"
 #include "debugproc.h"
 #include "resource.h"
+#include "file.h"
 #include <crtdbg.h>
 
 //プロトタイプ宣言
 LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 int g_nCountFPS = 0;
+
+namespace // sato Add
+{
+	std::string className{"WindowClass"}; // ウインドウの識別子
+	std::string windowName{"Human Sync"}; // ウインドウのタイトル
+	LONG screenWidth{ SCREEN_WIDTH };     // スクリーンの幅
+	LONG screenHeight{ SCREEN_HEIGHT };   // スクリーンの高さ
+
+	//----------------------
+    // カスタム設定のロード
+    //----------------------
+	bool CustomLoad(void)
+	{
+		// YAMLファイルの読み込み
+		CFile* pFile = new CFile("data/custom.yaml");
+		YAML::Node window = pFile->ReadYaml("window");
+
+		if (window.IsNull()) return false; // 読み込み失敗
+
+		// カスタム設定
+		screenWidth = window["width"].as<LONG>();   // 幅
+		screenHeight = window["height"].as<LONG>(); // 高さ
+
+		delete pFile; // 読み込み機の破棄
+		return true;  // 読み込みに成功
+	}
+}
 
 //*************************************
 // メイン関数
@@ -41,6 +69,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hInstancePrev, _
 		MessageBox(NULL, szError, "LoadImage エラー", MB_OK);
 	}
 
+	if (!CustomLoad()) return -1; // カスタム設定のロード sato Add
+
 	WNDCLASSEX wcex =
 	{
 		sizeof(WNDCLASSEX),
@@ -53,14 +83,14 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hInstancePrev, _
         (HCURSOR)LoadImage(hInstance, MAKEINTRESOURCE(IDC_CURSOR1), IMAGE_CURSOR, 0, 0, LR_DEFAULTSIZE | LR_SHARED),
         (HBRUSH)(COLOR_WINDOW + 1),
 		NULL,
-		CLASS_NAME,
+		className.c_str(),
 		LoadIcon(hInstance, MAKEINTRESOURCE(IDI_ICON1))
 	};
 
 	HWND hWnd;
 	MSG msg;
 
-	RECT rect = { 0,0,SCREEN_WIDTH,SCREEN_HEIGHT };
+	RECT rect = { 0,0,screenWidth,screenHeight };
 
 	//ウインドウクラスの登録
 	RegisterClassEx(&wcex);
@@ -76,8 +106,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hInstancePrev, _
 
 	//ウインドウを生成
 	hWnd = CreateWindowEx(0,
-		CLASS_NAME,
-		WINDOW_NAME,
+		className.c_str(),
+		windowName.c_str(),
 		style,
 		CW_USEDEFAULT,
 		CW_USEDEFAULT,
@@ -173,7 +203,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hInstancePrev, _
 	timeEndPeriod(1);
 
 	//ウインドウクラスの解除
-	UnregisterClass(CLASS_NAME, wcex.hInstance);
+	UnregisterClass(className.c_str(), wcex.hInstance);
 
 	return(int)msg.wParam;
 }

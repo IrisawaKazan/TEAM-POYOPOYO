@@ -430,3 +430,6 @@ FodyWeavers.xsd
 /Team_Game.exe
 /data/Ranking.txt
 /data/Goal.txt
+
+# vcpkgで生成されるフォルダを無視
+vcpkg_installed/

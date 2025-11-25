@@ -89,6 +89,9 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
+  <PropertyGroup Label="Vcpkg">
+    <VcpkgEnableManifest>true</VcpkgEnableManifest>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level4</WarningLevel>
@@ -184,6 +187,7 @@
     <ClCompile Include="debugproc.cpp" />
     <ClCompile Include="effect3d.cpp" />
     <ClCompile Include="fade.cpp" />
+    <ClCompile Include="file.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="gimmick.cpp" />
     <ClCompile Include="goal.cpp" />
@@ -253,6 +257,7 @@
     <ClInclude Include="debugproc.h" />
     <ClInclude Include="effect3d.h" />
     <ClInclude Include="fade.h" />
+    <ClInclude Include="file.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="gimmick.h" />
     <ClInclude Include="goal.h" />

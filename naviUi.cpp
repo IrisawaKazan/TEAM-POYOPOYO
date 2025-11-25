@@ -21,7 +21,7 @@
 //--------------------------------
 // 生成
 //--------------------------------
-CNaviUI* CNaviUI::Create(const char* frameTexturePath, std::vector<const char*> objectTexturePaths, std::vector<const char*> arrowTexturePaths, std::vector<const char*> keyTexturePaths, D3DXVECTOR3 pos, D3DXVECTOR2 size)
+CNaviUI* CNaviUI::Create(const char* const frameTexturePath, std::span<const char* const> objectTexturePaths, std::span<const char* const> arrowTexturePaths, std::span<const char* const> keyTexturePaths, D3DXVECTOR3 pos, D3DXVECTOR2 size)
 {
 	// インスタンスの生成
 	CNaviUI* pNaviUI = new CNaviUI;
@@ -118,7 +118,7 @@ void CNaviUI::SetObjectUI()
 	bool isArrowMode = pNavi->GetArrowMode();
 
 	// モードで使用するTextureを変える
-	std::vector<const char*>& texturePaths = isArrowMode ? m_arrowTexturePaths : m_objectTexturePaths;
+	std::span<const char* const> texturePaths = isArrowMode ? m_arrowTexturePaths : m_objectTexturePaths;
 
 	// 今のオブジェクト
 	unsigned int listID = isArrowMode ? static_cast<int>(pNavi->GetArrowType()) : static_cast<int>(pNavi->GetType());

@@ -1,0 +1,8 @@
+{
+  "name": "my-game-project",
+  "version-string": "0.1.0",
+  "dependencies": [
+    "yaml-cpp",
+    "jsoncpp"
+  ]
+}

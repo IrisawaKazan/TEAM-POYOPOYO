@@ -70,12 +70,13 @@ namespace
 	D3DXVECTOR2 ConvertClientToDirectX(D3DXVECTOR2 clientPos)
 	{
 		// DirectXの画面サイズを取得
-		D3DXVECTOR2 directXScreenSize = { SCREEN_WIDTH,SCREEN_HEIGHT };
+		D3DXVECTOR2 screenSize{};
+		CManager::GetRenderer()->GetBackBufferSize(&screenSize);
 
 		// DirectXデバイスに登録されているウインドウのサイズを取得
 		LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
 		D3DDEVICE_CREATION_PARAMETERS creationParams{};
-		D3DXVECTOR2 clientSize{ SCREEN_WIDTH,SCREEN_HEIGHT };
+		D3DXVECTOR2 clientSize{ screenSize };
 		if (SUCCEEDED(pDevice->GetCreationParameters(&creationParams)))
 		{
 			RECT rect{};
@@ -88,8 +89,8 @@ namespace
 
 		// クライアント座標をDirectX座標に変換
 		D3DXVECTOR2 resultPos{};
-		resultPos.x = (clientPos.x / clientSize.x) * directXScreenSize.x;
-		resultPos.y = (clientPos.y / clientSize.y) * directXScreenSize.y;
+		resultPos.x = (clientPos.x / clientSize.x) * screenSize.x;
+		resultPos.y = (clientPos.y / clientSize.y) * screenSize.y;
 
 		return resultPos;
 	}
@@ -100,12 +101,13 @@ namespace
 	D3DXVECTOR2 ConvertDirectXToClient(D3DXVECTOR2 directXPos)
 	{
 		// DirectXの画面サイズを取得
-		D3DXVECTOR2 directXScreenSize = { SCREEN_WIDTH,SCREEN_HEIGHT };
+		D3DXVECTOR2 screenSize{};
+		CManager::GetRenderer()->GetBackBufferSize(&screenSize);
 
 		// DirectXデバイスに登録されているウインドウのサイズを取得
 		LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
 		D3DDEVICE_CREATION_PARAMETERS creationParams{};
-		D3DXVECTOR2 clientSize{ SCREEN_WIDTH,SCREEN_HEIGHT };
+		D3DXVECTOR2 clientSize{ screenSize };
 		if (SUCCEEDED(pDevice->GetCreationParameters(&creationParams)))
 		{
 			RECT rect{};
@@ -118,8 +120,8 @@ namespace
 
 		// DirectXの座標をクライアント座標に変換
 		D3DXVECTOR2 resultPos{};
-		resultPos.x = (directXPos.x / directXScreenSize.x) * clientSize.x;
-		resultPos.y = (directXPos.y / directXScreenSize.y) * clientSize.y;
+		resultPos.x = (directXPos.x / screenSize.x) * clientSize.x;
+		resultPos.y = (directXPos.y / screenSize.y) * clientSize.y;
 
 		return resultPos;
 	}
@@ -129,7 +131,11 @@ namespace
     //--------------------------------
 	void MouseCursorSenter()
 	{
-		D3DXVECTOR2 senter{ ConvertDirectXToClient({ float(SCREEN_WIDTH) * 0.5f, float(SCREEN_HEIGHT) * 0.5f }) };
+		// DirectXの画面サイズを取得
+		D3DXVECTOR2 screenSize{};
+		CManager::GetRenderer()->GetBackBufferSize(&screenSize);
+
+		D3DXVECTOR2 senter{ ConvertDirectXToClient({ screenSize.x * 0.5f, screenSize.y * 0.5f }) };
 		POINT senterPoint{ LONG(senter.x),LONG(senter.y) };
 		LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
 		D3DDEVICE_CREATION_PARAMETERS creationParams{};
@@ -145,14 +151,14 @@ namespace
 	//--------------------------------
 	void MouseCursorCome(D3DXVECTOR2 screenPos)
 	{
-		D3DXVECTOR2 senter{ ConvertDirectXToClient(screenPos) };
-		POINT senterPoint{ LONG(senter.x),LONG(senter.y) };
+		D3DXVECTOR2 pos{ ConvertDirectXToClient(screenPos) };
+		POINT point{ LONG(pos.x),LONG(pos.y) };
 		LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
 		D3DDEVICE_CREATION_PARAMETERS creationParams{};
 		if (SUCCEEDED(pDevice->GetCreationParameters(&creationParams)) && creationParams.hFocusWindow != nullptr)
 		{
-			ClientToScreen(creationParams.hFocusWindow, &senterPoint);
-			SetCursorPos(senterPoint.x, senterPoint.y);
+			ClientToScreen(creationParams.hFocusWindow, &point);
+			SetCursorPos(point.x, point.y);
 		}
 	}
 
@@ -203,10 +209,9 @@ namespace
 //--------------------------------
 
 // 静的メンバ変数の定義
-const float CNavi::ENABLE_ANGLE = cosf(D3DXToRadian(60.0f));                // 床って何度まで?
-const D3DXVECTOR3 CNavi::MARKER_OFFSET = D3DXVECTOR3(0.0f, -1000.0f, 0.0f); // ナビマーカーのオフセット位置
-const D3DXVECTOR2 CNavi::MARKER_SIZE = D3DXVECTOR2(60.0f, 60.0f);           // ナビマーカーのサイズ
-const D3DXVECTOR2 CNavi::POINTER_SIZE = D3DXVECTOR2(SCREEN_WIDTH*0.02f, SCREEN_WIDTH * 0.02f); // ポインターのサイズ
+const float CNavi::ENABLE_ANGLE = cosf(D3DXToRadian(60.0f));                                  // 床って何度まで?
+const D3DXVECTOR3 CNavi::MARKER_OFFSET = D3DXVECTOR3(0.0f, -1000.0f, 0.0f);                   // ナビマーカーのオフセット位置
+const D3DXVECTOR2 CNavi::MARKER_SIZE = D3DXVECTOR2(60.0f, 60.0f);                             // ナビマーカーのサイズ
 
 //--------------------------------
 // 初期化処理
@@ -667,7 +672,7 @@ void CNavi::UpdatePointer(bool enable)
 		}
 		else
 		{
-			m_pPointer->SetPosition(D3DXVECTOR3(-float(SCREEN_WIDTH), -float(SCREEN_HEIGHT), 0.0f));
+			m_pPointer->SetPosition(D3DXVECTOR3(-1000.0f, -1000.0f, 0.0f));
 		}
 	}
 }
@@ -946,7 +951,9 @@ void CNavi::SetMarker(void)
 //--------------------------------
 void CNavi::SetPointer(void)
 {
-	m_pPointer = CObject2D::Create(D3DXVECTOR3(m_screenPos.x, m_screenPos.y, 0.0f), VEC3_NULL, POINTER_SIZE);
+	D3DXVECTOR2 screenSize{};
+	CManager::GetRenderer()->GetBackBufferSize(&screenSize);
+	m_pPointer = CObject2D::Create(D3DXVECTOR3(m_screenPos.x, m_screenPos.y, 0.0f), VEC3_NULL, D3DXVECTOR2(screenSize.x * POINTER_SIZE_MAGNIFICATION, screenSize.y * POINTER_SIZE_MAGNIFICATION));
 	m_pPointer->SetTexIndx(CTextureManager::Instance()->Register(POINTER_TEXTURE_PATH));
 }
 

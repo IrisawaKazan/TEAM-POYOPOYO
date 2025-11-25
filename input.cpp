@@ -182,9 +182,17 @@ void CInputMouse::Update(void)
 	}
 	POINT p;
 	GetCursorPos(&p);
-	ScreenToClient(FindWindowA(CLASS_NAME, WINDOW_NAME), &p);
-	m_MouseState.lX = p.x;
-	m_MouseState.lY = p.y;
+	RECT clientRect{};
+	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
+	D3DDEVICE_CREATION_PARAMETERS creationParams{};
+	if (SUCCEEDED(pDevice->GetCreationParameters(&creationParams)))
+	{
+		if (ScreenToClient(creationParams.hFocusWindow, &p))
+		{
+			m_MouseState.lX = p.x;
+			m_MouseState.lY = p.y;
+		}
+	}
 }
 
 //*********************************************

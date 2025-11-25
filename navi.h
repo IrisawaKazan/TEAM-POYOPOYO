@@ -111,7 +111,7 @@ private:
 	static const float ENABLE_ANGLE;                                                      // おけるオブジェクト角度の閾値(どこまでを床としますか?)
 	static const D3DXVECTOR3 MARKER_OFFSET;                                               // マーカーのオフセット位置
 	static const D3DXVECTOR2 MARKER_SIZE;                                                 // マーカーのサイズ
-	static const D3DXVECTOR2 POINTER_SIZE;                                                // ポインターのサイズ
+	static constexpr float POINTER_SIZE_MAGNIFICATION = 0.05f;                            // ポインターのサイズ
 	static constexpr float CONTROLLER_SPEED = 10.0f;                                      // コントローラーのスピード
 
 	// 角度

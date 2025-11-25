@@ -46,6 +46,8 @@ public:
 	bool NeedReset(void) { return (m_Width != NULL && m_Height != NULL); }
 
 	bool GetBackBufferSize(D3DXVECTOR2* size) const; // sato Add
+	D3DXVECTOR2 GetBackBufferSize() const;           //
+	D3DXVECTOR2 GetSenterPos() const;                //
 // プライベート
 private:
 	// 静的メンバ変数
