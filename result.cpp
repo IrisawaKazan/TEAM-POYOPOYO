@@ -33,14 +33,14 @@ HRESULT CResult::Init(void)
     //  CObject2D::Create(D3DXVECTOR3(640.0f, 370.0f, 0.0f), VEC3_NULL);
     CRanking::Instance()->Init();
     
+    LoadFile();
+
     int nMotion = 0;
     std::string Path;
     if (m_IsGoal == true) nMotion = 6, Path = "data\\TEXT\\stage98.json";
-    else nMotion = 7,Path = "data\\TEXT\\stage97.json";
+    else nMotion = 7, Path = "data\\TEXT\\stage97.json";
 
     CMapManager::Instance()->Load(Path);
-
-    LoadFile();
 
     CManager::GetCamera()->Init();
     CManager::GetCamera()->SetPosRDest({0.0f,35.0f,0.0f});
@@ -89,9 +89,11 @@ void CResult::LoadFile(void)
     // ファイルが正常に開けたら
     if (pFile.is_open())
     {
-            istringstream iss(line);
+        getline(pFile, line);
 
-            iss >> m_IsGoal;
+        istringstream iss(line);
+
+        iss >> m_IsGoal;
 
         // ファイルを閉じる
         pFile.close();
