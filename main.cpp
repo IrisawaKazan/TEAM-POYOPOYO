@@ -22,8 +22,8 @@ namespace // sato Add
 {
 	std::string className{"WindowClass"}; // ウインドウの識別子
 	std::string windowName{"Human Sync"}; // ウインドウのタイトル
-	LONG screenWidth{ SCREEN_WIDTH };     // スクリーンの幅
-	LONG screenHeight{ SCREEN_HEIGHT };   // スクリーンの高さ
+	LONG screenWidth{ 1920l };            // スクリーンの幅
+	LONG screenHeight{ 1080l };           // スクリーンの高さ
 
 	//----------------------
     // カスタム設定のロード
