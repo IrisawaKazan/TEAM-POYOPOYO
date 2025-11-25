@@ -12,12 +12,12 @@
 #include "sound.h"
 
 // 規定値を設定
-const D3DXVECTOR3 CTitleManager::Config::Menu::Bace = { 250.0f,500.0f,0.0f };
-const D3DXVECTOR3 CTitleManager::Config::Logo::Apper = { 250.0f,0.0f,0.0f };
-const D3DXVECTOR3 CTitleManager::Config::Logo::Dest = { 250.0f,200.0f,0.0f };
-const D3DXVECTOR2 CTitleManager::Config::Logo::Size = { 200.0f,150.0f };
-const D3DXVECTOR3 CTitleManager::Config::BG::Apper = { SCREEN_WIDTH * 0.5f,SCREEN_HEIGHT * 0.5f,0.0f };	// Misaki
-const D3DXVECTOR2 CTitleManager::Config::BG::Size = { SCREEN_CENTER };									// Misaki
+const D3DXVECTOR3 CTitleManager::Config::Menu::Bace = { 0.2f,0.55f,0.0f };
+const D3DXVECTOR3 CTitleManager::Config::Logo::Apper = { 0.2f,0.0f,0.0f };
+const D3DXVECTOR3 CTitleManager::Config::Logo::Dest = { 0.2f,0.2f,0.0f };
+const D3DXVECTOR2 CTitleManager::Config::Logo::Size = { 0.2f,0.1f };
+const D3DXVECTOR3 CTitleManager::Config::BG::Apper = { 0.5f,0.5f,0.0f };	// Misaki
+const D3DXVECTOR2 CTitleManager::Config::BG::Size = { 0.5f,0.28f };			// Misaki
 
 // シングルトンを宣言
 CTitleManager* CTitleManager::m_Singleton = NULL;
@@ -34,21 +34,29 @@ CTitleManager::~CTitleManager()
 //***************************************
 HRESULT CTitleManager::Init(void)
 {
+	// スクリーンのサイズ
+	D3DXVECTOR2 screenSize{};
+	CManager::GetRenderer()->GetBackBufferSize(&screenSize);
+
 	// 選んでいつメニュー
 	m_SelectMenu = CTitleMenu::START;
 
 	// メニューを一気に生成
 	for (int nCount = 0; nCount < CTitleMenu::MAX; nCount++)
 	{
-		CTitleMenu* pTitleMenu = CTitleMenu::Create(D3DXVECTOR3(CTitleManager::Config::Menu::Bace.x, CTitleManager::Config::Menu::Bace.y + CTitleManager::Config::Menu::OffSet * nCount, 0.0f), (CTitleMenu::Menu)nCount);
+		D3DXVECTOR3 menuPos = D3DXVECTOR3(CTitleManager::Config::Menu::Bace.x, CTitleManager::Config::Menu::Bace.y + CTitleManager::Config::Menu::OffSet * nCount, 0.0f);
+		D3DXVECTOR3 screendMenuPos = D3DXVECTOR3(menuPos.x * screenSize.x, menuPos.y * screenSize.y, 0.0f);
+		CTitleMenu* pTitleMenu = CTitleMenu::Create(screendMenuPos, (CTitleMenu::Menu)nCount);
 		m_apTitleMenu.push_back(pTitleMenu);
 	}
 
-	//w ロゴを生成
-	m_TitleLogo = CTitleLogo::Create(CTitleManager::Config::Logo::Apper, VEC3_NULL, CTitleManager::Config::Logo::Size, CTitleManager::Config::Logo::FilePath);
+	// ロゴを生成
+	D3DXVECTOR3 logoApper = D3DXVECTOR3(CTitleManager::Config::Logo::Apper.x * screenSize.x, CTitleManager::Config::Logo::Apper.y * screenSize.y, 0.0f);
+	m_TitleLogo = CTitleLogo::Create(logoApper, VEC3_NULL, CTitleManager::Config::Logo::Size * screenSize.x, CTitleManager::Config::Logo::FilePath);
 	
 	// タイトル背景を生成
-	m_TitleBG = CTitleBG::Create(CTitleManager::Config::BG::Apper, VEC3_NULL, CTitleManager::Config::BG::Size, CTitleManager::Config::BG::FilePath);
+	D3DXVECTOR3 bgApper = D3DXVECTOR3(CTitleManager::Config::BG::Apper.x * screenSize.x, CTitleManager::Config::BG::Apper.y * screenSize.y, 0.0f);
+	m_TitleBG = CTitleBG::Create(bgApper, VEC3_NULL, CTitleManager::Config::BG::Size * screenSize.x, CTitleManager::Config::BG::FilePath);
 
 	return S_OK;
 }

@@ -24,11 +24,11 @@ public:
 		// メニューの規定値を設定
 		struct Menu {
 			static const D3DXVECTOR3 Bace;				// ロゴの基準となる位置
-			static constexpr float OffSet = 125.0f;		// メニューの隙間
-			static constexpr float Width = 100.0f;		// 横幅
-			static constexpr float Height = 30.0f;		// 立幅
-			static constexpr float DestWidth = 150.0f;	// 横幅
-			static constexpr float DestHeight = 55.0f;	// 立幅
+			static constexpr float OffSet = 0.15f;		// メニューの隙間
+			static constexpr float Width = 0.1f;		// 横幅
+			static constexpr float Height = 0.05f;		// 立幅
+			static constexpr float DestWidth = 0.15f;	// 横幅
+			static constexpr float DestHeight = 0.1f;	// 立幅
 			static constexpr int Frame = 30;			// フレーム
 		};
 
@@ -47,7 +47,6 @@ public:
 			static const D3DXVECTOR2 Size;													// 大きさ
 			static constexpr const char* FilePath = "data\\TEXTURE\\Title\\Title000.png";	// テクスチャのパス
 		};
-
 	};
 
 	// デストラクタ

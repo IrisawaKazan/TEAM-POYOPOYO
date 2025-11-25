@@ -94,7 +94,11 @@ CTitleMenu* CTitleMenu::Create(D3DXVECTOR3 Pos, Menu Menu)
 	// 各種処理
 	pMenu->Init();
 	pMenu->SetPosition(Pos);
-	pMenu->SetSize({ CTitleManager::Config::Menu::Width,CTitleManager::Config::Menu::Height });
+
+	// スクリーンのサイズ
+	D3DXVECTOR2 screenSize{};
+	CManager::GetRenderer()->GetBackBufferSize(&screenSize);
+	pMenu->SetSize({ CTitleManager::Config::Menu::Width * screenSize.x,CTitleManager::Config::Menu::Height * screenSize.y });
 	// 返す
 	return pMenu;
 }
@@ -140,10 +144,14 @@ void CStart::Uninit(void)
 //***************************************
 void CStart::Update(void)
 {
+	// スクリーンのサイズ
+	D3DXVECTOR2 screenSize{};
+	CManager::GetRenderer()->GetBackBufferSize(&screenSize);
+
 	// 初期の大きさ
-	D3DXVECTOR2 Apper = { CTitleManager::Config::Menu::Width,CTitleManager::Config::Menu::Height };
+	D3DXVECTOR2 Apper = { CTitleManager::Config::Menu::Width * screenSize.x,CTitleManager::Config::Menu::Height * screenSize.y };
 	// 目標の大きさ
-	D3DXVECTOR2 Dest = { CTitleManager::Config::Menu::DestWidth,CTitleManager::Config::Menu::DestHeight };
+	D3DXVECTOR2 Dest = { CTitleManager::Config::Menu::DestWidth * screenSize.x,CTitleManager::Config::Menu::DestHeight * screenSize.y };
 
 	// 今選んでいるのがスタートメニューだったら
 	if (CTitleManager::GetSingleton()->GetSelectMenu() == START)
@@ -247,10 +255,14 @@ void CExit::Uninit(void)
 //***************************************
 void CExit::Update(void)
 {
+	// スクリーンのサイズ
+	D3DXVECTOR2 screenSize{};
+	CManager::GetRenderer()->GetBackBufferSize(&screenSize);
+
 	// 初期の大きさ
-	D3DXVECTOR2 Apper = { CTitleManager::Config::Menu::Width,CTitleManager::Config::Menu::Height };
+	D3DXVECTOR2 Apper = { CTitleManager::Config::Menu::Width * screenSize.x,CTitleManager::Config::Menu::Height * screenSize.y };
 	// 目標の大きさ
-	D3DXVECTOR2 Dest = { CTitleManager::Config::Menu::DestWidth,CTitleManager::Config::Menu::DestHeight };
+	D3DXVECTOR2 Dest = { CTitleManager::Config::Menu::DestWidth * screenSize.x,CTitleManager::Config::Menu::DestHeight * screenSize.y };
 
 	// 今選んでいるのがExitメニューだったら
 	if (CTitleManager::GetSingleton()->GetSelectMenu() == EXIT)

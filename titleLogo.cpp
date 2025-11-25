@@ -53,14 +53,21 @@ void CTitleLogo::Update(void)
     }
     // 設定する位置の変数
     D3DXVECTOR3 SetPos = {};
+    D3DXVECTOR3 screendPos = {};
     // 今のアニメーションの進行割合を計算
     float Ratio = EaseOutBounce((float)m_nFrameCounter / CTitleManager::Config::Logo::AnimFrame);
     // 最終地点から初期位置からの差分
     D3DXVECTOR3 Diff  = CTitleManager::Config::Logo::Dest - CTitleManager::Config::Logo::Apper;
     // 今の位置を計算
     SetPos = CTitleManager::Config::Logo::Apper + Diff * Ratio;
+
+    // スクリーンのサイズ
+    D3DXVECTOR2 screenSize{};
+    CManager::GetRenderer()->GetBackBufferSize(&screenSize);
+    screendPos = D3DXVECTOR3(SetPos.x * screenSize.x, SetPos.y * screenSize.y, 0.0f);
+
     // 設定
-    CObject2D::SetPosition(SetPos);
+    CObject2D::SetPosition(screendPos);
     CObject2D::Update();
 }
 
