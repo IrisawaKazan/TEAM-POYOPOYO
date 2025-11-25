@@ -179,7 +179,7 @@ void CRanking::Update(void)
 		SetNumUpdate(m_nRankIdx);
 		m_nCoolDownCount++;
 
-		if (m_nCoolDownCount >= 60)
+		if (m_nCoolDownCount >= 30)
 		{
 			m_nAnimCount = 0;
 			m_nCoolDownCount = 0;
