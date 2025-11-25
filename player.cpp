@@ -1,7 +1,7 @@
-//************************************************************
+ï»¿//************************************************************
 //
-//@ƒvƒŒƒCƒ„[‚Ìˆ—[player.cpp]
-//@Author:chikada shouya
+//ã€€ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®å‡¦ç†[player.cpp]
+//ã€€Author:chikada shouya
 //
 //************************************************************
 #include "player.h"
@@ -14,28 +14,28 @@
 #include "effect3d.h"
 #include "particle3d.h"
 
-// Ã“Iƒƒ“ƒo•Ï”‚Ì’è‹`
+// é™çš„ãƒ¡ãƒ³ãƒå¤‰æ•°ã®å®šç¾©
 
-// ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+// ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 CPlayer::CPlayer() : m_activePos{ 0,0,0 }, m_CollisionShape{}, m_isGrounded{}, m_IsSlopeTrigger{}, m_naviObjectCountMap{}, m_naviObjectLastTimeMap{}, m_naviObjectIdxListOld{}, m_pClimbBlock{}, m_RigitBody{}, m_state{}, m_turnAngle{}, m_peakFallSpeed{}
 {
 
 }
 
-// ƒfƒXƒgƒ‰ƒNƒ^
+// ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 CPlayer::~CPlayer()
 {
 
 }
 
-// ‰Šú‰»
+// åˆæœŸåŒ–
 HRESULT CPlayer::Init(void)
 {
 	CModelCharacter::Init("data\\Model\\MOTION\\player003.txt",5.0f);
 
-	m_CollisionShape = std::make_unique<btCapsuleShape>(btScalar(CAPSULE_RADIUS), btScalar(CAPSULE_HEIGHT));
+	m_CollisionShape = std::make_unique<btCapsuleShape>(btScalar(SPHERE_RADIUS), btScalar(CYLINDER_HEIGHT));
 
-	btScalar mass = 1.0f; // ¿—Ê‚ğ1ˆÈã‚É‚·‚é‚±‚Æ‚Å“®“I„‘Ì‚É‚È‚é
+	btScalar mass = 1.0f; // è³ªé‡ã‚’1ä»¥ä¸Šã«ã™ã‚‹ã“ã¨ã§å‹•çš„å‰›ä½“ã«ãªã‚‹
 	btVector3 inertia(0, 0, 0);
 	m_CollisionShape->calculateLocalInertia(mass, inertia);
 
@@ -56,14 +56,14 @@ HRESULT CPlayer::Init(void)
 
 	CManager::GetDynamicsWorld()->addRigidBody(m_RigitBody.get());
 
-	// ƒiƒrƒQ[ƒVƒ‡ƒ“ƒIƒuƒWƒFƒNƒg‚ÌÚG‰ñ”ŠÇ——pƒ}ƒbƒv‚Ì‰Šú‰» sato Add
+	// ãƒŠãƒ“ã‚²ãƒ¼ã‚·ãƒ§ãƒ³ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®æ¥è§¦å›æ•°ç®¡ç†ç”¨ãƒãƒƒãƒ—ã®åˆæœŸåŒ– sato Add
 	m_naviObjectCountMap = std::unordered_map<size_t, unsigned short>();
 	m_naviObjectLastTimeMap = std::unordered_map<size_t, std::chrono::steady_clock::time_point>();
 	m_naviObjectIdxListOld = std::vector<size_t>();
 
-	m_state = STATE::Normal;              // ’Êí
-	m_activePos = { 0.0f,-1000.0f,0.0f }; // ‰Šú’l
-	m_turnAngle = 0.0f;                   // ‰Šú’l
+	m_state = STATE::Normal;              // é€šå¸¸
+	m_activePos = { 0.0f,-1000.0f,0.0f }; // åˆæœŸå€¤
+	m_turnAngle = 0.0f;                   // åˆæœŸå€¤
 
 	m_pClimbBlock = nullptr;
 
@@ -73,10 +73,10 @@ HRESULT CPlayer::Init(void)
 	return S_OK;
 }
 
-// ”jŠü
+// ç ´æ£„
 void CPlayer::Uninit(void)
 {
-	// „‘Ì‚Ìíœ
+	// å‰›ä½“ã®å‰Šé™¤
 	if (m_RigitBody)
 	{
 		CManager::GetDynamicsWorld()->removeRigidBody(m_RigitBody.get());
@@ -87,82 +87,82 @@ void CPlayer::Uninit(void)
 		m_RigitBody.reset();
 	}
 
-	// Õ“ËŒ`ó‚Ìíœ
+	// è¡çªå½¢çŠ¶ã®å‰Šé™¤
 	m_CollisionShape.reset();
 
 	CModelCharacter::Uninit();
 }
 
-// XV
+// æ›´æ–°
 void CPlayer::Update(void)
 {
 	if (m_RigitBody == nullptr) return;
 
 	if (CManager::GetScene()->GetMode() != CScene::MODE_RESULT)
 	{
-		// ƒiƒrƒQ[ƒVƒ‡ƒ“ƒ`ƒFƒbƒN
+		// ãƒŠãƒ“ã‚²ãƒ¼ã‚·ãƒ§ãƒ³ãƒã‚§ãƒƒã‚¯
 		CheckNavigation();
 
 		if (m_RigitBody == nullptr) return;
 
-		// ’…’nƒ`ƒFƒbƒN
+		// ç€åœ°ãƒã‚§ãƒƒã‚¯
 		UpdateGroundedState();
 
-		btVector3 moveDir(0, 0, 0); // ÅI“I‚É setLinearVelocity ‚É“n‚·‘¬“x
+		btVector3 moveDir(0, 0, 0); // æœ€çµ‚çš„ã« setLinearVelocity ã«æ¸¡ã™é€Ÿåº¦
 		D3DXVECTOR3 rot = GetRot();
-		btVector3 currentVel = m_RigitBody->getLinearVelocity(); // Œ»İ‚Ì•¨—‘¬“x
+		btVector3 currentVel = m_RigitBody->getLinearVelocity(); // ç¾åœ¨ã®ç‰©ç†é€Ÿåº¦
 
-		// ˆÚ“®
+		// ç§»å‹•
 		Move(moveDir, rot, currentVel);
 
-		// ó‘ÔŠÇ—
+		// çŠ¶æ…‹ç®¡ç†
 		UpdateState(moveDir);
 
 		if (m_state == STATE::Sliding)
 		{
 			if (m_IsSlopeTrigger == false)
 			{
-				// •¨—‚ÉˆÚ“®’l‚ğ“n‚·
+				// ç‰©ç†ã«ç§»å‹•å€¤ã‚’æ¸¡ã™
 				m_RigitBody->applyCentralImpulse(moveDir);
 				m_IsSlopeTrigger = true;
 			}
 		}
 		else
 		{
-			// •¨—‚ÉˆÚ“®’l‚ğ“n‚·
+			// ç‰©ç†ã«ç§»å‹•å€¤ã‚’æ¸¡ã™
 			m_RigitBody->setLinearVelocity(moveDir);
 			m_IsSlopeTrigger = false;
 		}
 
-		// •¨—‚ÌˆÊ’u‚ğƒ‚ƒfƒ‹‚ÌˆÊ’u‚É“n‚·
-		btVector3 newPos;           // ˆÊ’u
-		btTransform trans;          // ƒgƒ‰ƒ“ƒXƒtƒH[ƒ€
+		// ç‰©ç†ã®ä½ç½®ã‚’ãƒ¢ãƒ‡ãƒ«ã®ä½ç½®ã«æ¸¡ã™
+		btVector3 newPos;           // ä½ç½®
+		btTransform trans;          // ãƒˆãƒ©ãƒ³ã‚¹ãƒ•ã‚©ãƒ¼ãƒ 
 		m_RigitBody->getMotionState()->getWorldTransform(trans);
 		newPos = trans.getOrigin();
 		SetPos(D3DXVECTOR3(newPos.x(), newPos.y(), newPos.z()));
 	}
 
-	// ƒ‚ƒfƒ‹‚ÌXV
+	// ãƒ¢ãƒ‡ãƒ«ã®æ›´æ–°
 	CModelCharacter::Update();
 }
 
-// •`‰æ
+// æç”»
 void CPlayer::Draw(void)
 {
 	CModelCharacter::Draw();
 }
 
-// ƒiƒrƒQ[ƒVƒ‡ƒ“ˆ—
+// ãƒŠãƒ“ã‚²ãƒ¼ã‚·ãƒ§ãƒ³å‡¦ç†
 void CPlayer::CheckNavigation()
 {
-	// ƒiƒrƒQ[ƒVƒ‡ƒ“ƒIƒuƒWƒFƒNƒg‚ÉG‚ê‚éˆ— sato Add
-	std::vector<size_t> naviObjectIdxListNew{}; // ¡ƒtƒŒ[ƒ€‚ÅG‚ê‚½ƒiƒrƒQ[ƒVƒ‡ƒ“ƒIƒuƒWƒFƒNƒg‚ÌƒCƒ“ƒfƒbƒNƒXƒŠƒXƒg
+	// ãƒŠãƒ“ã‚²ãƒ¼ã‚·ãƒ§ãƒ³ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã«è§¦ã‚Œã‚‹å‡¦ç† sato Add
+	std::vector<size_t> naviObjectIdxListNew{}; // ä»Šãƒ•ãƒ¬ãƒ¼ãƒ ã§è§¦ã‚ŒãŸãƒŠãƒ“ã‚²ãƒ¼ã‚·ãƒ§ãƒ³ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ãƒªã‚¹ãƒˆ
 	if (m_isGrounded && m_state == STATE::Normal)
-	{// ’n–Ê‚É‚¢‚é‚©‚Â’Êíó‘Ô
-		std::vector<CNaviObject*> pObjects = CNavi::GetInstance()->GetObjects(); // ƒiƒrƒQ[ƒVƒ‡ƒ“ƒIƒuƒWƒFƒNƒg‚ğæ“¾
+	{// åœ°é¢ã«ã„ã‚‹ã‹ã¤é€šå¸¸çŠ¶æ…‹
+		std::vector<CNaviObject*> pObjects = CNavi::GetInstance()->GetObjects(); // ãƒŠãƒ“ã‚²ãƒ¼ã‚·ãƒ§ãƒ³ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’å–å¾—
 		for (const CNaviObject* pObject : pObjects)
 		{
-			// ƒIƒuƒWƒFƒNƒg‚ÉG‚ê‚Ä‚¢‚é‚©
+			// ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã«è§¦ã‚Œã¦ã„ã‚‹ã‹
 			D3DXVECTOR3 pos{};
 			float angle{};
 			size_t idx = 0;
@@ -170,50 +170,50 @@ void CPlayer::CheckNavigation()
 
 			if (naviType != CNavi::TYPE::None && naviType != CNavi::TYPE::Max)
 			{
-				// ‘O‚ÌƒtƒŒ[ƒ€‚ÅG‚ê‚Ä‚¢‚È‚©‚Á‚½ê‡‚ÍÚG‰ñ”‚ğƒJƒEƒ“ƒgƒAƒbƒv
+				// å‰ã®ãƒ•ãƒ¬ãƒ¼ãƒ ã§è§¦ã‚Œã¦ã„ãªã‹ã£ãŸå ´åˆã¯æ¥è§¦å›æ•°ã‚’ã‚«ã‚¦ãƒ³ãƒˆã‚¢ãƒƒãƒ—
 				if (std::find(m_naviObjectIdxListOld.begin(), m_naviObjectIdxListOld.end(), idx) == m_naviObjectIdxListOld.end())
 				{
-					// ‰‚ß‚Ä‚ÌÚG‚Ìê‡‚Íƒ}ƒbƒv‚É“o˜^
+					// åˆã‚ã¦ã®æ¥è§¦ã®å ´åˆã¯ãƒãƒƒãƒ—ã«ç™»éŒ²
 					m_naviObjectLastTimeMap.try_emplace(idx, std::chrono::steady_clock::time_point());
 
-					// ‘O‰ñƒqƒbƒg‚©‚ç‚ÌŒo‰ßŠÔ
+					// å‰å›ãƒ’ãƒƒãƒˆã‹ã‚‰ã®çµŒéæ™‚é–“
 					std::chrono::steady_clock::time_point now = std::chrono::steady_clock::now();
 					float delta = std::chrono::duration<float>(now - m_naviObjectLastTimeMap.at(idx)).count();
 
-					// ‘O‰ñƒqƒbƒg‚µ‚Ä‚©‚ç‘‰ß‚¬‚é
+					// å‰å›ãƒ’ãƒƒãƒˆã—ã¦ã‹ã‚‰æ—©éãã‚‹
 					if (delta < HIT_NAVI_OBJECT_TIME) continue;
 
-					// ¡‰ñ“–‚½‚Á‚½ŠÔ‚ğ‹L˜^
+					// ä»Šå›å½“ãŸã£ãŸæ™‚é–“ã‚’è¨˜éŒ²
 					m_naviObjectLastTimeMap[idx] = now;
 
-					// G‚ê‚½ƒiƒrƒQ[ƒVƒ‡ƒ“ƒ^ƒCƒv‚É‚æ‚Á‚Äˆ—‚ğ•ªŠò
+					// è§¦ã‚ŒãŸãƒŠãƒ“ã‚²ãƒ¼ã‚·ãƒ§ãƒ³ã‚¿ã‚¤ãƒ—ã«ã‚ˆã£ã¦å‡¦ç†ã‚’åˆ†å²
 					switch (naviType)
 					{
 					case CNavi::TYPE::Arrow:
-						// ƒ^[ƒ“‚Ì€”õ
+						// ã‚¿ãƒ¼ãƒ³ã®æº–å‚™
 						PreparationTrun(pos, angle);
 						break;
 					case CNavi::TYPE::Climb:
-						// ƒNƒ‰ƒCƒ€‚Ì€”õ
+						// ã‚¯ãƒ©ã‚¤ãƒ ã®æº–å‚™
 						PreparationClimb();
 						break;
 					case CNavi::TYPE::Jump:
-						// ƒWƒƒƒ“ƒv‚Ì€”õ
+						// ã‚¸ãƒ£ãƒ³ãƒ—ã®æº–å‚™
 						PreparationJump(pos);
 						break;
 					}
 				}
 
-				// ‰‚ß‚Ä‚ÌÚG‚Ìê‡‚Íƒ}ƒbƒv‚É“o˜^
+				// åˆã‚ã¦ã®æ¥è§¦ã®å ´åˆã¯ãƒãƒƒãƒ—ã«ç™»éŒ²
 				m_naviObjectCountMap.try_emplace(idx, short(0));
 
-				// ‘O‚ÌƒtƒŒ[ƒ€‚ÅG‚ê‚Ä‚¢‚È‚©‚Á‚½ê‡‚ÍÚG‰ñ”‚ğƒJƒEƒ“ƒgƒAƒbƒv
+				// å‰ã®ãƒ•ãƒ¬ãƒ¼ãƒ ã§è§¦ã‚Œã¦ã„ãªã‹ã£ãŸå ´åˆã¯æ¥è§¦å›æ•°ã‚’ã‚«ã‚¦ãƒ³ãƒˆã‚¢ãƒƒãƒ—
 				if (std::find(m_naviObjectIdxListOld.begin(), m_naviObjectIdxListOld.end(), idx) == m_naviObjectIdxListOld.end())
 				{
 					m_naviObjectCountMap[idx]++;
 				}
 
-				// 5‰ñˆÈã‚É‚È‚Á‚½‚ç€‚ñ‚Å‚µ‚Ü‚¤
+				// 5å›ä»¥ä¸Šã«ãªã£ãŸã‚‰æ­»ã‚“ã§ã—ã¾ã†
 				if (m_naviObjectCountMap[idx] >= 5)
 				{
 					CGame::GetPlayerManager()->DethMessage(this);
@@ -221,91 +221,91 @@ void CPlayer::CheckNavigation()
 					Release();
 					return;
 				}
-				naviObjectIdxListNew.push_back(idx); // ƒŠƒXƒg‚É’Ç‰Á
+				naviObjectIdxListNew.push_back(idx); // ãƒªã‚¹ãƒˆã«è¿½åŠ 
 			}
 		}
 	}
-	m_naviObjectIdxListOld = naviObjectIdxListNew; // ¡ƒtƒŒ[ƒ€‚ÅG‚ê‚½ƒiƒrƒQ[ƒVƒ‡ƒ“ƒIƒuƒWƒFƒNƒgƒŠƒXƒg‚ğ•Û‘¶
+	m_naviObjectIdxListOld = naviObjectIdxListNew; // ä»Šãƒ•ãƒ¬ãƒ¼ãƒ ã§è§¦ã‚ŒãŸãƒŠãƒ“ã‚²ãƒ¼ã‚·ãƒ§ãƒ³ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆãƒªã‚¹ãƒˆã‚’ä¿å­˜
 }
 
-// ƒ^[ƒ“€”õ
+// ã‚¿ãƒ¼ãƒ³æº–å‚™
 void CPlayer::PreparationTrun(D3DXVECTOR3 objectPos, float objectAngle)
 {
-	// “¯‚¶•ûŒü‚Í–³‹
+	// åŒã˜æ–¹å‘ã¯ç„¡è¦–
 	if (std::abs(GetRot().y - objectAngle) < 0.0001f)return;
 
-	// Player‚ÌˆÊ’u‚Æ•ûŒü
+	// Playerã®ä½ç½®ã¨æ–¹å‘
 	D3DXVECTOR3 myPos = GetPos();
 
-	// –îˆó‚ÌˆÊ’u‚Æ•ûŒü
-	D3DXVECTOR3 objectDir = D3DXVECTOR3(sinf(objectAngle), 0.0f, cosf(objectAngle)); // –îˆó‚ÌŒü‚«
+	// çŸ¢å°ã®ä½ç½®ã¨æ–¹å‘
+	D3DXVECTOR3 objectDir = D3DXVECTOR3(sinf(objectAngle), 0.0f, cosf(objectAngle)); // çŸ¢å°ã®å‘ã
 
-	m_activePos = CMath::GetNierToLineXZ(myPos, objectPos, objectDir); // –îˆó‚ÌƒxƒNƒgƒ‹ã‚Ì‹ß‚¢’n“_
-	m_turnAngle = objectAngle; // ƒ^[ƒ“•ûŒü
-	m_state = STATE::Turn;     // ƒ^[ƒ“ŠJn
+	m_activePos = CMath::GetNierToLineXZ(myPos, objectPos, objectDir); // çŸ¢å°ã®ãƒ™ã‚¯ãƒˆãƒ«ä¸Šã®è¿‘ã„åœ°ç‚¹
+	m_turnAngle = objectAngle; // ã‚¿ãƒ¼ãƒ³æ–¹å‘
+	m_state = STATE::Turn;     // ã‚¿ãƒ¼ãƒ³é–‹å§‹
 }
 
-// ƒNƒ‰ƒCƒ€€”õ
+// ã‚¯ãƒ©ã‚¤ãƒ æº–å‚™
 void CPlayer::PreparationClimb()
 {
-	D3DXVECTOR3 myPos = GetPos(); // ©•ª‚ÌˆÊ’u
-	std::vector<CBlock*> pBlocks = CMapManager::Instance()->GetBlocks(); // ƒuƒƒbƒN”z—ñ
+	D3DXVECTOR3 myPos = GetPos(); // è‡ªåˆ†ã®ä½ç½®
+	std::vector<CBlock*> pBlocks = CMapManager::Instance()->GetBlocks(); // ãƒ–ãƒ­ãƒƒã‚¯é…åˆ—
 
 	float minLengthSq{ FLT_MAX };
 	for (const auto& pBlock : pBlocks)
-	{// ƒuƒƒbƒN‚ğ‘–¸
+	{// ãƒ–ãƒ­ãƒƒã‚¯ã‚’èµ°æŸ»
 		if (!IsClimbingTarget(pBlock)) continue;
 
-		// “o‚ê‚é
+		// ç™»ã‚Œã‚‹
 		D3DXVECTOR3 climbPos = pBlock->GetClosestPointOnSurface(myPos);
 		D3DXVECTOR3 space = climbPos - myPos;
 		float lengthSq = D3DXVec3LengthSq(&space);
 
-		// ‚ß‚è‚İ–h~
+		// ã‚ã‚Šè¾¼ã¿é˜²æ­¢
 		if (lengthSq < 0.0001f) continue;
 
 		if (lengthSq < minLengthSq)
-		{// ‚æ‚è‹ß‚¢ƒuƒƒbƒN
+		{// ã‚ˆã‚Šè¿‘ã„ãƒ–ãƒ­ãƒƒã‚¯
 			m_pClimbBlock = pBlock;
 			minLengthSq = lengthSq;
 		}
 	}
 
-	// ‹——£‚ª‹ß‚¢‚©
+	// è·é›¢ãŒè¿‘ã„ã‹
 	D3DXVECTOR3 climbPos = m_pClimbBlock->GetClosestPointOnSurface(myPos);
 	D3DXVECTOR3 space = climbPos - myPos;
 	float length = hypotf(space.x, space.z);
 	if (length > CLIMB_LENGTH_MIN)
-	{// “o‚ê‚éƒuƒƒbƒN‚ª‰“‚¢
+	{// ç™»ã‚Œã‚‹ãƒ–ãƒ­ãƒƒã‚¯ãŒé ã„
 		m_pClimbBlock = nullptr;
 	}
 
-	// ƒuƒƒbƒN‚ÉŒü‚©‚¤
-	if (FaceBlock())m_state = STATE::Climb; // ƒNƒ‰ƒCƒ€ŠJn
+	// ãƒ–ãƒ­ãƒƒã‚¯ã«å‘ã‹ã†
+	if (FaceBlock())m_state = STATE::Climb; // ã‚¯ãƒ©ã‚¤ãƒ é–‹å§‹
 }
 
-// ƒWƒƒƒ“ƒv€”õ
+// ã‚¸ãƒ£ãƒ³ãƒ—æº–å‚™
 void CPlayer::PreparationJump(D3DXVECTOR3 objectPos)
 {
-	// Player‚ÌˆÊ’u‚Æ•ûŒü
+	// Playerã®ä½ç½®ã¨æ–¹å‘
 	D3DXVECTOR3 myPos = GetPos();
 
-	// i‚Ş•ûŒü‚É‘Î‚µ‚Ä‚’¼‚ÈƒxƒNƒgƒ‹
+	// é€²ã‚€æ–¹å‘ã«å¯¾ã—ã¦å‚ç›´ãªãƒ™ã‚¯ãƒˆãƒ«
 	float myAngle = GetRot().y;
-	D3DXVECTOR3 verticalDir = D3DXVECTOR3(sinf(myAngle - D3DXToRadian(90.0f)), 0.0f, cosf(myAngle - D3DXToRadian(90.0f))); // –îˆó‚ÌŒü‚«
+	D3DXVECTOR3 verticalDir = D3DXVECTOR3(sinf(myAngle - D3DXToRadian(90.0f)), 0.0f, cosf(myAngle - D3DXToRadian(90.0f))); // çŸ¢å°ã®å‘ã
 
-	m_activePos = CMath::GetNierToLineXZ(myPos, objectPos, verticalDir); // –îˆó‚ÌƒxƒNƒgƒ‹ã‚Ì‹ß‚¢’n“_
+	m_activePos = CMath::GetNierToLineXZ(myPos, objectPos, verticalDir); // çŸ¢å°ã®ãƒ™ã‚¯ãƒˆãƒ«ä¸Šã®è¿‘ã„åœ°ç‚¹
 
-	m_state = STATE::Jump;  // ƒWƒƒƒ“ƒvŠJn
+	m_state = STATE::Jump;  // ã‚¸ãƒ£ãƒ³ãƒ—é–‹å§‹
 
-	// ƒTƒEƒ“ƒh‚Ìæ“¾
+	// ã‚µã‚¦ãƒ³ãƒ‰ã®å–å¾—
 	CSound* pSound = CManager::GetSound();
 
 	// SE
 	pSound->Play(CSound::LABEL_JUMP_SE);
 }
 
-// ’…’nŠm”F
+// ç€åœ°ç¢ºèª
 void CPlayer::UpdateGroundedState()
 {
 	if (m_RigitBody == nullptr)
@@ -314,46 +314,51 @@ void CPlayer::UpdateGroundedState()
 		return;
 	}
 
-	// ƒŒƒC‚ÌŠJn“_
-	btVector3 rayFrom = m_RigitBody->getWorldTransform().getOrigin(); // ƒvƒŒƒCƒ„[‚Ì’†S
+	// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ç¾åœ¨ã®ä¸­å¿ƒåº§æ¨™
+	btVector3 playerCenter = m_RigitBody->getWorldTransform().getOrigin();
 
-	// ƒJƒvƒZƒ‹‚Ì‚‚³‚Ì”¼•ª + â“¹‚â’i·—p‚Ìƒ}[ƒWƒ“
-	const float rayLength = CAPSULE_HALF_HEIGHT + CAPSULE_RADIUS;
-	btVector3 rayTo = rayFrom + btVector3(0, -rayLength, 0);
+	// ã‚¹ã‚¤ãƒ¼ãƒ—ã®é–‹å§‹ä½ç½®ï¼ˆä¸‹ã®åŠçƒã®ä¸­å¿ƒï¼‰
+	btVector3 sweepStart = playerCenter + btVector3(0, -CYLINDER_HALF_HEIGHT, 0);
 
-	// ƒŒƒCƒLƒƒƒXƒg‚ÌƒR[ƒ‹ƒoƒbƒN
-	btCollisionWorld::ClosestRayResultCallback rayCallback(rayFrom, rayTo);
+	// ã‚¹ã‚¤ãƒ¼ãƒ—ã®çµ‚äº†ä½ç½®ï¼ˆå°‘ã—ä¸‹ã¸ä¼¸ã°ã™ï¼‰
+	btVector3 sweepEnd = sweepStart + btVector3(0, -GROUND_MARGIN, 0);
 
-	// ƒŒƒCƒLƒƒƒXƒg
-	CManager::GetDynamicsWorld()->rayTest(rayFrom, rayTo, rayCallback);
+	// åˆ¤å®šç”¨ã®å½¢çŠ¶
+	btSphereShape sphereShape(SPHERE_RADIUS);
 
-	if (rayCallback.hasHit())
-	{// ƒŒƒC‚ª‰½‚©‚É“–‚½‚Á‚½
-		if (rayCallback.m_collisionObject == m_RigitBody.get())
-		{// ©•ª©g
+	// ã‚¹ã‚¤ãƒ¼ãƒ—å®Ÿè¡Œ
+	btCollisionWorld::ClosestConvexResultCallback callback(sweepStart, sweepEnd);
+	CManager::GetDynamicsWorld()->convexSweepTest(&sphereShape, btTransform(btQuaternion(0, 0, 0, 1), sweepStart), btTransform(btQuaternion(0, 0, 0, 1), sweepEnd), callback);
+
+	if (callback.hasHit())
+	{// å½“ãŸã£ãŸ
+		// è‡ªåˆ†è‡ªèº«ã¨ã®è¡çªã‚’é™¤å¤–ã™ã‚‹ãŸã‚ã®ãƒã‚§ãƒƒã‚¯
+		if (callback.m_hitCollisionObject == m_RigitBody.get())
+		{
 			m_isGrounded = false;
 		}
 		else
-		{// ©•ªˆÈŠO
+		{
 			m_isGrounded = true;
-			
-			// Õ“Ë‚µ‚½ƒIƒuƒWƒFƒNƒg‚ªâ“¹‚©ƒ`ƒFƒbƒN
+
+			// è¡çªã—ãŸã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆãŒå‚é“ã‹ãƒã‚§ãƒƒã‚¯
 			bool isSlope{};
 			const std::vector<CBlock*> pSlopes = CMapManager::Instance()->GetSlope();
 			for (const auto& pSlope : pSlopes)
 			{
-				if (pSlope != nullptr && rayCallback.m_collisionObject == pSlope->GetRB())
-				{// â“¹‚É’…’n‚µ‚½
+				if (pSlope != nullptr && callback.m_hitCollisionObject == pSlope->GetRB())
+				{// å‚é“ã«ç€åœ°ã—ãŸ
 					isSlope = true;
 					break;
 				}
 			}
+
 			if (isSlope)
-			{// â“¹‚É’…’n‚µ‚½
+			{// å‚é“ã«ç€åœ°ã—ãŸ
 				m_state = STATE::Sliding;
 			}
 			else
-			{// ’Êí‚Ì’n–Ê
+			{// é€šå¸¸ã®åœ°é¢
 				if (m_state == STATE::Sliding)
 				{
 					m_state = STATE::Normal;
@@ -362,24 +367,24 @@ void CPlayer::UpdateGroundedState()
 		}
 	}
 	else
-	{// ƒŒƒC‚ª“–‚½‚Á‚Ä‚¢‚È‚¢
+	{
 		m_isGrounded = false;
 	}
 }
 
-// ˆÚ“®
+// ç§»å‹•
 void CPlayer::Move(btVector3& moveDir, D3DXVECTOR3& rot, btVector3& currentVel)
 {
-	// ˆÚ“®ˆ—
+	// ç§»å‹•å‡¦ç†
 	if (m_state == STATE::Jumping || (!m_isGrounded && m_state != STATE::Climbing))
-	{// ‹ó’†
-		// ‹ó’†§Œä‚Ì‚½‚ß‚Ì“ü—Íi–Ú•Wj‘¬“x
+	{// ç©ºä¸­
+		// ç©ºä¸­åˆ¶å¾¡ã®ãŸã‚ã®å…¥åŠ›ï¼ˆç›®æ¨™ï¼‰é€Ÿåº¦
 		btVector3 inputVel(0, 0, 0);
 		inputVel.setX(-sinf(rot.y) * MOVE_SPEED);
 		inputVel.setZ(-cosf(rot.y) * MOVE_SPEED);
 
-		// XZ‘¬“x‚ğŒ»İ‚Ì‘¬“x‚©‚ç“ü—Í(inputVel)‚Ö‹ß‚Ã‚¯‚é
-		// Šµ«‚ğˆÛ‚Æ‹ó’†§Œä
+		// XZé€Ÿåº¦ã‚’ç¾åœ¨ã®é€Ÿåº¦ã‹ã‚‰å…¥åŠ›(inputVel)ã¸è¿‘ã¥ã‘ã‚‹
+		// æ…£æ€§ã‚’ç¶­æŒã¨ç©ºä¸­åˆ¶å¾¡
 		btVector3 blendedVel = currentVel.lerp(inputVel, AIR_CONTROL_FACTOR);
 
 		moveDir.setX(blendedVel.x());
@@ -392,43 +397,43 @@ void CPlayer::Move(btVector3& moveDir, D3DXVECTOR3& rot, btVector3& currentVel)
 	}
 
 	if (m_isGrounded && m_state != STATE::Jumping && m_state != STATE::Climbing)
-	{// ’n–Ê‚É‚¢‚é
-		// Y‘¬“x‚Í0
+	{// åœ°é¢ã«ã„ã‚‹
+		// Yé€Ÿåº¦ã¯0
 		moveDir.setY(0.0f);
 	}
 	else
-	{// ‹ó’†‚É‚¢‚é
-		// Y‘¬“x‚ğˆÛ
+	{// ç©ºä¸­ã«ã„ã‚‹
+		// Yé€Ÿåº¦ã‚’ç¶­æŒ
 		moveDir.setY(m_RigitBody->getLinearVelocity().y());
 	}
 }
 
-// ó‘ÔŠÇ—
+// çŠ¶æ…‹ç®¡ç†
 void CPlayer::UpdateState(btVector3& moveDir)
 {
 	if (!m_isGrounded && m_state != STATE::Jumping && m_state != STATE::Climbing)
-	{// ‹ó’†
+	{// ç©ºä¸­
 		m_state = STATE::Jumping;
 		m_peakFallSpeed = 0.0f;
 	}
 
 	if (m_state != STATE::Sliding && (m_isGrounded && GetMotionInfo()->GetMotion() == 4 || m_isGrounded && GetMotionInfo()->GetMotion() == 2) && GetMotionInfo()->GetBlendMotion() != 1)
-	{// ’…’n‚âƒXƒ‰ƒCƒfƒBƒ“ƒOI‚í‚Á‚½‚ç•à‚«‚É–ß‚·
+	{// ç€åœ°ã‚„ã‚¹ãƒ©ã‚¤ãƒ‡ã‚£ãƒ³ã‚°çµ‚ã‚ã£ãŸã‚‰æ­©ãã«æˆ»ã™
 		GetMotionInfo()->SetMotion(1, false);
 	}
 
 	switch (m_state)
 	{
-		// ’Êí
+		// é€šå¸¸
 	case STATE::Normal:
 		break;
-		// ƒ^[ƒ“
+		// ã‚¿ãƒ¼ãƒ³
 	case STATE::Turn:
 	{
 		D3DXVECTOR3 pos = GetPos();
 		D3DXVECTOR3 space = m_activePos - pos;
 		if (D3DXVec3Length(&space) <= TURN_RADIUS)
-		{// ƒ^[ƒ“ˆÊ’u‚É—ˆ‚½‚ç
+		{// ã‚¿ãƒ¼ãƒ³ä½ç½®ã«æ¥ãŸã‚‰
 			Turn();
 		}
 		else
@@ -436,84 +441,84 @@ void CPlayer::UpdateState(btVector3& moveDir)
 			D3DXVec3Normalize(&space, &space);
 			D3DXVECTOR3 movevec = D3DXVECTOR3(moveDir.normalized());
 			if (D3DXVec3Dot(&space, &movevec) <= 0.0f)
-			{// ‚à‚¤Œã‚ë‚Ìê‡ƒ^[ƒ“
+			{// ã‚‚ã†å¾Œã‚ã®å ´åˆã‚¿ãƒ¼ãƒ³
 				Turn();
 			}
 		}
 		break;
 	}
-	// “o‚é
+	// ç™»ã‚‹
 	case STATE::Climb:
 		if (IsClimbingContact() && !IsClimbingEnd())
-		{// •Ç‚É‚Â‚¢‚½
+		{// å£ã«ã¤ã„ãŸ
 			if (FaceBlock())
-			{// ‰ü‚ß‚Ä•Ç‚ğŒü‚­
-				moveDir.setY(CLIMB_SPEED); // “o‚é
-				m_state = STATE::Climbing; // “o‚Á‚Ä‚¢‚éó‘Ô
+			{// æ”¹ã‚ã¦å£ã‚’å‘ã
+				moveDir.setY(CLIMB_SPEED); // ç™»ã‚‹
+				m_state = STATE::Climbing; // ç™»ã£ã¦ã„ã‚‹çŠ¶æ…‹
 				GetMotionInfo()->SetMotion(5, false);
 			}
 		}
 		break;
-		// “o‚Á‚Ä‚¢‚é
+		// ç™»ã£ã¦ã„ã‚‹
 	case STATE::Climbing:
 	{
 		if (IsClimbingContact())
-		{// “o‚è‘±‚¯‚Ä‚¢‚é
+		{// ç™»ã‚Šç¶šã‘ã¦ã„ã‚‹
 			if (FaceBlock())
-			{// ‰ü‚ß‚Ä•Ç‚ğŒü‚­
-				moveDir.setY(CLIMB_SPEED); // “o‚é
+			{// æ”¹ã‚ã¦å£ã‚’å‘ã
+				moveDir.setY(CLIMB_SPEED); // ç™»ã‚‹
 
 				if (IsClimbingEnd())
-				{// ƒuƒƒbƒN‚Ìã
+				{// ãƒ–ãƒ­ãƒƒã‚¯ã®ä¸Š
 					m_state = STATE::Jumping;
 					m_pClimbBlock = nullptr;
 				}
 			}
 			else
-			{// ƒuƒƒbƒN‚Ì’†‚É‚¢‚é
+			{// ãƒ–ãƒ­ãƒƒã‚¯ã®ä¸­ã«ã„ã‚‹
 				m_state = STATE::Jumping;
 				m_pClimbBlock = nullptr;
 			}
 		}
 		else
-		{// “o‚Á‚½‚Ü‚Ü­‚µ•‚‚¢‚½‚©—‚¿‚½
+		{// ç™»ã£ãŸã¾ã¾å°‘ã—æµ®ã„ãŸã‹è½ã¡ãŸ
 			m_state = STATE::Jumping;
 			m_pClimbBlock = nullptr;
 		}
 		break;
 	}
-	// ’µ‚Ô
+	// è·³ã¶
 	case STATE::Jump:
 	{
-		// ^‚ñ’†‚És‚Á‚Ä‚©‚ç
+		// çœŸã‚“ä¸­ã«è¡Œã£ã¦ã‹ã‚‰
 		D3DXVECTOR3 pos = GetPos();
 		D3DXVECTOR3 space = m_activePos - pos;
 		D3DXVec3Normalize(&space, &space);
 		D3DXVECTOR3 movevec = D3DXVECTOR3(moveDir.normalized());
 		if (D3DXVec3Dot(&space, &movevec) <= 0.0f)
-		{// ‚à‚¤Œã‚ë‚Ìê‡ƒWƒƒƒ“ƒv
+		{// ã‚‚ã†å¾Œã‚ã®å ´åˆã‚¸ãƒ£ãƒ³ãƒ—
 			Jump(moveDir);
 		}
 		break;
 	}
-	// ”ò‚ñ‚Å‚¢‚é
+	// é£›ã‚“ã§ã„ã‚‹
 	case STATE::Jumping:
 	{
 		float fallSpeed = m_RigitBody->getLinearVelocity().y();
 		if (std::abs(fallSpeed) > m_peakFallSpeed)
-		{// Å‘å—‰º‘¬“x
+		{// æœ€å¤§è½ä¸‹é€Ÿåº¦
 			m_peakFallSpeed = std::abs(fallSpeed);
 		}
 
 		if (m_isGrounded)
-		{// ’…’n‚µ‚½‚ç
+		{// ç€åœ°ã—ãŸã‚‰
 			Landing();
 		}
 		break;
 	}
-		// ŠŠ‚Á‚Ä‚¢‚é
+		// æ»‘ã£ã¦ã„ã‚‹
 	case STATE::Sliding:
-		// ‰Î‚Ìî•ñ‚ğİ’è
+		// ç«ã®æƒ…å ±ã‚’è¨­å®š
 		CParticle3D::DefoultEffectInfo FireInfo;
 		FireInfo.Bece.Col = FIRE;
 		FireInfo.Bece.fMaxSpeed = 1.2f;
@@ -533,133 +538,133 @@ void CPlayer::UpdateState(btVector3& moveDir)
 		memcpy(FireInfo.Bece.FilePath, CEffect3D::Config::Smoke, sizeof(FireInfo.Bece.FilePath));
 		FireInfo.Bece.nPriority = 5;
 
-		// ¶¬
+		// ç”Ÿæˆ
 		CParticle3D::Create(FireInfo);
 
 		if (GetMotionInfo()->GetBlendMotion() != 2)
-		{// ƒXƒ‰ƒCƒfƒBƒ“ƒOƒ‚[ƒVƒ‡ƒ“
+		{// ã‚¹ãƒ©ã‚¤ãƒ‡ã‚£ãƒ³ã‚°ãƒ¢ãƒ¼ã‚·ãƒ§ãƒ³
 			GetMotionInfo()->SetMotion(2, false);
 		}
 		break;
 	}
 }
 
-// ƒ^[ƒ“
+// ã‚¿ãƒ¼ãƒ³
 void CPlayer::Turn()
 {
-	// ƒ^[ƒ“
+	// ã‚¿ãƒ¼ãƒ³
 	SetRotDest(D3DXVECTOR3(0.0f, m_turnAngle, 0.0f));
 	SetRot(D3DXVECTOR3(0.0f, m_turnAngle, 0.0f));
 
-	// Œ³‚É–ß‚·
+	// å…ƒã«æˆ»ã™
 	m_activePos = { 0.0f,-1000.0f,0.0f };
 	m_turnAngle = 0.0f;
 	m_state = STATE::Normal;
 }
 
-// ƒNƒ‰ƒCƒ€ƒ^[ƒQƒbƒgƒ`ƒFƒbƒN
+// ã‚¯ãƒ©ã‚¤ãƒ ã‚¿ãƒ¼ã‚²ãƒƒãƒˆãƒã‚§ãƒƒã‚¯
 bool CPlayer::IsClimbingTarget(const CBlock* pBlock)
 {
 	if (pBlock == nullptr) return false;
 
-	// ©•ª‚Ì‘«Œ³
+	// è‡ªåˆ†ã®è¶³å…ƒ
 	float myBottomY = GetPos().y;
 
-	// ©•ª‚Ì“ª
+	// è‡ªåˆ†ã®é ­
 	float myTopY = myBottomY + CAPSULE_ALL_HEIGHT;
 
-	// ƒuƒƒbƒN‚Ì’ê–Ê
+	// ãƒ–ãƒ­ãƒƒã‚¯ã®åº•é¢
 	float blockBottomY = pBlock->GetPosition().y;
 
-	// ƒvƒŒƒCƒ„[‚Ì“ª‚æ‚èƒuƒƒbƒN‚Ì’ê–Ê‚ªˆê’è’lˆÈã‚‚¯‚ê‚Î“o‚ç‚È‚¢
+	// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®é ­ã‚ˆã‚Šãƒ–ãƒ­ãƒƒã‚¯ã®åº•é¢ãŒä¸€å®šå€¤ä»¥ä¸Šé«˜ã‘ã‚Œã°ç™»ã‚‰ãªã„
 	if (blockBottomY - myTopY >= CLIMB_HEIGHT_MIN_BOTTOM) return false;
 	
-	// ƒuƒƒbƒN‚Ì‚ ‚½‚è”»’è
+	// ãƒ–ãƒ­ãƒƒã‚¯ã®ã‚ãŸã‚Šåˆ¤å®š
 	btCollisionObject* pBlockObject = pBlock->GetRB();
 
-	// „‘Ì‚Ìƒ}ƒgƒŠƒbƒNƒX‚ğæ“¾
+	// å‰›ä½“ã®ãƒãƒˆãƒªãƒƒã‚¯ã‚¹ã‚’å–å¾—
 	btMatrix3x3 basis = pBlockObject->getWorldTransform().getBasis();
 
-	// Y—ñ(ƒCƒ“ƒfƒbƒNƒX1)‚ÌƒxƒNƒgƒ‹
+	// Yåˆ—(ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹1)ã®ãƒ™ã‚¯ãƒˆãƒ«
 	btVector3 blockUpVector = basis.getColumn(1);
 
-	// ‚Ù‚Ú‚’¼‚È•Ç‚¾‚¯
+	// ã»ã¼å‚ç›´ãªå£ã ã‘
 	const float verticalThreshold = 0.99f;
 	bool isVertical = (blockUpVector.y() >= verticalThreshold);
 
 	if (!isVertical)
-	{// ŒX‚¢‚Ä‚¢‚é
+	{// å‚¾ã„ã¦ã„ã‚‹
 		return false;
 	}
 
-	// ƒuƒƒbƒN‚Ì”¼•ª‚ÌƒTƒCƒY
+	// ãƒ–ãƒ­ãƒƒã‚¯ã®åŠåˆ†ã®ã‚µã‚¤ã‚º
 	btVector3 HalfExtents = static_cast<btBoxShape*>(pBlockObject->getCollisionShape())->getHalfExtentsWithMargin();
 
-	// ƒuƒƒbƒN‚ÌÀÛ‚ÌƒTƒCƒY
+	// ãƒ–ãƒ­ãƒƒã‚¯ã®å®Ÿéš›ã®ã‚µã‚¤ã‚º
 	btVector3 actuaExtents = HalfExtents * 2.0f;
 
-	// ƒuƒƒbƒN‚Ì’ê–ÊYÀ•W + ƒuƒƒbƒN‚Ì‚‚³ = ƒuƒƒbƒN‚Ì“V–Ê‚ÌYÀ•W
+	// ãƒ–ãƒ­ãƒƒã‚¯ã®åº•é¢Yåº§æ¨™ + ãƒ–ãƒ­ãƒƒã‚¯ã®é«˜ã• = ãƒ–ãƒ­ãƒƒã‚¯ã®å¤©é¢ã®Yåº§æ¨™
 	float blockTopY = blockBottomY + actuaExtents.y();
 
-	// ƒvƒŒƒCƒ„[‚Ì‘«Œ³‚æ‚èƒuƒƒbƒN‚Ì“V–Ê‚ªˆê’è’lˆÈã‚‚¯‚ê‚Î“o‚é
+	// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®è¶³å…ƒã‚ˆã‚Šãƒ–ãƒ­ãƒƒã‚¯ã®å¤©é¢ãŒä¸€å®šå€¤ä»¥ä¸Šé«˜ã‘ã‚Œã°ç™»ã‚‹
 	return (blockTopY - myBottomY >= CLIMB_HEIGHT_MIN_TOP);
 }
 
-// ƒNƒ‰ƒCƒ€ƒ`ƒFƒbƒN
+// ã‚¯ãƒ©ã‚¤ãƒ ãƒã‚§ãƒƒã‚¯
 bool CPlayer::IsClimbingContact()
 {
 	if (m_pClimbBlock == nullptr) return false;
 	btCollisionObject* pBlockObject = m_pClimbBlock->GetRB();
-	// ‰½‘g‚ªÕ“Ë‚µ‚Ä‚¢‚é‚©
+	// ä½•çµ„ãŒè¡çªã—ã¦ã„ã‚‹ã‹
 	int numManifolds = CManager::GetDynamicsWorld()->getDispatcher()->getNumManifolds();
 
-	// Õ“Ë‰ñ”•ªŒJ‚è•Ô‚µ
+	// è¡çªå›æ•°åˆ†ç¹°ã‚Šè¿”ã—
 	for (int nCnt = 0; nCnt < numManifolds; nCnt++)
 	{
-		// Õ“Ë‚µ‚Ä‚¢‚éƒyƒA‚ğæ“¾
+		// è¡çªã—ã¦ã„ã‚‹ãƒšã‚¢ã‚’å–å¾—
 		btPersistentManifold* manifold = CManager::GetDynamicsWorld()->getDispatcher()->getManifoldByIndexInternal(nCnt);
 
-		// Õ“Ë‚µ‚Ä‚¢‚½‚ç
+		// è¡çªã—ã¦ã„ãŸã‚‰
 		if (manifold->getNumContacts() <= 0) continue;
 
-		// Õ“ËƒIƒuƒWƒFƒNƒg‚PA‚Q‚ğæ“¾
+		// è¡çªã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆï¼‘ã€ï¼’ã‚’å–å¾—
 		const btCollisionObject* objA = manifold->getBody0();
 		const btCollisionObject* objB = manifold->getBody1();
 
-		// ƒvƒŒƒCƒ„[‚Æ•Ç‚ª“–‚½‚Á‚Ä‚¢‚½‚ç
+		// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã¨å£ãŒå½“ãŸã£ã¦ã„ãŸã‚‰
 		const bool Condition = (objA == m_RigitBody.get() && objB == pBlockObject) || (objA == pBlockObject && objB == m_RigitBody.get());
 
-		// Ø‚èã‚°
+		// åˆ‡ã‚Šä¸Šã’
 		if (Condition == true) return true;
 	}
 	return false;
 }
 
-// “o‚èØ‚Á‚½?
+// ç™»ã‚Šåˆ‡ã£ãŸ?
 bool CPlayer::IsClimbingEnd()
 {
 	if (m_pClimbBlock == nullptr) return true;
 
-	// ©•ª‚Ì‘«Œ³
+	// è‡ªåˆ†ã®è¶³å…ƒ
 	float myBottomY = GetPos().y;
 
-	// ƒuƒƒbƒN‚Ì‚ ‚½‚è”»’è
+	// ãƒ–ãƒ­ãƒƒã‚¯ã®ã‚ãŸã‚Šåˆ¤å®š
 	btCollisionObject* pBlockObject = m_pClimbBlock->GetRB();
 
-	// ƒuƒƒbƒN‚Ì”¼•ª‚ÌƒTƒCƒY
+	// ãƒ–ãƒ­ãƒƒã‚¯ã®åŠåˆ†ã®ã‚µã‚¤ã‚º
 	btVector3 HalfExtents = static_cast<btBoxShape*>(pBlockObject->getCollisionShape())->getHalfExtentsWithMargin();
 
-	// ƒuƒƒbƒN‚ÌÀÛ‚ÌƒTƒCƒY
+	// ãƒ–ãƒ­ãƒƒã‚¯ã®å®Ÿéš›ã®ã‚µã‚¤ã‚º
 	btVector3 actuaExtents = HalfExtents * 2.0f;
 
-	// ƒuƒƒbƒN‚Ì’†SYÀ•W + ƒuƒƒbƒN‚Ì‚‚³‚Ì”¼•ª = ƒuƒƒbƒN‚Ì“V–Ê‚ÌYÀ•W
+	// ãƒ–ãƒ­ãƒƒã‚¯ã®ä¸­å¿ƒYåº§æ¨™ + ãƒ–ãƒ­ãƒƒã‚¯ã®é«˜ã•ã®åŠåˆ† = ãƒ–ãƒ­ãƒƒã‚¯ã®å¤©é¢ã®Yåº§æ¨™
 	float blockTopY = m_pClimbBlock->GetPosition().y + actuaExtents.y();
 
-	// ƒvƒŒƒCƒ„[‚Ì‘«Œ³‚ªƒuƒƒbƒN‚Ì“V–Ê‚æ‚èã‚É—ˆ‚½‚ç’…’n
+	// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®è¶³å…ƒãŒãƒ–ãƒ­ãƒƒã‚¯ã®å¤©é¢ã‚ˆã‚Šä¸Šã«æ¥ãŸã‚‰ç€åœ°
 	return (myBottomY >= blockTopY);
 }
 
-// ƒWƒƒƒ“ƒv
+// ã‚¸ãƒ£ãƒ³ãƒ—
 void CPlayer::Jump(btVector3& moveDir)
 {
 	moveDir.setX(moveDir.x() * JUMP_SPEED_INA);
@@ -669,25 +674,25 @@ void CPlayer::Jump(btVector3& moveDir)
 	GetMotionInfo()->SetMotion(3, true);
 }
 
-// ’…’n
+// ç€åœ°
 void CPlayer::Landing()
 {
 	m_state = STATE::Normal;
 	if (std::abs(m_peakFallSpeed) >= LANDING_MOTION_HEIGHT_MIN)
-	{// ’…’nƒ‚[ƒVƒ‡ƒ“
+	{// ç€åœ°ãƒ¢ãƒ¼ã‚·ãƒ§ãƒ³
 		GetMotionInfo()->SetMotion(4, false);
 	}
 	else
 	{
 		if (GetMotionInfo()->GetBlendMotion() != 1)
-		{// •à‚«ƒ‚[ƒVƒ‡ƒ“
+		{// æ­©ããƒ¢ãƒ¼ã‚·ãƒ§ãƒ³
 			GetMotionInfo()->SetMotion(1, false);
 		}
 	}
 	m_peakFallSpeed = 0.0f;
 }
 
-// ƒuƒƒbƒN‚ÉŒü‚©‚¤
+// ãƒ–ãƒ­ãƒƒã‚¯ã«å‘ã‹ã†
 bool CPlayer::FaceBlock()
 {
 	if (m_pClimbBlock != nullptr)
@@ -698,18 +703,18 @@ bool CPlayer::FaceBlock()
 		float length = D3DXVec3LengthSq(&space);
 
 		if (length < 0.0001f)
-		{// ‚ß‚è‚ñ‚Å‚¢‚é
-		    // ƒuƒƒbƒN‚Ì’ê–Ê‚Ì’†S
+		{// ã‚ã‚Šè¾¼ã‚“ã§ã„ã‚‹
+		    // ãƒ–ãƒ­ãƒƒã‚¯ã®åº•é¢ã®ä¸­å¿ƒ
 			D3DXVECTOR3 blockBottomPos = m_pClimbBlock->GetPosition();
 
-			// ƒvƒŒƒCƒ„[‚©‚çƒuƒƒbƒN‚Ì’†S‚Ö‚ÌƒxƒNƒgƒ‹
+			// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‹ã‚‰ãƒ–ãƒ­ãƒƒã‚¯ã®ä¸­å¿ƒã¸ã®ãƒ™ã‚¯ãƒˆãƒ«
 			space.x = blockBottomPos.x - myPos.x;
 			space.z = blockBottomPos.z - myPos.z;
 			space.y = 0.0f;
 
 			length = D3DXVec3LengthSq(&space);
 			if (length < 0.0001f)
-			{// ƒuƒƒbƒN‚Ì’†S‚Æ‚àd‚È‚Á‚Ä‚¢‚é
+			{// ãƒ–ãƒ­ãƒƒã‚¯ã®ä¸­å¿ƒã¨ã‚‚é‡ãªã£ã¦ã„ã‚‹
 				m_pClimbBlock = nullptr;
 				return false;
 			}
@@ -724,7 +729,7 @@ bool CPlayer::FaceBlock()
 	return false;
 }
 
-// ˆÊ’u‚ğİ’è
+// ä½ç½®ã‚’è¨­å®š
 void CPlayer::SetPos(D3DXVECTOR3 Pos)
 {
 	btVector3 newPos;
@@ -737,7 +742,7 @@ void CPlayer::SetPos(D3DXVECTOR3 Pos)
 	CModelCharacter::SetPos(D3DXVECTOR3(Pos.x, Pos.y - CAPSULE_HALF_HEIGHT, Pos.z));
 }
 
-// ¶¬
+// ç”Ÿæˆ
 CPlayer* CPlayer::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 {
 	CPlayer* pPlayer = nullptr;
