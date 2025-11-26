@@ -23,7 +23,7 @@ public:
 #ifdef _DEBUG
 	static constexpr int CAPACITY = 1;		    // �ő吔
 #else
-	static constexpr int CAPACITY = 500;		// �ő吔
+	static constexpr int CAPACITY = 175;		// �ő吔
 #endif // _DEBUG
 
 	CPlayerManager();
