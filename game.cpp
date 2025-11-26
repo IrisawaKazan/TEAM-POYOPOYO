@@ -233,6 +233,7 @@ void CGame::Uninit(void)
 {
 	// ナビゲーションのリムーブ
 	CNavi::GetInstance()->remove();
+	CManager::SetGameSpeed(1);
 
 	// プレイヤーマネージャーの破棄
 	if (m_pPlayerManager != NULL)
