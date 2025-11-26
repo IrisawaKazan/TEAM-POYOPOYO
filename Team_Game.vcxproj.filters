@@ -175,6 +175,8 @@
     <ClCompile Include="sound.cpp">
       <Filter>ソース</Filter>
     </ClCompile>
+    <ClCompile Include="shader.cpp" />
+    <ClCompile Include="outline.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="uplift.h">
@@ -360,6 +362,8 @@
     <ClInclude Include="abstractblock.h">
       <Filter>ヘッダ</Filter>
     </ClInclude>
+    <ClInclude Include="shader.h" />
+    <ClInclude Include="outline.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ソース">
@@ -386,5 +390,8 @@
     <Image Include="data\ICON\Test.ico">
       <Filter>リソース</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="data\SHADER\OutLine.hlsl" />
   </ItemGroup>
 </Project>

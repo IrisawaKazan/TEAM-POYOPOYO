@@ -129,6 +129,27 @@ int CModelManager::Register(std::string sName)
 		&Info.dwNumMat,
 		&Info.pMesh);
 
+	// 法線のスムース化
+	// メッシュをコピー
+	Info.pMesh->CloneMeshFVF(
+		D3DXMESH_SYSTEMMEM,
+		Info.pMesh->GetFVF(),
+		pDevice,
+		&Info.pSmoothMesh
+	);
+
+	const float Epsilon = 1e-6f;
+	std::vector<DWORD> adjacency(Info.pSmoothMesh->GetNumFaces() * 3);
+	Info.pSmoothMesh->GenerateAdjacency(Epsilon, adjacency.data());
+
+	hr = D3DXComputeNormals(Info.pSmoothMesh, adjacency.data());
+
+	if (FAILED(hr))
+	{
+		// 失敗したら
+		assert(0 && "モデルのスムース化に失敗しました");
+	}
+
 	// D3DXIntersect のための高速化構造を構築する sato 仮
 	Info.pMesh->Optimize(
 		D3DXMESHOPT_COMPACT | D3DXMESHOPT_ATTRSORT, // 最適化オプション
