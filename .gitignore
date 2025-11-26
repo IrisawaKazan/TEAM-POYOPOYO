@@ -433,3 +433,4 @@ FodyWeavers.xsd
 
 # vcpkgで生成されるフォルダを無視
 vcpkg_installed/
+/yaml-cpp.dll
