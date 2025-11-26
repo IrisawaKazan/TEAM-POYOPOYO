@@ -193,6 +193,10 @@ void CGame::Update(void)
 		{
 			CManager::SetGameSpeed(2);
 		}
+		if (CManager::GetInputKeyboard()->GetTrigger(DIK_3) == true && m_pTutorialBoard->GetProgress() == false)
+		{
+			CManager::SetGameSpeed(3);
+		}
 	}
 //#endif // DEBUG
 

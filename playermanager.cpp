@@ -62,7 +62,7 @@ void CPlayerManager::Update(void)
 		m_Timer++;
 
 		// スポーンさせる時間なら
-		if (m_Timer > SPAWN_TIME)
+		if (m_Timer > SPAWN_TIME / CManager::GetGameSpeed())
 		{
 			// タイマーリセット
 			m_Timer = 0;
