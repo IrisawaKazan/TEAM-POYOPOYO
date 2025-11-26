@@ -307,7 +307,7 @@ void CPlayer::PreparationJump(D3DXVECTOR3 objectPos)
 // 着地確認
 void CPlayer::UpdateGroundedState()
 {
-	if (m_RigitBody == nullptr)
+	if (m_RigitBody == nullptr || m_state == STATE::Dead)
 	{
 		m_isGrounded = false;
 		return;
