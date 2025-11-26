@@ -54,35 +54,35 @@ HRESULT CResult::Init(void)
 
     if (m_IsGoal == true)
     {
-        // âŒÇÃèÓïÒÇê›íË
-        CParticle3D::DefoultEffectInfo FireInfo;
-        FireInfo.Bece.Col = D3DXCOLOR(0.9f, 1.0f, 0.4f, 1.0f);
-        FireInfo.Bece.fMaxSpeed = 3.0f;
-        FireInfo.Bece.fMinSpeed = 3.0f;
-        FireInfo.Bece.MaxDir = { -0.5f,1.0f,0.1f };
-        FireInfo.Bece.MinDir = { -0.5f,0.5f,-0.1f };
-        FireInfo.Bece.nLife = 1;
-        FireInfo.Bece.nMaxLife = 60;
-        FireInfo.Bece.nMinLife = 60;
-        FireInfo.Bece.nNumEffect = 30;
-        FireInfo.Bece.Pos = { 150.0f,0.0f,0.0f };
-        FireInfo.MaxRadius = 5.0f;
-        FireInfo.MinRadius = 5.0f;
-        FireInfo.Bece.bLoop = true;
-        FireInfo.Bece.nCoolDown = 60;
-        FireInfo.Bece.Gravity = -0.1f;
-        memcpy(FireInfo.Bece.FilePath, CEffect3D::Config::Sphere, sizeof(FireInfo.Bece.FilePath));
-        FireInfo.Bece.nPriority = 5;
+        // èjñCÇÃèÓïÒÇê›íË
+        CParticle3D::DefoultEffectInfo HappyMisile;
+        HappyMisile.Bece.Col = D3DXCOLOR(0.9f, 1.0f, 0.4f, 1.0f);
+        HappyMisile.Bece.fMaxSpeed = 3.0f;
+        HappyMisile.Bece.fMinSpeed = 3.0f;
+        HappyMisile.Bece.MaxDir = { -0.5f,1.0f,0.1f };
+        HappyMisile.Bece.MinDir = { -0.5f,0.5f,-0.1f };
+        HappyMisile.Bece.nLife = 1;
+        HappyMisile.Bece.nMaxLife = 60;
+        HappyMisile.Bece.nMinLife = 60;
+        HappyMisile.Bece.nNumEffect = 30;
+        HappyMisile.Bece.Pos = { 150.0f,0.0f,0.0f };
+        HappyMisile.MaxRadius = 5.0f;
+        HappyMisile.MinRadius = 5.0f;
+        HappyMisile.Bece.bLoop = true;
+        HappyMisile.Bece.nCoolDown = 60;
+        HappyMisile.Bece.Gravity = -0.1f;
+        memcpy(HappyMisile.Bece.FilePath, CEffect3D::Config::Sphere, sizeof(HappyMisile.Bece.FilePath));
+        HappyMisile.Bece.nPriority = 5;
 
         // ê∂ê¨
-        CParticle3D::Create(FireInfo);
+        CParticle3D::Create(HappyMisile);
 
-        FireInfo.Bece.MaxDir = { 0.5f,1.0f,0.1f };
-        FireInfo.Bece.MinDir = { 0.5f,0.5f,-0.1f };
-        FireInfo.Bece.Pos = { -150.0f,0.0f,0.0f };
+        HappyMisile.Bece.MaxDir = { 0.5f,1.0f,0.1f };
+        HappyMisile.Bece.MinDir = { 0.5f,0.5f,-0.1f };
+        HappyMisile.Bece.Pos = { -150.0f,0.0f,0.0f };
 
         // ê∂ê¨
-        CParticle3D::Create(FireInfo);
+        CParticle3D::Create(HappyMisile);
     }
     return E_NOTIMPL;
 }
