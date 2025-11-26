@@ -17,8 +17,9 @@ class CSwitch :public CBlock
 public:
 	struct Config {
 		static constexpr float Depth = -8.5f;		// どれだけ沈むか(位置)
-		static constexpr float PressSpeed = 0.05f; // 押される速度
-		static constexpr float ReturnSpeed = 0.1f;// 戻る速度
+		static constexpr float PressSpeed = 0.05f;	// 押される速度
+		static constexpr float ReturnSpeed = 0.1f;	// 戻る速度
+		static constexpr int ReturnCoolWodn = 120;	// 戻り始めるまでのクールダウン
 	};
 
 	// コンストラクタ・デストラクタ
@@ -41,6 +42,7 @@ public:
 	// 生成
 	static CSwitch* Create(std::string sName, D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 Scale = { 1.0f,1.0f,1.0f });
 private:
+	int m_ReturnCounter;	// 戻るまでのカウンタ
 	bool m_IsFinishOld;		// 前フレームで押し切られているかどうか
 	bool m_IsFinish;		// 押し切ったかどうか
 	bool m_IsPressed;		// 押されているかどうか

@@ -92,7 +92,6 @@ void CSwitch::Update(void)
 	D3DXVECTOR3 CurrentPos = GetPosition();
 
 	m_IsFinishOld = m_IsFinish;
-	m_IsFinish = false;
 
 	// ‰Ÿ‚³‚ê‚Ä‚¢‚½‚ç
 	if (m_IsPressed == true)
@@ -103,16 +102,19 @@ void CSwitch::Update(void)
 			// ’¾‚ß‚é
 			CurrentPos.y -= Config::PressSpeed;
 		}
-		else
+		else if(m_ReturnCounter >= Config::ReturnCoolWodn)
 		{
+			m_ReturnCounter = 0;
 			m_IsFinish = true;
 		}
 	}
 	else
 	{
+		m_ReturnCounter++;
 		// ã‚ª‚è‚«‚Á‚Ä‚¢‚È‚©‚Á‚½‚ç
-		if (m_ApperPos.y > CurrentPos.y + Config::ReturnSpeed)
+		if (m_ApperPos.y > CurrentPos.y + Config::ReturnSpeed && m_ReturnCounter >= Config::ReturnCoolWodn)
 		{
+			m_IsFinish = false;
 			// ‚ ‚°‚é
 			CurrentPos.y += Config::ReturnSpeed;
 		}
