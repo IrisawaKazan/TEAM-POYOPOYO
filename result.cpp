@@ -12,6 +12,8 @@
 #include "title.h"
 #include "player.h"
 #include "mapmanager.h"
+#include "particle3d.h"
+#include "effect3d.h"
 
 using namespace std;
 
@@ -50,6 +52,38 @@ HRESULT CResult::Init(void)
 
     CPlayer::Create({50.0f,20.0f,0.0f }, {0.0f,-D3DX_PI,0.0f})->GetMotionInfo()->SetMotion(nMotion, false);
 
+    if (m_IsGoal == true)
+    {
+        // âŒÇÃèÓïÒÇê›íË
+        CParticle3D::DefoultEffectInfo FireInfo;
+        FireInfo.Bece.Col = D3DXCOLOR(0.9f, 1.0f, 0.4f, 1.0f);
+        FireInfo.Bece.fMaxSpeed = 3.0f;
+        FireInfo.Bece.fMinSpeed = 3.0f;
+        FireInfo.Bece.MaxDir = { -0.5f,1.0f,0.1f };
+        FireInfo.Bece.MinDir = { -0.5f,0.5f,-0.1f };
+        FireInfo.Bece.nLife = 1;
+        FireInfo.Bece.nMaxLife = 60;
+        FireInfo.Bece.nMinLife = 60;
+        FireInfo.Bece.nNumEffect = 30;
+        FireInfo.Bece.Pos = { 150.0f,0.0f,0.0f };
+        FireInfo.MaxRadius = 5.0f;
+        FireInfo.MinRadius = 5.0f;
+        FireInfo.Bece.bLoop = true;
+        FireInfo.Bece.nCoolDown = 60;
+        FireInfo.Bece.Gravity = -0.1f;
+        memcpy(FireInfo.Bece.FilePath, CEffect3D::Config::Sphere, sizeof(FireInfo.Bece.FilePath));
+        FireInfo.Bece.nPriority = 5;
+
+        // ê∂ê¨
+        CParticle3D::Create(FireInfo);
+
+        FireInfo.Bece.MaxDir = { 0.5f,1.0f,0.1f };
+        FireInfo.Bece.MinDir = { 0.5f,0.5f,-0.1f };
+        FireInfo.Bece.Pos = { -150.0f,0.0f,0.0f };
+
+        // ê∂ê¨
+        CParticle3D::Create(FireInfo);
+    }
     return E_NOTIMPL;
 }
 
