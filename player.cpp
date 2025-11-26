@@ -452,7 +452,7 @@ bool CPlayer::UpdateState(btVector3& moveDir)
 		{// 壁についた
 			if (FaceBlock())
 			{// 改めて壁を向く
-				moveDir.setY(CLIMB_SPEED); // 登る
+				moveDir.setY(CLIMB_SPEED * CManager::GetGameSpeed()); // 登る
 				m_state = STATE::Climbing; // 登っている状態
 				GetMotionInfo()->SetMotion(5, false);
 			}
@@ -465,7 +465,7 @@ bool CPlayer::UpdateState(btVector3& moveDir)
 		{// 登り続けている
 			if (FaceBlock())
 			{// 改めて壁を向く
-				moveDir.setY(CLIMB_SPEED); // 登る
+				moveDir.setY(CLIMB_SPEED * CManager::GetGameSpeed()); // 登る
 
 				if (IsClimbingEnd())
 				{// ブロックの上

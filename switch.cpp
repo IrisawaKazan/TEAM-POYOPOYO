@@ -100,9 +100,9 @@ void CSwitch::Update(void)
 		if (m_ApperPos.y + Config::Depth < CurrentPos.y - Config::PressSpeed)
 		{
 			// ’¾‚ß‚é
-			CurrentPos.y -= Config::PressSpeed;
+			CurrentPos.y -= Config::PressSpeed * CManager::GetGameSpeed();
 		}
-		else if(m_ReturnCounter >= Config::ReturnCoolWodn)
+		else if(m_ReturnCounter >= Config::ReturnCoolWodn / CManager::GetGameSpeed())
 		{
 			m_ReturnCounter = 0;
 			m_IsFinish = true;
@@ -112,11 +112,11 @@ void CSwitch::Update(void)
 	{
 		m_ReturnCounter++;
 		// ã‚ª‚è‚«‚Á‚Ä‚¢‚È‚©‚Á‚½‚ç
-		if (m_ApperPos.y > CurrentPos.y + Config::ReturnSpeed && m_ReturnCounter >= Config::ReturnCoolWodn)
+		if (m_ApperPos.y > CurrentPos.y + Config::ReturnSpeed && m_ReturnCounter >= Config::ReturnCoolWodn / CManager::GetGameSpeed())
 		{
 			m_IsFinish = false;
 			// ‚ ‚°‚é
-			CurrentPos.y += Config::ReturnSpeed;
+			CurrentPos.y += Config::ReturnSpeed * CManager::GetGameSpeed();
 		}
 	}
 
@@ -200,7 +200,7 @@ void CDoor::Update(void)
 		if (m_ApperPos.y + Config::Limit > Pos.y + Config::UpSpeed)
 		{
 			// ‚ ‚°‚é
-			Pos.y += Config::UpSpeed;
+			Pos.y += Config::UpSpeed * CManager::GetGameSpeed();
 		}
 	}
 	// ‹N“®‚µ‚Ä‚¢‚È‚©‚Á‚½‚ç
@@ -210,7 +210,7 @@ void CDoor::Update(void)
 		if (m_ApperPos.y < Pos.y - Config::DownSpeed)
 		{
 			// ‰º‚°‚é
-			Pos.y -= Config::DownSpeed;
+			Pos.y -= Config::DownSpeed * CManager::GetGameSpeed();
 		}
 	}
 
