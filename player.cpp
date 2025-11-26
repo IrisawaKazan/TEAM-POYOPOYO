@@ -683,8 +683,8 @@ bool CPlayer::IsClimbingEnd()
 // ジャンプ
 void CPlayer::Jump(btVector3& moveDir)
 {
-	moveDir.setX(moveDir.x() * JUMP_SPEED_INA);
-	moveDir.setZ(moveDir.z() * JUMP_SPEED_INA);
+	moveDir.setX(moveDir.x() * (JUMP_SPEED_INA / CManager::GetGameSpeed()));
+	moveDir.setZ(moveDir.z() * (JUMP_SPEED_INA / CManager::GetGameSpeed()));
 	moveDir.setY(JUMP_POWER);
 	m_state = STATE::Jumping;
 	GetMotionInfo()->SetMotion(3, true);

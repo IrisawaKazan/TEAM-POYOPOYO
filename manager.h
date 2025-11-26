@@ -63,6 +63,7 @@ public:
 	static CInputMouse* GetInputMouse(void) { return m_pInputMouse; };
 	static CSound* GetSound(void) { return m_pSound; };
 	static CCamera* GetCamera(void) { return m_pCamera; };
+	static int GetGameSpeed(void) { return m_GameSpeed; }
 	static bool GetIsClear(void) { return m_isClear; };
 	static CScene* GetScene(void) { return m_pScene; };
 	static CFade* GetFade(void) { return m_pFade; };
@@ -75,6 +76,7 @@ public:
 
 	// セッター
 	static void SetScene(CScene* Scene);
+	static void SetGameSpeed(const int Speed) { m_GameSpeed = Speed; }
 
 	// 条件式の関数か
 	static bool isPause(void) { return m_isPause; };
@@ -93,6 +95,7 @@ private:
 	static CScene* m_pScene;					// シーンのインスタンス
 	static CFade* m_pFade;						// 画面遷移用のフェードのインスタンス
 	static std::unique_ptr<btDiscreteDynamicsWorld> m_pDynamicsWorld;				// 物理世界
+	static int m_GameSpeed;					// ゲームスピード
 	static bool m_isPause;						// ポーズ中かどうか
 	static bool m_isNowTutorial;				// tutorial中かどうか
 	static bool m_isClear;						// 敵を全滅させたかどうか

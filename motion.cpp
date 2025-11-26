@@ -9,6 +9,7 @@
 #include "motion.h"
 #include "math_T.h"
 #include "texturemanager.h"
+#include "manager.h"
 
 // 名前空間
 using namespace std;
@@ -79,7 +80,7 @@ void CMotion::Update(vector<CModel*>& pModel)
 				if (m_bKeep == false)
 				{
 					m_nBlendMotionType = 0;
-					m_nFrameBlend = m_MotionInfo[m_nMotionType].pKeyInfo[m_nKey].nFrame;
+					m_nFrameBlend = m_MotionInfo[m_nMotionType].pKeyInfo[m_nKey].nFrame / CManager::GetGameSpeed();
 				}
 				m_bFinishMotion = true;
 			}
@@ -94,7 +95,7 @@ void CMotion::Update(vector<CModel*>& pModel)
 		}
 	}
 	//カウンターモーションのリセット処理
-	if (m_nCounterMotion >= m_MotionInfo[m_nMotionType].pKeyInfo[m_nKey].nFrame)
+	if (m_nCounterMotion >= m_MotionInfo[m_nMotionType].pKeyInfo[m_nKey].nFrame / CManager::GetGameSpeed())
 	{
 		if (m_nKey >= m_MotionInfo[m_nMotionType].nNumKey - 1)
 		{
@@ -108,7 +109,7 @@ void CMotion::Update(vector<CModel*>& pModel)
 		else
 		{
 			m_nKey = Clamp(m_nKey + 1, 0, m_MotionInfo[m_nMotionType].nNumKey - 2);
-			m_nCounterMotion = Clamp(m_nCounterMotion, 0, m_MotionInfo[m_nMotionType].pKeyInfo[m_nKey].nFrame);
+			m_nCounterMotion = Clamp(m_nCounterMotion, 0, m_MotionInfo[m_nMotionType].pKeyInfo[m_nKey].nFrame / CManager::GetGameSpeed());
 		}
 	}
 
@@ -116,7 +117,7 @@ void CMotion::Update(vector<CModel*>& pModel)
 	{
 		m_nCounterBlend++;
 		//カウンターモーションのリセット処理
-		if (m_nCounterBlend >= m_nFrameBlend)
+		if (m_nCounterBlend >= m_nFrameBlend / CManager::GetGameSpeed())
 		{
 			m_nKey = 0;
 			m_nAllFrame = 0;
@@ -131,7 +132,7 @@ void CMotion::Update(vector<CModel*>& pModel)
 			}
 			if (m_bFirstBlend == true)
 			{
-				m_nCounterMotion = m_nFrameBlend;
+				m_nCounterMotion = m_nFrameBlend / CManager::GetGameSpeed();
 				m_bFirstBlend = false;
 			}
 		}
@@ -162,7 +163,7 @@ void CMotion::UpdateCurrentMotion(CModel* pModel)
 	nKey = m_MotionInfo[m_nMotionType].pKeyInfo[m_nKey].pKey[pModel->GetIndx()];
 	nNextKey = m_MotionInfo[m_nMotionType].pKeyInfo[m_nNextKey].pKey[pModel->GetIndx()];
 
-	float fFrame = (float)(m_nCounterMotion) / (float)(m_MotionInfo[m_nMotionType].pKeyInfo[m_nKey].nFrame);
+	float fFrame = (float)(m_nCounterMotion) / (float)(m_MotionInfo[m_nMotionType].pKeyInfo[m_nKey].nFrame / CManager::GetGameSpeed());
 
 	//求める値
 	Value.fPosX = pModel->GetOffSet().x + nKey.fPosX + Lerp(fFrame, nNextKey.fPosX, nKey.fPosX);
@@ -200,7 +201,7 @@ void CMotion::UpdateBlendMotion(CModel* pModel)
 	nKey = m_MotionInfo[m_nMotionType].pKeyInfo[m_nKey].pKey[pModel->GetIndx()];
 	nNextKey = m_MotionInfo[m_nMotionType].pKeyInfo[m_nNextKey].pKey[pModel->GetIndx()];
 
-	float fFrame = (float)(m_nCounterMotion) / (float)(m_MotionInfo[m_nMotionType].pKeyInfo[m_nKey].nFrame);
+	float fFrame = (float)(m_nCounterMotion) / (float)(m_MotionInfo[m_nMotionType].pKeyInfo[m_nKey].nFrame / CManager::GetGameSpeed());
 
 	Diff.fPosX = nNextKey.fPosX - nKey.fPosX;
 	Diff.fPosY = nNextKey.fPosY - nKey.fPosY;
@@ -235,7 +236,7 @@ void CMotion::UpdateBlendMotion(CModel* pModel)
 	nKeyBlend = m_MotionInfo[m_nBlendMotionType].pKeyInfo[m_nKeyBlend].pKey[pModel->GetIndx()];
 	nNextKeyBlend = m_MotionInfo[m_nBlendMotionType].pKeyInfo[m_nNextKeyBlend].pKey[pModel->GetIndx()];
 
-	float fFrameBlendMotion = (float)(m_nCounterBlend) / (float)(m_MotionInfo[m_nBlendMotionType].pKeyInfo[m_nKeyBlend].nFrame);
+	float fFrameBlendMotion = (float)(m_nCounterBlend) / (float)(m_MotionInfo[m_nBlendMotionType].pKeyInfo[m_nKeyBlend].nFrame / CManager::GetGameSpeed());
 	float fFrameBlend = (float)(m_nCounterBlend) / (float)(m_nFrameBlend);
 
 	DiffMotionBlend.fPosX = nNextKeyBlend.fPosX - nKeyBlend.fPosX;
@@ -511,7 +512,7 @@ void CMotion::SetMotion(int nMotion, const bool isKeep)
 		m_nCounterBlend = 0;
 	}
 	m_nBlendMotionType = nMotion;
-	m_nFrameBlend = 10;
+	m_nFrameBlend = 10 / CManager::GetGameSpeed();
 	m_bBlendMotion = true;
 	m_bFinishMotion = false;
 	m_bFirstBlend = true;

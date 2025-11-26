@@ -31,6 +31,7 @@ CCamera* CManager::m_pCamera = NULL;
 CLight* CManager::m_pLight = NULL;
 CScene* CManager::m_pScene = NULL;
 CFade* CManager::m_pFade = NULL;
+int CManager::m_GameSpeed = 1;
 bool CManager::m_isPause = false;
 bool CManager::m_isNowTutorial = false;
 bool CManager::m_isClear = false;
@@ -80,7 +81,7 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, bool bWnd)
 	m_pDynamicsWorld = make_unique<btDiscreteDynamicsWorld>(m_pDispatcher.get(), m_pBroadPhase.get(), m_pSolver.get(), m_pConfiguration.get());
 
 	// 重力を設定
-	m_pDynamicsWorld->setGravity({ 0.0f,-9.81f,0.0f });
+	m_pDynamicsWorld->setGravity({ 0.0f,-(9.81f * m_GameSpeed),0.0f });
 
 	// メモリ確保できたら
 	if (m_Renderer != NULL)
@@ -224,7 +225,7 @@ void CManager::Update()
 		CNavi::GetInstance()->Update();
 
 		// 物理世界でシュミレーションを実行
-		m_pDynamicsWorld->stepSimulation(btScalar(GetFPS()), 10, 0.016f);
+		m_pDynamicsWorld->stepSimulation(btScalar(GetFPS()), 10, 0.016f * m_GameSpeed);
 
 		// ライトのアップデート
 		m_pLight->Update();

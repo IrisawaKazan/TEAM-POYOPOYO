@@ -181,15 +181,21 @@ void CGame::Update(void)
 				CFade::SetFade(new CResult);
 			}
 		}
-	}
-//#endif // DEBUG
-	if (CManager::GetInputKeyboard() != NULL)
-	{
 		if (CManager::GetInputKeyboard()->GetTrigger(DIK_F3) == true && m_pTutorialBoard->GetProgress() == false)
 		{
 			m_pTutorialBoard->SetUp("data\\TEXTURE\\tutorial_001.png", true);
 		}
+		if (CManager::GetInputKeyboard()->GetTrigger(DIK_1) == true && m_pTutorialBoard->GetProgress() == false)
+		{
+			CManager::SetGameSpeed(1);
+		}
+		if (CManager::GetInputKeyboard()->GetTrigger(DIK_2) == true && m_pTutorialBoard->GetProgress() == false)
+		{
+			CManager::SetGameSpeed(2);
+		}
 	}
+//#endif // DEBUG
+
 	if (m_pMapManager != nullptr)
 	{
 		m_pMapManager->Update();
