@@ -178,6 +178,15 @@ void CItem::Update(void)
 		// カウントを一つ進める
 		nCount++;
 
+		if (nCount == 1)
+		{
+			// サウンドの取得
+			CSound* pSound = CManager::GetSound();
+
+			// SE
+			pSound->Play(CSound::LABEL_ITEM_SE);
+		}
+
 		if (nCount >= 30)
 		{// カウントが設定値を超えた場合
 

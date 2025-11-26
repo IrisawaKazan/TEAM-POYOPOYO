@@ -32,7 +32,7 @@ public:
 		LABEL_SWITCH_SE,			// スイッチSE
 		LABEL_TURN_OVER_SE,			// チュートリアルのページめくりSE
 		LABEL_JUMP_SE,				// ジャンプSE
-		//LABEL_ITEM_SE,				// アイテムSE
+		LABEL_ITEM_SE,				// アイテムSE
 
 		LABEL_MAX					// 最大値
 	}LABEL;

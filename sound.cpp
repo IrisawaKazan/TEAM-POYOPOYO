@@ -25,7 +25,7 @@ CSound::SOUNDINFO CSound::m_aSoundInfo[CSound::LABEL_MAX] =
 	{"data/SE/switchSe.wav", 0},			// スイッチSE
 	{"data/SE/turn_over.wav", 0},			// チュートリアルのページめくりSE
 	{"data/SE/jumpSe.wav", 0},				// ジャンプSE
-	//{"data/SE/itemSe.wav", 0},				// アイテムSE
+	{"data/SE/itemSe.wav", 0},				// アイテムSE
 };	
 
 //*********************************************
