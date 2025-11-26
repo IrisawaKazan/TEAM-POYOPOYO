@@ -20,10 +20,10 @@ public:
 	struct Config {
 		static const D3DXVECTOR3 Bace;		        // 位置 sato Add
 		static constexpr float OffSet = 0.15f;		// メニューの隙間
-		static constexpr float Width = 0.1f;		// 横幅
+		static constexpr float Width = 0.08f;		// 横幅
 		static constexpr float Height = 0.04f;		// 立幅
-		static constexpr float DestWidth = 0.2f;	// 横幅
-		static constexpr float DestHeight = 0.1f;	// 立幅
+		static constexpr float DestWidth = 0.12f;	// 横幅
+		static constexpr float DestHeight = 0.08f;	// 立幅
 		static constexpr int Frame = 30;			// フレーム
 	};
 

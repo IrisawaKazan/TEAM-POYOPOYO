@@ -24,11 +24,11 @@ public:
 		// メニューの規定値を設定
 		struct Menu {
 			static const D3DXVECTOR3 Bace;				// ロゴの基準となる位置
-			static constexpr float OffSet = 0.15f;		// メニューの隙間
-			static constexpr float Width = 0.1f;		// 横幅
+			static constexpr float OffSet = 0.2f;		// メニューの隙間
+			static constexpr float Width = 0.08f;		// 横幅
 			static constexpr float Height = 0.05f;		// 立幅
-			static constexpr float DestWidth = 0.15f;	// 横幅
-			static constexpr float DestHeight = 0.1f;	// 立幅
+			static constexpr float DestWidth = 0.12f;	// 横幅
+			static constexpr float DestHeight = 0.07f;	// 立幅
 			static constexpr int Frame = 30;			// フレーム
 		};
 

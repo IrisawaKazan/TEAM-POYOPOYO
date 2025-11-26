@@ -12,10 +12,10 @@
 #include "sound.h"
 
 // ãKíËílÇê›íË
-const D3DXVECTOR3 CTitleManager::Config::Menu::Bace = { 0.2f,0.55f,0.0f };
+const D3DXVECTOR3 CTitleManager::Config::Menu::Bace = { 0.2f,0.65f,0.0f };
 const D3DXVECTOR3 CTitleManager::Config::Logo::Apper = { 0.2f,0.0f,0.0f };
-const D3DXVECTOR3 CTitleManager::Config::Logo::Dest = { 0.2f,0.2f,0.0f };
-const D3DXVECTOR2 CTitleManager::Config::Logo::Size = { 0.2f,0.1f };
+const D3DXVECTOR3 CTitleManager::Config::Logo::Dest = { 0.2f,0.27f,0.0f };
+const D3DXVECTOR2 CTitleManager::Config::Logo::Size = { 0.17f,0.12f };
 const D3DXVECTOR3 CTitleManager::Config::BG::Apper = { 0.5f,0.5f,0.0f };	// Misaki
 const D3DXVECTOR2 CTitleManager::Config::BG::Size = { 0.5f,0.28f };			// Misaki
 
