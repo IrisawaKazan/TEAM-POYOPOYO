@@ -172,9 +172,11 @@ HRESULT CGame::Init(void)
 void CGame::Update(void)
 {
 //#ifdef _DEBUG
+	int GameSpeed = CManager::GetGameSpeed();
+
 	if (CManager::GetInputKeyboard() != NULL)
 	{
-		if (CManager::GetInputKeyboard()->GetTrigger(DIK_SPACE) == true)
+		if (CManager::GetInputKeyboard()->GetTrigger(DIK_LSHIFT) == true)
 		{
 			if (CManager::GetScene()->GetMode() == MODE_GAME)
 			{
@@ -185,17 +187,9 @@ void CGame::Update(void)
 		{
 			m_pTutorialBoard->SetUp("data\\TEXTURE\\tutorial_001.png", true);
 		}
-		if (CManager::GetInputKeyboard()->GetTrigger(DIK_1) == true && m_pTutorialBoard->GetProgress() == false)
+		if (CManager::GetInputKeyboard()->GetTrigger(DIK_SPACE) == true && m_pTutorialBoard->GetProgress() == false)
 		{
-			CManager::SetGameSpeed(1);
-		}
-		if (CManager::GetInputKeyboard()->GetTrigger(DIK_2) == true && m_pTutorialBoard->GetProgress() == false)
-		{
-			CManager::SetGameSpeed(2);
-		}
-		if (CManager::GetInputKeyboard()->GetTrigger(DIK_3) == true && m_pTutorialBoard->GetProgress() == false)
-		{
-			CManager::SetGameSpeed(3);
+			CManager::SetGameSpeed(Wrap(GameSpeed + 1, 1, 2));
 		}
 	}
 //#endif // DEBUG
