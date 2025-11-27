@@ -175,6 +175,7 @@
     <ClCompile Include="sound.cpp">
       <Filter>ソース</Filter>
     </ClCompile>
+    <ClCompile Include="gemespeedUI.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="uplift.h">
@@ -360,6 +361,7 @@
     <ClInclude Include="abstractblock.h">
       <Filter>ヘッダ</Filter>
     </ClInclude>
+    <ClInclude Include="gemespeedUI.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ソース">

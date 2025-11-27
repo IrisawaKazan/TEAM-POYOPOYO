@@ -59,7 +59,11 @@ private:
 	std::unique_ptr<btCollisionShape> m_CollisionShape;		// 当たり判定の形状
 	std::unique_ptr<btGhostObject> m_GhostObject;			// ゴーストオブジェクト
 	CShadow* m_pShadow;										// 影
-	
+	float m_fAngle;											// 向き
+	int m_nCount;											// カウント
+	int m_test;												// 
+	bool m_bTutorial;										// 特別な指示を出すか
+
 };
 
 #endif

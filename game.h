@@ -22,6 +22,7 @@ class CPlayerManager;
 class CMapManager;
 class CTutorialBoard;
 class CBlock;
+class CGameSpeedUI;
 
 // ゲームシーンクラスを定義
 class CGame : public CScene
@@ -91,14 +92,15 @@ private:
 	};
 
 	// 静的メンバ変数
-	static CPauseManager* m_pPauseManager;				// ポーズマネージャーへのポインタ
-	static CPlayerManager* m_pPlayerManager;			// プレイヤーマネージャー
-	static CMapManager* m_pMapManager;			// プレイヤーマネージャー
+	static CPauseManager* m_pPauseManager;		// ポーズマネージャーへのポインタ
+	static CPlayerManager* m_pPlayerManager;	// プレイヤーマネージャー
+	static CMapManager* m_pMapManager;			// マップマネージャー
 
-	static CTutorialBoard* m_pTutorialBoard;
+	static CTutorialBoard* m_pTutorialBoard;	// チュートリアルのポインタ
+	static CGameSpeedUI* m_pGameSpeedUI;		// 倍速のポインタ Misaki
 
 	static bool m_bGoal;
 
-	CBlock* m_pBlock; // スタートオブジェクト
+	CBlock* m_pBlock;	// スタートオブジェクト
 };
 #endif // !_GAME_H_

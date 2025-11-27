@@ -189,6 +189,7 @@
     <ClCompile Include="fade.cpp" />
     <ClCompile Include="file.cpp" />
     <ClCompile Include="game.cpp" />
+    <ClCompile Include="gemespeedUI.cpp" />
     <ClCompile Include="gimmick.cpp" />
     <ClCompile Include="goal.cpp" />
     <ClCompile Include="input.cpp" />
@@ -259,6 +260,7 @@
     <ClInclude Include="fade.h" />
     <ClInclude Include="file.h" />
     <ClInclude Include="game.h" />
+    <ClInclude Include="gemespeedUI.h" />
     <ClInclude Include="gimmick.h" />
     <ClInclude Include="goal.h" />
     <ClInclude Include="input.h" />

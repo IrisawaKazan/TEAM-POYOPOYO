@@ -21,7 +21,12 @@ CItem::CItem(int nPriority) :CObjectX(nPriority)
 	m_size = D3DXVECTOR3(50.0f, 50.0f, 50.0f);		// サイズ
 	m_bTake = false;								// 入手したかどうか
 	m_RBOffset = VEC3_NULL;							// リジットボディのオフセット
-	m_pShadow = NULL;
+	m_pShadow = NULL;								// 影のポインタ
+	m_fAngle = 0.0f;								// 向き
+	m_nCount = 0;									// 取った時のカウント
+	m_test = 0;										// 
+	m_bTutorial = true;								// 特別な指示を出すか
+
 }
 
 //***************************************
@@ -107,51 +112,46 @@ void CItem::Uninit(void)
 void CItem::Update(void)
 {
 	// クオータニオン
-	D3DXQUATERNION pQuat;
+	D3DXQUATERNION Quat;
 	// 回転させる軸
 	D3DXVECTOR3 Axis = D3DXVECTOR3(1.0f, 0.0f, 0.0f);
-	// 向き
-	static float fAngle = 0.0f;
 	// 位置
 	D3DXVECTOR3 pos = VEC3_NULL;
-	// カウント
-	static int nCount = 0;
-	static int test = 0;
-	// 特別な指示を取ったかどうか
-	static bool bTutorial = true;
 
 	// クオータニオンの取得
-	pQuat = GetQuad();
+	Quat = GetQuad();
 	// 位置の取得
 	pos = GetPosition();
 
 	if (m_type == ITEM_CLIMB)
-	{
+	{// 登る指示の場合
 		Axis = { 0.0f,1.0f,0.0f };
 	}
 	if (m_type != ITEM_JUMP)
-	{
+	{// ジャンプの指示の場合
+
 		if (m_bTake == false)
 		{// 入手していない場合
 
 			// 回転量を加算
-			fAngle += 0.05f;
+			m_fAngle += 0.05f;
 
 			// クオータニオンの計算
-			D3DXQuaternionRotationAxis(&pQuat, &Axis, fAngle);
+			D3DXQuaternionRotationAxis(&Quat, &Axis, m_fAngle);
 
 			// 更新したクオータニオンを引数に代入
-			SetQuad(pQuat);
+			SetQuad(Quat);
 		}
 	}
 	else
-	{
+	{// それ以外
+
 		if (m_bTake == false)
 		{// 入手していない場合
 
-			test++;
+			m_test++;
 			float testsinf;
-			testsinf = sinf(0.05f * test);
+			testsinf = sinf(0.05f * m_test);
 
 			D3DXVECTOR3 set;
 			set = GetPosition();
@@ -159,26 +159,27 @@ void CItem::Update(void)
 			SetPosition(set);
 		}
 	}
+
 	if (m_bTake == true)
 	{// 入手した場合
 
 		// 回転量を加算
-		fAngle += 0.2f * 0.9f;
+		m_fAngle += 0.2f * 0.9f;
 
 		// 位置に移動量を加算
 		pos += D3DXVECTOR3(0.0f, 3.0f * 0.8f, 0.0f);
 
 		// クオータニオンの計算
-		D3DXQuaternionRotationAxis(&pQuat, &Axis, fAngle);
+		D3DXQuaternionRotationAxis(&Quat, &Axis, m_fAngle);
 
 		// 更新したクオータニオンを引数に代入
-		SetQuad(pQuat);
+		SetQuad(Quat);
 		SetPosition(pos);
 
 		// カウントを一つ進める
-		nCount++;
+		m_nCount++;
 
-		if (nCount == 1)
+		if (m_nCount == 1)
 		{
 			// サウンドの取得
 			CSound* pSound = CManager::GetSound();
@@ -187,11 +188,11 @@ void CItem::Update(void)
 			pSound->Play(CSound::LABEL_ITEM_SE);
 		}
 
-		if (nCount >= 30)
+		if (m_nCount >= 30)
 		{// カウントが設定値を超えた場合
 
 			// カウントを初期化
-			nCount = 0;
+			m_nCount = 0;
 
 			// 終了処理
 			Uninit();
@@ -211,26 +212,26 @@ void CItem::Update(void)
 			case ITEM_JUMP:
 
 				// チュートリアル表示
-				CGame::GetTutorialBoard()->SetUp("data\\TEXTURE\\tutorial_002.png", bTutorial);
+				CGame::GetTutorialBoard()->SetUp("data\\TEXTURE\\tutorial_002.png", m_bTutorial);
 
 				// アイテムの有効化
 				CNavi::GetInstance()->SetEnable(CNavi::TYPE::Jump, true);
 
 				// チュートリアルを見ない状態にする
-				bTutorial = false;
+				m_bTutorial = false;
 
 				break;
 
 			case ITEM_CLIMB:
 
 				// チュートリアル表示
-				CGame::GetTutorialBoard()->SetUp("data\\TEXTURE\\tutorial_004.png", bTutorial);
+				CGame::GetTutorialBoard()->SetUp("data\\TEXTURE\\tutorial_004.png", m_bTutorial);
 
 				// アイテムの有効化
 				CNavi::GetInstance()->SetEnable(CNavi::TYPE::Climb, true);
 
 				// チュートリアルを見ない状態にする
-				bTutorial = false;
+				m_bTutorial = false;
 
 				break;
 
