@@ -63,7 +63,7 @@ HRESULT CNumber::Init()
 		{
 			pObject->SetAlphaTest(true);
 			pObject->SetTexIndx(CTextureManager::Instance()->Register(m_texturePath));
-			pObject->SetUv(D3DXVECTOR2(GetDigit(idx), 0), m_texUVSize.x, m_texUVSize.y);
+			pObject->SetUv(D3DXVECTOR2((float)GetDigit(idx), 0), m_texUVSize.x, m_texUVSize.y);
 			--idx;
 		}
 		break;
@@ -87,7 +87,7 @@ HRESULT CNumber::Init()
 			{// ŽžŠÔ
 				m_pObjects[idx]->SetAlphaTest(true);
 				m_pObjects[idx]->SetTexIndx(CTextureManager::Instance()->Register(m_texturePath));
-				m_pObjects[idx]->SetUv(D3DXVECTOR2(GetDigit(GetHour(), 1 - cnt), 0), m_texUVSize.x, m_texUVSize.y);
+				m_pObjects[idx]->SetUv(D3DXVECTOR2((float)GetDigit(GetHour(), 1 - cnt), 0), m_texUVSize.x, m_texUVSize.y);
 			}
 
 			// ƒRƒƒ“
@@ -103,7 +103,7 @@ HRESULT CNumber::Init()
 			{// •ª
 				m_pObjects[idx]->SetAlphaTest(true);
 				m_pObjects[idx]->SetTexIndx(CTextureManager::Instance()->Register(m_texturePath));
-				m_pObjects[idx]->SetUv(D3DXVECTOR2(GetDigit(GetMinute(), 1 - cnt), 0), m_texUVSize.x, m_texUVSize.y);
+				m_pObjects[idx]->SetUv(D3DXVECTOR2((float)GetDigit(GetMinute(), 1 - cnt), 0), m_texUVSize.x, m_texUVSize.y);
 			}
 
 			// ƒRƒƒ“
@@ -119,7 +119,7 @@ HRESULT CNumber::Init()
 			{// •b
 				m_pObjects[idx]->SetAlphaTest(true);
 				m_pObjects[idx]->SetTexIndx(CTextureManager::Instance()->Register(m_texturePath));
-				m_pObjects[idx]->SetUv(D3DXVECTOR2(GetDigit(GetSecond(), 1 - cnt), 0), m_texUVSize.x, m_texUVSize.y);
+				m_pObjects[idx]->SetUv(D3DXVECTOR2((float)GetDigit(GetSecond(), 1 - cnt), 0), m_texUVSize.x, m_texUVSize.y);
 			}
 		}
 		break;
@@ -186,7 +186,7 @@ void CNumber::Update(void)
 		size_t idx{ m_digits - 1 };
 		for (auto& pObject : m_pObjects)
 		{
-			pObject->SetUv(D3DXVECTOR2(GetDigit(idx), 0), m_texUVSize.x, m_texUVSize.y);
+			pObject->SetUv(D3DXVECTOR2((float)GetDigit(idx), 0), m_texUVSize.x, m_texUVSize.y);
 			--idx;
 		}
 		break;
@@ -200,7 +200,7 @@ void CNumber::Update(void)
 		{
 			for (size_t cnt = 0; cnt < 2; ++cnt, ++idx)
 			{// ŽžŠÔ
-				m_pObjects[idx]->SetUv(D3DXVECTOR2(GetDigit(GetHour(), 1 - cnt), 0), m_texUVSize.x, m_texUVSize.y);
+				m_pObjects[idx]->SetUv(D3DXVECTOR2((float)GetDigit(GetHour(), 1 - cnt), 0), m_texUVSize.x, m_texUVSize.y);
 			}
 			++idx;
 			isOK = true;
@@ -209,7 +209,7 @@ void CNumber::Update(void)
 		{
 			for (size_t cnt = 0; cnt < 2; ++cnt, ++idx)
 			{// •ª
-				m_pObjects[idx]->SetUv(D3DXVECTOR2(GetDigit(GetMinute(), 1 - cnt), 0), m_texUVSize.x, m_texUVSize.y);
+				m_pObjects[idx]->SetUv(D3DXVECTOR2((float)GetDigit(GetMinute(), 1 - cnt), 0), m_texUVSize.x, m_texUVSize.y);
 			}
 			++idx;
 			isOK = true;
@@ -218,7 +218,7 @@ void CNumber::Update(void)
 		{
 			for (size_t cnt = 0; cnt < 2; ++cnt, ++idx)
 			{// •b
-				m_pObjects[idx]->SetUv(D3DXVECTOR2(GetDigit(GetSecond(), 1 - cnt), 0), m_texUVSize.x, m_texUVSize.y);
+				m_pObjects[idx]->SetUv(D3DXVECTOR2((float)GetDigit(GetSecond(), 1 - cnt), 0), m_texUVSize.x, m_texUVSize.y);
 			}
 		}
 		break;
@@ -277,6 +277,7 @@ D3DXVECTOR3 CNumber::GetLeftPos()
 		return leftPos;
 	}
 	}
+	return m_pos;
 }
 
 //****************************************************************
@@ -302,6 +303,7 @@ D3DXVECTOR3 CNumber::GetRightPos()
 		return rightPos;
 	}
 	}
+	return m_pos;
 }
 
 //****************************************************************
