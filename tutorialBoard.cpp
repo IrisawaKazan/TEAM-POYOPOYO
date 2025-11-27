@@ -98,7 +98,7 @@ void CTutorialBoard::Update(void)
 		}
 
 		if (CManager::GetInputKeyboard()->GetTrigger(DIK_RETURN) == true ||
-			CManager::GetInputJoypad()->GetTrigger(CInputJoypad::JOYKEY_B) ||
+			CManager::GetInputJoypad()->GetTrigger(CInputJoypad::JOYKEY_A) ||
 			CManager::GetInputMouse()->OnDown(0) == true)
 		{// Œˆ’èƒ{ƒ^ƒ“‚ð‰Ÿ‚µ‚½Žž
 

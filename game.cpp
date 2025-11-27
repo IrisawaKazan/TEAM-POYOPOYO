@@ -147,10 +147,10 @@ void CGame::Update(void)
 				CFade::SetFade(new CResult);
 			}
 		}
-		if (CManager::GetInputKeyboard()->GetTrigger(DIK_F3) == true && m_pTutorialBoard->GetProgress() == false)
-		{
-			m_pTutorialBoard->SetUp("data\\TEXTURE\\tutorial_001.png", true);
-		}
+		//if (CManager::GetInputKeyboard()->GetTrigger(DIK_F3) == true && m_pTutorialBoard->GetProgress() == false)
+		//{
+		//	m_pTutorialBoard->SetUp("data\\TEXTURE\\tutorial_001.png", true);
+		//}
 		if (CManager::GetInputKeyboard()->GetTrigger(DIK_SPACE) ||
 			CManager::GetInputJoypad()->GetTrigger(CInputJoypad::JOYKEY_X) ||
 			CManager::GetInputJoypad()->GetTrigger(CInputJoypad::JOYKEY_Y) == true && m_pTutorialBoard->GetProgress() == false)
