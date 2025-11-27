@@ -92,7 +92,7 @@ void CResult::Update(void)
 {
     CRanking::Instance()->Update();
 
-    if (CManager::GetInputKeyboard()->GetTrigger(DIK_RETURN) == true)
+    if (CManager::GetInputKeyboard()->GetTrigger(DIK_RETURN) || CManager::GetInputJoypad()->GetTrigger(CInputJoypad::JOYKEY_A) == true)
     {
         //CManager::GetSound()->Play(CSound::LABEL_ENTER);
         CFade::SetFade(new CTitle);
