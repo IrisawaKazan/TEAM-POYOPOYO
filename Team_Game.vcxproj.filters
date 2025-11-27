@@ -1,187 +1,184 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Manifest Include="app.manifest" />
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="uplift.cpp">
-      <Filter>ソース</Filter>
-    </ClCompile>
-    <ClCompile Include="texturemanager.cpp">
-      <Filter>ソース</Filter>
-    </ClCompile>
-    <ClCompile Include="timer.cpp">
-      <Filter>ソース</Filter>
-    </ClCompile>
-    <ClCompile Include="title.cpp">
-      <Filter>ソース</Filter>
-    </ClCompile>
-    <ClCompile Include="titlebg.cpp">
-      <Filter>ソース</Filter>
-    </ClCompile>
-    <ClCompile Include="titleLogo.cpp">
-      <Filter>ソース</Filter>
-    </ClCompile>
-    <ClCompile Include="titlemanager.cpp">
-      <Filter>ソース</Filter>
-    </ClCompile>
-    <ClCompile Include="titlemenu.cpp">
-      <Filter>ソース</Filter>
-    </ClCompile>
-    <ClCompile Include="tutorial.cpp">
       <Filter>ソース</Filter>
     </ClCompile>
     <ClCompile Include="tutorialBoard.cpp">
       <Filter>ソース</Filter>
     </ClCompile>
+    <ClCompile Include="tutorial.cpp">
+      <Filter>ソース</Filter>
+    </ClCompile>
+    <ClCompile Include="titlemenu.cpp">
+      <Filter>ソース</Filter>
+    </ClCompile>
+    <ClCompile Include="titlemanager.cpp">
+      <Filter>ソース</Filter>
+    </ClCompile>
+    <ClCompile Include="titleLogo.cpp">
+      <Filter>ソース</Filter>
+    </ClCompile>
+    <ClCompile Include="titlebg.cpp">
+      <Filter>ソース</Filter>
+    </ClCompile>
+    <ClCompile Include="title.cpp">
+      <Filter>ソース</Filter>
+    </ClCompile>
+    <ClCompile Include="timer.cpp">
+      <Filter>ソース</Filter>
+    </ClCompile>
+    <ClCompile Include="texturemanager.cpp">
+      <Filter>ソース</Filter>
+    </ClCompile>
     <ClCompile Include="switch.cpp">
-      <Filter>ソース</Filter>
-    </ClCompile>
-    <ClCompile Include="arrow.cpp">
-      <Filter>ソース</Filter>
-    </ClCompile>
-    <ClCompile Include="block.cpp">
-      <Filter>ソース</Filter>
-    </ClCompile>
-    <ClCompile Include="camera.cpp">
-      <Filter>ソース</Filter>
-    </ClCompile>
-    <ClCompile Include="character.cpp">
-      <Filter>ソース</Filter>
-    </ClCompile>
-    <ClCompile Include="climb.cpp">
-      <Filter>ソース</Filter>
-    </ClCompile>
-    <ClCompile Include="debugproc.cpp">
-      <Filter>ソース</Filter>
-    </ClCompile>
-    <ClCompile Include="effect3d.cpp">
-      <Filter>ソース</Filter>
-    </ClCompile>
-    <ClCompile Include="fade.cpp">
-      <Filter>ソース</Filter>
-    </ClCompile>
-    <ClCompile Include="file.cpp">
-      <Filter>ソース</Filter>
-    </ClCompile>
-    <ClCompile Include="game.cpp">
-      <Filter>ソース</Filter>
-    </ClCompile>
-    <ClCompile Include="gimmick.cpp">
-      <Filter>ソース</Filter>
-    </ClCompile>
-    <ClCompile Include="goal.cpp">
-      <Filter>ソース</Filter>
-    </ClCompile>
-    <ClCompile Include="input.cpp">
-      <Filter>ソース</Filter>
-    </ClCompile>
-    <ClCompile Include="item.cpp">
-      <Filter>ソース</Filter>
-    </ClCompile>
-    <ClCompile Include="jump.cpp">
-      <Filter>ソース</Filter>
-    </ClCompile>
-    <ClCompile Include="light.cpp">
-      <Filter>ソース</Filter>
-    </ClCompile>
-    <ClCompile Include="main.cpp">
-      <Filter>ソース</Filter>
-    </ClCompile>
-    <ClCompile Include="manager.cpp">
-      <Filter>ソース</Filter>
-    </ClCompile>
-    <ClCompile Include="mapmanager.cpp">
-      <Filter>ソース</Filter>
-    </ClCompile>
-    <ClCompile Include="math.cpp">
-      <Filter>ソース</Filter>
-    </ClCompile>
-    <ClCompile Include="model.cpp">
-      <Filter>ソース</Filter>
-    </ClCompile>
-    <ClCompile Include="modelmanager.cpp">
-      <Filter>ソース</Filter>
-    </ClCompile>
-    <ClCompile Include="motion.cpp">
-      <Filter>ソース</Filter>
-    </ClCompile>
-    <ClCompile Include="navi.cpp">
-      <Filter>ソース</Filter>
-    </ClCompile>
-    <ClCompile Include="naviMarker.cpp">
-      <Filter>ソース</Filter>
-    </ClCompile>
-    <ClCompile Include="naviobject.cpp">
-      <Filter>ソース</Filter>
-    </ClCompile>
-    <ClCompile Include="naviUi.cpp">
-      <Filter>ソース</Filter>
-    </ClCompile>
-    <ClCompile Include="number.cpp">
-      <Filter>ソース</Filter>
-    </ClCompile>
-    <ClCompile Include="object.cpp">
-      <Filter>ソース</Filter>
-    </ClCompile>
-    <ClCompile Include="object2D.cpp">
-      <Filter>ソース</Filter>
-    </ClCompile>
-    <ClCompile Include="object3D.cpp">
-      <Filter>ソース</Filter>
-    </ClCompile>
-    <ClCompile Include="objectbillboard.cpp">
-      <Filter>ソース</Filter>
-    </ClCompile>
-    <ClCompile Include="objectpool.cpp">
-      <Filter>ソース</Filter>
-    </ClCompile>
-    <ClCompile Include="objectX.cpp">
-      <Filter>ソース</Filter>
-    </ClCompile>
-    <ClCompile Include="particle3d.cpp">
-      <Filter>ソース</Filter>
-    </ClCompile>
-    <ClCompile Include="pause.cpp">
-      <Filter>ソース</Filter>
-    </ClCompile>
-    <ClCompile Include="pausemanager.cpp">
-      <Filter>ソース</Filter>
-    </ClCompile>
-    <ClCompile Include="pch.cpp">
-      <Filter>ソース</Filter>
-    </ClCompile>
-    <ClCompile Include="player.cpp">
-      <Filter>ソース</Filter>
-    </ClCompile>
-    <ClCompile Include="playermanager.cpp">
-      <Filter>ソース</Filter>
-    </ClCompile>
-    <ClCompile Include="ranking.cpp">
-      <Filter>ソース</Filter>
-    </ClCompile>
-    <ClCompile Include="renderer.cpp">
-      <Filter>ソース</Filter>
-    </ClCompile>
-    <ClCompile Include="result.cpp">
-      <Filter>ソース</Filter>
-    </ClCompile>
-    <ClCompile Include="scene.cpp">
-      <Filter>ソース</Filter>
-    </ClCompile>
-    <ClCompile Include="shadow.cpp">
       <Filter>ソース</Filter>
     </ClCompile>
     <ClCompile Include="sound.cpp">
       <Filter>ソース</Filter>
     </ClCompile>
-    <ClCompile Include="gemespeedUI.cpp" />
+    <ClCompile Include="shadow.cpp">
+      <Filter>ソース</Filter>
+    </ClCompile>
+    <ClCompile Include="shader.cpp">
+      <Filter>ソース</Filter>
+    </ClCompile>
+    <ClCompile Include="scene.cpp">
+      <Filter>ソース</Filter>
+    </ClCompile>
+    <ClCompile Include="result.cpp">
+      <Filter>ソース</Filter>
+    </ClCompile>
+    <ClCompile Include="renderer.cpp">
+      <Filter>ソース</Filter>
+    </ClCompile>
+    <ClCompile Include="ranking.cpp">
+      <Filter>ソース</Filter>
+    </ClCompile>
+    <ClCompile Include="playermanager.cpp">
+      <Filter>ソース</Filter>
+    </ClCompile>
+    <ClCompile Include="player.cpp">
+      <Filter>ソース</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>ソース</Filter>
+    </ClCompile>
+    <ClCompile Include="pausemanager.cpp">
+      <Filter>ソース</Filter>
+    </ClCompile>
+    <ClCompile Include="pause.cpp">
+      <Filter>ソース</Filter>
+    </ClCompile>
+    <ClCompile Include="particle3d.cpp">
       <Filter>ソース</Filter>
     </ClCompile>
     <ClCompile Include="outline.cpp">
       <Filter>ソース</Filter>
     </ClCompile>
-    <ClCompile Include="shader.cpp">
+    <ClCompile Include="objectX.cpp">
+      <Filter>ソース</Filter>
+    </ClCompile>
+    <ClCompile Include="objectpool.cpp">
+      <Filter>ソース</Filter>
+    </ClCompile>
+    <ClCompile Include="objectbillboard.cpp">
+      <Filter>ソース</Filter>
+    </ClCompile>
+    <ClCompile Include="object3D.cpp">
+      <Filter>ソース</Filter>
+    </ClCompile>
+    <ClCompile Include="object2D.cpp">
+      <Filter>ソース</Filter>
+    </ClCompile>
+    <ClCompile Include="object.cpp">
+      <Filter>ソース</Filter>
+    </ClCompile>
+    <ClCompile Include="number.cpp">
+      <Filter>ソース</Filter>
+    </ClCompile>
+    <ClCompile Include="naviUi.cpp">
+      <Filter>ソース</Filter>
+    </ClCompile>
+    <ClCompile Include="naviobject.cpp">
+      <Filter>ソース</Filter>
+    </ClCompile>
+    <ClCompile Include="naviMarker.cpp">
+      <Filter>ソース</Filter>
+    </ClCompile>
+    <ClCompile Include="navi.cpp">
+      <Filter>ソース</Filter>
+    </ClCompile>
+    <ClCompile Include="motion.cpp">
+      <Filter>ソース</Filter>
+    </ClCompile>
+    <ClCompile Include="modelmanager.cpp">
+      <Filter>ソース</Filter>
+    </ClCompile>
+    <ClCompile Include="model.cpp">
+      <Filter>ソース</Filter>
+    </ClCompile>
+    <ClCompile Include="math.cpp">
+      <Filter>ソース</Filter>
+    </ClCompile>
+    <ClCompile Include="mapmanager.cpp">
+      <Filter>ソース</Filter>
+    </ClCompile>
+    <ClCompile Include="manager.cpp">
+      <Filter>ソース</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>ソース</Filter>
+    </ClCompile>
+    <ClCompile Include="light.cpp">
+      <Filter>ソース</Filter>
+    </ClCompile>
+    <ClCompile Include="jump.cpp">
+      <Filter>ソース</Filter>
+    </ClCompile>
+    <ClCompile Include="item.cpp">
+      <Filter>ソース</Filter>
+    </ClCompile>
+    <ClCompile Include="input.cpp">
+      <Filter>ソース</Filter>
+    </ClCompile>
+    <ClCompile Include="goal.cpp">
+      <Filter>ソース</Filter>
+    </ClCompile>
+    <ClCompile Include="gimmick.cpp">
+      <Filter>ソース</Filter>
+    </ClCompile>
+    <ClCompile Include="gemespeedUI.cpp">
+      <Filter>ソース</Filter>
+    </ClCompile>
+    <ClCompile Include="game.cpp">
+      <Filter>ソース</Filter>
+    </ClCompile>
+    <ClCompile Include="file.cpp">
+      <Filter>ソース</Filter>
+    </ClCompile>
+    <ClCompile Include="fade.cpp">
+      <Filter>ソース</Filter>
+    </ClCompile>
+    <ClCompile Include="effect3d.cpp">
+      <Filter>ソース</Filter>
+    </ClCompile>
+    <ClCompile Include="debugproc.cpp">
+      <Filter>ソース</Filter>
+    </ClCompile>
+    <ClCompile Include="climb.cpp">
+      <Filter>ソース</Filter>
+    </ClCompile>
+    <ClCompile Include="character.cpp">
+      <Filter>ソース</Filter>
+    </ClCompile>
+    <ClCompile Include="camera.cpp">
+      <Filter>ソース</Filter>
+    </ClCompile>
+    <ClCompile Include="block.cpp">
+      <Filter>ソース</Filter>
+    </ClCompile>
+    <ClCompile Include="arrow.cpp">
       <Filter>ソース</Filter>
     </ClCompile>
   </ItemGroup>
@@ -189,206 +186,216 @@
     <ClInclude Include="uplift.h">
       <Filter>ヘッダ</Filter>
     </ClInclude>
-    <ClInclude Include="tutorialBoard.h">
-      <Filter>ヘッダ</Filter>
-    </ClInclude>
-    <ClInclude Include="tutorial.h">
-      <Filter>ヘッダ</Filter>
-    </ClInclude>
-    <ClInclude Include="titlemenu.h">
-      <Filter>ヘッダ</Filter>
-    </ClInclude>
-    <ClInclude Include="titlemanager.h">
-      <Filter>ヘッダ</Filter>
-    </ClInclude>
-    <ClInclude Include="titlelogo.h">
-      <Filter>ヘッダ</Filter>
-    </ClInclude>
-    <ClInclude Include="titlebg.h">
-      <Filter>ヘッダ</Filter>
-    </ClInclude>
-    <ClInclude Include="title.h">
+    <ClInclude Include="texturemanager.h">
       <Filter>ヘッダ</Filter>
     </ClInclude>
     <ClInclude Include="timer.h">
       <Filter>ヘッダ</Filter>
     </ClInclude>
-    <ClInclude Include="texturemanager.h">
+    <ClInclude Include="title.h">
+      <Filter>ヘッダ</Filter>
+    </ClInclude>
+    <ClInclude Include="titlebg.h">
+      <Filter>ヘッダ</Filter>
+    </ClInclude>
+    <ClInclude Include="titlelogo.h">
+      <Filter>ヘッダ</Filter>
+    </ClInclude>
+    <ClInclude Include="titlemanager.h">
+      <Filter>ヘッダ</Filter>
+    </ClInclude>
+    <ClInclude Include="titlemenu.h">
+      <Filter>ヘッダ</Filter>
+    </ClInclude>
+    <ClInclude Include="tutorial.h">
+      <Filter>ヘッダ</Filter>
+    </ClInclude>
+    <ClInclude Include="tutorialBoard.h">
       <Filter>ヘッダ</Filter>
     </ClInclude>
     <ClInclude Include="switch.h">
       <Filter>ヘッダ</Filter>
     </ClInclude>
-    <ClInclude Include="sound.h">
-      <Filter>ヘッダ</Filter>
-    </ClInclude>
-    <ClInclude Include="shadow.h">
-      <Filter>ヘッダ</Filter>
-    </ClInclude>
-    <ClInclude Include="scene.h">
-      <Filter>ヘッダ</Filter>
-    </ClInclude>
-    <ClInclude Include="result.h">
-      <Filter>ヘッダ</Filter>
-    </ClInclude>
-    <ClInclude Include="resource.h">
-      <Filter>ヘッダ</Filter>
-    </ClInclude>
-    <ClInclude Include="renderer.h">
-      <Filter>ヘッダ</Filter>
-    </ClInclude>
-    <ClInclude Include="ranking.h">
-      <Filter>ヘッダ</Filter>
-    </ClInclude>
-    <ClInclude Include="playermanager.h">
-      <Filter>ヘッダ</Filter>
-    </ClInclude>
-    <ClInclude Include="player.h">
-      <Filter>ヘッダ</Filter>
-    </ClInclude>
-    <ClInclude Include="pch.h">
-      <Filter>ヘッダ</Filter>
-    </ClInclude>
-    <ClInclude Include="pausemanager.h">
+    <ClInclude Include="particle3d.h">
       <Filter>ヘッダ</Filter>
     </ClInclude>
     <ClInclude Include="pause.h">
       <Filter>ヘッダ</Filter>
     </ClInclude>
-    <ClInclude Include="particle3d.h">
+    <ClInclude Include="pausemanager.h">
       <Filter>ヘッダ</Filter>
     </ClInclude>
-    <ClInclude Include="objectX.h">
+    <ClInclude Include="pch.h">
       <Filter>ヘッダ</Filter>
     </ClInclude>
-    <ClInclude Include="objectpool.h">
+    <ClInclude Include="player.h">
       <Filter>ヘッダ</Filter>
     </ClInclude>
-    <ClInclude Include="objectbillboard.h">
+    <ClInclude Include="playermanager.h">
       <Filter>ヘッダ</Filter>
     </ClInclude>
-    <ClInclude Include="object3D.h">
+    <ClInclude Include="ranking.h">
       <Filter>ヘッダ</Filter>
     </ClInclude>
-    <ClInclude Include="object2D.h">
+    <ClInclude Include="renderer.h">
       <Filter>ヘッダ</Filter>
     </ClInclude>
-    <ClInclude Include="object.h">
+    <ClInclude Include="resource.h">
       <Filter>ヘッダ</Filter>
     </ClInclude>
-    <ClInclude Include="number.h">
+    <ClInclude Include="result.h">
       <Filter>ヘッダ</Filter>
     </ClInclude>
-    <ClInclude Include="naviUi.h">
-      <Filter>ヘッダ</Filter>
-    </ClInclude>
-    <ClInclude Include="naviobject.h">
-      <Filter>ヘッダ</Filter>
-    </ClInclude>
-    <ClInclude Include="naviMarker.h">
-      <Filter>ヘッダ</Filter>
-    </ClInclude>
-    <ClInclude Include="navi.h">
-      <Filter>ヘッダ</Filter>
-    </ClInclude>
-    <ClInclude Include="motion.h">
-      <Filter>ヘッダ</Filter>
-    </ClInclude>
-    <ClInclude Include="modelmanager.h">
-      <Filter>ヘッダ</Filter>
-    </ClInclude>
-    <ClInclude Include="model.h">
-      <Filter>ヘッダ</Filter>
-    </ClInclude>
-    <ClInclude Include="math_T.h">
-      <Filter>ヘッダ</Filter>
-    </ClInclude>
-    <ClInclude Include="math.h">
-      <Filter>ヘッダ</Filter>
-    </ClInclude>
-    <ClInclude Include="mapmanager.h">
-      <Filter>ヘッダ</Filter>
-    </ClInclude>
-    <ClInclude Include="manager.h">
-      <Filter>ヘッダ</Filter>
-    </ClInclude>
-    <ClInclude Include="main.h">
-      <Filter>ヘッダ</Filter>
-    </ClInclude>
-    <ClInclude Include="light.h">
-      <Filter>ヘッダ</Filter>
-    </ClInclude>
-    <ClInclude Include="jump.h">
-      <Filter>ヘッダ</Filter>
-    </ClInclude>
-    <ClInclude Include="json.hpp">
-      <Filter>ヘッダ</Filter>
-    </ClInclude>
-    <ClInclude Include="item.h">
-      <Filter>ヘッダ</Filter>
-    </ClInclude>
-    <ClInclude Include="input.h">
-      <Filter>ヘッダ</Filter>
-    </ClInclude>
-    <ClInclude Include="goal.h">
-      <Filter>ヘッダ</Filter>
-    </ClInclude>
-    <ClInclude Include="gimmick.h">
-      <Filter>ヘッダ</Filter>
-    </ClInclude>
-    <ClInclude Include="game.h">
-      <Filter>ヘッダ</Filter>
-    </ClInclude>
-    <ClInclude Include="file.h">
-      <Filter>ヘッダ</Filter>
-    </ClInclude>
-    <ClInclude Include="fade.h">
-      <Filter>ヘッダ</Filter>
-    </ClInclude>
-    <ClInclude Include="effect3d.h">
-      <Filter>ヘッダ</Filter>
-    </ClInclude>
-    <ClInclude Include="debugproc.h">
-      <Filter>ヘッダ</Filter>
-    </ClInclude>
-    <ClInclude Include="climb.h">
-      <Filter>ヘッダ</Filter>
-    </ClInclude>
-    <ClInclude Include="character.h">
-      <Filter>ヘッダ</Filter>
-    </ClInclude>
-    <ClInclude Include="camera.h">
-      <Filter>ヘッダ</Filter>
-    </ClInclude>
-    <ClInclude Include="block.h">
-      <Filter>ヘッダ</Filter>
-    </ClInclude>
-    <ClInclude Include="arrow.h">
-      <Filter>ヘッダ</Filter>
-    </ClInclude>
-    <ClInclude Include="abstractblock.h">
-      <Filter>ヘッダ</Filter>
-    </ClInclude>
-    <ClInclude Include="gemespeedUI.h" />
-      <Filter>ヘッダ</Filter>
-    </ClInclude>
-    <ClInclude Include="outline.h">
+    <ClInclude Include="scene.h">
       <Filter>ヘッダ</Filter>
     </ClInclude>
     <ClInclude Include="shader.h">
       <Filter>ヘッダ</Filter>
     </ClInclude>
+    <ClInclude Include="shadow.h">
+      <Filter>ヘッダ</Filter>
+    </ClInclude>
+    <ClInclude Include="sound.h">
+      <Filter>ヘッダ</Filter>
+    </ClInclude>
+    <ClInclude Include="outline.h">
+      <Filter>ヘッダ</Filter>
+    </ClInclude>
+    <ClInclude Include="arrow.h">
+      <Filter>ヘッダ</Filter>
+    </ClInclude>
+    <ClInclude Include="block.h">
+      <Filter>ヘッダ</Filter>
+    </ClInclude>
+    <ClInclude Include="camera.h">
+      <Filter>ヘッダ</Filter>
+    </ClInclude>
+    <ClInclude Include="character.h">
+      <Filter>ヘッダ</Filter>
+    </ClInclude>
+    <ClInclude Include="climb.h">
+      <Filter>ヘッダ</Filter>
+    </ClInclude>
+    <ClInclude Include="debugproc.h">
+      <Filter>ヘッダ</Filter>
+    </ClInclude>
+    <ClInclude Include="effect3d.h">
+      <Filter>ヘッダ</Filter>
+    </ClInclude>
+    <ClInclude Include="fade.h">
+      <Filter>ヘッダ</Filter>
+    </ClInclude>
+    <ClInclude Include="file.h">
+      <Filter>ヘッダ</Filter>
+    </ClInclude>
+    <ClInclude Include="game.h">
+      <Filter>ヘッダ</Filter>
+    </ClInclude>
+    <ClInclude Include="gemespeedUI.h">
+      <Filter>ヘッダ</Filter>
+    </ClInclude>
+    <ClInclude Include="gimmick.h">
+      <Filter>ヘッダ</Filter>
+    </ClInclude>
+    <ClInclude Include="goal.h">
+      <Filter>ヘッダ</Filter>
+    </ClInclude>
+    <ClInclude Include="input.h">
+      <Filter>ヘッダ</Filter>
+    </ClInclude>
+    <ClInclude Include="item.h">
+      <Filter>ヘッダ</Filter>
+    </ClInclude>
+    <ClInclude Include="json.hpp">
+      <Filter>ヘッダ</Filter>
+    </ClInclude>
+    <ClInclude Include="jump.h">
+      <Filter>ヘッダ</Filter>
+    </ClInclude>
+    <ClInclude Include="light.h">
+      <Filter>ヘッダ</Filter>
+    </ClInclude>
+    <ClInclude Include="main.h">
+      <Filter>ヘッダ</Filter>
+    </ClInclude>
+    <ClInclude Include="manager.h">
+      <Filter>ヘッダ</Filter>
+    </ClInclude>
+    <ClInclude Include="mapmanager.h">
+      <Filter>ヘッダ</Filter>
+    </ClInclude>
+    <ClInclude Include="math.h">
+      <Filter>ヘッダ</Filter>
+    </ClInclude>
+    <ClInclude Include="math_T.h">
+      <Filter>ヘッダ</Filter>
+    </ClInclude>
+    <ClInclude Include="model.h">
+      <Filter>ヘッダ</Filter>
+    </ClInclude>
+    <ClInclude Include="modelmanager.h">
+      <Filter>ヘッダ</Filter>
+    </ClInclude>
+    <ClInclude Include="motion.h">
+      <Filter>ヘッダ</Filter>
+    </ClInclude>
+    <ClInclude Include="navi.h">
+      <Filter>ヘッダ</Filter>
+    </ClInclude>
+    <ClInclude Include="naviMarker.h">
+      <Filter>ヘッダ</Filter>
+    </ClInclude>
+    <ClInclude Include="naviobject.h">
+      <Filter>ヘッダ</Filter>
+    </ClInclude>
+    <ClInclude Include="naviUi.h">
+      <Filter>ヘッダ</Filter>
+    </ClInclude>
+    <ClInclude Include="number.h">
+      <Filter>ヘッダ</Filter>
+    </ClInclude>
+    <ClInclude Include="object.h">
+      <Filter>ヘッダ</Filter>
+    </ClInclude>
+    <ClInclude Include="object2D.h">
+      <Filter>ヘッダ</Filter>
+    </ClInclude>
+    <ClInclude Include="object3D.h">
+      <Filter>ヘッダ</Filter>
+    </ClInclude>
+    <ClInclude Include="objectbillboard.h">
+      <Filter>ヘッダ</Filter>
+    </ClInclude>
+    <ClInclude Include="objectpool.h">
+      <Filter>ヘッダ</Filter>
+    </ClInclude>
+    <ClInclude Include="objectX.h">
+      <Filter>ヘッダ</Filter>
+    </ClInclude>
+    <ClInclude Include="abstractblock.h">
+      <Filter>ヘッダ</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ソース">
-      <UniqueIdentifier>{6bd35cd9-be6e-4be3-b67a-4d40e7edfb49}</UniqueIdentifier>
+      <UniqueIdentifier>{c309c5e8-a89d-4c86-b4a7-158885b0a2c2}</UniqueIdentifier>
     </Filter>
     <Filter Include="ヘッダ">
-      <UniqueIdentifier>{57bd9119-4230-4862-94c3-c56266037d36}</UniqueIdentifier>
+      <UniqueIdentifier>{e537b0df-9fd2-456e-bf3c-4bc10b16571b}</UniqueIdentifier>
     </Filter>
     <Filter Include="リソース">
-      <UniqueIdentifier>{6fec1787-795e-41a7-8678-d3e92d815875}</UniqueIdentifier>
+      <UniqueIdentifier>{e5fe3f97-8d9a-459b-9053-24e931d67abc}</UniqueIdentifier>
     </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Manifest Include="app.manifest">
+      <Filter>リソース</Filter>
+    </Manifest>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="data\SHADER\OutLine.hlsl">
+      <Filter>リソース</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Team_Game.rc">
@@ -404,8 +411,5 @@
     <Image Include="data\ICON\Test.ico">
       <Filter>リソース</Filter>
     </Image>
-  </ItemGroup>
-  <ItemGroup>
-    <FxCompile Include="data\SHADER\OutLine.hlsl" />
   </ItemGroup>
 </Project>
