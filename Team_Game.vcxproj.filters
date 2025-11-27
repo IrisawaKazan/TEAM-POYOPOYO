@@ -179,7 +179,7 @@
       <Filter>ソース</Filter>
     </ClCompile>
     <ClCompile Include="shader.cpp">
-      <Filter>ヘッダ</Filter>
+      <Filter>ソース</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
