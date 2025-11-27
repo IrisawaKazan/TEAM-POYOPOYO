@@ -175,6 +175,9 @@
     <ClCompile Include="sound.cpp">
       <Filter>ソース</Filter>
     </ClCompile>
+    <ClCompile Include="gemespeedUI.cpp" />
+      <Filter>ソース</Filter>
+    </ClCompile>
     <ClCompile Include="outline.cpp">
       <Filter>ソース</Filter>
     </ClCompile>
@@ -364,6 +367,9 @@
       <Filter>ヘッダ</Filter>
     </ClInclude>
     <ClInclude Include="abstractblock.h">
+      <Filter>ヘッダ</Filter>
+    </ClInclude>
+    <ClInclude Include="gemespeedUI.h" />
       <Filter>ヘッダ</Filter>
     </ClInclude>
     <ClInclude Include="outline.h">

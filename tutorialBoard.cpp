@@ -121,19 +121,27 @@ void CTutorialBoard::Update(void)
 					// チュートリアルを表示
 					SetUp("data\\TEXTURE\\tutorial_006.png", true);
 
-					m_nCount = 1;
+					m_nCount++;
 
 					break;
 
 				case 1:
 					// チュートリアルを表示
-					SetUp("data\\TEXTURE\\tutorial_007.png", false);
+					SetUp("data\\TEXTURE\\tutorial_007.png", true);
 
-					m_nCount = 2;
+					m_nCount++;
 
 					break;
 
 				case 2:
+					// チュートリアルを表示
+					SetUp("data\\TEXTURE\\tutorial_008.png", false);
+
+					m_nCount++;
+
+					break;
+
+				case 3:
 					// チュートリアルを表示
 					SetUp("data\\TEXTURE\\tutorial_005.png", false);
 

@@ -27,6 +27,7 @@
 #include "tutorialBoard.h"
 #include "particle3d.h"
 #include "effect3d.h"
+#include "gemespeedUI.h"
 
 // 規定値を設定
 // プレイヤー
@@ -44,6 +45,7 @@ CPauseManager* CGame::m_pPauseManager = NULL;
 CPlayerManager* CGame::m_pPlayerManager = NULL;
 CMapManager* CGame::m_pMapManager = NULL;
 CTutorialBoard* CGame::m_pTutorialBoard = NULL;
+CGameSpeedUI* CGame::m_pGameSpeedUI = NULL;
 CTimer* CGame::pTimer = NULL; // タイマー sato
 bool CGame::m_bGoal = false;
 
@@ -87,38 +89,13 @@ HRESULT CGame::Init(void)
 
 	m_pTutorialBoard = CTutorialBoard::Create();
 
-	// スタートオブジェクト
+	// 倍速UIの生成 Misaki
+	m_pGameSpeedUI = CGameSpeedUI::Create();	// スタートオブジェクト
 	m_pBlock = CBlock::Create("data\\Model\\mine_shaft.x", { 1800.0f,0.0f,-900.0f }, { 0.0f, -D3DX_PI * 0.5f,0.0f }, { 1.0f,1.0f,1.0f });
 
 	D3DXVECTOR2 screenSize{};
 	CManager::GetRenderer()->GetBackBufferSize(&screenSize);
 	pTimer = CTimer::Create(D3DXVECTOR3(screenSize.x * 0.1f, screenSize.y * 0.05f, 0.0f), 2, 0, TIME_LIMIT);
-
-	//// 火の情報を設定
-	//CParticle3D::DefoultEffectInfo FireInfo;
-	//FireInfo.Bece.Col = FIRE;
-	//FireInfo.Bece.fMaxSpeed = 1.0f;
-	//FireInfo.Bece.fMinSpeed = 1.0f;
-	//FireInfo.Bece.MaxDir = { 0.1f,0.5f,0.1f };
-	//FireInfo.Bece.MinDir = { -0.1f,0.5f,-0.1f };
-	//FireInfo.Bece.nLife = 1;
-	//FireInfo.Bece.nMaxLife = 30;
-	//FireInfo.Bece.nMinLife = 30;
-	//FireInfo.Bece.nNumEffect = 5;
-	//FireInfo.Bece.Pos = VEC3_NULL;
-	//FireInfo.MaxRadius = 15.0f;
-	//FireInfo.MinRadius = 15.0f;
-	//FireInfo.Bece.bLoop = true;
-	//FireInfo.Bece.nCoolDown = 2;
-	//FireInfo.Bece.Gravity = 0.0f;
-	//memcpy(FireInfo.Bece.FilePath, CEffect3D::Config::Smoke, sizeof(FireInfo.Bece.FilePath));
-	//FireInfo.Bece.nPriority = 1;
-
-	//// 生成
-	//CParticle3D::Create(FireInfo);
-
-	//// アイテムの生成処理 Misaki
-	//CItem::Create(CItem::ITEM_LEFT, D3DXVECTOR3(0.0f, 50.0f, 100.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(1.2f, 1.2f, 1.2f), "data\\Model\\item\\item000.x");
 
 #ifdef _DEBUG
 #else
@@ -165,6 +142,7 @@ void CGame::Update(void)
 {
 //#ifdef _DEBUG
 	int GameSpeed = CManager::GetGameSpeed();
+	bool bSpeedUP = m_pGameSpeedUI->GetSpeedUP();	// Misaki
 
 	if (CManager::GetInputKeyboard() != NULL)
 	{
@@ -175,15 +153,14 @@ void CGame::Update(void)
 				CFade::SetFade(new CResult);
 			}
 		}
-		//if (CManager::GetInputKeyboard()->GetTrigger(DIK_F3) == true && m_pTutorialBoard->GetProgress() == false)
-		//{
-		//	m_pTutorialBoard->SetUp("data\\TEXTURE\\tutorial_001.png", true);
-		//}
 		if (CManager::GetInputKeyboard()->GetTrigger(DIK_SPACE) ||
 			CManager::GetInputJoypad()->GetTrigger(CInputJoypad::JOYKEY_X) ||
 			CManager::GetInputJoypad()->GetTrigger(CInputJoypad::JOYKEY_Y) == true && m_pTutorialBoard->GetProgress() == false)
 		{
 			CManager::SetGameSpeed(Wrap(GameSpeed + 1, 1, 2));
+
+			// 倍速を切り替え Misaki
+			m_pGameSpeedUI->SetSpeed(bSpeedUP ? false : true);
 		}
 	}
 //#endif // DEBUG
@@ -204,13 +181,6 @@ void CGame::Update(void)
 	{
 		m_pTutorialBoard->Update();
 	}
-
-	//if (CManager::GetInputKeyboard()->GetTrigger(DIK_SPACE) == true)
-	//{
-	//	//CManager::GetSound()->Play(CSound::LABEL_ENTER);
-	//	m_bGoal = true;
-	//	CFade::SetFade(new CResult);
-	//}
 
 	if (pTimer->IsTimeOver())
 	{// タイムオーバー
