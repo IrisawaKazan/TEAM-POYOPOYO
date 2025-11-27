@@ -110,16 +110,18 @@ void CCamera::Update(void)
 	// ムービー中だったら
 	if (m_isMovie == true)
 	{
+		// ムービー再生
+		UpdateMotion();
+
 		// エンターですぐに飛ばす
 		if (CManager::GetInputKeyboard()->GetTrigger(DIK_RETURN) == true || CManager::GetInputMouse()->OnDown(1) ||
 			CManager::GetInputJoypad()->GetTrigger(CInputJoypad::JOYKEY_BACK) == true || CManager::GetInputJoypad()->GetTrigger(CInputJoypad::JOYKEY_A) == true)
 		{
 			// ムービー中のフラグをfalseにする
 			m_isMovie = false;
+			m_posR.y = 0.0f;
+			m_posV.y = 680.0f;
 		}
-
-		// ムービー再生
-		UpdateMotion();
 
 		// 処理を終わる
 		return;
