@@ -66,7 +66,7 @@ HRESULT CRanking::Init(void)
 	// 黒ポリゴン
 	D3DXVECTOR2 screenSize{};
 	CManager::GetRenderer()->GetBackBufferSize(&screenSize);
-	m_pBrackboard = CObject2D::Create(m_pos, VEC3_NULL, m_size * 0.5f);
+	m_pBrackboard = CObject2D::Create(m_pos, VEC3_NULL, m_size * 0.5f, 6);
 	m_pBrackboard->SetCol(BOARD_COLOR);
 
 	// サウンドの取得
@@ -75,6 +75,7 @@ HRESULT CRanking::Init(void)
 	// BGM
 	pSound->Play(CSound::LABEL_RANKING_BGM);
 
+	SetMove();
 	return S_OK;
 }
 
@@ -83,6 +84,14 @@ HRESULT CRanking::Init(void)
 //****************************************************************
 void CRanking::Uninit(void)
 {
+	for (auto& pRankNumber : m_pRankNumbers)
+	{// ランキング
+		if (pRankNumber != nullptr)
+		{
+			pRankNumber->Uninit();
+			pRankNumber = nullptr;
+		}
+	}
 	for (auto& pRanking : m_pRankings)
 	{// ランキング
 		if (pRanking != nullptr)
@@ -109,7 +118,19 @@ void CRanking::Uninit(void)
 //****************************************************************
 void CRanking::Update(void)
 {
-
+	for (const auto& order : MOVE_ORDER)
+	{
+		if (!m_isRankNoveEnds[order])
+		{// ムーブが終わっていない
+			D3DXVECTOR3 space = m_rankEndPos[order] - m_pRankings[order]->GetPos();
+			if (D3DXVec3Length(&space) < 0.001f)
+			{
+				m_isRankNoveEnds[order] = true;
+				break;
+			}
+			m_pRankings[order]->SetPos(space * 0.01f);
+		}
+	}
 }
 
 //****************************************************************
@@ -118,6 +139,23 @@ void CRanking::Update(void)
 void CRanking::Draw(void)
 {
 
+}
+
+//****************************************************************
+// ランキング整理
+//****************************************************************
+void CRanking::SetMove()
+{
+	size_t cnt{};
+	for (auto& pRanking : m_pRankings)
+	{// ランキング
+		if (pRanking != nullptr)
+		{
+			m_rankEndPos[cnt] = pRanking->GetPos();
+			pRanking->SetPos(m_rankEndPos[cnt] + D3DXVECTOR3(NUMBER_MOVE_START_OFFSET, 0.0f, 0.0f));
+		}
+		++cnt;
+	}
 }
 
 //****************************************************************

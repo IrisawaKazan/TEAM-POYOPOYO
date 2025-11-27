@@ -50,17 +50,11 @@ public:
 	int GetMinute() { return (m_number / 60) % 60; }
 	int GetSecond() { return m_number % 60; }
 
+	D3DXVECTOR3 GetPos() { return m_pos; }
 	D3DXVECTOR3 GetLeftPos();
 	D3DXVECTOR3 GetRightPos();
 	D3DXVECTOR3 GetTopPos();
 	D3DXVECTOR3 GetBottomPos();
-
-	//void SetPos(void);
-
-	//// ゲッター
-	//static bool GetEasing(void) { return m_bEasing; };
-
-	//void ColAnim(void);
 
 private:
 	static constexpr int COLON = 10;                     // コロン
@@ -77,15 +71,4 @@ private:
 	int m_number;                       // 数値
 	D3DXVECTOR2 m_texUVCount;           // テクスチャの分割数
 	D3DXVECTOR2 m_texUVSize;            // テクスチャ1ブロックのサイズ
-							            
-	//D3DXVECTOR3 m_Apper;                // 初期位置
-	//D3DXVECTOR3 m_Dest;	                // 目的値
-	//bool m_bChange;		                // カラー判定用
-	//int m_nColTime;		                // カラー用の計算
-	//int m_nIdx;			                // インデックス番号
-	//float m_fX;				            
-	//float m_fY;				            
-	//int m_MaxFrame;			            // フレームカウンター
-	//int m_nAnimCounter;		            // アニメーションカウンター
-	//static bool m_bEasing;	            //　イージングが終わっているかどうか
 };
