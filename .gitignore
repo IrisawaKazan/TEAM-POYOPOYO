@@ -434,3 +434,4 @@ vcpkg_installed/
 /yaml-cpp.dll
 /data/Goal.bin
 /data/Ranking.bin
+/data/DATA/Goal.bin
