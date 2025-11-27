@@ -93,8 +93,8 @@ HRESULT CResult::Init(void)
 //  XV
 void CResult::Update(void)
 {
-    if (CManager::GetInputKeyboard()->GetTrigger(DIK_RETURN) == true)
-    {
+if (CManager::GetInputKeyboard()->GetTrigger(DIK_RETURN) || CManager::GetInputJoypad()->GetTrigger(CInputJoypad::JOYKEY_A) || CManager::GetInputMouse()->OnDown(0) == true)
+   {
         //CManager::GetSound()->Play(CSound::LABEL_ENTER);
         CFade::SetFade(new CTitle);
     }

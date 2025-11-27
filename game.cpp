@@ -179,7 +179,9 @@ void CGame::Update(void)
 		{
 			m_pTutorialBoard->SetUp("data\\TEXTURE\\tutorial_001.png", true);
 		}
-		if (CManager::GetInputKeyboard()->GetTrigger(DIK_SPACE) == true && m_pTutorialBoard->GetProgress() == false)
+		if (CManager::GetInputKeyboard()->GetTrigger(DIK_SPACE) ||
+			CManager::GetInputJoypad()->GetTrigger(CInputJoypad::JOYKEY_X) ||
+			CManager::GetInputJoypad()->GetTrigger(CInputJoypad::JOYKEY_Y) == true && m_pTutorialBoard->GetProgress() == false)
 		{
 			CManager::SetGameSpeed(Wrap(GameSpeed + 1, 1, 2));
 		}
