@@ -1,0 +1,80 @@
+//****************************************************************
+//
+// アイテムの処理
+// Author:Takahashi Misaki
+//
+//****************************************************************
+
+#ifndef _ITEM_H_
+#define _ITEM_H_
+
+// インクルード
+#include "objectX.h"
+#include "shadow.h"
+
+// アイテムクラス
+class CItem : public CObjectX
+{
+public:
+
+	typedef enum
+	{
+		ITEM_NOEN = 0,	// なし
+		ITEM_LEFT,		// 左に進む指示
+		ITEM_JUMP,		// ジャンプする指示
+		ITEM_CLIMB,		// 壁を登る指示
+		ITEM_MAX,		// 上限
+	}ITEM;
+
+	// 定数
+	struct Config {
+		// アウトラインが点滅する速さ
+		static constexpr float OutLineSpeed = D3DX_PI / 60;
+	};
+
+	// コンストラクタ・デストラクタ
+	CItem(int nPriority = 3);
+	~CItem();
+
+	// メンバ関数
+	HRESULT Init(void);
+	void Update(void);
+	void Uninit(void);
+	void Draw(void);
+
+	// アイテムを入手状態の設定処理
+	void SetItemTake(const bool bTake) { m_bTake = bTake; }
+
+	// リジットボディ
+	btGhostObject* GetCollisionObject(void) { return m_GhostObject.get(); }
+
+	// 静的メンバ関数
+	static CItem* Create(const ITEM type,	// 種類
+		const D3DXVECTOR3 pos,				// 位置
+		const D3DXVECTOR3 rot,				// 向き
+		const D3DXVECTOR3 scale,			// 拡大率
+		const std::string FileName);		// モデルのファイル名
+
+private:
+
+	// メンバ変数
+	ITEM m_type;											// アイテムの種類
+	D3DXVECTOR3 m_size;										// サイズ
+	bool m_bTake;											// 入手したかどうか
+	static bool m_IsNextTutorial;							// 次のチュートリアルがあるかどうか
+	D3DXVECTOR3 m_RBOffset;									// オフセット
+	std::unique_ptr<btCollisionShape> m_CollisionShape;		// 当たり判定の形状
+	std::unique_ptr<btGhostObject> m_GhostObject;			// ゴーストオブジェクト
+	CShadow* m_pShadow;										// 影
+<<<<<<< HEAD
+	float m_fAngle;											// 向き
+	int m_nCount;											// カウント
+	int m_test;												// 
+	bool m_bTutorial;										// 特別な指示を出すか
+
+=======
+	int m_nCntOutline;										// アウトライン用のカウンタ
+>>>>>>> 71b7a056b598ea57c6dbc0a12200455e713e46ca
+};
+
+#endif

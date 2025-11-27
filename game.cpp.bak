@@ -45,8 +45,11 @@ CPauseManager* CGame::m_pPauseManager = NULL;
 CPlayerManager* CGame::m_pPlayerManager = NULL;
 CMapManager* CGame::m_pMapManager = NULL;
 CTutorialBoard* CGame::m_pTutorialBoard = NULL;
+<<<<<<< HEAD
 CGameSpeedUI* CGame::m_pGameSpeedUI = NULL;
+=======
 CTimer* CGame::pTimer = NULL; // タイマー sato
+>>>>>>> 71b7a056b598ea57c6dbc0a12200455e713e46ca
 bool CGame::m_bGoal = false;
 
 using namespace std;
@@ -87,12 +90,10 @@ HRESULT CGame::Init(void)
 	CManager::GetCamera()->Init();
 	CManager::GetCamera()->SetMovie(CCamera::MOTIONTYPE_STARTMOVIE);
 
-	// ナビゲーションのセット
-	CNavi::GetInstance()->set();
-
 	// チュートリアルの生成
 	m_pTutorialBoard = CTutorialBoard::Create();
 
+<<<<<<< HEAD
 	// 倍速UIの生成 Misaki
 	m_pGameSpeedUI = CGameSpeedUI::Create();
 
@@ -101,14 +102,13 @@ HRESULT CGame::Init(void)
 	CObject3D::Create(D3DXVECTOR3(-2000.0f,1000.0f,0.0f), D3DXVECTOR3((-D3DX_PI * 0.5f), (-D3DX_PI * 0.5f), 0.0f),"data\\TEXTURE\\wall.jpg",D3DXVECTOR2(1000.0f, 1000.0f));
 	CObject3D::Create(D3DXVECTOR3(2000.0f,1000.0f,0.0f), D3DXVECTOR3((-D3DX_PI * 0.5f), (D3DX_PI * 0.5f), 0.0f), "data\\TEXTURE\\wall.jpg", D3DXVECTOR2(1000.0f, 1000.0f));
 
+=======
+>>>>>>> 71b7a056b598ea57c6dbc0a12200455e713e46ca
 	// スタートオブジェクト
 	m_pBlock = CBlock::Create("data\\Model\\mine_shaft.x", { 1800.0f,0.0f,-900.0f }, { 0.0f, -D3DX_PI * 0.5f,0.0f }, { 1.0f,1.0f,1.0f });
 
 	D3DXVECTOR2 screenSize{};
 	CManager::GetRenderer()->GetBackBufferSize(&screenSize);
-	CNaviUI::Create("data/TEXTURE/UI/Frame001.png", NAVI_UI_TEXTURES, NAVI_UI_ARROW_TEXTURES, NAVI_UI_KEY_TEXTURES, D3DXVECTOR3(screenSize.x * 0.175f, screenSize.y * 0.82f, 0.0f), D3DXVECTOR2(screenSize.x * 0.1f, screenSize.x * 0.1f));
-
-	//CTimer::Instance()->SetPosition(D3DXVECTOR3(640.0f, 360.0f, 0.0f));
 	pTimer = CTimer::Create(D3DXVECTOR3(screenSize.x * 0.1f, screenSize.y * 0.05f, 0.0f), 2, 0, TIME_LIMIT);
 
 	//// 火の情報を設定
