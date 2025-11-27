@@ -87,9 +87,6 @@ HRESULT CGame::Init(void)
 	CManager::GetCamera()->Init();
 	CManager::GetCamera()->SetMovie(CCamera::MOTIONTYPE_STARTMOVIE);
 
-	// ナビゲーションのセット
-	CNavi::GetInstance()->set();
-
 	// チュートリアルの生成
 	m_pTutorialBoard = CTutorialBoard::Create();
 
@@ -101,7 +98,6 @@ HRESULT CGame::Init(void)
 
 	D3DXVECTOR2 screenSize{};
 	CManager::GetRenderer()->GetBackBufferSize(&screenSize);
-	CNaviUI::Create("data/TEXTURE/UI/Frame001.png", NAVI_UI_TEXTURES, NAVI_UI_ARROW_TEXTURES, NAVI_UI_KEY_TEXTURES, D3DXVECTOR3(screenSize.x * 0.175f, screenSize.y * 0.82f, 0.0f), D3DXVECTOR2(screenSize.x * 0.1f, screenSize.x * 0.1f));
 
 	pTimer = CTimer::Create(D3DXVECTOR3(screenSize.x * 0.1f, screenSize.y * 0.05f, 0.0f), 2, 0, TIME_LIMIT);
 

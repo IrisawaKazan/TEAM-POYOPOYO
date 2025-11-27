@@ -29,8 +29,6 @@ CItem::CItem(int nPriority) :CObjectX(nPriority)
 	m_fAngle = 0.0f;								// 向き
 	m_nCount = 0;									// 取った時のカウント
 	m_test = 0;										// 
-	m_bTutorial = true;								// 特別な指示を出すか
-
 }
 
 //***************************************
@@ -220,26 +218,26 @@ void CItem::Update(void)
 			case ITEM_JUMP:
 
 				// チュートリアル表示
-				CGame::GetTutorialBoard()->SetUp("data\\TEXTURE\\tutorial_002.png", m_bTutorial);
+				CGame::GetTutorialBoard()->SetUp("data\\TEXTURE\\tutorial_002.png", m_IsNextTutorial);
 
 				// アイテムの有効化
 				CNavi::GetInstance()->SetEnable(CNavi::TYPE::Jump, true);
 
 				// チュートリアルを見ない状態にする
-				m_bTutorial = false;
+				m_IsNextTutorial = false;
 
 				break;
 
 			case ITEM_CLIMB:
 
 				// チュートリアル表示
-				CGame::GetTutorialBoard()->SetUp("data\\TEXTURE\\tutorial_004.png", m_bTutorial);
+				CGame::GetTutorialBoard()->SetUp("data\\TEXTURE\\tutorial_004.png", m_IsNextTutorial);
 
 				// アイテムの有効化
 				CNavi::GetInstance()->SetEnable(CNavi::TYPE::Climb, true);
 
 				// チュートリアルを見ない状態にする
-				m_bTutorial = false;
+				m_IsNextTutorial = false;
 
 				break;
 
