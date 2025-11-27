@@ -46,6 +46,7 @@ CPlayerManager* CGame::m_pPlayerManager = NULL;
 CMapManager* CGame::m_pMapManager = NULL;
 CTutorialBoard* CGame::m_pTutorialBoard = NULL;
 CGameSpeedUI* CGame::m_pGameSpeedUI = NULL;
+CTimer* CGame::pTimer = NULL; // タイマー sato
 bool CGame::m_bGoal = false;
 
 using namespace std;
@@ -84,6 +85,7 @@ HRESULT CGame::Init(void)
 
 	// カメラの初期化
 	CManager::GetCamera()->Init();
+	CManager::GetCamera()->SetMovie(CCamera::MOTIONTYPE_STARTMOVIE);
 
 	// ナビゲーションのセット
 	CNavi::GetInstance()->set();
@@ -108,6 +110,7 @@ HRESULT CGame::Init(void)
 
 	//CTimer::Instance()->SetPosition(D3DXVECTOR3(640.0f, 360.0f, 0.0f));
 	CTimer::Create(D3DXVECTOR3(640.0f,360.0f,0.0f));
+	pTimer = CTimer::Create(D3DXVECTOR3(screenSize.x * 0.1f, screenSize.y * 0.05f, 0.0f), 2, 0, TIME_LIMIT);
 
 	//// 火の情報を設定
 	//CParticle3D::DefoultEffectInfo FireInfo;
@@ -191,11 +194,13 @@ void CGame::Update(void)
 				CFade::SetFade(new CResult);
 			}
 		}
-		if (CManager::GetInputKeyboard()->GetTrigger(DIK_F3) == true && m_pTutorialBoard->GetProgress() == false)
-		{
-			m_pTutorialBoard->SetUp("data\\TEXTURE\\tutorial_001.png", true);
-		}
-		if (CManager::GetInputKeyboard()->GetTrigger(DIK_SPACE) == true && m_pTutorialBoard->GetProgress() == false)
+		//if (CManager::GetInputKeyboard()->GetTrigger(DIK_F3) == true && m_pTutorialBoard->GetProgress() == false)
+		//{
+		//	m_pTutorialBoard->SetUp("data\\TEXTURE\\tutorial_001.png", true);
+		//}
+		if (CManager::GetInputKeyboard()->GetTrigger(DIK_SPACE) ||
+			CManager::GetInputJoypad()->GetTrigger(CInputJoypad::JOYKEY_X) ||
+			CManager::GetInputJoypad()->GetTrigger(CInputJoypad::JOYKEY_Y) == true && m_pTutorialBoard->GetProgress() == false)
 		{
 			CManager::SetGameSpeed(Wrap(GameSpeed + 1, 1, 2));
 
@@ -228,6 +233,11 @@ void CGame::Update(void)
 	//	m_bGoal = true;
 	//	CFade::SetFade(new CResult);
 	//}
+
+	if (pTimer->IsTimeOver())
+	{// タイムオーバー
+		CFade::SetFade(new CResult);
+	}
 
 	// レイキャストオブジェクトに登録 sato
 	CModelManager* pModelManager = CModelManager::Instance();
@@ -284,4 +294,17 @@ void CGame::Draw(void)
 //***************************************
 void CGame::ResetPlayer(void)
 {
+}
+
+//***************************************
+// Naviたちを設定
+//***************************************
+void CGame::SetNavis(void)
+{
+	// Navi生成
+	CNavi::GetInstance()->set();
+
+	D3DXVECTOR2 screenSize{};
+	CManager::GetRenderer()->GetBackBufferSize(&screenSize);
+	CNaviUI::Create("data/TEXTURE/UI/Frame001.png", NAVI_UI_TEXTURES, NAVI_UI_ARROW_TEXTURES, NAVI_UI_KEY_TEXTURES, D3DXVECTOR3(screenSize.x * 0.175f, screenSize.y * 0.82f, 0.0f), D3DXVECTOR2(screenSize.x * 0.1f, screenSize.x * 0.1f));
 }

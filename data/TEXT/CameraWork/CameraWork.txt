@@ -1,0 +1,40 @@
+#**********************#
+#   ÉJÉÅÉâÉèÅ[ÉNèÓïÒ   #
+#       âHíπåíçÏ       #
+#**********************#
+
+SET_CAMERAWORK
+	LOOP = 0
+	NUMKEY = 5
+	
+	SET_KEY
+		POSV = 1800.0 680.00 1336.0
+		POSR = 1800.0 0.0 0.0
+		FRAME = 100
+	END_KEY
+	
+	SET_KEY
+		POSV = -1500.0 300.00 500.0
+		POSR = -1500.0 0.0 -500.0
+		FRAME = 100
+	END_KEY
+	
+	SET_KEY
+		POSV = -1500.0 300.00 -800.0
+		POSR = -2000.0 0.0 -800.0
+		FRAME = 100
+	END_KEY
+	
+	SET_KEY
+		POSV = -1500.0 300.00 -800.0
+		POSR = -2000.0 0.0 -800.0
+		FRAME = 100
+	END_KEY
+	
+	SET_KEY
+		POSV = 1800.0 680.00 1336.0
+		POSR = 1800.0 0.0 0.0
+		FRAME = 100
+	END_KEY
+	
+END_CAMERAWORK

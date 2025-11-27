@@ -26,6 +26,12 @@ public:
 		ITEM_MAX,		// 上限
 	}ITEM;
 
+	// 定数
+	struct Config {
+		// アウトラインが点滅する速さ
+		static constexpr float OutLineSpeed = D3DX_PI / 60;
+	};
+
 	// コンストラクタ・デストラクタ
 	CItem(int nPriority = 3);
 	~CItem();
@@ -55,6 +61,7 @@ private:
 	ITEM m_type;											// アイテムの種類
 	D3DXVECTOR3 m_size;										// サイズ
 	bool m_bTake;											// 入手したかどうか
+	static bool m_IsNextTutorial;							// 次のチュートリアルがあるかどうか
 	D3DXVECTOR3 m_RBOffset;									// オフセット
 	std::unique_ptr<btCollisionShape> m_CollisionShape;		// 当たり判定の形状
 	std::unique_ptr<btGhostObject> m_GhostObject;			// ゴーストオブジェクト
@@ -63,7 +70,7 @@ private:
 	int m_nCount;											// カウント
 	int m_test;												// 
 	bool m_bTutorial;										// 特別な指示を出すか
-
+	int m_nCntOutline;										// アウトライン用のカウンタ
 };
 
 #endif

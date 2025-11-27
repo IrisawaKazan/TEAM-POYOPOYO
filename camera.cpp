@@ -12,6 +12,9 @@
 #include "math_T.h"
 #include "game.h"
 #include "tutorialBoard.h"
+#include "navi.h"
+#include "naviUi.h"
+#include "timer.h"
 
 // 名前空間
 using namespace std;
@@ -48,8 +51,8 @@ CCamera::CCamera()
 	// モード初期値 sato Add
 	m_mode = MODE::NORMAL;
 
-	//// 読み込み
-	//LoadMotion("data\\TEXT\\CameraWork\\CameraWork.txt");
+	// 読み込み
+	LoadMotion("data\\TEXT\\CameraWork\\CameraWork.txt");
 }
 
 //***************************************
@@ -77,6 +80,10 @@ HRESULT CCamera::Init(void)
 
 	// ベルトスクロールモード
 	m_mode = Config::startMode;
+
+	// Movie系を設定
+	m_isMovie = false;
+	m_bFinishMotion = true;
 
 	switch (m_mode)
 	{
@@ -108,17 +115,16 @@ void CCamera::Update(void)
 	// ムービー中だったら
 	if (m_isMovie == true)
 	{
+		// ムービー再生
+		UpdateMotion();
+
 		// エンターですぐに飛ばす
 		if (CManager::GetInputKeyboard()->GetTrigger(DIK_RETURN) == true || CManager::GetInputMouse()->OnDown(1) ||
 			CManager::GetInputJoypad()->GetTrigger(CInputJoypad::JOYKEY_BACK) == true || CManager::GetInputJoypad()->GetTrigger(CInputJoypad::JOYKEY_A) == true)
 		{
 			// ムービー中のフラグをfalseにする
-			m_isMovie = false;
+			m_bFinishMotion = true;
 		}
-
-		// ムービー再生
-		UpdateMotion();
-
 		// 処理を終わる
 		return;
 	}
@@ -393,9 +399,9 @@ void CCamera::UpdateJoyPadMoveParallel(void)
 	// コントローラーの入力を取得
 	XINPUT_STATE* pState;
 	pState = m_pInputJoypad->GetJoyStickAngle();
-	bool Front = m_pInputJoypad->GetPress(CInputJoypad::JOYKEY_UP) || (m_pInputJoypad->GetJoyStickL() && pState->Gamepad.sThumbLY < 0);
+	bool Front = m_pInputJoypad->GetPress(CInputJoypad::JOYKEY_DOWN) || (m_pInputJoypad->GetJoyStickL() && pState->Gamepad.sThumbLY < 0);
 	bool Left = m_pInputJoypad->GetPress(CInputJoypad::JOYKEY_LEFT) || (m_pInputJoypad->GetJoyStickL() && pState->Gamepad.sThumbLX < 0);
-	bool Back = m_pInputJoypad->GetPress(CInputJoypad::JOYKEY_DOWN) || (m_pInputJoypad->GetJoyStickL() && pState->Gamepad.sThumbLY > 0);
+	bool Back = m_pInputJoypad->GetPress(CInputJoypad::JOYKEY_UP) || (m_pInputJoypad->GetJoyStickL() && pState->Gamepad.sThumbLY > 0);
 	bool Right = m_pInputJoypad->GetPress(CInputJoypad::JOYKEY_RIGET) || (m_pInputJoypad->GetJoyStickL() && pState->Gamepad.sThumbLX > 0);
 
 	// 左右に動かす
@@ -831,5 +837,10 @@ void CCamera::UpdateMotion(void)
 	{
 		// ムービーフラグを切り替える
 		m_isMovie = false;
+		// ベルトスクロールの初期位置に設定
+		SetBelt();
+		// Naviを設定
+		CGame::SetNavis();
+		CGame::GetTimer()->SetCount(CTimer::COUNT::Up); // カウントアップ
 	}
 }

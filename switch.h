@@ -19,6 +19,7 @@ public:
 		static constexpr float Depth = -8.5f;		// どれだけ沈むか(位置)
 		static constexpr float PressSpeed = 0.05f;	// 押される速度
 		static constexpr float ReturnSpeed = 0.1f;	// 戻る速度
+		static constexpr float OutLineSpeed = D3DX_PI / 60;
 		static constexpr int ReturnCoolWodn = 120;	// 戻り始めるまでのクールダウン
 	};
 
@@ -43,6 +44,7 @@ public:
 	static CSwitch* Create(std::string sName, D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 Scale = { 1.0f,1.0f,1.0f });
 private:
 	int m_ReturnCounter;	// 戻るまでのカウンタ
+	int m_nCount;			// アウトライン用のカウンタ
 	bool m_IsFinishOld;		// 前フレームで押し切られているかどうか
 	bool m_IsFinish;		// 押し切ったかどうか
 	bool m_IsPressed;		// 押されているかどうか
@@ -57,6 +59,7 @@ public:
 		static constexpr float Limit = 100.0f;		// どれだけ沈むか(位置)
 		static constexpr float UpSpeed = 0.5f; // 押される速度
 		static constexpr float DownSpeed = 0.1f;// 戻る速度
+		static constexpr float OutLineSpeed = D3DX_PI / 60;
 	};
 
 	// コンストラクタ・デストラクタ
@@ -79,6 +82,7 @@ public:
 	// 生成
 	static CDoor* Create(std::string sName, D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 Scale = { 1.0f,1.0f,1.0f });
 private:
+	int m_nCount;			// アウトライン用のカウンタ
 	bool m_IsFunc;			// 起動中かどうか
 	D3DXVECTOR3 m_ApperPos;	// 初期位置
 };

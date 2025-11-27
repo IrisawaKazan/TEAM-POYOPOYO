@@ -62,12 +62,16 @@ public:
 	// 静的メンバ関数
 	// セッター
 	static void ResetPlayer(void);
+	static void SetNavis(void);
 
 	// ゲッター
 	static CTutorialBoard* GetTutorialBoard(void) { return m_pTutorialBoard; }
-	static CPlayerManager* GetPlayerManager(void) { return m_pPlayerManager; }; // sato Add
-	static bool GetGoal(void) { return m_bGoal; };
+	static CPlayerManager* GetPlayerManager(void) { return m_pPlayerManager; } // sato Add
+	static CTimer* GetTimer(void) { return pTimer; }                           // sato Add
+	static bool GetGoal(void) { return m_bGoal; }
 private:
+	static constexpr int TIME_LIMIT = 60 * 4; // 制限時間 (秒)
+
 	// ナビゲーションオブジェクトUIのテクスチャリスト
 	static constexpr std::array<const char*, 4u> NAVI_UI_TEXTURES =
 	{
@@ -95,6 +99,7 @@ private:
 	static CPauseManager* m_pPauseManager;		// ポーズマネージャーへのポインタ
 	static CPlayerManager* m_pPlayerManager;	// プレイヤーマネージャー
 	static CMapManager* m_pMapManager;			// マップマネージャー
+	static CTimer* pTimer; 						// タイマー
 
 	static CTutorialBoard* m_pTutorialBoard;	// チュートリアルのポインタ
 	static CGameSpeedUI* m_pGameSpeedUI;		// 倍速のポインタ Misaki

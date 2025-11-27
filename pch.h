@@ -62,6 +62,8 @@
 // Å‘å’l
 #define MAX_WORD (4096)
 
+#define FPS (60)
+
 // Œ^‚Ì‰Šú’l
 #define VEC3_NULL D3DXVECTOR3(0.0f,0.0f,0.0f)
 #define VEC_UP D3DXVECTOR3(0.0f,1.0f,0.0f)

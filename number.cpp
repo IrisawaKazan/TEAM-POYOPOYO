@@ -7,126 +7,151 @@
 #include "number.h"
 #include "manager.h"
 #include "texturemanager.h"
-#include "math_T.h"
+#include "object2D.h"
 
-//****************************************************************
-// 静的メンバ変数
-//****************************************************************
-bool CNumber::m_bEasing = NULL;
-
-//****************************************************************
-// コンストラクタ
-//****************************************************************
-CNumber::CNumber()
-{
-	m_pVtxBuff = NULL;
-	m_nIdx = NULL;
-	m_nColTime = NULL;
-	m_bChange = false;
-	m_Type = TYPE_NONE;
-	m_nAnimCounter = NULL;
-	m_MaxFrame = NULL;
-
-	for (int nCnt = 0; nCnt < 2; nCnt++)
-	{
-		m_pos[nCnt] = VEC3_NULL;
-		m_fX[nCnt] = NULL;
-		m_fY[nCnt] = NULL;
-	}
-
-}
-
-//****************************************************************
-// デストラクタ
-//****************************************************************
-CNumber::~CNumber()
-{
-
-}
+////****************************************************************
+//// 静的メンバ変数
+////****************************************************************
+//bool CNumber::m_bEasing = NULL;
 
 //****************************************************************
 // 生成
 //****************************************************************
-CNumber* CNumber::Create()
+CNumber* CNumber::Create(size_t digits, TYPE type, const char* texturePath, D3DXVECTOR2 texUVCount, D3DXVECTOR3 pos, D3DXVECTOR2 size, int nNumber, int priority)
 {
-	return NULL;
+	// インスタンスの生成
+	CNumber* pNumber = new CNumber(digits, priority); // 表示桁数
+	if (pNumber == nullptr)
+	{
+		return nullptr;
+	}
+
+	pNumber->SetType(type);               // タイプ
+	pNumber->SetTexturePath(texturePath); // テクスチャ
+	pNumber->SetPos(pos);                 // 位置
+	pNumber->SetSize(size);               // 大きさ(1つ分)
+	pNumber->SetNumber(nNumber);          // 数値
+	pNumber->SetTexUVCount(texUVCount);   // テクスチャ分割
+
+	// 初期化
+	if (FAILED(pNumber->Init()))
+	{
+		delete pNumber;
+		return nullptr;
+	}
+	return pNumber;
 }
 
 //****************************************************************
 // 初期化
 //****************************************************************
-HRESULT CNumber::Init(float fX1, float fX2, float fY1, float fY2, int nCnt, int nCnt2, float fNum1, float fNum2, float fNum3, int nNum, int nAdd, const char* FileName, float fx,TYPE type)
+HRESULT CNumber::Init()
 {
-	m_nIdx = CTextureManager::Instance()->Register(FileName);
-	m_nColTime = 0;
-	m_MaxFrame = 30;
-	m_nAnimCounter = NULL;
-	m_Type = type;
-	m_bEasing = false;
-
-	m_fX[0] = fX1 + nCnt * fNum1;
-	m_fX[1] = fX2 + nCnt * fNum1 + fNum2;
-
-	m_fY[0] = fY1 + nCnt2 * fNum3;
-	m_fY[1] = fY2 + nCnt2 * fNum3;
-
-	D3DXVECTOR2 screenSize{};
-	CManager::GetRenderer()->GetBackBufferSize(&screenSize);
-	m_Dest = { m_fX[0] * 1.0f,screenSize.y * 0.5f,0.0f };	    // 目標位置
-	m_Apper[0] = { m_fX[0] * 8.425f,screenSize.y * 0.5f,0.0f };	// 初期位置
-	m_Apper[1] = { m_fX[1] * 8.425f,screenSize.y * 0.5f,0.0f };	// 初期位置
-
-	if (m_Type != TYPE_NONE)
+	switch (m_type)
 	{
-		fX1 = 1280.0f;
-		fX2 = 1280.0f;
-		fY1 = 360.0f;
-		fY2 = 360.0f;
+		// 通常(スコアなど)
+	case CNumber::TYPE::Normal:
+	{
+		float allWidth = m_size.x * float(m_digits);
+		D3DXVECTOR3 leftPos = D3DXVECTOR3(m_pos.x - allWidth * 0.5f + m_size.x * 0.5f, m_pos.y, 0.0f);
+		for (size_t cnt = 0; cnt < m_digits; ++cnt, leftPos.x += m_size.x)
+		{
+			m_pObjects.push_back(CObject2D::Create(leftPos, VEC3_NULL, m_size));
+		}
+		size_t idx{ m_digits - 1 };
+		for (auto& pObject : m_pObjects)
+		{
+			pObject->SetAlphaTest(true);
+			pObject->SetTexIndx(CTextureManager::Instance()->Register(m_texturePath));
+			pObject->SetUv(D3DXVECTOR2((float)GetDigit(idx), 0), m_texUVSize.x, m_texUVSize.y);
+			--idx;
+		}
+		break;
+	}
+	// 時間表示
+	case CNumber::TYPE::Time:
+	{
+		float digits = float(m_digits * 3 - 1);
+		float allWidth = m_size.x * digits;
+		D3DXVECTOR3 leftPos = D3DXVECTOR3(m_pos.x - allWidth * 0.5f + m_size.x * 0.5f, m_pos.y, 0.0f);
+		for (size_t cnt = 0; cnt < digits; ++cnt, leftPos.x += m_size.x)
+		{
+			m_pObjects.push_back(CObject2D::Create(leftPos, VEC3_NULL, m_size * 0.5f));
+		}
+
+		size_t idx{};
+		bool isOK{};  // それ以降は実行
+		if (m_digits >= 3)
+		{
+			for (size_t cnt = 0; cnt < 2; ++cnt, ++idx)
+			{// 時間
+				m_pObjects[idx]->SetAlphaTest(true);
+				m_pObjects[idx]->SetTexIndx(CTextureManager::Instance()->Register(m_texturePath));
+				m_pObjects[idx]->SetUv(D3DXVECTOR2((float)GetDigit(GetHour(), 1 - cnt), 0), m_texUVSize.x, m_texUVSize.y);
+			}
+
+			// コロン
+			m_pObjects[idx]->SetAlphaTest(true);
+			m_pObjects[idx]->SetTexIndx(CTextureManager::Instance()->Register(m_texturePath));
+			m_pObjects[idx]->SetUv(D3DXVECTOR2(COLON, 0), m_texUVSize.x, m_texUVSize.y);
+			++idx;
+			isOK = true;
+		}
+		if (isOK || m_digits == 2)
+		{
+			for (size_t cnt = 0; cnt < 2; ++cnt, ++idx)
+			{// 分
+				m_pObjects[idx]->SetAlphaTest(true);
+				m_pObjects[idx]->SetTexIndx(CTextureManager::Instance()->Register(m_texturePath));
+				m_pObjects[idx]->SetUv(D3DXVECTOR2((float)GetDigit(GetMinute(), 1 - cnt), 0), m_texUVSize.x, m_texUVSize.y);
+			}
+
+			// コロン
+			m_pObjects[idx]->SetAlphaTest(true);
+			m_pObjects[idx]->SetTexIndx(CTextureManager::Instance()->Register(m_texturePath));
+			m_pObjects[idx]->SetUv(D3DXVECTOR2(COLON, 0), m_texUVSize.x, m_texUVSize.y);
+			++idx;
+			isOK = true;
+		}
+		if (isOK || m_digits <= 1)
+		{
+			for (size_t cnt = 0; cnt < 2; ++cnt, ++idx)
+			{// 秒
+				m_pObjects[idx]->SetAlphaTest(true);
+				m_pObjects[idx]->SetTexIndx(CTextureManager::Instance()->Register(m_texturePath));
+				m_pObjects[idx]->SetUv(D3DXVECTOR2((float)GetDigit(GetSecond(), 1 - cnt), 0), m_texUVSize.x, m_texUVSize.y);
+			}
+		}
+		break;
+	}
 	}
 
-	//デバイス取得
-	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();
+	//m_nIdx = CTextureManager::Instance()->Register(FileName);
+	//m_nColTime = 0;
+	//m_MaxFrame = 30;
+	//m_nAnimCounter = NULL;
+	//m_Type = type;
+	//m_bEasing = false;
 
-	// 頂点バッファの生成
-	pDevice->CreateVertexBuffer(sizeof(VERTEX_2D) * 4 * nNum,
-		D3DUSAGE_WRITEONLY,
-		FVF_VERTEX_2D,
-		D3DPOOL_MANAGED,
-		&m_pVtxBuff, NULL);
+	//m_fX[0] = fX1 + nCnt * fNum1;
+	//m_fX[1] = fX2 + nCnt * fNum1 + fNum2;
 
-	VERTEX_2D* pVtx;
+	//m_fY[0] = fY1 + nCnt2 * fNum3;
+	//m_fY[1] = fY2 + nCnt2 * fNum3;
 
-	// ロック
-	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
-	
-	// 頂点座標の設定
-	pVtx[0].pos = D3DXVECTOR3(fX1 + nCnt * fNum1, fY1 + nCnt2 * fNum3, 0.0f);
-	pVtx[1].pos = D3DXVECTOR3(fX2 + nCnt * fNum1 + fNum2, fY1 + nCnt2 * fNum3, 0.0f);
-	pVtx[2].pos = D3DXVECTOR3(fX1 + nCnt * fNum1, fY2 + nCnt2 * fNum3, 0.0f);
-	pVtx[3].pos = D3DXVECTOR3(fX2 + nCnt * fNum1 + fNum2, fY2 + nCnt2 * fNum3, 0.0f);
+	//D3DXVECTOR2 screenSize{};
+	//CManager::GetRenderer()->GetBackBufferSize(&screenSize);
+	//m_Dest = { m_fX[0] * 1.0f,screenSize.y * 0.5f,0.0f };	    // 目標位置
+	//m_Apper[0] = { m_fX[0] * 8.425f,screenSize.y * 0.5f,0.0f };	// 初期位置
+	//m_Apper[1] = { m_fX[1] * 8.425f,screenSize.y * 0.5f,0.0f };	// 初期位置
 
-	// rhwの設定
-	pVtx[0].rhw = 1.0f;
-	pVtx[1].rhw = 1.0f;
-	pVtx[2].rhw = 1.0f;
-	pVtx[3].rhw = 1.0f;
-
-	// 頂点カラー
-	pVtx[0].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-	pVtx[1].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-	pVtx[2].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-	pVtx[3].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-
-	// テクスチャ座標の設定
-	pVtx[0].tex = D3DXVECTOR2(0.0f, 0.0f);
-	pVtx[1].tex = D3DXVECTOR2(fx, 0.0f);
-	pVtx[2].tex = D3DXVECTOR2(0.0f, 1.0f);
-	pVtx[3].tex = D3DXVECTOR2(fx, 1.0f);
-
-	pVtx += nAdd;
-
-	// アンロック
-	m_pVtxBuff->Unlock();
+	//if (m_Type != TYPE_NONE)
+	//{
+	//	fX1 = 1280.0f;
+	//	fX2 = 1280.0f;
+	//	fY1 = 360.0f;
+	//	fY2 = 360.0f;
+	//}
 
 	return S_OK;
 }
@@ -136,12 +161,18 @@ HRESULT CNumber::Init(float fX1, float fX2, float fY1, float fY2, int nCnt, int 
 //****************************************************************
 void CNumber::Uninit(void)
 {
-	// バッファの破棄
-	if (m_pVtxBuff != NULL)
+	// 数字オブジェクトの破棄
+	for (auto& pObject : m_pObjects)
 	{
-		m_pVtxBuff->Release();
-		m_pVtxBuff = NULL;
+		if (pObject != nullptr)
+		{
+			pObject->Uninit();
+			pObject = nullptr;
+		}
 	}
+	m_pObjects.clear();
+	m_pObjects.shrink_to_fit();
+	Release();
 }
 
 //****************************************************************
@@ -149,24 +180,63 @@ void CNumber::Uninit(void)
 //****************************************************************
 void CNumber::Update(void)
 {
-	if (m_nAnimCounter < m_MaxFrame)
+	switch (m_type)
 	{
-		// カウントを進める
-		m_nAnimCounter++;
-
-		D3DXVECTOR3 Diff = m_Dest - m_Apper[0];
-		D3DXVECTOR3 Diff1 = m_Dest - m_Apper[1];
-
-		float fEasing = EaseOutSine((float)m_nAnimCounter / (float)m_MaxFrame);
-
-		// 初期位置に加算する
-		m_pos[0] = m_Apper[0] + (Diff * fEasing);
-		m_pos[1] = m_Apper[1] + (Diff1 * fEasing);
-		SetPos();
+	// 通常(スコアなど)
+	case CNumber::TYPE::Normal:
+	{
+		float allWidth = m_size.x * float(m_digits);
+		D3DXVECTOR3 leftPos = D3DXVECTOR3(m_pos.x - allWidth * 0.5f + m_size.x * 0.5f, m_pos.y, 0.0f);
+		size_t idx{ m_digits - 1 };
+		for (auto& pObject : m_pObjects)
+		{
+			pObject->SetPosition(leftPos);
+			pObject->SetUv(D3DXVECTOR2((float)GetDigit(idx), 0), m_texUVSize.x, m_texUVSize.y);
+			leftPos.x += m_size.x;
+			--idx;
+		}
+		break;
 	}
-	else
+	// 時間用
+	case CNumber::TYPE::Time:
 	{
-		m_bEasing = true;
+		float digits = float(m_digits * 3 - 1);
+		float allWidth = m_size.x * digits;
+		D3DXVECTOR3 leftPos = D3DXVECTOR3(m_pos.x - allWidth * 0.5f + m_size.x * 0.5f, m_pos.y, 0.0f);
+		for (auto& pObject : m_pObjects)
+		{
+			pObject->SetPosition(leftPos);
+			leftPos.x += m_size.x;
+		}
+		size_t idx{};
+		bool isOK{};  // それ以降は実行
+		if (m_digits >= 3)
+		{
+			for (size_t cnt = 0; cnt < 2; ++cnt, ++idx)
+			{// 時間
+				m_pObjects[idx]->SetUv(D3DXVECTOR2((float)GetDigit(GetHour(), 1 - cnt), 0), m_texUVSize.x, m_texUVSize.y);
+			}
+			++idx;
+			isOK = true;
+		}
+		if (isOK || m_digits == 2)
+		{
+			for (size_t cnt = 0; cnt < 2; ++cnt, ++idx)
+			{// 分
+				m_pObjects[idx]->SetUv(D3DXVECTOR2((float)GetDigit(GetMinute(), 1 - cnt), 0), m_texUVSize.x, m_texUVSize.y);
+			}
+			++idx;
+			isOK = true;
+		}
+		if (isOK || m_digits <= 1)
+		{
+			for (size_t cnt = 0; cnt < 2; ++cnt, ++idx)
+			{// 秒
+				m_pObjects[idx]->SetUv(D3DXVECTOR2((float)GetDigit(GetSecond(), 1 - cnt), 0), m_texUVSize.x, m_texUVSize.y);
+			}
+		}
+		break;
+	}
 	}
 }
 
@@ -176,124 +246,108 @@ void CNumber::Update(void)
 void CNumber::Draw(void)
 {
 
-	//デバイス取得
-	LPDIRECT3DDEVICE9 pD3DDevice = CManager::GetRenderer()->GetDevice();
-
-	// 頂点バッファをデータストリームに設定
-	pD3DDevice->SetStreamSource(0, m_pVtxBuff, 0, sizeof(VERTEX_2D));
-
-	//頂点フォーマットの設定
-	pD3DDevice->SetFVF(FVF_VERTEX_2D);
-
-	//テクスチャの設定
-	pD3DDevice->SetTexture(0, CTextureManager::Instance()->GetAddress(m_nIdx));
-	//ポリゴンの描画
-	pD3DDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP,//プリミティブの種類
-		0, 2); //頂点情報構造体のサイズ
-
 }
 
 //****************************************************************
-//数字によってテクスチャ座標による設定
+// 右座標
 //****************************************************************
-void CNumber::SetNumber(int nNumber, int nAdd)
+D3DXVECTOR3 CNumber::GetLeftPos()
 {
-	VERTEX_2D* pVtx = nullptr;
-	
-	// バッファのロック
-	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
-
-	//ここで計算する
-	float fTex = 0.1f * nNumber;
-
-	//テクスチャ座標の設定
-	pVtx[0].tex = D3DXVECTOR2(0.0f + fTex, 0.0f);
-	pVtx[1].tex = D3DXVECTOR2(0.1f + fTex, 0.0f);
-	pVtx[2].tex = D3DXVECTOR2(0.0f + fTex, 1.0f);
-	pVtx[3].tex = D3DXVECTOR2(0.1f + fTex, 1.0f);
-
-	pVtx += nAdd;
-
-	// バッファをアンロック
-	m_pVtxBuff->Unlock();
+	switch (m_type)
+	{
+		// 通常(スコアなど)
+	case CNumber::TYPE::Normal:
+	{
+		float allWidth = m_size.x * float(m_digits);
+		D3DXVECTOR3 leftPos = D3DXVECTOR3(m_pos.x - allWidth * 0.5f, m_pos.y, 0.0f);
+		return leftPos;
+	}
+	// 時間表示
+	case CNumber::TYPE::Time:
+	{
+		float digits = float(m_digits * 3 - 1);
+		float allWidth = m_size.x * digits;
+		D3DXVECTOR3 leftPos = D3DXVECTOR3(m_pos.x - allWidth * 0.5f, m_pos.y, 0.0f);
+		return leftPos;
+	}
+	}
+	return m_pos;
 }
 
 //****************************************************************
-// カラーアニメーション
+// 左座標
 //****************************************************************
-void CNumber::ColAnim(void)
+D3DXVECTOR3 CNumber::GetRightPos()
 {
-	VERTEX_2D* pVtx = nullptr;
-
-
-	if (m_nColTime >= 30)
+	switch (m_type)
 	{
-		m_bChange = true;
-	}
-	else if(m_nColTime < 0)
+		// 通常(スコアなど)
+	case CNumber::TYPE::Normal:
 	{
-		m_bChange = false;
+		float allWidth = m_size.x * float(m_digits);
+		D3DXVECTOR3 rightPos = D3DXVECTOR3(m_pos.x + allWidth * 0.5f, m_pos.y, 0.0f);
+		return rightPos;
 	}
-
-	// バッファのロック
-	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
-
-	if (m_bChange == true)
+	// 時間表示
+	case CNumber::TYPE::Time:
 	{
-		m_nColTime--;
-
-		// 頂点カラー
-		pVtx[0].col = D3DXCOLOR(0.3f, 1.0f, 0.3f, 1.0f);
-		pVtx[1].col = D3DXCOLOR(0.3f, 1.0f, 0.3f, 1.0f);
-		pVtx[2].col = D3DXCOLOR(0.3f, 1.0f, 0.3f, 1.0f);
-		pVtx[3].col = D3DXCOLOR(0.3f, 1.0f, 0.3f, 1.0f);
+		float digits = float(m_digits * 3 - 1);
+		float allWidth = m_size.x * digits;
+		D3DXVECTOR3 rightPos = D3DXVECTOR3(m_pos.x + allWidth * 0.5f, m_pos.y, 0.0f);
+		return rightPos;
 	}
-	else
-	{
-		m_nColTime++;
-
-		// 頂点カラー
-		pVtx[0].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-		pVtx[1].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-		pVtx[2].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-		pVtx[3].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
 	}
-	// バッファをアンロック
-	m_pVtxBuff->Unlock();
+	return m_pos;
 }
 
-void CNumber::SetPos(void)
+//****************************************************************
+// 上座標
+//****************************************************************
+D3DXVECTOR3 CNumber::GetTopPos()
 {
-	if (m_pVtxBuff == NULL) return;
+	float allHeight = m_size.y;
+	D3DXVECTOR3 topPos = D3DXVECTOR3(m_pos.x, m_pos.y - allHeight * 0.5f, 0.0f);
+	return topPos;
+}
 
-	D3DXVECTOR3 rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	VERTEX_2D* pVtx = NULL;
+//****************************************************************
+// 下座標
+//****************************************************************
+D3DXVECTOR3 CNumber::GetBottomPos()
+{
+	float allHeight = m_size.y;
+	D3DXVECTOR3 bottomPos = D3DXVECTOR3(m_pos.x, m_pos.y + allHeight * 0.5f, 0.0f);
+	return bottomPos;
+}
 
-	// 幅を変更してポリゴンの中心点からの角度を再設定
-	D3DXVECTOR2 screenSize{};
-	CManager::GetRenderer()->GetBackBufferSize(&screenSize);
-	float fAngle = atan2f((screenSize.x * 0.02f),(screenSize.y * 0.02f));
-	// 大きさを再設定
-	float fLength = sqrtf((screenSize.x * 0.02f * screenSize.y * 0.02f) + (screenSize.x * 0.02f * screenSize.y * 0.02f));
+//****************************************************************
+// 桁を返す
+//****************************************************************
+int CNumber::GetDigit(int digitIndex)
+{
+	int tempNumber = m_number; // コピー
 
-	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
-
-	if (pVtx != NULL)
+	// 指定された桁まで位を下げる
+	for (int cnt = 0; cnt < digitIndex; ++cnt)
 	{
-		//	//頂点座標の更新
-		pVtx[0].pos.x = m_pos[0].x + sinf(rot.z - (D3DX_PI - fAngle)) * fLength;//pos.y - 25.0f;
-		pVtx[0].pos.y = m_fY[0] + cosf(rot.z - (D3DX_PI - fAngle)) * fLength;//pos.x - 150.0f;
-		pVtx[0].pos.z = 0.0f;//0.0f;
-		pVtx[1].pos.x = m_pos[1].x + sinf(rot.z + (D3DX_PI - fAngle)) * fLength;//pos.x + 150.0f;
-		pVtx[1].pos.y = m_fY[0] + cosf(rot.z + (D3DX_PI - fAngle)) * fLength;//pos.y - 25.0f;
-		pVtx[1].pos.z = 0.0f;//0.0f;
-		pVtx[2].pos.x = m_pos[0].x + sinf(rot.z + (0.0f - fAngle)) * fLength;//pos.x - 150.0f;
-		pVtx[2].pos.y = m_fY[1] + cosf(rot.z + (0.0f - fAngle)) * fLength;//pos.y + 25.0f;
-		pVtx[2].pos.z = 0.0f;//0.0f;
-		pVtx[3].pos.x = m_pos[1].x + sinf(rot.z + (0.0f + fAngle)) * fLength;//pos.x + 150.0f;
-		pVtx[3].pos.y = m_fY[1]+ cosf(rot.z + (0.0f + fAngle)) * fLength;//pos.y + 25.0f;
-		pVtx[3].pos.z = 0.0f;
+		tempNumber /= 10;
 	}
-	// バッファをアンロック
-	m_pVtxBuff->Unlock();
+
+	// 1の位を取り出す
+	return tempNumber % 10;
+}
+
+//****************************************************************
+// 桁を返す
+//****************************************************************
+int CNumber::GetDigit(int number, int digitIndex)
+{
+	// 指定された桁まで位を下げる
+	for (int cnt = 0; cnt < digitIndex; ++cnt)
+	{
+		number /= 10;
+	}
+
+	// 1の位を取り出す
+	return number % 10;
 }

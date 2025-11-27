@@ -187,5 +187,32 @@
                 "z": 1.0
             }
         }
+    },
+    {
+        "RigitBody": {
+            "IsStatic": true,
+            "Mass": 100.0
+        },
+        "Assets": {
+            "Path": "data/MODEL/wallBox.x"
+        },
+        "Transform": {
+            "Pos": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": -250.0
+            },
+            "Rot": {
+                "w": 1.0,
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "Scale": {
+                "x": 35.0,
+                "y": 10.0,
+                "z": 1.0
+            }
+        }
     }
 ]

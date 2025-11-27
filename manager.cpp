@@ -16,6 +16,7 @@
 #include "fade.h"
 #include "title.h"
 #include "navi.h"
+#include "outline.h"
 
 // 名前空間
 using namespace std;
@@ -127,6 +128,8 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, bool bWnd)
 
 	// タイトル画面に設定
 	CFade::SetFade(new CTitle);
+
+	COutLine::Instance()->Init("data\\SHADER\\OutLine.hlsl");
 
 	return S_OK;
 }

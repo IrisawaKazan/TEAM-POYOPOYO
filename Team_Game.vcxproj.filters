@@ -176,6 +176,14 @@
       <Filter>ソース</Filter>
     </ClCompile>
     <ClCompile Include="gemespeedUI.cpp" />
+      <Filter>ソース</Filter>
+    </ClCompile>
+    <ClCompile Include="outline.cpp">
+      <Filter>ソース</Filter>
+    </ClCompile>
+    <ClCompile Include="shader.cpp">
+      <Filter>ソース</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="uplift.h">
@@ -362,6 +370,14 @@
       <Filter>ヘッダ</Filter>
     </ClInclude>
     <ClInclude Include="gemespeedUI.h" />
+      <Filter>ヘッダ</Filter>
+    </ClInclude>
+    <ClInclude Include="outline.h">
+      <Filter>ヘッダ</Filter>
+    </ClInclude>
+    <ClInclude Include="shader.h">
+      <Filter>ヘッダ</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ソース">
@@ -388,5 +404,8 @@
     <Image Include="data\ICON\Test.ico">
       <Filter>リソース</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="data\SHADER\OutLine.hlsl" />
   </ItemGroup>
 </Project>

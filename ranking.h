@@ -4,71 +4,83 @@
 // Author Kensaku Hatori
 //
 //****************************************************************
-
-// 二重インクルード防止
-#ifndef _RANKING_H_
-#define _RANKING_H_
+#pragma once
 
 //  インクルード
 #include "object.h"
-#include "object2D.h"
-#include "number.h"
 
-//	マクロ定義
-#define MAX_TIME (2)
-#define MAX_RANKING (5)
-#define MAX_NUM (6)
-#define MAX_SECOND (60)
-#define MAX_MINUTES (3600)
+class CNumber;   // 宣言
+class CObject2D; //
 
-//  ランキングクラスを定義
-class CRanking
+//---------------------
+//  ランキングクラス
+//---------------------
+class CRanking : CObject
 {
 public:
-	//	コンストラクタ・デストラクタ
-	CRanking();
-	~CRanking();
+	CRanking(size_t timeCount, int priority) : CObject(priority), m_timeCount{ timeCount }, m_pBrackboard{}, m_pNow{}, m_pRankings{}, m_pRankNumbers{}, m_pos{}, m_rankEndPos{}, m_isRankNoveEnds{} {}
+	~CRanking() = default;
 
-	//	メンバ関数
-	static CRanking* Instance(void) {
-		static std::unique_ptr<CRanking> pInstance = std::make_unique<CRanking>();
-		return pInstance.get();
-	}
+	static CRanking* Create(D3DXVECTOR3 pos, D3DXVECTOR2 size, size_t timeCount, int priority = 7);
 
 	HRESULT Init(void);
 	void Uninit(void);
 	void Update(void);
 	void Draw(void);
 
-	void Sort(void);
-	void Change(void);
-	void LoadFile(void);
-	void WriteFile(void);
-
-	void InitNum(void);
-
-	// セッター
-	void SetNumUpdate(int nCntNum);
+	void SetPos(D3DXVECTOR3 pos) { m_pos = pos; }
+	void SetSize(D3DXVECTOR2 size) { m_size = size; }
 
 private:
-	CObject2D* m_pBrackboard;
-	CNumber* m_pNumber1[MAX_TIME][MAX_NUM];		// タイムの変数(秒)
-	CNumber* m_pNumber2[MAX_TIME][MAX_NUM];		// タイムの変数(分)
-	CNumber* m_pNumber3[MAX_NUM];				// タイムの変数(：)
-	CNumber* m_pNumber4[MAX_RANKING];			// ランキング用の変数
-	D3DXVECTOR3 m_pos;							// 位置
-	D3DXVECTOR3 m_Dest;							// 目標の位置
-	int m_nTime[MAX_NUM];						// 総時間
-	int m_nMin[MAX_NUM];						// 分
-	int m_nSec[MAX_NUM];						// 秒
-	int m_nData;								// カラー用の数値の保存用変数
-	int m_nMinutes;								// 現在の分の計算用変数
-	int m_nSeconds;								// 現在の秒の計算用変数
-	int m_nRankIdx;								// アニメーション中のランキングのインデックス
-	int m_nAnimCount;							// モーションカウンタ
-	int m_nCoolDownCount;						// クールダウン
-	bool m_bAct;								// 発動したかどうか
-	int m_nNum;									// 総数分の計算用変数
-};
+	void SetMove();
+	void SetRank();
+	bool LoadFile(void);
+	void WriteFile(void);
+	void InitNum(void);
+	void SetDefultFile();
 
-#endif // !_RANKING_H_
+	// 位置
+	static constexpr float NOW_TIME_HEIGHT_OFFSET = -0.3f;       // 今の時間の高さのオフセット
+	static constexpr float RANKING_START_HEIGHT_OFFSET = -0.15f; // ランキングの始まりの高さのオフセット
+
+	// ランキング数と背景
+	static constexpr const char* RANKING_FILE_PATH = "data/Ranking.bin";
+	static constexpr size_t MAX_RANKING = 5u; // ランキング数
+	static const D3DXCOLOR BOARD_COLOR;       // 背景カラー
+
+	// 使う数字について
+	static constexpr const char* TEXTURE_PATH = "data\\TEXTURE\\number001.png"; // テクスチャ
+	static constexpr float NUMBER_SCALE = 0.0008f;                              // 大きさ
+	static constexpr float NUMBER_MOVE_START_OFFSET = 0.5f;                     // 動き始めのオフセット
+	static const D3DXVECTOR2 TEXTURE_SIZE;                                      // テクスチャサイズ
+	static const D3DXVECTOR2 TEXTURE_UV_COUNT;                                  // テクスチャ分割
+
+
+	// 使う数字について (ランクナンバー)
+	static constexpr const char* RN_TEXTURE_PATH = "data\\TEXTURE\\RankNum.png";  // テクスチャ
+	static constexpr float RN_NUMBER_SCALE = 0.00016f;                            // 大きさ
+	static constexpr float RN_NUMBER_WIDTH_OFFSET = 0.02f;                        // オフセット
+	static const D3DXVECTOR2 RN_TEXTURE_SIZE;                                     // テクスチャサイズ
+	static const D3DXVECTOR2 RN_TEXTURE_UV_COUNT;                                 // テクスチャ分割
+
+	// Defaultランキング
+	static constexpr std::array<int, MAX_RANKING> DEFAULT_FILE_DATA =
+	{
+		200,210,220,230,240
+	};
+	// 動く順番
+	static constexpr std::array<size_t, MAX_RANKING + 1u> MOVE_ORDER =
+	{
+		5,4,3,2,1,0
+	};
+
+	const size_t m_timeCount;                                 // 1.秒 2.分:秒 3.時:分:秒
+	CObject2D* m_pBrackboard;                                 // 黒板
+	CNumber* m_pNow;		                                  // 今のタイムオブジェクト
+	std::array<CNumber*, MAX_RANKING> m_pRankings;            // ランキングのタイムオブジェクト配列
+	std::array<D3DXVECTOR3, MAX_RANKING + 1u> m_rankEndPos;   // 最終位置
+	std::array<bool, MAX_RANKING + 1u> m_isRankNoveEnds;      // 動き終わったか?
+	std::array<CNumber*, MAX_RANKING> m_pRankNumbers;         // ランキングの1,2,3,4,5配列
+	D3DXVECTOR3 m_pos;				                          // 位置
+	D3DXVECTOR2 m_size;				                          // 大きさ
+};

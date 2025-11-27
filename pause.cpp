@@ -168,7 +168,7 @@ void CContinue::Update(void)
 
 		CObject2D::SetSize(Size);
 		CPause::SetCol(CPause::Config::SelectColor);
-		if (CManager::GetInputKeyboard()->GetTrigger(DIK_RETURN) == true || CManager::GetInputJoypad()->GetTrigger(CInputJoypad::JOYKEY_A) == true)
+		if (CManager::GetInputKeyboard()->GetTrigger(DIK_RETURN) == true || CManager::GetInputJoypad()->GetTrigger(CInputJoypad::JOYKEY_A) || CManager::GetInputMouse()->OnDown(0) == true)
 		{
 			// サウンドの取得
 			CSound* pSound = CManager::GetSound();
@@ -262,7 +262,7 @@ void CRetry::Update(void)
 
 		CObject2D::SetSize(Size);
 		CPause::SetCol(CPause::Config::SelectColor);
-		if (CManager::GetInputKeyboard()->GetTrigger(DIK_RETURN) == true || CManager::GetInputJoypad()->GetTrigger(CInputJoypad::JOYKEY_A) == true)
+		if (CManager::GetInputKeyboard()->GetTrigger(DIK_RETURN) == true || CManager::GetInputJoypad()->GetTrigger(CInputJoypad::JOYKEY_A) || CManager::GetInputMouse()->OnDown(0) == true)
 		{
 			if (CManager::GetScene()->GetMode() == CScene::MODE::MODE_GAME)
 			{
@@ -360,7 +360,7 @@ void CQuit::Update(void)
 
 		CObject2D::SetSize(Size);
 		CPause::SetCol(CPause::Config::SelectColor);
-		if (CManager::GetInputKeyboard()->GetTrigger(DIK_RETURN) == true || CManager::GetInputJoypad()->GetTrigger(CInputJoypad::JOYKEY_A) == true)
+		if (CManager::GetInputKeyboard()->GetTrigger(DIK_RETURN) == true || CManager::GetInputJoypad()->GetTrigger(CInputJoypad::JOYKEY_A) || CManager::GetInputMouse()->OnDown(0) == true)
 		{
 			// サウンドの取得
 			CSound* pSound = CManager::GetSound();
