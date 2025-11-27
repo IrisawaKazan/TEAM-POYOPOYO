@@ -15,7 +15,7 @@ class CNumber;
 
 // マクロ定義
 #define MAX_TIMER (2)
-#define MAX_TIMEOVER (4)
+#define MAX_TIMEOVER (0)
 #define MAX_HOUR (216000)
 
 // タイマークラス
