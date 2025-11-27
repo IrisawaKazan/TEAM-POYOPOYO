@@ -433,6 +433,4 @@ FodyWeavers.xsd
 vcpkg_installed/
 /yaml-cpp.dll
 /data/Goal.bin
-/data/Goal.txt
 /data/Ranking.bin
-/data/Ranking.txt
