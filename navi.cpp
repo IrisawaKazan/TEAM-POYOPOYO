@@ -642,6 +642,11 @@ D3DXVECTOR2 CNavi::SetScreenPos()
 		{
 			resultPos = m_screenPos;
 		}
+		// スクリーンのサイズ
+		D3DXVECTOR2 screenSize{};
+		CManager::GetRenderer()->GetBackBufferSize(&screenSize);
+		std::clamp<float>(resultPos.x, 0, screenSize.x);
+		std::clamp<float>(resultPos.y, 0, screenSize.y);
 	}
 	else
 	{

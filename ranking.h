@@ -44,7 +44,7 @@ private:
 	static constexpr float RANKING_START_HEIGHT_OFFSET = -0.15f; // ランキングの始まりの高さのオフセット
 
 	// ランキング数と背景
-	static constexpr const char* RANKING_FILE_PATH = "data/Ranking.bin";
+	static constexpr const char* RANKING_FILE_PATH = "data/DATA/Ranking.bin";
 	static constexpr size_t MAX_RANKING = 5u; // ランキング数
 	static const D3DXCOLOR BOARD_COLOR;       // 背景カラー
 
