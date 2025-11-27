@@ -87,26 +87,17 @@ HRESULT CGame::Init(void)
 	CManager::GetCamera()->Init();
 	CManager::GetCamera()->SetMovie(CCamera::MOTIONTYPE_STARTMOVIE);
 
-	// ナビゲーションのセット
-	CNavi::GetInstance()->set();
-
 	// チュートリアルの生成
 	m_pTutorialBoard = CTutorialBoard::Create();
 
 	// 倍速UIの生成 Misaki
 	m_pGameSpeedUI = CGameSpeedUI::Create();
 
-	// 壁の生成
-	CObject3D::Create(D3DXVECTOR3(0.0f,1000.0f,-1000.0f), D3DXVECTOR3((D3DX_PI * 0.5f),0.0f,0.0f),"data\\TEXTURE\\wall.jpg",D3DXVECTOR2(2000.0f,1000.0f));
-	CObject3D::Create(D3DXVECTOR3(-2000.0f,1000.0f,0.0f), D3DXVECTOR3((-D3DX_PI * 0.5f), (-D3DX_PI * 0.5f), 0.0f),"data\\TEXTURE\\wall.jpg",D3DXVECTOR2(1000.0f, 1000.0f));
-	CObject3D::Create(D3DXVECTOR3(2000.0f,1000.0f,0.0f), D3DXVECTOR3((-D3DX_PI * 0.5f), (D3DX_PI * 0.5f), 0.0f), "data\\TEXTURE\\wall.jpg", D3DXVECTOR2(1000.0f, 1000.0f));
-
 	// スタートオブジェクト
 	m_pBlock = CBlock::Create("data\\Model\\mine_shaft.x", { 1800.0f,0.0f,-900.0f }, { 0.0f, -D3DX_PI * 0.5f,0.0f }, { 1.0f,1.0f,1.0f });
 
 	D3DXVECTOR2 screenSize{};
 	CManager::GetRenderer()->GetBackBufferSize(&screenSize);
-	CNaviUI::Create("data/TEXTURE/UI/Frame001.png", NAVI_UI_TEXTURES, NAVI_UI_ARROW_TEXTURES, NAVI_UI_KEY_TEXTURES, D3DXVECTOR3(screenSize.x * 0.175f, screenSize.y * 0.82f, 0.0f), D3DXVECTOR2(screenSize.x * 0.1f, screenSize.x * 0.1f));
 
 	//CTimer::Instance()->SetPosition(D3DXVECTOR3(640.0f, 360.0f, 0.0f));
 	pTimer = CTimer::Create(D3DXVECTOR3(screenSize.x * 0.1f, screenSize.y * 0.05f, 0.0f), 2, 0, TIME_LIMIT);
@@ -186,17 +177,6 @@ void CGame::Update(void)
 
 	if (CManager::GetInputKeyboard() != NULL)
 	{
-		if (CManager::GetInputKeyboard()->GetTrigger(DIK_LSHIFT) == true)
-		{
-			if (CManager::GetScene()->GetMode() == MODE_GAME)
-			{
-				CFade::SetFade(new CResult);
-			}
-		}
-		//if (CManager::GetInputKeyboard()->GetTrigger(DIK_F3) == true && m_pTutorialBoard->GetProgress() == false)
-		//{
-		//	m_pTutorialBoard->SetUp("data\\TEXTURE\\tutorial_001.png", true);
-		//}
 		if (CManager::GetInputKeyboard()->GetTrigger(DIK_SPACE) ||
 			CManager::GetInputJoypad()->GetTrigger(CInputJoypad::JOYKEY_X) ||
 			CManager::GetInputJoypad()->GetTrigger(CInputJoypad::JOYKEY_Y) == true && m_pTutorialBoard->GetProgress() == false)
