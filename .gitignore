@@ -430,6 +430,7 @@ FodyWeavers.xsd
 /Team_Game.exe
 /data/DATA/Goal.bin
 /data/DATA/Ranking.bin
+/yaml-cpp.dll
 
 # vcpkgで生成されるフォルダを無視
 vcpkg_installed/
