@@ -34,6 +34,7 @@ CPlayerManager::~CPlayerManager()
 //************************************************************
 HRESULT CPlayerManager::Init(void)
 {
+	m_Timer = 0;
 	return S_OK;
 }
 

@@ -69,7 +69,6 @@ private:
 	float m_fAngle;											// 向き
 	int m_nCount;											// カウント
 	int m_test;												// 
-	bool m_bTutorial;										// 特別な指示を出すか
 	int m_nCntOutline;										// アウトライン用のカウンタ
 };
 
