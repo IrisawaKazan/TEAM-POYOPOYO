@@ -9,12 +9,12 @@
 #include "file.h"
 
 const D3DXVECTOR2 CTimer::TEXTURE_SIZE = { 566,80 };   // テクスチャサイズ
-const D3DXVECTOR2 CTimer::TEXTURE_UV_COUNT = { 11,0 }; // テクスチャ分割
+const D3DXVECTOR2 CTimer::TEXTURE_UV_COUNT = { 11,1 }; // テクスチャ分割
 
 //****************************************************************
 // タイマーの生成処理
 //****************************************************************
-CTimer* CTimer::Create(D3DXVECTOR3 pos, size_t timeCount, COUNT count, int startTime, int limitTime, int nPriority)
+CTimer* CTimer::Create(D3DXVECTOR3 pos, size_t timeCount, int startTime, int limitTime, int nPriority)
 {
 	// インスタンスの生成
 	CTimer* pNumber = new CTimer(timeCount, nPriority); // 表示桁数
@@ -24,7 +24,6 @@ CTimer* CTimer::Create(D3DXVECTOR3 pos, size_t timeCount, COUNT count, int start
 	}
 
 	pNumber->SetPos(pos);             // 位置
-	pNumber->SetCount(count);         // カウント方式
 	pNumber->SetStartTime(startTime); // 開始秒数 (カウントDown用)
 	pNumber->SetLimitTime(limitTime); // 制限時間 (カウントUp用)
 
@@ -43,6 +42,7 @@ CTimer* CTimer::Create(D3DXVECTOR3 pos, size_t timeCount, COUNT count, int start
 HRESULT CTimer::Init(void)
 {
 	m_timeOver = false;
+	m_count = COUNT::None;
 
 	// スクリーンのサイズ
 	D3DXVECTOR2 screenSize{};
@@ -73,8 +73,8 @@ void CTimer::Uninit(void)
 //****************************************************************
 void CTimer::Update(void)
 {
-	++m_counter; // カウント
-	if (m_counter / GetFPS() >= 1)
+	m_counter += CManager::GetGameSpeed(); // カウント
+	if (m_counter / FPS >= 1)
 	{// 1秒経過
 		switch (m_count)
 		{
@@ -98,6 +98,7 @@ void CTimer::Update(void)
 			}
 			break;
 		}
+		m_counter = 0;
 	}
 
 	if (m_pNumber != nullptr)

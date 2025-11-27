@@ -53,7 +53,7 @@ HRESULT CNumber::Init()
 	case CNumber::TYPE::Normal:
 	{
 		float allWidth = m_size.x * float(m_digits);
-		D3DXVECTOR3 leftPos = D3DXVECTOR3(m_pos.x - allWidth * 0.5f, m_pos.y, 0.0f);
+		D3DXVECTOR3 leftPos = D3DXVECTOR3(m_pos.x - allWidth * 0.5f + m_size.x * 0.5f, m_pos.y, 0.0f);
 		for (size_t cnt = 0; cnt < m_digits; ++cnt, leftPos.x += m_size.x)
 		{
 			m_pObjects.push_back(CObject2D::Create(leftPos, VEC3_NULL, m_size));
@@ -73,10 +73,10 @@ HRESULT CNumber::Init()
 	{
 		float digits = float(m_digits * 3 - 1);
 		float allWidth = m_size.x * digits;
-		D3DXVECTOR3 leftPos = D3DXVECTOR3(m_pos.x - allWidth * 0.5f, m_pos.y, 0.0f);
+		D3DXVECTOR3 leftPos = D3DXVECTOR3(m_pos.x - allWidth * 0.5f + m_size.x * 0.5f, m_pos.y, 0.0f);
 		for (size_t cnt = 0; cnt < digits; ++cnt, leftPos.x += m_size.x)
 		{
-			m_pObjects.push_back(CObject2D::Create(leftPos, VEC3_NULL, m_size));
+			m_pObjects.push_back(CObject2D::Create(leftPos, VEC3_NULL, m_size * 0.5f));
 		}
 
 		size_t idx{};
@@ -170,6 +170,8 @@ void CNumber::Uninit(void)
 			pObject = nullptr;
 		}
 	}
+	m_pObjects.clear();
+	m_pObjects.shrink_to_fit();
 	Release();
 }
 

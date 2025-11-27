@@ -32,7 +32,7 @@ public:
 	CTimer(size_t timeCount, int nPriority) : CObject(nPriority), m_timeCount{ timeCount }, m_pNumber{}, m_pos{}, m_nTime{}, m_timeOver{}, m_count{}, m_counter{} {}
 	~CTimer() = default;
 
-	static CTimer* Create(D3DXVECTOR3 pos, size_t timeCount, COUNT count = COUNT::Up, int startTime = 0, int limitTime = 60, int nPriority = 7);
+	static CTimer* Create(D3DXVECTOR3 pos, size_t timeCount, int startTime = 0, int limitTime = 60, int nPriority = 7);
 
 	HRESULT Init(void);
 	void Uninit(void);
@@ -43,7 +43,7 @@ public:
 
 	// セッター
 	void SetPos(D3DXVECTOR3 pos) { m_pos = pos; };
-	void SetCount(COUNT count) { m_count = count; }
+	void SetCount(COUNT count) { m_count = count; m_counter = 0; }
 
 	// ゲッター
 	bool IsTimeOver() { return m_timeOver; }
@@ -52,7 +52,7 @@ public:
 
 private:
 	static constexpr const char* TEXTURE_PATH = "data\\TEXTURE\\number001.png"; // テクスチャ
-	static constexpr float NUMBER_SCALE = 0.1f;                                 // 大きさ
+	static constexpr float NUMBER_SCALE = 0.0005f;                              // 大きさ
 	static const D3DXVECTOR2 TEXTURE_SIZE;                                      // テクスチャサイズ
 	static const D3DXVECTOR2 TEXTURE_UV_COUNT;                                  // テクスチャ分割
 

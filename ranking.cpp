@@ -16,7 +16,7 @@ const D3DXVECTOR2 CRanking::TEXTURE_SIZE = { 566,80 };   // テクスチャサイズ
 const D3DXVECTOR2 CRanking::TEXTURE_UV_COUNT = { 11,0 }; // テクスチャ分割
 
 const D3DXVECTOR2 CRanking::RN_TEXTURE_SIZE = { 1309,218 }; // テクスチャサイズ
-const D3DXVECTOR2 CRanking::RN_TEXTURE_UV_COUNT = { 10,0 }; // テクスチャ分割
+const D3DXVECTOR2 CRanking::RN_TEXTURE_UV_COUNT = { 10,1 }; // テクスチャ分割
 
 //****************************************************************
 // 生成

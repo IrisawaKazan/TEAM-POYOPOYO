@@ -36,7 +36,7 @@ HRESULT CResult::Init(void)
 {
     D3DXVECTOR2 screenSize{};
     CManager::GetRenderer()->GetBackBufferSize(&screenSize);
-    m_pRanking = CRanking::Create(D3DXVECTOR3(screenSize.x * 0.75f, screenSize.y * 0.5f, 0.0f), D3DXVECTOR2(screenSize.x * 0.5f, screenSize.y), 2u);
+    CRanking::Create(D3DXVECTOR3(screenSize.x * 0.75f, screenSize.y * 0.5f, 0.0f), D3DXVECTOR2(screenSize.x * 0.5f, screenSize.y), 2u);
 
     LoadFile();
 
@@ -103,11 +103,6 @@ void CResult::Update(void)
 //  I—¹
 void CResult::Uninit(void)
 {
-    if (m_pRanking != nullptr)
-    {
-        m_pRanking->Uninit();
-        delete m_pRanking;
-    }
     delete this;
 }
 

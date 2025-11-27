@@ -91,7 +91,7 @@ HRESULT CGame::Init(void)
 
 	D3DXVECTOR2 screenSize{};
 	CManager::GetRenderer()->GetBackBufferSize(&screenSize);
-	pTimer = CTimer::Create(D3DXVECTOR3(screenSize.x * 0.1f, screenSize.y * 0.05f, 0.0f), 2, CTimer::COUNT::Up, 0, TIME_LIMIT);
+	pTimer = CTimer::Create(D3DXVECTOR3(screenSize.x * 0.1f, screenSize.y * 0.05f, 0.0f), 2, 0, TIME_LIMIT);
 
 	//// âŒÇÃèÓïÒÇê›íË
 	//CParticle3D::DefoultEffectInfo FireInfo;
