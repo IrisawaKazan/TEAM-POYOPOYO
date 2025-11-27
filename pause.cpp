@@ -168,7 +168,7 @@ void CContinue::Update(void)
 
 		CObject2D::SetSize(Size);
 		CPause::SetCol(CPause::Config::SelectColor);
-		if (CManager::GetInputKeyboard()->GetTrigger(DIK_RETURN) == true || CManager::GetInputJoypad()->GetTrigger(CInputJoypad::JOYKEY_A) == true)
+		if (CManager::GetInputKeyboard()->GetTrigger(DIK_RETURN) == true || CManager::GetInputJoypad()->GetTrigger(CInputJoypad::JOYKEY_A) || CManager::GetInputMouse()->OnDown(0) == true)
 		{
 			// ƒTƒEƒ“ƒh‚Ìæ“¾
 			CSound* pSound = CManager::GetSound();

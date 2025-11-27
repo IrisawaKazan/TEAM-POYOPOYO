@@ -97,7 +97,9 @@ void CTutorialBoard::Update(void)
 			m_pBoard->SetPosition(Setpos);
 		}
 
-		if (CManager::GetInputKeyboard()->GetTrigger(DIK_RETURN) == true || CManager::GetInputJoypad()->GetTrigger(CInputJoypad::JOYKEY_B) == true)
+		if (CManager::GetInputKeyboard()->GetTrigger(DIK_RETURN) == true ||
+			CManager::GetInputJoypad()->GetTrigger(CInputJoypad::JOYKEY_B) ||
+			CManager::GetInputMouse()->OnDown(0) == true)
 		{// Œˆ’èƒ{ƒ^ƒ“‚ð‰Ÿ‚µ‚½Žž
 
 			if (m_fCountFrame < m_fMaxFrame)
