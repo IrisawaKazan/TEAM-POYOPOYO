@@ -428,8 +428,6 @@ FodyWeavers.xsd
 /Release
 /*.exe
 /Team_Game.exe
-/data/DATA/Ranking.bin
-/data/DATA/Goal.bin
 
 # vcpkgで生成されるフォルダを無視
 vcpkg_installed/
