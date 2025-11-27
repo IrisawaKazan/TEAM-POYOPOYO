@@ -107,6 +107,8 @@ void CResult::Update(void)
         //CManager::GetSound()->Play(CSound::LABEL_ENTER);
         CFade::SetFade(new CTitle);
     }
+    if (m_GameOver == nullptr) return;
+
     // ˆÊ’u‚ðŽæ“¾
     D3DXVECTOR3 Pos = m_GameOver->GetPosition();
     // ‚¸‚ç‚·
