@@ -186,17 +186,6 @@ void CGame::Update(void)
 
 	if (CManager::GetInputKeyboard() != NULL)
 	{
-		if (CManager::GetInputKeyboard()->GetTrigger(DIK_LSHIFT) == true)
-		{
-			if (CManager::GetScene()->GetMode() == MODE_GAME)
-			{
-				CFade::SetFade(new CResult);
-			}
-		}
-		//if (CManager::GetInputKeyboard()->GetTrigger(DIK_F3) == true && m_pTutorialBoard->GetProgress() == false)
-		//{
-		//	m_pTutorialBoard->SetUp("data\\TEXTURE\\tutorial_001.png", true);
-		//}
 		if (CManager::GetInputKeyboard()->GetTrigger(DIK_SPACE) ||
 			CManager::GetInputJoypad()->GetTrigger(CInputJoypad::JOYKEY_X) ||
 			CManager::GetInputJoypad()->GetTrigger(CInputJoypad::JOYKEY_Y) == true && m_pTutorialBoard->GetProgress() == false)
