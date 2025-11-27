@@ -399,9 +399,9 @@ void CCamera::UpdateJoyPadMoveParallel(void)
 	// コントローラーの入力を取得
 	XINPUT_STATE* pState;
 	pState = m_pInputJoypad->GetJoyStickAngle();
-	bool Front = m_pInputJoypad->GetPress(CInputJoypad::JOYKEY_UP) || (m_pInputJoypad->GetJoyStickL() && pState->Gamepad.sThumbLY < 0);
+	bool Front = m_pInputJoypad->GetPress(CInputJoypad::JOYKEY_DOWN) || (m_pInputJoypad->GetJoyStickL() && pState->Gamepad.sThumbLY < 0);
 	bool Left = m_pInputJoypad->GetPress(CInputJoypad::JOYKEY_LEFT) || (m_pInputJoypad->GetJoyStickL() && pState->Gamepad.sThumbLX < 0);
-	bool Back = m_pInputJoypad->GetPress(CInputJoypad::JOYKEY_DOWN) || (m_pInputJoypad->GetJoyStickL() && pState->Gamepad.sThumbLY > 0);
+	bool Back = m_pInputJoypad->GetPress(CInputJoypad::JOYKEY_UP) || (m_pInputJoypad->GetJoyStickL() && pState->Gamepad.sThumbLY > 0);
 	bool Right = m_pInputJoypad->GetPress(CInputJoypad::JOYKEY_RIGET) || (m_pInputJoypad->GetJoyStickL() && pState->Gamepad.sThumbLX > 0);
 
 	// 左右に動かす
