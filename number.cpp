@@ -185,10 +185,14 @@ void CNumber::Update(void)
 	// 通常(スコアなど)
 	case CNumber::TYPE::Normal:
 	{
+		float allWidth = m_size.x * float(m_digits);
+		D3DXVECTOR3 leftPos = D3DXVECTOR3(m_pos.x - allWidth * 0.5f + m_size.x * 0.5f, m_pos.y, 0.0f);
 		size_t idx{ m_digits - 1 };
 		for (auto& pObject : m_pObjects)
 		{
+			pObject->SetPosition(leftPos);
 			pObject->SetUv(D3DXVECTOR2((float)GetDigit(idx), 0), m_texUVSize.x, m_texUVSize.y);
+			leftPos.x += m_size.x;
 			--idx;
 		}
 		break;
@@ -196,6 +200,14 @@ void CNumber::Update(void)
 	// 時間用
 	case CNumber::TYPE::Time:
 	{
+		float digits = float(m_digits * 3 - 1);
+		float allWidth = m_size.x * digits;
+		D3DXVECTOR3 leftPos = D3DXVECTOR3(m_pos.x - allWidth * 0.5f + m_size.x * 0.5f, m_pos.y, 0.0f);
+		for (auto& pObject : m_pObjects)
+		{
+			pObject->SetPosition(leftPos);
+			leftPos.x += m_size.x;
+		}
 		size_t idx{};
 		bool isOK{};  // それ以降は実行
 		if (m_digits >= 3)

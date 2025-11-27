@@ -122,13 +122,27 @@ void CRanking::Update(void)
 	{
 		if (!m_isRankNoveEnds[order])
 		{// ムーブが終わっていない
-			D3DXVECTOR3 space = m_rankEndPos[order] - m_pRankings[order]->GetPos();
-			if (D3DXVec3Length(&space) < 0.001f)
+			if (order == 5u)
 			{
-				m_isRankNoveEnds[order] = true;
-				break;
+				D3DXVECTOR3 space = m_rankEndPos[order] - m_pNow->GetPos();
+				if (D3DXVec3Length(&space) < 1.0f)
+				{
+					m_isRankNoveEnds[order] = true;
+					break;
+				}
+				m_pNow->SetPos(m_pNow->GetPos() + space * 0.1f);
 			}
-			m_pRankings[order]->SetPos(space * 0.01f);
+			else
+			{
+				D3DXVECTOR3 space = m_rankEndPos[order] - m_pRankings[order]->GetPos();
+				if (D3DXVec3Length(&space) < 1.0f)
+				{
+					m_isRankNoveEnds[order] = true;
+					break;
+				}
+				m_pRankings[order]->SetPos(m_pRankings[order]->GetPos() + space * 0.1f);
+			}
+			break;
 		}
 	}
 }
@@ -146,15 +160,24 @@ void CRanking::Draw(void)
 //****************************************************************
 void CRanking::SetMove()
 {
+	// スクリーンのサイズ
+	D3DXVECTOR2 screenSize{};
+	CManager::GetRenderer()->GetBackBufferSize(&screenSize);
+
 	size_t cnt{};
 	for (auto& pRanking : m_pRankings)
 	{// ランキング
 		if (pRanking != nullptr)
 		{
 			m_rankEndPos[cnt] = pRanking->GetPos();
-			pRanking->SetPos(m_rankEndPos[cnt] + D3DXVECTOR3(NUMBER_MOVE_START_OFFSET, 0.0f, 0.0f));
+			pRanking->SetPos(m_rankEndPos[cnt] + D3DXVECTOR3(NUMBER_MOVE_START_OFFSET * screenSize.x, 0.0f, 0.0f));
 		}
 		++cnt;
+	}
+	if (m_pNow != nullptr)
+	{// 今
+		m_rankEndPos[cnt] = m_pNow->GetPos();
+		m_pNow->SetPos(m_rankEndPos[cnt] + D3DXVECTOR3(NUMBER_MOVE_START_OFFSET * screenSize.x, 0.0f, 0.0f));
 	}
 }
 

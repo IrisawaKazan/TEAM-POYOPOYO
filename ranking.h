@@ -74,13 +74,13 @@ private:
 		5,4,3,2,1,0
 	};
 
-	const size_t m_timeCount;                            // 1.秒 2.分:秒 3.時:分:秒
-	CObject2D* m_pBrackboard;                            // 黒板
-	CNumber* m_pNow;		                             // 今のタイムオブジェクト
-	std::array<CNumber*, MAX_RANKING> m_pRankings;       // ランキングのタイムオブジェクト配列
-	std::array<D3DXVECTOR3, MAX_RANKING> m_rankEndPos;   // 最終位置
-	std::array<bool, MAX_RANKING> m_isRankNoveEnds;      // 動き終わったか?
-	std::array<CNumber*, MAX_RANKING> m_pRankNumbers;    // ランキングの1,2,3,4,5配列
-	D3DXVECTOR3 m_pos;				                     // 位置
-	D3DXVECTOR2 m_size;				                     // 大きさ
+	const size_t m_timeCount;                                 // 1.秒 2.分:秒 3.時:分:秒
+	CObject2D* m_pBrackboard;                                 // 黒板
+	CNumber* m_pNow;		                                  // 今のタイムオブジェクト
+	std::array<CNumber*, MAX_RANKING> m_pRankings;            // ランキングのタイムオブジェクト配列
+	std::array<D3DXVECTOR3, MAX_RANKING + 1u> m_rankEndPos;   // 最終位置
+	std::array<bool, MAX_RANKING + 1u> m_isRankNoveEnds;      // 動き終わったか?
+	std::array<CNumber*, MAX_RANKING> m_pRankNumbers;         // ランキングの1,2,3,4,5配列
+	D3DXVECTOR3 m_pos;				                          // 位置
+	D3DXVECTOR2 m_size;				                          // 大きさ
 };
