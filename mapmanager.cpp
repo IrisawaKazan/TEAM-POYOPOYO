@@ -389,16 +389,24 @@ void CMapManager::Load(std::string Path)
 			// 連結
 			m_vMapSlopes.push_back(Local);
 		}
+		else if (LocalPath.find("floarplate") != string::npos)
+		{
+			CBlock* Local;
+			Local = CBlock::Create(LocalPath, Pos, VEC3_NULL);
+			Local->SetScale(Scale);
+			Local->SetQuat(CMath::ConvertQuat(Quad));
+			Local->SetIdx(LocalPath);
+		}
 		else
 		{
 			// 生成、要素に追加
-			CBlock* LocalObject = NULL;
-			LocalObject = CBlock::Create(LocalPath, Pos, VEC3_NULL);
-			LocalObject->SetScale(Scale);
-			LocalObject->SetQuat(CMath::ConvertQuat(Quad));
-			LocalObject->SetIdx(LocalPath);
+			CBlock* Local = NULL;
+			Local = CBlock::Create(LocalPath, Pos, VEC3_NULL);
+			Local->SetScale(Scale);
+			Local->SetQuat(CMath::ConvertQuat(Quad));
+			Local->SetIdx(LocalPath);
 			// 連結
-			m_vMapObject.push_back(LocalObject);
+			m_vMapObject.push_back(Local);
 		}
 	}
 

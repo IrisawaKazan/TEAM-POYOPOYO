@@ -1220,7 +1220,7 @@
             "Mass": 100.0
         },
         "Assets": {
-            "Path": "data/MODEL/floar.x"
+          "Path": "data/MODEL/floarplate.x"
         },
         "Transform": {
             "Pos": {
