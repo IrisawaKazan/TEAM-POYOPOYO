@@ -87,13 +87,10 @@ HRESULT CGame::Init(void)
 	CManager::GetCamera()->Init();
 	CManager::GetCamera()->SetMovie(CCamera::MOTIONTYPE_STARTMOVIE);
 
-	// チュートリアルの生成
 	m_pTutorialBoard = CTutorialBoard::Create();
 
 	// 倍速UIの生成 Misaki
-	m_pGameSpeedUI = CGameSpeedUI::Create();
-
-	// スタートオブジェクト
+	m_pGameSpeedUI = CGameSpeedUI::Create();	// スタートオブジェクト
 	m_pBlock = CBlock::Create("data\\Model\\mine_shaft.x", { 1800.0f,0.0f,-900.0f }, { 0.0f, -D3DX_PI * 0.5f,0.0f }, { 1.0f,1.0f,1.0f });
 
 	D3DXVECTOR2 screenSize{};
