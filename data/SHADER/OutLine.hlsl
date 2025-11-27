@@ -1,32 +1,45 @@
+//****************************************************************
+//
+// アウトラインシェーダー[OutLine.hlsl]
+// Author Kensaku Hatori
+//
+//****************************************************************
+
 // 定数バッファ
 float4x4 g_mtxWorld;
 float4x4 g_mtxView;
 float4x4 g_mtxProj;
 float4 g_Color;
 
-// 頂点シェーダー（アウトライン用）
+// 頂点シェーダー
 struct VS_INPUT
 {
+    // 位置
     float4 Pos : POSITION;
+    // 法線
     float3 Normal : NORMAL;
 };
 
+// ピクセルシェーダーへの情報
 struct VS_OUTPUT
 {
+    // 位置
     float4 Pos : POSITION;
 };
 
+//***************************************
+// 頂点シェーダー(エントリーポイント)
+//***************************************
 VS_OUTPUT VS_main(VS_INPUT input)
 {
     // 法線方向に拡張
     float3 expanded = input.Pos.xyz + input.Normal * 5.0;
 	
-	// 出力用の位置
+	// 出力用変数
     VS_OUTPUT Out;
 	
 	// ワールド座標に変換
     Out.Pos = mul(float4(expanded, 1.0), g_mtxWorld);
-	
 	// カメラ空間に変換
     Out.Pos = mul(Out.Pos, g_mtxView);
     Out.Pos = mul(Out.Pos, g_mtxProj);
@@ -35,19 +48,26 @@ VS_OUTPUT VS_main(VS_INPUT input)
     return Out;
 }
 
-// ピクセルシェーダー（アウトライン用）
+//***************************************
+// ピクセルシェーダー
+//***************************************
 float4 PS_main() : COLOR
 {
-    return g_Color; // 黒色で塗りつぶし
+    // 指定された色で塗りつぶし
+    return g_Color;
 }
 
-// テクニック
+//***************************************
+// テクニックハンドル
+//***************************************
 technique StandardDraw
 {
-    // --- Pass 1: アウトライン描画 ---
+    // パス
     pass P0
     {
-        CullMode = CW; // 裏面を描画
+        // 裏面を描画
+        CullMode = CW;
+        // 頂点シェーダーとピクセルシェーダーを設定
         VertexShader = compile vs_3_0 VS_main();
         PixelShader = compile ps_3_0 PS_main();
     }
