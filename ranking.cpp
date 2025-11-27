@@ -5,47 +5,41 @@
 //
 //****************************************************************
 #include "ranking.h"
+#include "object2D.h"
+#include "number.h"
 #include "timer.h"
-#include "math_T.h"
+#include "file.h"
 
-using namespace std;
+const D3DXCOLOR CRanking::BOARD_COLOR = { 0.0f, 0.0f, 0.0f, 0.5f }; // 背景カラー
+
+const D3DXVECTOR2 CRanking::TEXTURE_SIZE = { 566,80 };   // テクスチャサイズ
+const D3DXVECTOR2 CRanking::TEXTURE_UV_COUNT = { 11,1 }; // テクスチャ分割
+
+const D3DXVECTOR2 CRanking::RN_TEXTURE_SIZE = { 1309,218 }; // テクスチャサイズ
+const D3DXVECTOR2 CRanking::RN_TEXTURE_UV_COUNT = { 10,1 }; // テクスチャ分割
 
 //****************************************************************
-// コンストラクタ
+// 生成
 //****************************************************************
-CRanking::CRanking()
+CRanking* CRanking::Create(D3DXVECTOR3 pos, D3DXVECTOR2 size, size_t timeCount, int priority)
 {
-	m_pBrackboard = nullptr;
-
-	for (int nCnt = 0; nCnt < MAX_NUM; nCnt++)
+	// インスタンスの生成
+	CRanking* pRanking = new CRanking(timeCount, priority); // 表示桁数
+	if (pRanking == nullptr)
 	{
-		for (int nTime = 0; nTime < MAX_TIMER; nTime++)
-		{
-			m_pNumber1[nTime][nCnt] = nullptr;
-		}
-		m_nTime[nCnt] = NULL;
-		m_nMin[nCnt] = NULL;
-		m_nSec[nCnt] = NULL;
+		return nullptr;
 	}
 
-	for (int nCnt = 0; nCnt < MAX_RANKING; nCnt++)
+	pRanking->SetPos(pos);   // 位置
+	pRanking->SetSize(size); // 大きさ
+
+	// 初期化
+	if (FAILED(pRanking->Init()))
 	{
-		m_pNumber4[nCnt] = nullptr;
+		delete pRanking;
+		return nullptr;
 	}
-
-	m_nMinutes = NULL;
-	m_nSeconds = NULL;
-	m_nData = NULL;
-	m_bAct = false;
-	m_nNum = NULL;
-}
-
-//****************************************************************
-// デストラクタ
-//****************************************************************
-CRanking::~CRanking()
-{
-
+	return pRanking;
 }
 
 //****************************************************************
@@ -53,28 +47,27 @@ CRanking::~CRanking()
 //****************************************************************
 HRESULT CRanking::Init(void)
 {
-	m_bAct = false;
-	m_nCoolDownCount = 0;
-	
-		m_nAnimCount = 0;
-	m_nCoolDownCount = 0;
-	m_nRankIdx = MAX_NUM - 1;
-
-	// 読み込み
-	LoadFile();
-
 	// ナンバーの初期化
 	InitNum();
+
+	// 読み込み
+	if (LoadFile())
+	{// ファイルが初期状態や不正な時
+		SetDefultFile();
+		LoadFile();
+	}
+
+	// ランキング整理
+	SetRank();
+
+	// 書き込み
+	WriteFile();
 
 	// 黒ポリゴン
 	D3DXVECTOR2 screenSize{};
 	CManager::GetRenderer()->GetBackBufferSize(&screenSize);
-	m_pBrackboard = CObject2D::Create(D3DXVECTOR3(screenSize.x,0.0f,0.0f), VEC3_NULL, { screenSize.x * 0.5f,screenSize.y * 1.0f });
-
-	m_pBrackboard->SetCol({ 0.0f, 0.0f, 0.0f, 0.5f });
-
-	// 変換
-	Change();
+	m_pBrackboard = CObject2D::Create(m_pos, VEC3_NULL, m_size * 0.5f);
+	m_pBrackboard->SetCol(BOARD_COLOR);
 
 	// サウンドの取得
 	CSound* pSound = CManager::GetSound();
@@ -90,49 +83,25 @@ HRESULT CRanking::Init(void)
 //****************************************************************
 void CRanking::Uninit(void)
 {
-	for (int nNum = 0; nNum < MAX_NUM; nNum++)
-	{
-		// 分秒
-		for (int nCnt = 0; nCnt < MAX_TIMER; nCnt++)
+	for (auto& pRanking : m_pRankings)
+	{// ランキング
+		if (pRanking != nullptr)
 		{
-			if (m_pNumber1[nCnt][nNum] != nullptr)
-			{
-				m_pNumber1[nCnt][nNum]->Uninit();
-
-				delete m_pNumber1[nCnt][nNum];
-				m_pNumber1[nCnt][nNum] = nullptr;
-			}
-
-			if (m_pNumber2[nCnt][nNum] != nullptr)
-			{
-				m_pNumber2[nCnt][nNum]->Uninit();
-
-				delete m_pNumber2[nCnt][nNum];
-				m_pNumber2[nCnt][nNum] = nullptr;
-			}
-		}
-
-		// コロン
-		if (m_pNumber3[nNum] != nullptr)
-		{
-			m_pNumber3[nNum]->Uninit();
-
-			delete m_pNumber3[nNum];
-			m_pNumber3[nNum] = nullptr;
+			pRanking->Uninit();
+			pRanking = nullptr;
 		}
 	}
-
-	// ランキング
-	for (int nCnt = 0; nCnt < MAX_RANKING; nCnt++)
-	{
-		if (m_pNumber4[nCnt] != nullptr)
-		{
-			m_pNumber4[nCnt]->Uninit();
-
-			delete m_pNumber4[nCnt];
-			m_pNumber4[nCnt] = nullptr;
-		}
+	if (m_pNow != nullptr)
+	{// 今
+		m_pNow->Uninit();
+		m_pNow = nullptr;
 	}
+	if (m_pBrackboard != nullptr)
+	{// 黒板
+		m_pBrackboard->Uninit();
+		m_pBrackboard = nullptr;
+	}
+	Release(); // 自分
 }
 
 //****************************************************************
@@ -140,60 +109,7 @@ void CRanking::Uninit(void)
 //****************************************************************
 void CRanking::Update(void)
 {
-	// 今の総数
-	int nNowTime = CTimer::GetTimer();
 
-	if (m_nRankIdx < 0)
-	{
-		m_nRankIdx = MAX_NUM - 1;
-	}
-	
-	// 現在の分秒の計算
-	m_nMinutes = nNowTime / MAX_MINUTES;
-	m_nSeconds = (nNowTime % MAX_MINUTES) / MAX_SECOND;
-
-	for (m_nNum = 0; m_nNum < MAX_NUM; m_nNum++)
-	{
-		if (m_bAct != true)
-		{
-			// 現在の分秒と一致していたら
-			if (m_nMin[m_nNum] == m_nMinutes && m_nSec[m_nNum] == m_nSeconds)
-			{
-				m_bAct = true;
-				m_nData = m_nNum;
-			}
-		}
-	}
-
-	for (int nCnt = 0; nCnt < MAX_TIMER; nCnt++)
-	{
-		m_pNumber1[nCnt][MAX_NUM - 1]->ColAnim();
-		m_pNumber2[nCnt][MAX_NUM - 1]->ColAnim();
-
-		m_pNumber1[nCnt][m_nData]->ColAnim();
-		m_pNumber2[nCnt][m_nData]->ColAnim();
-	}
-
-	// カラーの設定
-	m_pNumber3[MAX_NUM - 1]->ColAnim();
-	m_pNumber3[m_nData]->ColAnim();
-
-	if (m_nAnimCount >= 30)
-	{
-		SetNumUpdate(m_nRankIdx);
-		m_nCoolDownCount++;
-
-		if (m_nCoolDownCount >= 30)
-		{
-			m_nAnimCount = 0;
-			m_nCoolDownCount = 0;
-			if (m_nRankIdx >= 0)m_nRankIdx--;
-		}
-	}
-	else
-	{
-		m_nAnimCount++;
-	}
 }
 
 //****************************************************************
@@ -201,212 +117,73 @@ void CRanking::Update(void)
 //****************************************************************
 void CRanking::Draw(void)
 {
-	for (int nNum = 0; nNum < MAX_NUM; nNum++)
-	{
-		for (int nCnt = 0; nCnt < MAX_TIMER; nCnt++)
-		{
-			m_pNumber1[nCnt][nNum]->Draw();
-			m_pNumber2[nCnt][nNum]->Draw();
-		}
 
-		m_pNumber3[nNum]->Draw();
-	}
-
-	for (int nCnt = 0; nCnt < MAX_RANKING; nCnt++)
-	{
-		m_pNumber4[nCnt]->Draw();
-	}
 }
 
 //****************************************************************
-// ソート
+// ランキング整理
 //****************************************************************
-void CRanking::Sort(void)
+void CRanking::SetRank()
 {
-	// 今の総数
-	int nNowTime = CTimer::GetTimer();
+	std::array<int, MAX_RANKING + 1u> rankDatas{}; // 数値抽出用配列
+	for (size_t cnt = 0; cnt < m_pRankings.size(); cnt++)
+	{// 数値の抽出
+		rankDatas[cnt] = m_pRankings[cnt]->GetNumber();
+	}
+	rankDatas[MAX_RANKING] = m_pNow->GetNumber();    // 今の時間を追加
 
-	// ソート用ローカル変数
-	int nData = 0;
-
-	if (nNowTime < 14400 && nNowTime >= 60)
-	{
-		// 0秒じゃなかったら
-		if (m_nTime[MAX_NUM - 2] >= 60)
+	// ソート
+	std::sort(rankDatas.begin(), rankDatas.end(),
+		[](int a, int b)
 		{
-			// 配列の最後の数値が今の数値より大きかったら
-			if (m_nTime[MAX_NUM - 2] > nNowTime)
-			{
-				m_nTime[MAX_NUM - 2] = nNowTime;
-			}
+			// 0は後ろ
+			if (a == 0) return false;
+			if (b == 0) return true;
+
+			// 両方0でなければ比較
+			return a < b;
 		}
-		else
-		{
-			if (m_nTime[MAX_NUM - 2] < nNowTime)
-			{
-				m_nTime[MAX_NUM - 2] = nNowTime;
-			}
-		}
+	);
 
-		for (int nCnt1 = 0; nCnt1 < MAX_NUM - 1; nCnt1++)
-		{
-			for (int nCnt2 = nCnt1 + 1; nCnt2 < MAX_NUM - 1; nCnt2++)
-			{
-				// 比較元0秒じゃなかったら
-				if (m_nTime[nCnt1] >= 60)
-				{
-					// 比較元が比較先より大きかったら
-					if (m_nTime[nCnt1] >= m_nTime[nCnt2])
-					{
-						// 比較先が0秒じゃなかったら
-						if (m_nTime[nCnt2] >= 60)
-						{
-							nData = m_nTime[nCnt1];
-							m_nTime[nCnt1] = m_nTime[nCnt2];
-							m_nTime[nCnt2] = nData;
-						}
-					}
-				}
-				else
-				{
-					nData = m_nTime[nCnt2];
-					m_nTime[nCnt2] = m_nTime[nCnt1];
-					m_nTime[nCnt1] = nData;
-				}
-			}
-		}
-
-		// 書き込み
-		WriteFile();
+	for (size_t cnt = 0; cnt < m_pRankings.size(); cnt++)
+	{// 数値を戻す
+		m_pRankings[cnt]->SetNumber(rankDatas[cnt]);
 	}
-}
-
-//****************************************************************
-// 変換(総タイムから分秒に変換)
-//****************************************************************
-void CRanking::Change(void)
-{
-	// 今の総数
-	int nNowTime = CTimer::GetTimer();
-
-	// ソート処理
-	Sort();
-
-	// 読み込み
-	LoadFile();
-
-	for (int nCnt = 0; nCnt < MAX_NUM - 1; nCnt++)
-	{
-		m_nMin[nCnt] = m_nTime[nCnt] / MAX_MINUTES;
-		m_nSec[nCnt] = (m_nTime[nCnt] % MAX_MINUTES) / MAX_SECOND;
-	}
-
-
-
-	for (int nNum = 0; nNum < MAX_NUM - 1; nNum++)
-	{
-		int aPosTexU[MAX_TIMER] = {};
-		int nData = 100;
-		int nData1 = 10;
-
-		for (int nCnt = 0; nCnt < MAX_TIMER; nCnt++)
-		{
-			// 0番目以外(秒)
-			aPosTexU[nCnt] = (m_nSec[nNum] % nData) / nData1;
-			nData = nData / 10;
-			nData1 = nData1 / 10;
-
-			m_pNumber1[nCnt][nNum]->SetNumber(aPosTexU[nCnt], 4);
-		}
-
-		int aPosTexU1[MAX_TIMER] = {};
-		int nData2 = 100;
-		int nData3 = 10;
-
-		for (int nCnt = 0; nCnt < MAX_TIMER; nCnt++)
-		{
-			// 0番目以外(分)
-			aPosTexU1[nCnt] = (m_nMin[nNum] % nData2) / nData3;
-			nData2 = nData2 / 10;
-			nData3 = nData3 / 10;
-
-			m_pNumber2[nCnt][nNum]->SetNumber(aPosTexU1[nCnt], 4);
-		}
-	}
-
-	m_nMin[MAX_NUM - 1] = nNowTime / MAX_MINUTES;
-	m_nSec[MAX_NUM - 1] = (nNowTime % MAX_MINUTES) / MAX_SECOND;
-
-	int aPosTexU3[MAX_TIMER] = {};
-	int nData[MAX_TIMER] = {};
-	int nData1[MAX_TIMER] = {};
-
-	for (int nCnt = 0; nCnt < MAX_TIMER; nCnt++)
-	{
-		nData[nCnt] = 100;
-		nData1[nCnt] = 10;
-	}
-
-	for (int nCnt = 0; nCnt < MAX_TIMER; nCnt++)
-	{
-		// 0番目以外(秒)
-		aPosTexU3[nCnt] = (m_nSec[MAX_NUM - 1] % nData[0]) / nData1[0];
-		nData[0] = nData[0] / 10;
-		nData1[0] = nData1[0] / 10;
-
-		m_pNumber1[nCnt][MAX_NUM - 1]->SetNumber(aPosTexU3[nCnt], 4);
-
-		// 0番目以外(分)
-		aPosTexU3[nCnt] = (m_nMin[MAX_NUM - 1] % nData[1]) / nData1[1];
-		nData[1] = nData[1] / 10;
-		nData1[1] = nData1[1] / 10;
-
-		m_pNumber2[nCnt][MAX_NUM - 1]->SetNumber(aPosTexU3[nCnt], 4);
-	}
-
-	for (int nCnt = 0; nCnt < MAX_RANKING; nCnt++)
-	{
-		int aPosTexU4[MAX_RANKING] = {};
-		int nRank = 10;
-		int nRank1 = 1;
-
-		// 0番目以外(秒)
-		aPosTexU4[nCnt] = (nCnt + 1 % nRank) / nRank1;
-		nRank = nRank / 10;
-		nRank1 = nRank1 / 10;
-
-		m_pNumber4[nCnt]->SetNumber(aPosTexU4[nCnt], 4);
-	}
-	
 }
 
 //****************************************************************
 // ファイル読み込み
 //****************************************************************
-void CRanking::LoadFile(void)
+bool CRanking::LoadFile(void)
 {
-	ifstream pFile("data\\Ranking.txt");
-	string line = {};
-
-	// ファイルが正常に開けたら
-	if (pFile.is_open())
+	bool isAllZero{};
+	CFile* pFile = new CFile(CTimer::FILE_PATH);
+	const auto nowData = pFile->ReadBinary<int>(sizeof(bool));
+	if (nowData.has_value())
 	{
-		int nCnt = 0;
-
-		while (getline(pFile, line))
-		{
-			//getline(pFileMin, Minline);
-
-			istringstream iss(line);
-
-			iss >> m_nTime[nCnt];
-
-			nCnt++;
-		}
-
-		// ファイルを閉じる
-		pFile.close();
+		m_pNow->SetNumber(nowData.value());
 	}
+
+	pFile->ChangeFile(RANKING_FILE_PATH);
+	for (size_t cnt = 0; cnt < m_pRankings.size(); ++cnt)
+	{
+		const auto data = pFile->ReadBinary<int>(sizeof(int) * cnt);
+		if (data.has_value())
+		{
+			m_pRankings[cnt]->SetNumber(data.value());
+		}
+		else
+		{
+			isAllZero = true;
+		}
+	}
+
+	for (const auto& pRanking : m_pRankings)
+	{
+		if (pRanking->GetNumber() == 0) isAllZero = true;
+	}
+	delete pFile;
+	return isAllZero;
 }
 
 //****************************************************************
@@ -414,19 +191,39 @@ void CRanking::LoadFile(void)
 //****************************************************************
 void CRanking::WriteFile(void)
 {
-	ofstream outFile("data\\Ranking.txt");
-
-	// ファイルが正常に開けたら
-	if (outFile.is_open())
+	CFile* pFile = new CFile(RANKING_FILE_PATH);
+	for (size_t cnt = 0;cnt<m_pRankings.size();++cnt)
 	{
-		for (int nCnt = 0; nCnt < MAX_NUM - 1; nCnt++)
+		if (cnt == 0)
 		{
-			outFile << m_nTime[nCnt] << endl;
+			if (!pFile->WriteBinary<int>(m_pRankings[cnt]->GetNumber()))break;
 		}
-
-		// ファイルを閉じる
-		outFile.close();
+		else
+		{
+			if (!pFile->AddWriteBinary<int>(m_pRankings[cnt]->GetNumber()))break;
+		}
 	}
+	delete pFile;
+}
+
+//****************************************************************
+// ファイルセット
+//****************************************************************
+void CRanking::SetDefultFile()
+{
+	CFile* pFile = new CFile(RANKING_FILE_PATH);
+	for (size_t cnt = 0; cnt < m_pRankings.size(); ++cnt)
+	{
+		if (cnt == 0)
+		{
+			if (!pFile->WriteBinary<int>(DEFAULT_FILE_DATA[cnt]))break;
+		}
+		else
+		{
+			if (!pFile->AddWriteBinary<int>(DEFAULT_FILE_DATA[cnt]))break;
+		}
+	}
+	delete pFile;
 }
 
 //****************************************************************
@@ -434,87 +231,30 @@ void CRanking::WriteFile(void)
 //****************************************************************
 void CRanking::InitNum(void)
 {
-	float fMinX = 1000.0f;
-	float fSecX = 870.0f;
-	float fRankX = 750.0f;
+	// スクリーンのサイズ
+	D3DXVECTOR2 screenSize{};
+	CManager::GetRenderer()->GetBackBufferSize(&screenSize);
 
-	// 全体のランキング
-	for (int nNum = 0; nNum < MAX_NUM - 1; nNum++)
+	// 数字サイズ
+	D3DXVECTOR2 size{ D3DXVECTOR2((TEXTURE_SIZE.x / TEXTURE_UV_COUNT.x) * screenSize.x * NUMBER_SCALE, (TEXTURE_SIZE.y / TEXTURE_UV_COUNT.y) * screenSize.x * NUMBER_SCALE) };
+	D3DXVECTOR2 rnSize{ D3DXVECTOR2((RN_TEXTURE_SIZE.x / RN_TEXTURE_UV_COUNT.x) * screenSize.x * RN_NUMBER_SCALE, (RN_TEXTURE_SIZE.y / RN_TEXTURE_UV_COUNT.y) * screenSize.x * RN_NUMBER_SCALE) };
+
+	// 今の時間
+	m_pNow = CNumber::Create(m_timeCount, CNumber::TYPE::Time, TEXTURE_PATH, TEXTURE_UV_COUNT, m_pos + D3DXVECTOR3(0.0f, NOW_TIME_HEIGHT_OFFSET * screenSize.y, 0.0f), size, 0, GetPriority());
+
+	// ランキング時間
+	size_t cnt{};
+	for (auto& pRanking : m_pRankings)
 	{
-		for (int nCnt = 0; nCnt < MAX_TIMER; nCnt++)
-		{
-			m_pNumber1[nCnt][nNum] = new CNumber;
-
-			if (m_pNumber1[nCnt][nNum] != nullptr)
-			{
-				m_pNumber1[nCnt][nNum]->Init(fMinX, fMinX, 300.0f, 350.0f, nCnt, nNum, 45.0f, 50.0f, 75.0f, MAX_TIMER, 4, "data\\TEXTURE\\number000.png", 0.1f,CNumber::TYPE_MIN);
-			}
-
-			m_pNumber2[nCnt][nNum] = new CNumber;
-
-			if (m_pNumber2[nCnt][nNum] != nullptr)
-			{
-				m_pNumber2[nCnt][nNum]->Init(fSecX, fSecX, 300.0f, 350.0f, nCnt, nNum, 45.0f, 50.0f, 75.0f, MAX_TIMER, 4, "data\\TEXTURE\\number000.png", 0.1f,CNumber::TYPE_SEC);
-			}
-		}
-
-		m_pNumber3[nNum] = new CNumber;
-
-		if (m_pNumber3[nNum] != nullptr)
-		{
-			m_pNumber3[nNum]->Init(960.0f, 1990.0f, 300.0f, 350.0f, 0, nNum, 1.0f, 0.0f, 75.0f, 1, 0, "data\\TEXTURE\\coron000.png", 1.0f,CNumber::TYPE_CORON);
-		}
+		pRanking = CNumber::Create(m_timeCount, CNumber::TYPE::Time, TEXTURE_PATH, TEXTURE_UV_COUNT, m_pos + D3DXVECTOR3(0.0f, RANKING_START_HEIGHT_OFFSET * screenSize.y+ size.y * cnt, 0.0f), size, 0, GetPriority());
+		++cnt;
 	}
 
-	// 今回のスコア
-	for (int nCnt = 0; nCnt < MAX_TIMER; nCnt++)
+	// ランキングナンバー
+	cnt = 0;
+	for (auto& pRankNumber : m_pRankNumbers)
 	{
-		m_pNumber1[nCnt][MAX_NUM - 1] = new CNumber;
-
-		if (m_pNumber1[nCnt][MAX_NUM - 1] != nullptr)
-		{
-			m_pNumber1[nCnt][MAX_NUM - 1]->Init(fMinX, fMinX, 100.0f, 150.0f, nCnt, 0, 45.0f, 50.0f, 75.0f, MAX_TIMER, 4, "data\\TEXTURE\\number000.png", 0.1f,CNumber::TYPE_MIN1);
-		}
-
-		m_pNumber2[nCnt][MAX_NUM - 1] = new CNumber;
-
-		if (m_pNumber2[nCnt][MAX_NUM - 1] != nullptr)
-		{
-			m_pNumber2[nCnt][MAX_NUM - 1]->Init(fSecX, fSecX, 100.0f, 150.0f, nCnt, 0, 45.0f, 50.0f, 75.0f, MAX_TIMER, 4, "data\\TEXTURE\\number000.png", 0.1f, CNumber::TYPE_SEC1);
-		}
+		pRankNumber = CNumber::Create(1u, CNumber::TYPE::Normal, RN_TEXTURE_PATH, RN_TEXTURE_UV_COUNT, m_pRankings[cnt]->GetLeftPos() + D3DXVECTOR3(-rnSize.x - RN_NUMBER_WIDTH_OFFSET * screenSize.x, 0.0f, 0.0f), rnSize, cnt + 1, GetPriority());
+		++cnt;
 	}
-
-	m_pNumber3[MAX_NUM - 1] = new CNumber;
-
-	if (m_pNumber3[MAX_NUM - 1] != nullptr)
-	{
-		m_pNumber3[MAX_NUM - 1]->Init(960.0f, 1990.0f, 100.0f, 150.0f, 0, 0, 1.0f, 0.0f, 75.0f, 1, 0, "data\\TEXTURE\\coron000.png", 1.0f, CNumber::TYPE_CORON1);
-	}
-
-	// ランキング
-	for (int nCnt = 0; nCnt < MAX_RANKING; nCnt++)
-	{
-		m_pNumber4[nCnt] = new CNumber;
-
-		if (m_pNumber4[nCnt] != nullptr)
-		{
-			m_pNumber4[nCnt]->Init(fRankX, fRankX, 300.0f, 350.0f, 0, nCnt, 50.0f, 50.0f, 75.0f, MAX_TIMER, 4, "data\\TEXTURE\\RankNum.png", 0.1f, CNumber::TYPE_NONE);
-		}
-	}
-}
-
-//****************************************************************
-// ナンバーのイージングセット
-//****************************************************************
-void CRanking::SetNumUpdate(int nCntNum)
-{
-	if (nCntNum < 0)return;
-
-	for (int nCnt = 0; nCnt < MAX_TIMER; nCnt++)
-	{
-		m_pNumber1[nCnt][nCntNum]->Update();
-		m_pNumber2[nCnt][nCntNum]->Update();
-	}
-
-	m_pNumber3[nCntNum]->Update();
 }
