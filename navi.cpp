@@ -642,11 +642,11 @@ D3DXVECTOR2 CNavi::SetScreenPos()
 		{
 			resultPos = m_screenPos;
 		}
-		// スクリーンのサイズ
+
 		D3DXVECTOR2 screenSize{};
 		CManager::GetRenderer()->GetBackBufferSize(&screenSize);
-		std::clamp<float>(resultPos.x, 0, screenSize.x);
-		std::clamp<float>(resultPos.y, 0, screenSize.y);
+		resultPos.x = std::clamp<float>(resultPos.x, 0, screenSize.x);
+		resultPos.y = std::clamp<float>(resultPos.y, 0, screenSize.y);
 	}
 	else
 	{
@@ -958,7 +958,7 @@ void CNavi::SetPointer(void)
 {
 	D3DXVECTOR2 screenSize{};
 	CManager::GetRenderer()->GetBackBufferSize(&screenSize);
-	m_pPointer = CObject2D::Create(D3DXVECTOR3(m_screenPos.x, m_screenPos.y, 0.0f), VEC3_NULL, D3DXVECTOR2(screenSize.x * POINTER_SIZE_MAGNIFICATION, screenSize.y * POINTER_SIZE_MAGNIFICATION));
+	m_pPointer = CObject2D::Create(D3DXVECTOR3(m_screenPos.x, m_screenPos.y, 0.0f), VEC3_NULL, D3DXVECTOR2(screenSize.x * POINTER_SIZE_MAGNIFICATION, screenSize.x * POINTER_SIZE_MAGNIFICATION));
 	m_pPointer->SetTexIndx(CTextureManager::Instance()->Register(POINTER_TEXTURE_PATH));
 }
 
