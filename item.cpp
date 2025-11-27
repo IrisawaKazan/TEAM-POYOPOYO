@@ -11,6 +11,7 @@
 #include "game.h"
 #include "navi.h"
 #include "tutorialBoard.h"
+#include "outline.h"
 
 // 静的メンバ変数宣言
 bool CItem::m_IsNextTutorial = true;
@@ -73,6 +74,7 @@ HRESULT CItem::Init(void)
 	pos.y -= (Offset.y * 1.5f);
 
 	m_IsNextTutorial = true;
+	m_nCntOutline = 0;
 
 	// 影の生成処理
 	m_pShadow = CShadow::Create(pos, D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.4f), m_size.x * 0.6f, m_size.z * 0.6f, "data\\TEXTURE\\Effect\\effect000.jpg");
@@ -127,6 +129,7 @@ void CItem::Update(void)
 	pQuat = GetQuad();
 	// 位置の取得
 	pos = GetPosition();
+	m_nCntOutline++;
 
 	if (m_type == ITEM_CLIMB)
 	{
@@ -251,7 +254,14 @@ void CItem::Draw(void)
 {
 	// オブジェクトXの描画処理
 	CObjectX::Draw();
-
+	CRenderer* pRenderer;
+	pRenderer = CManager::GetRenderer();
+	LPDIRECT3DDEVICE9 pDevice = pRenderer->GetDevice();
+	D3DXMATRIX view, proj;
+	pDevice->GetTransform(D3DTS_VIEW, &view);
+	pDevice->GetTransform(D3DTS_PROJECTION, &proj);
+	COutLine::Instance()->SetParameters(GetWorldMtx(), view, proj, D3DXVECTOR4(0.0f, 0.0f, 0.0f, sinf(Config::OutLineSpeed * m_nCntOutline)),1.5f);
+	CObjectX::DrawOutLine();
 }
 
 //***************************************

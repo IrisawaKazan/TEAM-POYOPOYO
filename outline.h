@@ -1,4 +1,14 @@
+//****************************************************************
+//
+// アウトラインシェーダー[COutLine.h]
+// Author:Takahashi Misaki
+//
+//****************************************************************
+
+// インクルード
 #include "shader.h"
+
+// アウトラインシェーダー
 class COutLine : public CShader
 {
 public:
@@ -13,7 +23,7 @@ public:
 	void EndPass(void);
 
 	// セッター
-	void SetParameters(D3DXMATRIX World, D3DXMATRIX View, D3DXMATRIX Proj, const D3DXVECTOR4 Col = { 1.0f,1.0f,1.0f,1.0f }); // ライトやマテリアルなどの設定
+	void SetParameters(D3DXMATRIX World, D3DXMATRIX View, D3DXMATRIX Proj, const D3DXVECTOR4 Col = { 1.0f,1.0f,1.0f,1.0f },const float Thickness = 5.0f); // ライトやマテリアルなどの設定
 
 	// 静的メンバ関数
 	static COutLine* Instance(void) {

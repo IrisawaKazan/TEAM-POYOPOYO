@@ -26,6 +26,12 @@ public:
 		ITEM_MAX,		// 上限
 	}ITEM;
 
+	// 定数
+	struct Config {
+		// アウトラインが点滅する速さ
+		static constexpr float OutLineSpeed = D3DX_PI / 60;
+	};
+
 	// コンストラクタ・デストラクタ
 	CItem(int nPriority = 3);
 	~CItem();
@@ -60,7 +66,7 @@ private:
 	std::unique_ptr<btCollisionShape> m_CollisionShape;		// 当たり判定の形状
 	std::unique_ptr<btGhostObject> m_GhostObject;			// ゴーストオブジェクト
 	CShadow* m_pShadow;										// 影
-	
+	int m_nCntOutline;										// アウトライン用のカウンタ
 };
 
 #endif

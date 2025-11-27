@@ -150,7 +150,7 @@ void CLight::ResetCol(void)
 		m_Light[nCnt].Diffuse = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
 
 		// ライトの方向を設定
-		vecDir[0] = D3DXVECTOR3(0.2f, -0.8f, -0.4f);
+		vecDir[0] = D3DXVECTOR3(0.8f, -0.8f, -0.4f);
 		// ライトの方向を設定
 		vecDir[1] = D3DXVECTOR3(-0.2f, 0.8f, 0.8f);
 		// ライトの方向を設定

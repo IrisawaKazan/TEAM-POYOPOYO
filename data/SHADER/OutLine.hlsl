@@ -10,6 +10,7 @@ float4x4 g_mtxWorld;
 float4x4 g_mtxView;
 float4x4 g_mtxProj;
 float4 g_Color;
+float g_Thickness;
 
 // 頂点シェーダー
 struct VS_INPUT
@@ -33,7 +34,7 @@ struct VS_OUTPUT
 VS_OUTPUT VS_main(VS_INPUT input)
 {
     // 法線方向に拡張
-    float3 expanded = input.Pos.xyz + input.Normal * 5.0;
+    float3 expanded = input.Pos.xyz + input.Normal * g_Thickness;
 	
 	// 出力用変数
     VS_OUTPUT Out;

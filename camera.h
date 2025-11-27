@@ -38,8 +38,8 @@ public:
 		static constexpr float MoveSpeedR = 0.03f;
 		static constexpr float MoveSpeedParallel = 20.0f;   // sato Add
 		static constexpr float CatchSpeedSide = 0.1f;       // sato Add
-		static constexpr float ParallelMoveMinX = -2000.0f; // sato Add
-		static constexpr float ParallelMoveMaxX = 2000.0f;  // sato Add
+		static constexpr float ParallelMoveMinX = -1800.0f; // sato Add
+		static constexpr float ParallelMoveMaxX = 1800.0f;  // sato Add
 		static constexpr float ParallelMoveMinZ = -800.0f;  // sato Add
 		static constexpr float ParallelMoveMaxZ = 0.0f;     // sato Add
 		static constexpr MODE startMode = MODE::BELTSCROLL; // sato Add
