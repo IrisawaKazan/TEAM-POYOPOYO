@@ -33,13 +33,20 @@ public:
 
 private:
 	void SetRank();
-	void LoadFile(void);
+	bool LoadFile(void);
 	void WriteFile(void);
 	void InitNum(void);
+	void SetDefultFile();
+
+	// Defaultランキング
+	static constexpr std::array<int, 5u> DEFAULT_FILE_DATA =
+	{
+		200,210,220,230,240
+	};
 
 	// 位置
-	static constexpr float NOW_TIME_HEIGHT_OFFSET = -0.25f;     // 今の時間の高さのオフセット
-	static constexpr float RANKING_START_HEIGHT_OFFSET = -0.1f; // ランキングの始まりの高さのオフセット
+	static constexpr float NOW_TIME_HEIGHT_OFFSET = -0.3f;       // 今の時間の高さのオフセット
+	static constexpr float RANKING_START_HEIGHT_OFFSET = -0.15f; // ランキングの始まりの高さのオフセット
 
 	// ランキング数と背景
 	static constexpr const char* RANKING_FILE_PATH = "data/Ranking.bin";
@@ -48,13 +55,14 @@ private:
 
 	// 使う数字について
 	static constexpr const char* TEXTURE_PATH = "data\\TEXTURE\\number001.png"; // テクスチャ
-	static constexpr float NUMBER_SCALE = 0.1f;                                 // 大きさ
+	static constexpr float NUMBER_SCALE = 0.0008f;                              // 大きさ
 	static const D3DXVECTOR2 TEXTURE_SIZE;                                      // テクスチャサイズ
 	static const D3DXVECTOR2 TEXTURE_UV_COUNT;                                  // テクスチャ分割
 
 	// 使う数字について (ランクナンバー)
 	static constexpr const char* RN_TEXTURE_PATH = "data\\TEXTURE\\RankNum.png";  // テクスチャ
-	static constexpr float RN_NUMBER_SCALE = 0.1f;                                // 大きさ
+	static constexpr float RN_NUMBER_SCALE = 0.00016f;                            // 大きさ
+	static constexpr float RN_NUMBER_WIDTH_OFFSET = 0.02f;                        // オフセット
 	static const D3DXVECTOR2 RN_TEXTURE_SIZE;                                     // テクスチャサイズ
 	static const D3DXVECTOR2 RN_TEXTURE_UV_COUNT;                                 // テクスチャ分割
 

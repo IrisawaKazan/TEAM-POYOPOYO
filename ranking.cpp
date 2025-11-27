@@ -13,7 +13,7 @@
 const D3DXCOLOR CRanking::BOARD_COLOR = { 0.0f, 0.0f, 0.0f, 0.5f }; // 背景カラー
 
 const D3DXVECTOR2 CRanking::TEXTURE_SIZE = { 566,80 };   // テクスチャサイズ
-const D3DXVECTOR2 CRanking::TEXTURE_UV_COUNT = { 11,0 }; // テクスチャ分割
+const D3DXVECTOR2 CRanking::TEXTURE_UV_COUNT = { 11,1 }; // テクスチャ分割
 
 const D3DXVECTOR2 CRanking::RN_TEXTURE_SIZE = { 1309,218 }; // テクスチャサイズ
 const D3DXVECTOR2 CRanking::RN_TEXTURE_UV_COUNT = { 10,1 }; // テクスチャ分割
@@ -51,7 +51,11 @@ HRESULT CRanking::Init(void)
 	InitNum();
 
 	// 読み込み
-	LoadFile();
+	if (LoadFile())
+	{// ファイルが初期状態や不正な時
+		SetDefultFile();
+		LoadFile();
+	}
 
 	// ランキング整理
 	SetRank();
@@ -62,7 +66,7 @@ HRESULT CRanking::Init(void)
 	// 黒ポリゴン
 	D3DXVECTOR2 screenSize{};
 	CManager::GetRenderer()->GetBackBufferSize(&screenSize);
-	m_pBrackboard = CObject2D::Create(m_pos, VEC3_NULL, m_size);
+	m_pBrackboard = CObject2D::Create(m_pos, VEC3_NULL, m_size * 0.5f);
 	m_pBrackboard->SetCol(BOARD_COLOR);
 
 	// サウンドの取得
@@ -128,8 +132,18 @@ void CRanking::SetRank()
 	}
 	rankDatas[MAX_RANKING] = m_pNow->GetNumber();    // 今の時間を追加
 
-	// ソート(r(リバースイテレータ)をつけることで降順にできる)
-	std::sort(rankDatas.rbegin(), rankDatas.rend());
+	// ソート
+	std::sort(rankDatas.begin(), rankDatas.end(),
+		[](int a, int b)
+		{
+			// 0は後ろ
+			if (a == 0) return false;
+			if (b == 0) return true;
+
+			// 両方0でなければ比較
+			return a < b;
+		}
+	);
 
 	for (size_t cnt = 0; cnt < m_pRankings.size(); cnt++)
 	{// 数値を戻す
@@ -140,8 +154,9 @@ void CRanking::SetRank()
 //****************************************************************
 // ファイル読み込み
 //****************************************************************
-void CRanking::LoadFile(void)
+bool CRanking::LoadFile(void)
 {
+	bool isAllZero{};
 	CFile* pFile = new CFile(CTimer::FILE_PATH);
 	const auto nowData = pFile->ReadBinary<int>(sizeof(bool));
 	if (nowData.has_value())
@@ -157,8 +172,18 @@ void CRanking::LoadFile(void)
 		{
 			m_pRankings[cnt]->SetNumber(data.value());
 		}
+		else
+		{
+			isAllZero = true;
+		}
+	}
+
+	for (const auto& pRanking : m_pRankings)
+	{
+		if (pRanking->GetNumber() == 0) isAllZero = true;
 	}
 	delete pFile;
+	return isAllZero;
 }
 
 //****************************************************************
@@ -169,7 +194,34 @@ void CRanking::WriteFile(void)
 	CFile* pFile = new CFile(RANKING_FILE_PATH);
 	for (size_t cnt = 0;cnt<m_pRankings.size();++cnt)
 	{
-		if (!pFile->AddWriteBinary<int>(m_pRankings[cnt]->GetNumber()))break;
+		if (cnt == 0)
+		{
+			if (!pFile->WriteBinary<int>(m_pRankings[cnt]->GetNumber()))break;
+		}
+		else
+		{
+			if (!pFile->AddWriteBinary<int>(m_pRankings[cnt]->GetNumber()))break;
+		}
+	}
+	delete pFile;
+}
+
+//****************************************************************
+// ファイルセット
+//****************************************************************
+void CRanking::SetDefultFile()
+{
+	CFile* pFile = new CFile(RANKING_FILE_PATH);
+	for (size_t cnt = 0; cnt < m_pRankings.size(); ++cnt)
+	{
+		if (cnt == 0)
+		{
+			if (!pFile->WriteBinary<int>(DEFAULT_FILE_DATA[cnt]))break;
+		}
+		else
+		{
+			if (!pFile->AddWriteBinary<int>(DEFAULT_FILE_DATA[cnt]))break;
+		}
 	}
 	delete pFile;
 }
@@ -202,7 +254,7 @@ void CRanking::InitNum(void)
 	cnt = 0;
 	for (auto& pRankNumber : m_pRankNumbers)
 	{
-		pRankNumber = CNumber::Create(1u, CNumber::TYPE::Normal, RN_TEXTURE_PATH, RN_TEXTURE_UV_COUNT, m_pRankings[cnt]->GetLeftPos() + D3DXVECTOR3(-rnSize.x * 0.5f, 0.0f, 0.0f), rnSize, cnt + 1, GetPriority());
+		pRankNumber = CNumber::Create(1u, CNumber::TYPE::Normal, RN_TEXTURE_PATH, RN_TEXTURE_UV_COUNT, m_pRankings[cnt]->GetLeftPos() + D3DXVECTOR3(-rnSize.x - RN_NUMBER_WIDTH_OFFSET * screenSize.x, 0.0f, 0.0f), rnSize, cnt + 1, GetPriority());
 		++cnt;
 	}
 }

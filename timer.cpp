@@ -98,12 +98,13 @@ void CTimer::Update(void)
 			}
 			break;
 		}
-		m_counter = 0;
-	}
 
-	if (m_pNumber != nullptr)
-	{
-		m_pNumber->SetNumber(m_nTime); // •\¦Ø‘Ö
+		if (m_pNumber != nullptr)
+		{
+			m_pNumber->SetNumber(m_nTime); // •\¦Ø‘Ö
+		}
+
+		m_counter = 0;
 	}
 }
 

@@ -44,6 +44,7 @@ CPauseManager* CGame::m_pPauseManager = NULL;
 CPlayerManager* CGame::m_pPlayerManager = NULL;
 CMapManager* CGame::m_pMapManager = NULL;
 CTutorialBoard* CGame::m_pTutorialBoard = NULL;
+CTimer* CGame::pTimer = NULL; // タイマー sato
 bool CGame::m_bGoal = false;
 
 using namespace std;

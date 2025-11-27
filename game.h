@@ -65,8 +65,9 @@ public:
 
 	// ゲッター
 	static CTutorialBoard* GetTutorialBoard(void) { return m_pTutorialBoard; }
-	static CPlayerManager* GetPlayerManager(void) { return m_pPlayerManager; }; // sato Add
-	static bool GetGoal(void) { return m_bGoal; };
+	static CPlayerManager* GetPlayerManager(void) { return m_pPlayerManager; } // sato Add
+	static CTimer* GetTimer(void) { return pTimer; }                           // sato Add
+	static bool GetGoal(void) { return m_bGoal; }
 private:
 	static constexpr int TIME_LIMIT = 240; // 制限時間 (秒)
 
@@ -96,14 +97,13 @@ private:
 	// 静的メンバ変数
 	static CPauseManager* m_pPauseManager;				// ポーズマネージャーへのポインタ
 	static CPlayerManager* m_pPlayerManager;			// プレイヤーマネージャー
-	static CMapManager* m_pMapManager;			// プレイヤーマネージャー
+	static CMapManager* m_pMapManager;			        // プレイヤーマネージャー
+	static CTimer* pTimer;                              // タイマー
 
 	static CTutorialBoard* m_pTutorialBoard;
 
 	static bool m_bGoal;
 
 	CBlock* m_pBlock; // スタートオブジェクト
-
-	CTimer* pTimer;   // タイマー
 };
 #endif // !_GAME_H_

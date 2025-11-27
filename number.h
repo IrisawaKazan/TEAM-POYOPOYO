@@ -40,7 +40,7 @@ public:
 	void SetPos(D3DXVECTOR3 pos) { m_pos = pos; }
 	void SetSize(D3DXVECTOR2 size) { m_size = size; }
 	void SetTexturePath(const char* texturePath) { m_texturePath = texturePath; }
-	void SetNumber(int number, bool isAdd = false) { isAdd ? m_number = number : m_number += number; }
+	void SetNumber(int number, bool isAdd = false) { isAdd ? m_number += number : m_number = number; }
 	void SetTexUVCount(D3DXVECTOR2 texUVCount) { m_texUVCount = texUVCount; m_texUVSize = D3DXVECTOR2(1.0f / m_texUVCount.x, 1.0f / m_texUVCount.y); }
 
 	// ÉQÉbÉ^Å[
