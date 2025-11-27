@@ -34,6 +34,7 @@ public:
 
 private:
 	bool m_IsGoal;
+	CObject2D* m_GameOver;
 };
 
 #endif // !_RESULT_H_

@@ -89,22 +89,30 @@ HRESULT CResult::Init(void)
     }
     else
     {
-        CObject2D* Info;
-        Info = CObject2D::Create({ CManager::GetRenderer()->GetSenterPos().x,CManager::GetRenderer()->GetSenterPos().y - 400.0f ,0.0f }, VEC3_NULL);
-        Info->SetTexIndx(CTextureManager::Instance()->Register("data\\TEXTURE\\game_over.png"));
-        Info->SetSize({ Info->GetSize().x + 300.0f,Info->GetSize().y });
+        // 生成
+        m_GameOver = CObject2D::Create({ CManager::GetRenderer()->GetSenterPos().x,CManager::GetRenderer()->GetSenterPos().y - 400.0f ,0.0f }, {0.0f,0.0f,D3DX_PI * -0.05f});
+        // テクスチャ設定
+        m_GameOver->SetTexIndx(CTextureManager::Instance()->Register("data\\TEXTURE\\game_over.png"));
+        // 大きさ設定
+        m_GameOver->SetSize({ m_GameOver->GetSize().x + 300.0f,m_GameOver->GetSize().y });
     }
-    return E_NOTIMPL;
+    return S_OK;
 }
 
 //  更新
 void CResult::Update(void)
 {
-if (CManager::GetInputKeyboard()->GetTrigger(DIK_RETURN) || CManager::GetInputJoypad()->GetTrigger(CInputJoypad::JOYKEY_A) || CManager::GetInputMouse()->OnDown(0) == true)
-   {
+    if (CManager::GetInputKeyboard()->GetTrigger(DIK_RETURN) || CManager::GetInputJoypad()->GetTrigger(CInputJoypad::JOYKEY_A) || CManager::GetInputMouse()->OnDown(0) == true)
+    {
         //CManager::GetSound()->Play(CSound::LABEL_ENTER);
         CFade::SetFade(new CTitle);
     }
+    // 位置を取得
+    D3DXVECTOR3 Pos = m_GameOver->GetPosition();
+    // ずらす
+    Pos.y+=10;
+    // 設定
+    m_GameOver->SetPosition(Pos);
 }
 
 //  終了
