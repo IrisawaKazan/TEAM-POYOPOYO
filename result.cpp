@@ -84,6 +84,13 @@ HRESULT CResult::Init(void)
         // ¶¬
         CParticle3D::Create(HappyMisile);
     }
+    else
+    {
+        CObject2D* Info;
+        Info = CObject2D::Create({ CManager::GetRenderer()->GetSenterPos().x,CManager::GetRenderer()->GetSenterPos().y - 400.0f ,0.0f }, VEC3_NULL);
+        Info->SetTexIndx(CTextureManager::Instance()->Register("data\\TEXTURE\\game_over.png"));
+        Info->SetSize({ Info->GetSize().x + 300.0f,Info->GetSize().y });
+    }
     return E_NOTIMPL;
 }
 
