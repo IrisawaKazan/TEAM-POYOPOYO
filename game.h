@@ -69,7 +69,7 @@ public:
 	static CTimer* GetTimer(void) { return pTimer; }                           // sato Add
 	static bool GetGoal(void) { return m_bGoal; }
 private:
-	static constexpr int TIME_LIMIT = 240; // 制限時間 (秒)
+	static constexpr int TIME_LIMIT = 0; // 制限時間 (秒)
 
 	// ナビゲーションオブジェクトUIのテクスチャリスト
 	static constexpr std::array<const char*, 4u> NAVI_UI_TEXTURES =

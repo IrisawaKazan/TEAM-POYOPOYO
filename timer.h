@@ -12,7 +12,6 @@
 // 前方宣言
 class CNumber;
 
-//-------------------
 // タイマークラス
 //-------------------
 class CTimer : public CObject
