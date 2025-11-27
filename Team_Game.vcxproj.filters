@@ -175,8 +175,12 @@
     <ClCompile Include="sound.cpp">
       <Filter>ソース</Filter>
     </ClCompile>
-    <ClCompile Include="shader.cpp" />
-    <ClCompile Include="outline.cpp" />
+    <ClCompile Include="outline.cpp">
+      <Filter>ソース</Filter>
+    </ClCompile>
+    <ClCompile Include="shader.cpp">
+      <Filter>ヘッダ</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="uplift.h">
@@ -362,8 +366,12 @@
     <ClInclude Include="abstractblock.h">
       <Filter>ヘッダ</Filter>
     </ClInclude>
-    <ClInclude Include="shader.h" />
-    <ClInclude Include="outline.h" />
+    <ClInclude Include="outline.h">
+      <Filter>ヘッダ</Filter>
+    </ClInclude>
+    <ClInclude Include="shader.h">
+      <Filter>ヘッダ</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ソース">
