@@ -176,7 +176,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hInstancePrev, _
 				dwFPSLastTime = dwCurrentTime;	// •Û‘¶
 				dwFrameCount = 0;				// 0‚É–ß‚·
 			}
-			if ((dwCurrentTime - dwExecLastTime) >= (1000 / 60))
+			if ((dwCurrentTime - dwExecLastTime) >= (1000 / FPS))
 			{
 				dwExecLastTime = dwCurrentTime;	// •Û‘¶
 

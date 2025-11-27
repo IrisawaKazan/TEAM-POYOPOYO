@@ -14,6 +14,7 @@
 #include "tutorialBoard.h"
 #include "navi.h"
 #include "naviUi.h"
+#include "timer.h"
 
 // 名前空間
 using namespace std;
@@ -840,5 +841,6 @@ void CCamera::UpdateMotion(void)
 		SetBelt();
 		// Naviを設定
 		CGame::SetNavis();
+		CGame::GetTimer()->SetCount(CTimer::COUNT::Up); // カウントアップ
 	}
 }

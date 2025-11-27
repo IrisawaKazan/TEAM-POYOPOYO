@@ -4,8 +4,7 @@
 // Author: Irisawa Kazan
 //
 //==============================================================
-#ifndef _TIMER_H_ // このマクロ定義がされてなかったら
-#define _TIMER_H_ // 2重インクルード防止のマクロ定義
+#pragma once
 
 #include"main.h"
 #include"object.h"
@@ -13,56 +12,59 @@
 // 前方宣言
 class CNumber;
 
-// マクロ定義
-#define MAX_TIMER (2)
-#define MAX_TIMEOVER (4)
-#define MAX_HOUR (216000)
-
+//-------------------
 // タイマークラス
+//-------------------
 class CTimer : public CObject
 {
 public:
+	static constexpr const char* FILE_PATH = "data/Goal.bin"; // 書き込みファイル
 
-	CTimer(int nPriority = 7);
-	~CTimer();
+	// タイプ
+	enum class COUNT : unsigned char
+	{
+		None,
+		Up,
+		Down,
+		Max
+	};
+
+	CTimer(size_t timeCount, int nPriority) : CObject(nPriority), m_timeCount{ timeCount }, m_pNumber{}, m_pos{}, m_nTime{}, m_timeOver{}, m_count{}, m_counter{} {}
+	~CTimer() = default;
+
+	static CTimer* Create(D3DXVECTOR3 pos, size_t timeCount, int startTime = 0, int limitTime = 60, int nPriority = 7);
+
 	HRESULT Init(void);
 	void Uninit(void);
 	void Update(void);
 	void Draw(void);
-	static CTimer* Create(D3DXVECTOR3 pos);
 
 	void WriteFile(void);
 
 	// セッター
-	void SetPosition(D3DXVECTOR3 pos) { m_pos = pos; };
-
-	void SubNs(int nValue);
-	void SubMin(int nValue);
+	void SetPos(D3DXVECTOR3 pos) { m_pos = pos; };
+	void SetCount(COUNT count) { m_count = count; m_counter = 0; }
 
 	// ゲッター
+	bool IsTimeOver() { return m_timeOver; }
 	D3DXVECTOR3 GetPos(void) { return m_pos; };
-	int GetNs(void) { return m_nNs; };
-	static int GetMin(void) { return m_nMin; };
-	static int GetTime(void) { return m_nTime; };
-	static int GetTimer(void);
-
-	// インスタンス生成
-	static CTimer* Instance(void) {
-		static CTimer* pInstance = new CTimer;
-		return pInstance;
-	}
+	COUNT GetCount() { return m_count; }
 
 private:
-	static CNumber* m_pNumber1[MAX_TIMER];	// ナンバーのポインタ(秒)
-	static CNumber* m_pNumber2[MAX_TIMER];	// ナンバーのポインタ(分)
-	static CNumber* m_pNumber3;				// ナンバーのポインタ(:)
-	D3DXVECTOR3 m_pos;						// 位置
-	int m_nNs;								// 秒
-	int m_nHour;							// 時
-	int m_nGoal;							// クリア時の書き込み用変数
-	static int m_nTimer;					// タイマーの取得
-	static int m_nTime;						// 値
-	static int m_nMin;						// 分
-};
+	static constexpr const char* TEXTURE_PATH = "data\\TEXTURE\\number001.png"; // テクスチャ
+	static constexpr float NUMBER_SCALE = 0.0005f;                              // 大きさ
+	static const D3DXVECTOR2 TEXTURE_SIZE;                                      // テクスチャサイズ
+	static const D3DXVECTOR2 TEXTURE_UV_COUNT;                                  // テクスチャ分割
 
-#endif
+	void SetStartTime(int time) { m_nTime = time; }
+	void SetLimitTime(int time) { m_nLimitTime = time; }
+
+	const size_t m_timeCount; // 1.秒 2.分:秒 3.時:分:秒
+	CNumber* m_pNumber;	      // ナンバーのポインタ
+	D3DXVECTOR3 m_pos;	      // 位置
+	int m_nTime;		      // 秒数
+	int m_nLimitTime;         // 秒数
+	bool m_timeOver;          // クリア時の書き込み用変数
+	COUNT m_count;            // カウント方式
+	size_t m_counter;         // カウンター
+};

@@ -14,6 +14,8 @@
 #include "mapmanager.h"
 #include "particle3d.h"
 #include "effect3d.h"
+#include "file.h"
+#include "timer.h"
 
 using namespace std;
 
@@ -32,9 +34,10 @@ CResult::~CResult()
 //  初期化
 HRESULT CResult::Init(void)
 {
-    //  CObject2D::Create(D3DXVECTOR3(640.0f, 370.0f, 0.0f), VEC3_NULL);
-    CRanking::Instance()->Init();
-    
+    D3DXVECTOR2 screenSize{};
+    CManager::GetRenderer()->GetBackBufferSize(&screenSize);
+    CRanking::Create(D3DXVECTOR3(screenSize.x * 0.75f, screenSize.y * 0.5f, 0.0f), D3DXVECTOR2(screenSize.x * 0.5f, screenSize.y), 2u);
+
     LoadFile();
 
     int nMotion = 0;
@@ -90,10 +93,8 @@ HRESULT CResult::Init(void)
 //  更新
 void CResult::Update(void)
 {
-    CRanking::Instance()->Update();
-
-    if (CManager::GetInputKeyboard()->GetTrigger(DIK_RETURN) || CManager::GetInputJoypad()->GetTrigger(CInputJoypad::JOYKEY_A) || CManager::GetInputMouse()->OnDown(0) == true)
-    {
+if (CManager::GetInputKeyboard()->GetTrigger(DIK_RETURN) || CManager::GetInputJoypad()->GetTrigger(CInputJoypad::JOYKEY_A) || CManager::GetInputMouse()->OnDown(0) == true)
+   {
         //CManager::GetSound()->Play(CSound::LABEL_ENTER);
         CFade::SetFade(new CTitle);
     }
@@ -102,14 +103,13 @@ void CResult::Update(void)
 //  終了
 void CResult::Uninit(void)
 {
-    CRanking::Instance()->Uninit();
     delete this;
 }
 
 //  描画
 void CResult::Draw(void)
 {
-    CRanking::Instance()->Draw();
+
 }
 
 //****************************************************************
@@ -117,19 +117,15 @@ void CResult::Draw(void)
 //****************************************************************
 void CResult::LoadFile(void)
 {
-    ifstream pFile("data\\Goal.txt");
-    string line = {};
-
-    // ファイルが正常に開けたら
-    if (pFile.is_open())
-    {
-        getline(pFile, line);
-
-        istringstream iss(line);
-
-        iss >> m_IsGoal;
-
-        // ファイルを閉じる
-        pFile.close();
+    CFile* pFile = new CFile(CTimer::FILE_PATH);
+    const auto timeOver = pFile->ReadBinary<bool>();
+    if (timeOver.has_value())
+    {// 読み取り成功している
+        m_IsGoal = !timeOver.value(); // タイムオーバーじゃない = ゴール
     }
+    else
+    {
+        m_IsGoal = false;
+    }
+    delete pFile;
 }
