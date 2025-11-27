@@ -67,6 +67,8 @@ public:
 	static CPlayerManager* GetPlayerManager(void) { return m_pPlayerManager; }; // sato Add
 	static bool GetGoal(void) { return m_bGoal; };
 private:
+	static constexpr int TIME_LIMIT = 240; // 制限時間 (秒)
+
 	// ナビゲーションオブジェクトUIのテクスチャリスト
 	static constexpr std::array<const char*, 4u> NAVI_UI_TEXTURES =
 	{
@@ -100,5 +102,7 @@ private:
 	static bool m_bGoal;
 
 	CBlock* m_pBlock; // スタートオブジェクト
+
+	CTimer* pTimer;   // タイマー
 };
 #endif // !_GAME_H_

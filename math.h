@@ -28,8 +28,15 @@ public:
 	static D3DXQUATERNION ConvertQuat(btQuaternion Set);
 
 	static bool CalculateXZIntersection(D3DXVECTOR3& outIntersection, const D3DXVECTOR3& line1_pos, const D3DXVECTOR3& line1_dir, const D3DXVECTOR3& line2_pos, const D3DXVECTOR3& line2_dir); // sato Add
-	static float GetDistanceToLineXZ(const D3DXVECTOR3& point, const D3DXVECTOR3& linePos, const D3DXVECTOR3& lineDir);                                                                        // sato Add
-	static D3DXVECTOR3 GetNierToLineXZ(const D3DXVECTOR3& point, const D3DXVECTOR3& linePos, const D3DXVECTOR3& lineDir);                                                                      // sato Add
+	static float GetDistanceToLineXZ(const D3DXVECTOR3& point, const D3DXVECTOR3& linePos, const D3DXVECTOR3& lineDir);                                                                        // 
+	static D3DXVECTOR3 GetNierToLineXZ(const D3DXVECTOR3& point, const D3DXVECTOR3& linePos, const D3DXVECTOR3& lineDir);                                                                      // 
+
+	static int TotalSecondstoHour(int number) { return number / 3600; }        // sato Add
+	static int TotalSecondstoMinute(int number) { return (number / 60) % 60; } //
+	static int TotalSecondstoSecond(int number) { return number % 60; }        //
+	static int HourtoTotalSeconds(int number) { return number * 3600; }        //
+	static int MinutetoTotalSeconds(int number) { return number * 60; }        //
+	static int SecondtoTotalSeconds(int number) { return number; }             //
 private:
 	// コンストラクタ・デストラクタ
 	CMath();

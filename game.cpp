@@ -99,8 +99,7 @@ HRESULT CGame::Init(void)
 	CManager::GetRenderer()->GetBackBufferSize(&screenSize);
 	CNaviUI::Create("data/TEXTURE/UI/Frame001.png", NAVI_UI_TEXTURES, NAVI_UI_ARROW_TEXTURES, NAVI_UI_KEY_TEXTURES, D3DXVECTOR3(screenSize.x * 0.175f, screenSize.y * 0.82f, 0.0f), D3DXVECTOR2(screenSize.x * 0.1f, screenSize.x * 0.1f));
 
-	//CTimer::Instance()->SetPosition(D3DXVECTOR3(640.0f, 360.0f, 0.0f));
-	CTimer::Create(D3DXVECTOR3(640.0f,360.0f,0.0f));
+	pTimer = CTimer::Create(D3DXVECTOR3(screenSize.x * 0.1f, screenSize.y * 0.05f, 0.0f), 2, CTimer::COUNT::Up, 0, TIME_LIMIT);
 
 	//// 火の情報を設定
 	//CParticle3D::DefoultEffectInfo FireInfo;
@@ -217,6 +216,11 @@ void CGame::Update(void)
 	//	m_bGoal = true;
 	//	CFade::SetFade(new CResult);
 	//}
+
+	if (pTimer->IsTimeOver())
+	{// タイムオーバー
+		CFade::SetFade(new CResult);
+	}
 
 	// レイキャストオブジェクトに登録 sato
 	CModelManager* pModelManager = CModelManager::Instance();
