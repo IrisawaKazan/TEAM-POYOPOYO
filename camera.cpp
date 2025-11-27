@@ -48,8 +48,8 @@ CCamera::CCamera()
 	// モード初期値 sato Add
 	m_mode = MODE::NORMAL;
 
-	//// 読み込み
-	//LoadMotion("data\\TEXT\\CameraWork\\CameraWork.txt");
+	// 読み込み
+	LoadMotion("data\\TEXT\\CameraWork\\CameraWork.txt");
 }
 
 //***************************************
@@ -87,6 +87,8 @@ HRESULT CCamera::Init(void)
 		SetBelt();
 		break;
 	}
+
+	SetMovie(MOTIONTYPE_STARTMOVIE);
 
 	// デバイスを取得
 	m_pInputKeyboard = CManager::GetInputKeyboard();
