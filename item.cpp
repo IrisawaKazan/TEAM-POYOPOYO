@@ -12,6 +12,9 @@
 #include "navi.h"
 #include "tutorialBoard.h"
 
+// 静的メンバ変数宣言
+bool CItem::m_IsNextTutorial = true;
+
 //***************************************
 // コンストラクタ
 //***************************************
@@ -69,6 +72,8 @@ HRESULT CItem::Init(void)
 	// 影の位置に変更
 	pos.y -= (Offset.y * 1.5f);
 
+	m_IsNextTutorial = true;
+
 	// 影の生成処理
 	m_pShadow = CShadow::Create(pos, D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.4f), m_size.x * 0.6f, m_size.z * 0.6f, "data\\TEXTURE\\Effect\\effect000.jpg");
 
@@ -117,8 +122,6 @@ void CItem::Update(void)
 	// カウント
 	static int nCount = 0;
 	static int test = 0;
-	// 特別な指示を取ったかどうか
-	static bool bTutorial = true;
 
 	// クオータニオンの取得
 	pQuat = GetQuad();
@@ -211,26 +214,26 @@ void CItem::Update(void)
 			case ITEM_JUMP:
 
 				// チュートリアル表示
-				CGame::GetTutorialBoard()->SetUp("data\\TEXTURE\\tutorial_002.png", bTutorial);
+				CGame::GetTutorialBoard()->SetUp("data\\TEXTURE\\tutorial_002.png", m_IsNextTutorial);
 
 				// アイテムの有効化
 				CNavi::GetInstance()->SetEnable(CNavi::TYPE::Jump, true);
 
 				// チュートリアルを見ない状態にする
-				bTutorial = false;
+				m_IsNextTutorial = false;
 
 				break;
 
 			case ITEM_CLIMB:
 
 				// チュートリアル表示
-				CGame::GetTutorialBoard()->SetUp("data\\TEXTURE\\tutorial_004.png", bTutorial);
+				CGame::GetTutorialBoard()->SetUp("data\\TEXTURE\\tutorial_004.png", m_IsNextTutorial);
 
 				// アイテムの有効化
 				CNavi::GetInstance()->SetEnable(CNavi::TYPE::Climb, true);
 
 				// チュートリアルを見ない状態にする
-				bTutorial = false;
+				m_IsNextTutorial = false;
 
 				break;
 

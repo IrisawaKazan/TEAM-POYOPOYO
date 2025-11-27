@@ -32,7 +32,7 @@ public:
 	static constexpr float JUMP_SPEED_INA = 15.0f;                          // ジャンプ力(横移動) sato Add
 	static constexpr float AIR_CONTROL_FACTOR = 0.1f;                       // 空中制御係数 sato Add
 	static constexpr float GROUND_MARGIN = 0.05f;                           // 着地制御 sato Add
-	static constexpr float LANDING_MOTION_HEIGHT_MIN = 8.0f;                // 着地モーションをする最低の落下速度 sato Add
+	static constexpr float LANDING_MOTION_HEIGHT_MIN = 15.0f;                // 着地モーションをする最低の落下速度 sato Add
 	static constexpr float HIT_NAVI_OBJECT_TIME = 1.0f;                     // ナビゲーションオブジェクトに再度当たるまでの最低秒数(これ以上短い期間で連続であたっても無視します) sato Add
 	
 	// 状態
