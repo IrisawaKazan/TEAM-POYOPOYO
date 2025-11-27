@@ -27,6 +27,7 @@
 #include "tutorialBoard.h"
 #include "particle3d.h"
 #include "effect3d.h"
+#include "gemespeedUI.h"
 
 // 規定値を設定
 // プレイヤー
@@ -44,6 +45,7 @@ CPauseManager* CGame::m_pPauseManager = NULL;
 CPlayerManager* CGame::m_pPlayerManager = NULL;
 CMapManager* CGame::m_pMapManager = NULL;
 CTutorialBoard* CGame::m_pTutorialBoard = NULL;
+CGameSpeedUI* CGame::m_pGameSpeedUI = NULL;
 CTimer* CGame::pTimer = NULL; // タイマー sato
 bool CGame::m_bGoal = false;
 
@@ -85,7 +87,11 @@ HRESULT CGame::Init(void)
 	CManager::GetCamera()->Init();
 	CManager::GetCamera()->SetMovie(CCamera::MOTIONTYPE_STARTMOVIE);
 
+	// チュートリアルの生成
 	m_pTutorialBoard = CTutorialBoard::Create();
+
+	// 倍速UIの生成 Misaki
+	m_pGameSpeedUI = CGameSpeedUI::Create();
 
 	// スタートオブジェクト
 	m_pBlock = CBlock::Create("data\\Model\\mine_shaft.x", { 1800.0f,0.0f,-900.0f }, { 0.0f, -D3DX_PI * 0.5f,0.0f }, { 1.0f,1.0f,1.0f });
@@ -165,6 +171,7 @@ void CGame::Update(void)
 {
 //#ifdef _DEBUG
 	int GameSpeed = CManager::GetGameSpeed();
+	bool bSpeedUP = m_pGameSpeedUI->GetSpeedUP();	// Misaki
 
 	if (CManager::GetInputKeyboard() != NULL)
 	{
@@ -184,6 +191,9 @@ void CGame::Update(void)
 			CManager::GetInputJoypad()->GetTrigger(CInputJoypad::JOYKEY_Y) == true && m_pTutorialBoard->GetProgress() == false)
 		{
 			CManager::SetGameSpeed(Wrap(GameSpeed + 1, 1, 2));
+
+			// 倍速を切り替え Misaki
+			m_pGameSpeedUI->SetSpeed(bSpeedUP ? false : true);
 		}
 	}
 //#endif // DEBUG
