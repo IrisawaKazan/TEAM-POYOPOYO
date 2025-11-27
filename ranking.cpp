@@ -9,14 +9,17 @@
 #include "number.h"
 #include "timer.h"
 #include "file.h"
+#include "math_T.h"
 
-const D3DXCOLOR CRanking::BOARD_COLOR = { 0.0f, 0.0f, 0.0f, 0.5f }; // 背景カラー
+const D3DXCOLOR CRanking::BOARD_COLOR = { 0.0f, 0.0f, 0.0f, 0.2f }; // 背景カラー
 
 const D3DXVECTOR2 CRanking::TEXTURE_SIZE = { 566,80 };   // テクスチャサイズ
 const D3DXVECTOR2 CRanking::TEXTURE_UV_COUNT = { 11,1 }; // テクスチャ分割
 
 const D3DXVECTOR2 CRanking::RN_TEXTURE_SIZE = { 1309,218 }; // テクスチャサイズ
 const D3DXVECTOR2 CRanking::RN_TEXTURE_UV_COUNT = { 10,1 }; // テクスチャ分割
+
+const D3DXCOLOR CRanking::NUMBER_COLOR = { 0.0f,1.0f,0.0f,1.0f };
 
 //****************************************************************
 // 生成
@@ -66,7 +69,7 @@ HRESULT CRanking::Init(void)
 	// 黒ポリゴン
 	D3DXVECTOR2 screenSize{};
 	CManager::GetRenderer()->GetBackBufferSize(&screenSize);
-	m_pBrackboard = CObject2D::Create(m_pos, VEC3_NULL, m_size * 0.5f, 6);
+	m_pBrackboard = CObject2D::Create(m_pos, VEC3_NULL, m_size * 0.5f, 4);
 	m_pBrackboard->SetCol(BOARD_COLOR);
 
 	// サウンドの取得
@@ -127,24 +130,52 @@ void CRanking::Update(void)
 				D3DXVECTOR3 space = m_rankEndPos[order] - m_pNow->GetPos();
 				if (D3DXVec3Length(&space) < 1.0f)
 				{
+					m_counter = 0;
 					m_isRankNoveEnds[order] = true;
 					break;
 				}
-				m_pNow->SetPos(m_pNow->GetPos() + space * 0.1f);
+				float fe = EaseOutSine(float(m_counter) / float(NUMBER_MOVE_C));
+				m_pNow->SetPos(m_pNow->GetPos() + space * fe);
 			}
 			else
 			{
 				D3DXVECTOR3 space = m_rankEndPos[order] - m_pRankings[order]->GetPos();
 				if (D3DXVec3Length(&space) < 1.0f)
 				{
+					m_counter = 0;
 					m_isRankNoveEnds[order] = true;
 					break;
 				}
-				m_pRankings[order]->SetPos(m_pRankings[order]->GetPos() + space * 0.1f);
+				float fe = EaseOutSine(float(m_counter) / float(NUMBER_MOVE_C));
+				m_pRankings[order]->SetPos(m_pRankings[order]->GetPos() + space * fe);
 			}
+			++m_counter;
 			break;
 		}
 	}
+
+	if (m_colCounter % NUMBER_COLOR_C == 0)
+	{
+		if (m_isRankNoveEnds[5u])
+		{
+			m_pNow->SetCol(m_isColorFlag ? WHITE : NUMBER_COLOR);
+		}
+		size_t idx{};
+		for (const auto& pRanking : m_pRankings)
+		{
+			if (pRanking->GetNumber() == m_pNow->GetNumber())
+			{
+				if (m_isRankNoveEnds[idx])
+				{
+					pRanking->SetCol(m_isColorFlag ? WHITE : NUMBER_COLOR);
+				}
+				break;
+			}
+			++idx;
+		}
+		m_isColorFlag = !m_isColorFlag;
+	}
+	++m_colCounter;
 }
 
 //****************************************************************

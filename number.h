@@ -42,6 +42,7 @@ public:
 	void SetTexturePath(const char* texturePath) { m_texturePath = texturePath; }
 	void SetNumber(int number, bool isAdd = false) { isAdd ? m_number += number : m_number = number; }
 	void SetTexUVCount(D3DXVECTOR2 texUVCount) { m_texUVCount = texUVCount; m_texUVSize = D3DXVECTOR2(1.0f / m_texUVCount.x, 1.0f / m_texUVCount.y); }
+	void SetCol(D3DXCOLOR col);
 
 	// ÉQÉbÉ^Å[
 	int GetNumber() { return m_number; }
