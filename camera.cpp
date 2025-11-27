@@ -119,8 +119,7 @@ void CCamera::Update(void)
 		{
 			// ムービー中のフラグをfalseにする
 			m_isMovie = false;
-			m_posR.y = 0.0f;
-			m_posV.y = 680.0f;
+			SetBelt();
 		}
 
 		// 処理を終わる
