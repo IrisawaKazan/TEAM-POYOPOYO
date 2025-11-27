@@ -19,11 +19,11 @@ public:
 	typedef struct
 	{
 		LPD3DXMESH pMesh;		// メッシュのポインタ
+		LPD3DXMESH pSmoothMesh;	// なめらかメッシュへのポインタ
 		LPD3DXBUFFER pBuffMat;	// マテリアルのポインタ
 		DWORD dwNumMat;			// マテリアル数
 		std::string sName;
 		int* pTexture;		// テクスチャのポインタ
-
 	}ModelInfo;
 
 	~CModelManager();

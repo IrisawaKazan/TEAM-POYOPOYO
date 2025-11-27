@@ -8,6 +8,7 @@
 // インクルード
 #include "objectX.h"
 #include "manager.h"
+#include "outline.h"
 
 //***************************************
 // コンストラクタ
@@ -148,6 +149,67 @@ void CObjectX::Draw(void)
 		// モデル(パーツ)の描画
 		modelinfo.pMesh->DrawSubset(nCntMat);
 	}
+	pDevice->SetMaterial(&matDef);
+}
+
+//***************************************
+// アウトラインを描画
+//***************************************
+void CObjectX::DrawOutLine(void)
+{
+	if (m_nIdx == -1) return;
+
+	CRenderer* pRenderer;
+	pRenderer = CManager::GetRenderer();
+	LPDIRECT3DDEVICE9 pDevice = pRenderer->GetDevice();
+
+	CModelManager* pModelTexManager = CModelManager::Instance();
+
+	D3DXMATRIX mtxRot, mtxTrans, mtxScale;	// 計算用マトリックス
+	D3DMATERIAL9 matDef;					// 現在のマテリアルの保存用
+
+	CModelManager::ModelInfo modelinfo = pModelTexManager->GetAddress(m_nIdx);
+
+	// ワールドマトリックスの初期化
+	D3DXMatrixIdentity(&m_mtxWorld);
+
+	if (m_pMtxParent != NULL)
+	{
+		m_mtxWorld = *m_pMtxParent * m_mtxWorld;
+	}
+
+	if (m_mtxRot != NULL)
+	{
+		m_mtxWorld = m_mtxRot * m_mtxWorld;
+	}
+
+	// 拡大率を反映
+	D3DXMatrixScaling(&mtxScale, m_Scale.x, m_Scale.y, m_Scale.z);
+	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxScale);
+
+	// 向きを反映
+	D3DXMatrixRotationQuaternion(&mtxRot, &m_Quad);
+	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxRot);
+
+	// 位置を反映
+	D3DXMatrixTranslation(&mtxTrans, m_Pos.x, m_Pos.y, m_Pos.z);
+	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxTrans);
+
+	// 現在のマテリアルの取得
+	pDevice->GetMaterial(&matDef);
+
+	COutLine::Instance()->Begin();
+
+	for (int nCntMat = 0; nCntMat < (int)modelinfo.dwNumMat; nCntMat++)
+	{
+		COutLine::Instance()->BeginPass();
+		// モデル(パーツ)の描画
+		modelinfo.pSmoothMesh->DrawSubset(nCntMat);
+		COutLine::Instance()->EndPass();
+	}
+
+	COutLine::Instance()->End();
+
 	pDevice->SetMaterial(&matDef);
 }
 

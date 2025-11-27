@@ -15,6 +15,7 @@
 #include "model.h"
 #include "navi.h"
 #include "playermanager.h"
+#include "outline.h"
 
 //***************************************
 // コンストラクタ
@@ -70,6 +71,7 @@ HRESULT CSwitch::Init(void)
 
 	// 初期位置を記憶
 	m_ApperPos = GetPosition();
+	m_nCount = 0;
 
 	return S_OK;
 }
@@ -92,6 +94,7 @@ void CSwitch::Update(void)
 	D3DXVECTOR3 CurrentPos = GetPosition();
 
 	m_IsFinishOld = m_IsFinish;
+	m_nCount++;
 
 	// 押されていたら
 	if (m_IsPressed == true)
@@ -143,6 +146,14 @@ void CSwitch::Draw(void)
 {
 	// 描画
 	CBlock::Draw();
+	CRenderer* pRenderer;
+	pRenderer = CManager::GetRenderer();
+	LPDIRECT3DDEVICE9 pDevice = pRenderer->GetDevice();
+	D3DXMATRIX view, proj;
+	pDevice->GetTransform(D3DTS_VIEW, &view);
+	pDevice->GetTransform(D3DTS_PROJECTION, &proj);
+	COutLine::Instance()->SetParameters(GetWorldMtx(), view, proj, D3DXVECTOR4(0.0f, 0.0f, 0.0f, sinf(Config::OutLineSpeed * m_nCount)));
+	CBlock::DrawOutLine();
 }
 
 //***************************************
@@ -192,6 +203,7 @@ void CDoor::Update(void)
 {
 	// 位置を取得
 	D3DXVECTOR3 Pos = GetPosition();
+	m_nCount++;
 
 	// 起動していたら
 	if (m_IsFunc)
@@ -228,6 +240,14 @@ void CDoor::Draw(void)
 {
 	// 描画
 	CBlock::Draw();
+	CRenderer* pRenderer;
+	pRenderer = CManager::GetRenderer();
+	LPDIRECT3DDEVICE9 pDevice = pRenderer->GetDevice();
+	D3DXMATRIX view, proj;
+	pDevice->GetTransform(D3DTS_VIEW, &view);
+	pDevice->GetTransform(D3DTS_PROJECTION, &proj);
+	COutLine::Instance()->SetParameters(GetWorldMtx(), view, proj, D3DXVECTOR4(1.0f, 0.0f, 0.0f, sinf(Config::OutLineSpeed * m_nCount)));
+	CBlock::DrawOutLine();
 }
 
 //***************************************
