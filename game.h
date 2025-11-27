@@ -61,6 +61,7 @@ public:
 	// 静的メンバ関数
 	// セッター
 	static void ResetPlayer(void);
+	static void SetNavis(void);
 
 	// ゲッター
 	static CTutorialBoard* GetTutorialBoard(void) { return m_pTutorialBoard; }

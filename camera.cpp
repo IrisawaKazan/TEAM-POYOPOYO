@@ -12,6 +12,8 @@
 #include "math_T.h"
 #include "game.h"
 #include "tutorialBoard.h"
+#include "navi.h"
+#include "naviUi.h"
 
 // 名前空間
 using namespace std;
@@ -78,6 +80,10 @@ HRESULT CCamera::Init(void)
 	// ベルトスクロールモード
 	m_mode = Config::startMode;
 
+	// Movie系を設定
+	m_isMovie = false;
+	m_bFinishMotion = true;
+
 	switch (m_mode)
 	{
 	case CCamera::MODE::NORMAL:
@@ -87,8 +93,6 @@ HRESULT CCamera::Init(void)
 		SetBelt();
 		break;
 	}
-
-	SetMovie(MOTIONTYPE_STARTMOVIE);
 
 	// デバイスを取得
 	m_pInputKeyboard = CManager::GetInputKeyboard();
@@ -118,10 +122,8 @@ void CCamera::Update(void)
 			CManager::GetInputJoypad()->GetTrigger(CInputJoypad::JOYKEY_BACK) == true || CManager::GetInputJoypad()->GetTrigger(CInputJoypad::JOYKEY_A) == true)
 		{
 			// ムービー中のフラグをfalseにする
-			m_isMovie = false;
-			SetBelt();
+			m_bFinishMotion = true;
 		}
-
 		// 処理を終わる
 		return;
 	}
@@ -834,5 +836,9 @@ void CCamera::UpdateMotion(void)
 	{
 		// ムービーフラグを切り替える
 		m_isMovie = false;
+		// ベルトスクロールの初期位置に設定
+		SetBelt();
+		// Naviを設定
+		CGame::SetNavis();
 	}
 }

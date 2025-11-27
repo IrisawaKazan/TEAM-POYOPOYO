@@ -56,7 +56,7 @@ void CPlayerManager::Update(void)
 	bool Istutorial = CManager::isTutorial();
 
 	// ポーズ中だったら
-	if (bPause != true && Istutorial != true)
+	if (bPause == false && Istutorial == false && CManager::GetCamera()->IsAnim() == false)
 	{
 		// タイマーを進める
 		m_Timer++;
