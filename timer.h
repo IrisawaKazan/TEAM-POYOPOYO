@@ -17,7 +17,7 @@ class CNumber;
 class CTimer : public CObject
 {
 public:
-	static constexpr const char* FILE_PATH = "data/Goal.bin"; // 書き込みファイル
+	static constexpr const char* FILE_PATH = "data/DATA/Goal.bin"; // 書き込みファイル
 
 	// タイプ
 	enum class COUNT : unsigned char
