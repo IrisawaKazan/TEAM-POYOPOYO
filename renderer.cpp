@@ -166,6 +166,15 @@ void CRenderer::Update()
 	CObject::UpdateAll();
 
 	static bool isFullScrean = false;
+	static bool firstTime = true;
+
+	// 起動後の最初の1回だけ実行 ※最初からfullscreen表示させるための処理です。最初はウィンドウ表示にしたい場合は下のif文を消して - Irisawa Kazan
+	if (firstTime)
+	{
+		ToggleFullscreen(GetForegroundWindow(), &isFullScrean);
+		firstTime = false;
+	}
+
 	if (CManager::GetInputKeyboard()->GetTrigger(DIK_F11) == true)
 	{
 		ToggleFullscreen(GetForegroundWindow(), &isFullScrean);
